@@ -2,11 +2,22 @@
 
 from __future__ import annotations
 
+from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.models import (
     ReleaseMetadataReport,
     ReleaseReadinessReport,
     SecurityProvenanceReviewReport,
 )
+
+
+def _benchmark_matrix_lines() -> list[str]:
+    fixture = load_benchmark_manifest()
+    lines = ["## Benchmark Matrix", ""]
+    for case in fixture.get("cases", []):
+        lines.append(
+            f"- `{case['id']}` [{case['kind']}] {case['description']}"
+        )
+    return lines
 
 
 def operator_guide() -> str:
@@ -171,6 +182,7 @@ def release_readiness_markdown(report: ReleaseReadinessReport) -> str:
         lines.append(f"- `{check.check_id}` [{status}] {check.title}: {check.evidence}")
         if check.recommendation:
             lines.append(f"  next step: {check.recommendation}")
+    lines.extend(["", *_benchmark_matrix_lines(), ""])
     lines.extend(["", "## Known Limitations", ""])
     lines.extend(f"- {item}" for item in report.known_limitations)
     return "\n".join(lines)
@@ -237,6 +249,8 @@ def release_notes_markdown(report: ReleaseMetadataReport) -> str:
         f"- Benchmark cases: `{report.benchmark_case_count}`",
         f"- Covered case IDs: {', '.join(f'`{item}`' for item in report.benchmark_case_ids)}",
         "",
+        *_benchmark_matrix_lines(),
+        "",
         "## Migration Notes",
         "",
     ]
@@ -280,6 +294,9 @@ def conformance_report_markdown(
         )
     lines.extend(["", "## Benchmark Coverage", ""])
     lines.append(f"- Benchmark cases published: `{metadata.benchmark_case_count}`")
+    lines.extend(
+        f"- `{case_id}`" for case_id in metadata.benchmark_case_ids
+    )
     lines.extend(["", "## Release Gates", ""])
     for check in readiness.checks:
         lines.append(f"- `{check.check_id}` [{check.status.upper()}] {check.title}")
