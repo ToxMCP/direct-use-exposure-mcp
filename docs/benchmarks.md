@@ -12,6 +12,11 @@ The deterministic benchmark corpus for `v0.1.0` is stored in `tests/fixtures/ben
 
 - Adult dermal leave-on hand cream screening
 - Adult inhalation trigger spray screening
+- Child direct-oral liquid screening
+- Adult dermal cream volume-to-mass conversion with density override precedence
+- Cross-route aggregate summary with contributor fractions and limitation flagging
+- Zero-baseline scenario comparison with undefined percentage-delta handling
+- PBPK export packaging from the canonical dermal screening scenario
 
 ## Tolerances
 
@@ -22,4 +27,3 @@ The deterministic benchmark corpus for `v0.1.0` is stored in `tests/fixtures/ben
 
 - Every benchmarked result must carry the current defaults pack version.
 - If the defaults pack changes, update both the benchmark fixture and the benchmark notes explicitly.
-

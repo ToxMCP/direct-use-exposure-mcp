@@ -8,10 +8,15 @@
   "defaultsVersion": "2026.03.24.v3",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
-  "benchmarkCaseCount": 2,
+  "benchmarkCaseCount": 7,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
-    "inhalation_trigger_spray_screening"
+    "inhalation_trigger_spray_screening",
+    "oral_direct_oral_screening",
+    "dermal_density_precedence_volume_case",
+    "cross_route_aggregate_summary",
+    "zero_baseline_comparison",
+    "dermal_pbpk_export"
   ],
   "contractSchemaCount": 36,
   "contractExampleCount": 19,

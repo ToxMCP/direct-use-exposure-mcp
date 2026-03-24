@@ -81,6 +81,280 @@
           "inhaled_mass_mg_per_day": 1.36538041
         }
       }
+    },
+    {
+      "id": "oral_direct_oral_screening",
+      "kind": "scenario",
+      "description": "Child direct-oral liquid case covering oral screening semantics and volume-to-mass conversion defaults.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID124",
+        "chemical_name": "Benchmark Solvent B",
+        "route": "oral",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Oral Liquid",
+          "product_category": "personal_care",
+          "physical_form": "liquid",
+          "application_method": "direct_oral",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.01,
+          "use_amount_per_event": 10,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "child",
+          "region": "global",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 6.53333333,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 98.0,
+          "external_mass_mg_per_day": 98.0
+        },
+        "assumptions": {
+          "density_g_per_ml": 0.98,
+          "ingestion_fraction": 1.0,
+          "body_weight_kg": 15.0
+        }
+      }
+    },
+    {
+      "id": "dermal_density_precedence_volume_case",
+      "kind": "scenario",
+      "description": "Adult dermal cream case covering physical-form density override precedence for mL inputs.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID125",
+        "chemical_name": "Benchmark Solvent C",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Cream Dose",
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.1,
+          "use_amount_per_event": 2,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 2.01875,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 190.0,
+          "surface_loading_mg_per_cm2_day": 0.02833333
+        },
+        "assumptions": {
+          "density_g_per_ml": 0.95,
+          "transfer_efficiency": 0.85
+        }
+      }
+    },
+    {
+      "id": "cross_route_aggregate_summary",
+      "kind": "aggregate",
+      "description": "Aggregate summary spanning the canonical dermal and inhalation benchmark scenarios.",
+      "component_requests": [
+        {
+          "schema_version": "exposureScenarioRequest.v1",
+          "chemical_id": "DTXSID123",
+          "chemical_name": "Benchmark Solvent A",
+          "route": "dermal",
+          "scenario_class": "screening",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Benchmark Hand Cream",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 1.5,
+            "use_amount_unit": "g",
+            "use_events_per_day": 3
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "region": "EU",
+            "demographic_tags": ["consumer"]
+          },
+          "assumption_overrides": {}
+        },
+        {
+          "schema_version": "exposureScenarioRequest.v1",
+          "chemical_id": "DTXSID123",
+          "chemical_name": "Benchmark Solvent A",
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Benchmark Trigger Spray",
+            "product_category": "household_cleaner",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.05,
+            "use_amount_per_event": 12,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 1,
+            "room_volume_m3": 25
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 68,
+            "inhalation_rate_m3_per_hour": 0.9,
+            "region": "EU",
+            "demographic_tags": []
+          },
+          "assumption_overrides": {}
+        }
+      ],
+      "expected": {
+        "normalized_total_external_dose_value": 0.97632912,
+        "route_totals": {
+          "dermal": 0.95625,
+          "inhalation": 0.02007912
+        },
+        "dominant_contributor_fractions": {
+          "dermal": 0.979434,
+          "inhalation": 0.020566
+        },
+        "limitation_codes": ["cross_route_aggregate"]
+      }
+    },
+    {
+      "id": "zero_baseline_comparison",
+      "kind": "comparison",
+      "description": "Comparison case with a zero baseline dose to lock down undefined percentage-delta handling.",
+      "baseline_request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID126",
+        "chemical_name": "Benchmark Solvent D",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Zero Baseline Cream",
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.0,
+          "use_amount_per_event": 1,
+          "use_amount_unit": "g",
+          "use_events_per_day": 2
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "comparison_request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID126",
+        "chemical_name": "Benchmark Solvent D",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Zero Baseline Cream",
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 1,
+          "use_amount_unit": "g",
+          "use_events_per_day": 2
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "absolute_delta": 0.425,
+        "percent_delta": null,
+        "changed_assumptions": [
+          "chemical_mass_mg_per_event",
+          "concentration_fraction",
+          "external_mass_mg_per_day",
+          "normalized_external_dose_mg_per_kg_day"
+        ],
+        "interpretation_notes": [
+          "Baseline dose was zero; percentage delta is undefined."
+        ]
+      }
+    },
+    {
+      "id": "dermal_pbpk_export",
+      "kind": "pbpk_export",
+      "description": "PBPK export case for the canonical dermal screening scenario.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "chemical_name": "Benchmark Solvent A",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Hand Cream",
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 1.5,
+          "use_amount_unit": "g",
+          "use_events_per_day": 3
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "region": "EU",
+          "demographic_tags": ["consumer"]
+        },
+        "assumption_overrides": {}
+      },
+      "regimen_name": "benchmark_daily_use",
+      "expected": {
+        "dose_magnitude": 0.95625,
+        "dose_unit": "mg/kg-day",
+        "timing_pattern": "benchmark_daily_use",
+        "population_context": {
+          "population_group": "adult",
+          "body_weight_kg": 80.0,
+          "region": "EU"
+        },
+        "supporting_assumption_count": 10
+      }
     }
   ]
 }

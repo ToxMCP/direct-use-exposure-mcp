@@ -5,6 +5,7 @@ from pathlib import Path
 
 from jsonschema import validate
 
+from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.contracts import (
     build_release_metadata_report,
     build_release_readiness_report,
@@ -132,7 +133,7 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     validate(instance=artifact, schema=schema)
     validate(instance=report, schema=schema)
     assert artifact["releaseVersion"] == "0.1.0"
-    assert artifact["benchmarkCaseCount"] == 2
+    assert artifact["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
     assert {"wheel", "sdist"} == {item["kind"] for item in artifact["distributionArtifacts"]}
     assert "docs://release-notes" in artifact["publishedDocs"]
     for item in artifact["distributionArtifacts"]:
