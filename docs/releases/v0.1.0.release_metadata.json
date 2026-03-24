@@ -8,7 +8,7 @@
   "defaultsVersion": "2026.03.24.v3",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
-  "benchmarkCaseCount": 7,
+  "benchmarkCaseCount": 8,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
     "inhalation_trigger_spray_screening",
@@ -16,7 +16,8 @@
     "dermal_density_precedence_volume_case",
     "cross_route_aggregate_summary",
     "zero_baseline_comparison",
-    "dermal_pbpk_export"
+    "dermal_pbpk_export",
+    "dermal_pbpk_external_import_package"
   ],
   "contractSchemaCount": 36,
   "contractExampleCount": 19,
@@ -26,16 +27,16 @@
       "filename": "exposure_scenario_mcp-0.1.0-py3-none-any.whl",
       "relativePath": "dist/exposure_scenario_mcp-0.1.0-py3-none-any.whl",
       "present": true,
-      "sha256": "6258a1b92151c42ef6266416d43db1f1f02e7a3cfc3dab772d8c0e3d8eb1369b",
-      "sizeBytes": 64981
+      "sha256": "c6edd887f99c60208101f97ab373ae94e413a57765cb405fb1e21c81528382ee",
+      "sizeBytes": 66244
     },
     {
       "kind": "sdist",
       "filename": "exposure_scenario_mcp-0.1.0.tar.gz",
       "relativePath": "dist/exposure_scenario_mcp-0.1.0.tar.gz",
       "present": true,
-      "sha256": "165d14f560aa52648200605f5e90855cb61c5ca8874423e41e8a66904e7bf6b7",
-      "sizeBytes": 368134
+      "sha256": "b57470570234935aabaaecdec4cadeb4a9efbb7a01ee5cf74a15999cd4c85089",
+      "sizeBytes": 370801
     }
   ],
   "publishedDocs": [

@@ -6,9 +6,11 @@ from pathlib import Path
 import pytest
 
 from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.integrations import build_pbpk_external_import_package
 from exposure_scenario_mcp.models import (
     BuildAggregateExposureScenarioInput,
     CompareExposureScenariosInput,
+    ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
@@ -157,6 +159,61 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
                 "supporting_assumption_count"
             ], case["id"]
             assert exported.provenance.defaults_version == fixture["defaults_version"], case["id"]
+            continue
+
+        if case["kind"] == "pbpk_external_import_package":
+            source_scenario = build_scenario(engine, case["request"])
+            exported = build_pbpk_external_import_package(
+                ExportPbpkExternalImportBundleRequest(scenario=source_scenario)
+            )
+            payload = exported.model_dump(mode="json", by_alias=True)
+
+            assert payload["ingestToolName"] == expected["ingest_tool_name"], case["id"]
+            assert payload["bundle"]["sourcePlatform"] == expected["source_platform"], case["id"]
+            assert payload["bundle"]["sourceVersion"] == expected["source_version"], case["id"]
+            assert payload["bundle"]["modelType"] == expected["model_type"], case["id"]
+            expected_run_id = f"{source_scenario.scenario_id}-external-context"
+            assert payload["bundle"]["runId"] == expected_run_id, case["id"]
+            assert payload["bundle"]["assessmentContext"]["contextOfUse"] == expected[
+                "context_of_use"
+            ], case["id"]
+            assert payload["bundle"]["assessmentContext"]["doseScenario"]["scenarioId"] == (
+                source_scenario.scenario_id
+            ), case["id"]
+            assert payload["bundle"]["assessmentContext"]["doseScenario"][
+                "bodyWeightKg"
+            ] == pytest.approx(expected["body_weight_kg"], rel=1e-6), case["id"]
+            assert payload["bundle"]["chemicalIdentity"]["preferredName"] == expected[
+                "preferred_name"
+            ], case["id"]
+            assert sorted(payload["bundle"]["supportingHandoffs"]) == expected[
+                "supporting_handoff_keys"
+            ], case["id"]
+            assert payload["bundle"]["supportingHandoffs"]["pbpkScenarioInput"][
+                "schema_version"
+            ] == expected["pbpk_scenario_schema_version"], case["id"]
+            assert payload["requestPayload"]["sourcePlatform"] == expected["source_platform"], (
+                case["id"]
+            )
+            assert payload["requestPayload"]["comparisonMetric"] == expected[
+                "comparison_metric"
+            ], case["id"]
+            assert payload["toolCall"]["toolName"] == expected["ingest_tool_name"], case["id"]
+            assert payload["toolCall"]["arguments"]["sourcePlatform"] == expected[
+                "source_platform"
+            ], case["id"]
+            assert payload["toxclawModuleParams"]["ingestToolName"] == expected[
+                "ingest_tool_name"
+            ], case["id"]
+            assert payload["compatibilityReport"]["target_tool"] == expected[
+                "compatibility_target"
+            ], case["id"]
+            assert payload["compatibilityReport"]["ready_for_external_pbpk_import"] is expected[
+                "compatibility_ready"
+            ], case["id"]
+            assert payload["compatibilityReport"]["missing_external_bundle_fields"] == expected[
+                "missing_external_bundle_fields"
+            ], case["id"]
             continue
 
         raise AssertionError(f"Unsupported benchmark kind: {case['kind']}")

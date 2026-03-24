@@ -355,6 +355,56 @@
         },
         "supporting_assumption_count": 10
       }
+    },
+    {
+      "id": "dermal_pbpk_external_import_package",
+      "kind": "pbpk_external_import_package",
+      "description": "Full PBPK external-import package case for the canonical dermal screening scenario.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "chemical_name": "Benchmark Solvent A",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Hand Cream",
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 1.5,
+          "use_amount_unit": "g",
+          "use_events_per_day": 3
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "region": "EU",
+          "demographic_tags": ["consumer"]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "ingest_tool_name": "ingest_external_pbpk_bundle",
+        "source_platform": "exposure-scenario-mcp",
+        "source_version": "0.1.0",
+        "model_type": "exposure-scenario-context",
+        "context_of_use": "screening-brief",
+        "body_weight_kg": 80.0,
+        "preferred_name": "Benchmark Solvent A",
+        "comparison_metric": "cmax",
+        "supporting_handoff_keys": [
+          "exposureScenario",
+          "pbpkScenarioInput",
+          "upstreamUncertaintySummary"
+        ],
+        "pbpk_scenario_schema_version": "pbpkScenarioInput.v1",
+        "compatibility_target": "ingest_external_pbpk_bundle",
+        "compatibility_ready": true,
+        "missing_external_bundle_fields": []
+      }
     }
   ]
 }
