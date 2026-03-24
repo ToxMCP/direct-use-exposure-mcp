@@ -1,6 +1,7 @@
 # Exposure Scenario MCP
 
 [![CI](https://github.com/ToxMCP/expossure-scenario-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/expossure-scenario-mcp/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
 > Part of **ToxMCP** Suite
@@ -108,7 +109,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 ## Table of contents
 
 1. [Architecture](#architecture)
-2. [What's in v010](#whats-in-v010)
+2. [What's in v0.1.0](#whats-in-v010)
 3. [Why this project exists](#why-this-project-exists)
 4. [Feature snapshot](#feature-snapshot)
 5. [Tool catalog](#tool-catalog)
@@ -118,6 +119,9 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 9. [Repository layout](#repository-layout)
 10. [Current limitations](#current-limitations)
 11. [Scientific boundaries](#scientific-boundaries)
+12. [Contributing](#contributing)
+13. [Code of conduct](#code-of-conduct)
+14. [License](#license)
 
 ## Tool catalog
 
@@ -236,3 +240,16 @@ It does **not**:
 - replace mechanistic or WoE interpretation
 - produce final risk judgments
 - silently elevate heuristic screening assumptions into decision-ready conclusions
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for local setup, quality gates,
+contract-generation expectations, and scientific boundary rules for changes.
+
+## Code of conduct
+
+See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
+
+## License
+
+This project is licensed under the [Apache License 2.0](./LICENSE).
