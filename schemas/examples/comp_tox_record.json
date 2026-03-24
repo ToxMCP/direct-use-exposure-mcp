@@ -1,0 +1,17 @@
+{
+  "schema_version": "compToxChemicalRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Solvent A",
+  "casrn": "123-45-6",
+  "product_use_categories": [
+    "personal_care",
+    "household_cleaner"
+  ],
+  "physchem_summary": {
+    "vapor_pressure_pa": 150.0,
+    "water_solubility_mg_l": 1200.0
+  },
+  "evidence_sources": [
+    "CompTox:mock-record-001"
+  ]
+}

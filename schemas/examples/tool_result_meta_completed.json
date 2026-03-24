@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "toolResultMeta.v1",
+  "executionMode": "sync",
+  "resultStatus": "completed",
+  "terminal": true,
+  "futureAsyncCompatible": true,
+  "queueRequired": false,
+  "responseSchema": "exposureScenario.v1",
+  "jobId": null,
+  "statusCheckUri": null,
+  "retryable": false,
+  "errorCode": null,
+  "notes": [
+    "Synchronous v0.1 response using a status vocabulary reserved for future async engines.",
+    "No queue or polling step is required for the current deterministic implementation."
+  ]
+}

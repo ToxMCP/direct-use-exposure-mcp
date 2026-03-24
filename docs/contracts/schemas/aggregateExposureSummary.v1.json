@@ -1,0 +1,336 @@
+{
+  "$defs": {
+    "AggregateComponentReference": {
+      "additionalProperties": false,
+      "properties": {
+        "scenario_id": {
+          "description": "Component scenario identifier.",
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Component route."
+        },
+        "dose": {
+          "$ref": "#/$defs/ScenarioDose",
+          "description": "Primary component dose."
+        }
+      },
+      "required": [
+        "scenario_id",
+        "route",
+        "dose"
+      ],
+      "title": "AggregateComponentReference",
+      "type": "object"
+    },
+    "AggregateContributor": {
+      "additionalProperties": false,
+      "properties": {
+        "scenario_id": {
+          "description": "Component scenario identifier.",
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "contribution_fraction": {
+          "description": "Fractional contribution to the normalized total.",
+          "minimum": 0.0,
+          "title": "Contribution Fraction",
+          "type": "number"
+        },
+        "dose_value": {
+          "description": "Absolute contribution value.",
+          "title": "Dose Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "contribution_fraction",
+        "dose_value"
+      ],
+      "title": "AggregateContributor",
+      "type": "object"
+    },
+    "DoseUnit": {
+      "enum": [
+        "mg/day",
+        "mg/event",
+        "mg/kg-day",
+        "mg/m3"
+      ],
+      "title": "DoseUnit",
+      "type": "string"
+    },
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "QualityFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable quality flag code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "info",
+          "description": "Quality signal severity."
+        },
+        "message": {
+          "description": "Human-readable quality message.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "QualityFlag",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "RouteDoseTotal": {
+      "additionalProperties": false,
+      "properties": {
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Route represented by the total."
+        },
+        "total_dose": {
+          "$ref": "#/$defs/ScenarioDose",
+          "description": "Aggregated dose for this route."
+        }
+      },
+      "required": [
+        "route",
+        "total_dose"
+      ],
+      "title": "RouteDoseTotal",
+      "type": "object"
+    },
+    "ScenarioDose": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "description": "Dose metric label.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "description": "Numeric value for the dose metric.",
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/DoseUnit",
+          "description": "Canonical dose unit."
+        }
+      },
+      "required": [
+        "metric",
+        "value",
+        "unit"
+      ],
+      "title": "ScenarioDose",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "aggregateExposureSummary.v1",
+      "default": "aggregateExposureSummary.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scenario_id": {
+      "description": "Aggregate scenario identifier.",
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Shared chemical identifier.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "scenario_class": {
+      "const": "aggregate",
+      "default": "aggregate",
+      "title": "Scenario Class",
+      "type": "string"
+    },
+    "component_scenarios": {
+      "description": "Component scenario references.",
+      "items": {
+        "$ref": "#/$defs/AggregateComponentReference"
+      },
+      "title": "Component Scenarios",
+      "type": "array"
+    },
+    "aggregation_method": {
+      "description": "Aggregation method description.",
+      "title": "Aggregation Method",
+      "type": "string"
+    },
+    "normalized_total_external_dose": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ScenarioDose"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Summed normalized total when units are compatible."
+    },
+    "per_route_totals": {
+      "description": "Route-wise totals.",
+      "items": {
+        "$ref": "#/$defs/RouteDoseTotal"
+      },
+      "title": "Per Route Totals",
+      "type": "array"
+    },
+    "dominant_contributors": {
+      "description": "Dominant contributors to the total.",
+      "items": {
+        "$ref": "#/$defs/AggregateContributor"
+      },
+      "title": "Dominant Contributors",
+      "type": "array"
+    },
+    "limitations": {
+      "description": "Aggregate limitations.",
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "quality_flags": {
+      "description": "Aggregate quality flags.",
+      "items": {
+        "$ref": "#/$defs/QualityFlag"
+      },
+      "title": "Quality Flags",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle",
+      "description": "Aggregate provenance."
+    }
+  },
+  "required": [
+    "scenario_id",
+    "chemical_id",
+    "component_scenarios",
+    "aggregation_method",
+    "provenance"
+  ],
+  "title": "AggregateExposureSummary",
+  "type": "object"
+}

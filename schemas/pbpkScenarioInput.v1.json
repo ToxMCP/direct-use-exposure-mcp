@@ -1,0 +1,269 @@
+{
+  "$defs": {
+    "DoseUnit": {
+      "enum": [
+        "mg/day",
+        "mg/event",
+        "mg/kg-day",
+        "mg/m3"
+      ],
+      "title": "DoseUnit",
+      "type": "string"
+    },
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "PbpkPopulationContext": {
+      "additionalProperties": false,
+      "properties": {
+        "population_group": {
+          "description": "Population group label.",
+          "title": "Population Group",
+          "type": "string"
+        },
+        "body_weight_kg": {
+          "description": "Resolved body weight.",
+          "title": "Body Weight Kg",
+          "type": "number"
+        },
+        "inhalation_rate_m3_per_hour": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Resolved inhalation rate if relevant.",
+          "title": "Inhalation Rate M3 Per Hour"
+        },
+        "region": {
+          "description": "Population region.",
+          "title": "Region",
+          "type": "string"
+        }
+      },
+      "required": [
+        "population_group",
+        "body_weight_kg",
+        "region"
+      ],
+      "title": "PbpkPopulationContext",
+      "type": "object"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "pbpkScenarioInput.v1",
+      "default": "pbpkScenarioInput.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_scenario_id": {
+      "description": "Source scenario identifier.",
+      "title": "Source Scenario Id",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Stable chemical identifier.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "chemical_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional chemical name.",
+      "title": "Chemical Name"
+    },
+    "route": {
+      "$ref": "#/$defs/Route",
+      "description": "Route for the PBPK handoff."
+    },
+    "dose_magnitude": {
+      "description": "Primary dose magnitude for PBPK.",
+      "title": "Dose Magnitude",
+      "type": "number"
+    },
+    "dose_unit": {
+      "$ref": "#/$defs/DoseUnit",
+      "description": "Canonical dose unit."
+    },
+    "dose_metric": {
+      "description": "Dose metric label.",
+      "title": "Dose Metric",
+      "type": "string"
+    },
+    "events_per_day": {
+      "description": "Daily frequency implied by the source scenario.",
+      "exclusiveMinimum": 0.0,
+      "title": "Events Per Day",
+      "type": "number"
+    },
+    "event_duration_hours": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Per-event duration if available.",
+      "title": "Event Duration Hours"
+    },
+    "timing_pattern": {
+      "description": "Human-readable timing semantics.",
+      "title": "Timing Pattern",
+      "type": "string"
+    },
+    "population_context": {
+      "$ref": "#/$defs/PbpkPopulationContext",
+      "description": "Resolved population context."
+    },
+    "supporting_assumption_names": {
+      "description": "Names of assumptions backing the handoff.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Supporting Assumption Names",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle",
+      "description": "Export provenance."
+    },
+    "limitations": {
+      "description": "PBPK export limitations.",
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_scenario_id",
+    "chemical_id",
+    "route",
+    "dose_magnitude",
+    "dose_unit",
+    "dose_metric",
+    "events_per_day",
+    "timing_pattern",
+    "population_context",
+    "provenance"
+  ],
+  "title": "PbpkScenarioInput",
+  "type": "object"
+}

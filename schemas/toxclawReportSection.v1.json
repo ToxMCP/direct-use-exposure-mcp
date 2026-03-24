@@ -1,0 +1,89 @@
+{
+  "$defs": {
+    "ToxClawReportClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "toxclawReportClaim.v1",
+          "default": "toxclawReportClaim.v1",
+          "title": "Schemaversion",
+          "type": "string"
+        },
+        "claimId": {
+          "title": "Claimid",
+          "type": "string"
+        },
+        "confidence": {
+          "enum": [
+            "heuristic",
+            "provisional",
+            "supported",
+            "unverified"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        },
+        "evidenceIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidenceids",
+          "type": "array"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claimId",
+        "confidence",
+        "text"
+      ],
+      "title": "ToxClawReportClaim",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "toxclawReportSection.v1",
+      "default": "toxclawReportSection.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "body": {
+      "title": "Body",
+      "type": "string"
+    },
+    "claims": {
+      "items": {
+        "$ref": "#/$defs/ToxClawReportClaim"
+      },
+      "title": "Claims",
+      "type": "array"
+    },
+    "evidenceIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidenceids",
+      "type": "array"
+    },
+    "sectionKey": {
+      "title": "Sectionkey",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "body",
+    "sectionKey",
+    "title"
+  ],
+  "title": "ToxClawReportSection",
+  "type": "object"
+}

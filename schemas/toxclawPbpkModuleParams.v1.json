@@ -1,0 +1,220 @@
+{
+  "$defs": {
+    "PbpkExternalArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
+        },
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "checksum": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checksum"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        }
+      },
+      "required": [
+        "type",
+        "path"
+      ],
+      "title": "PbpkExternalArtifact",
+      "type": "object"
+    },
+    "PbpkExternalImportRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "sourcePlatform": {
+          "title": "Sourceplatform",
+          "type": "string"
+        },
+        "sourceVersion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourceversion"
+        },
+        "modelName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Modelname"
+        },
+        "modelType": {
+          "title": "Modeltype",
+          "type": "string"
+        },
+        "executionDate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Executiondate"
+        },
+        "runId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Runid"
+        },
+        "operator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator"
+        },
+        "sponsor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sponsor"
+        },
+        "rawArtifacts": {
+          "items": {
+            "$ref": "#/$defs/PbpkExternalArtifact"
+          },
+          "title": "Rawartifacts",
+          "type": "array"
+        },
+        "assessmentContext": {
+          "additionalProperties": true,
+          "title": "Assessmentcontext",
+          "type": "object"
+        },
+        "internalExposure": {
+          "additionalProperties": true,
+          "title": "Internalexposure",
+          "type": "object"
+        },
+        "qualification": {
+          "additionalProperties": true,
+          "title": "Qualification",
+          "type": "object"
+        },
+        "uncertainty": {
+          "additionalProperties": true,
+          "title": "Uncertainty",
+          "type": "object"
+        },
+        "uncertaintyRegister": {
+          "additionalProperties": true,
+          "title": "Uncertaintyregister",
+          "type": "object"
+        },
+        "pod": {
+          "additionalProperties": true,
+          "title": "Pod",
+          "type": "object"
+        },
+        "trueDoseAdjustment": {
+          "additionalProperties": true,
+          "title": "Truedoseadjustment",
+          "type": "object"
+        },
+        "comparisonMetric": {
+          "default": "cmax",
+          "title": "Comparisonmetric",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourcePlatform",
+        "modelType"
+      ],
+      "title": "PbpkExternalImportRequest",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "toxclawPbpkModuleParams.v1",
+      "default": "toxclawPbpkModuleParams.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "ingestToolName": {
+      "const": "ingest_external_pbpk_bundle",
+      "default": "ingest_external_pbpk_bundle",
+      "title": "Ingesttoolname",
+      "type": "string"
+    },
+    "arguments": {
+      "$ref": "#/$defs/PbpkExternalImportRequest"
+    },
+    "chemicalIdentity": {
+      "additionalProperties": true,
+      "title": "Chemicalidentity",
+      "type": "object"
+    },
+    "supportingHandoffs": {
+      "additionalProperties": true,
+      "title": "Supportinghandoffs",
+      "type": "object"
+    }
+  },
+  "required": [
+    "arguments"
+  ],
+  "title": "ToxClawPbpkModuleParams",
+  "type": "object"
+}

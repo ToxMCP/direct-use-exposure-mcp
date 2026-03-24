@@ -1,0 +1,86 @@
+{
+  "defaults_version": "2026.03.24.v3",
+  "cases": [
+    {
+      "id": "dermal_hand_cream_screening",
+      "kind": "scenario",
+      "description": "Adult leave-on hand cream screening case with default body weight, surface area, retention, and transfer efficiency.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "chemical_name": "Benchmark Solvent A",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Hand Cream",
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 1.5,
+          "use_amount_unit": "g",
+          "use_events_per_day": 3
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "region": "EU",
+          "demographic_tags": ["consumer"]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.95625,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "external_mass_mg_per_day": 76.5,
+          "surface_loading_mg_per_cm2_day": 0.01342105
+        }
+      }
+    },
+    {
+      "id": "inhalation_trigger_spray_screening",
+      "kind": "scenario",
+      "description": "Adult EU trigger spray inhalation case with explicit room volume and regional default ventilation/duration.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "chemical_name": "Benchmark Solvent A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Trigger Spray",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 25
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.02007912,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "average_air_concentration_mg_per_m3": 3.03417868,
+          "inhaled_mass_mg_per_day": 1.36538041
+        }
+      }
+    }
+  ]
+}

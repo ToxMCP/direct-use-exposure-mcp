@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "provenanceBundle.v1",
+      "default": "provenanceBundle.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "algorithm_id": {
+      "description": "Stable algorithm identifier.",
+      "title": "Algorithm Id",
+      "type": "string"
+    },
+    "plugin_id": {
+      "description": "Plugin that generated the result.",
+      "title": "Plugin Id",
+      "type": "string"
+    },
+    "plugin_version": {
+      "description": "Plugin version.",
+      "title": "Plugin Version",
+      "type": "string"
+    },
+    "defaults_version": {
+      "description": "Defaults pack version.",
+      "title": "Defaults Version",
+      "type": "string"
+    },
+    "defaults_hash_sha256": {
+      "description": "Hash for the defaults pack in use.",
+      "title": "Defaults Hash Sha256",
+      "type": "string"
+    },
+    "generated_at": {
+      "description": "ISO-8601 UTC timestamp.",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "notes": {
+      "description": "Additional provenance notes.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "algorithm_id",
+    "plugin_id",
+    "plugin_version",
+    "defaults_version",
+    "defaults_hash_sha256",
+    "generated_at"
+  ],
+  "title": "ProvenanceBundle",
+  "type": "object"
+}

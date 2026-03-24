@@ -1,0 +1,185 @@
+{
+  "$defs": {
+    "ReleaseDistributionArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "wheel",
+            "sdist"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "filename": {
+          "title": "Filename",
+          "type": "string"
+        },
+        "relativePath": {
+          "title": "Relativepath",
+          "type": "string"
+        },
+        "present": {
+          "title": "Present",
+          "type": "boolean"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "sizeBytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sizebytes"
+        }
+      },
+      "required": [
+        "kind",
+        "filename",
+        "relativePath",
+        "present"
+      ],
+      "title": "ReleaseDistributionArtifact",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "releaseMetadataReport.v1",
+      "default": "releaseMetadataReport.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "releaseVersion": {
+      "title": "Releaseversion",
+      "type": "string"
+    },
+    "packageName": {
+      "title": "Packagename",
+      "type": "string"
+    },
+    "packageVersion": {
+      "title": "Packageversion",
+      "type": "string"
+    },
+    "serverName": {
+      "title": "Servername",
+      "type": "string"
+    },
+    "serverVersion": {
+      "title": "Serverversion",
+      "type": "string"
+    },
+    "defaultsVersion": {
+      "title": "Defaultsversion",
+      "type": "string"
+    },
+    "readinessStatus": {
+      "enum": [
+        "ready",
+        "ready_with_known_limitations",
+        "blocked"
+      ],
+      "title": "Readinessstatus",
+      "type": "string"
+    },
+    "securityReviewStatus": {
+      "enum": [
+        "acceptable",
+        "acceptable_with_warnings",
+        "blocked"
+      ],
+      "title": "Securityreviewstatus",
+      "type": "string"
+    },
+    "benchmarkCaseCount": {
+      "minimum": 0,
+      "title": "Benchmarkcasecount",
+      "type": "integer"
+    },
+    "benchmarkCaseIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Benchmarkcaseids",
+      "type": "array"
+    },
+    "contractSchemaCount": {
+      "minimum": 0,
+      "title": "Contractschemacount",
+      "type": "integer"
+    },
+    "contractExampleCount": {
+      "minimum": 0,
+      "title": "Contractexamplecount",
+      "type": "integer"
+    },
+    "distributionArtifacts": {
+      "items": {
+        "$ref": "#/$defs/ReleaseDistributionArtifact"
+      },
+      "title": "Distributionartifacts",
+      "type": "array"
+    },
+    "publishedDocs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Publisheddocs",
+      "type": "array"
+    },
+    "validationCommands": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Validationcommands",
+      "type": "array"
+    },
+    "migrationNotes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Migrationnotes",
+      "type": "array"
+    },
+    "knownLimitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Knownlimitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "releaseVersion",
+    "packageName",
+    "packageVersion",
+    "serverName",
+    "serverVersion",
+    "defaultsVersion",
+    "readinessStatus",
+    "securityReviewStatus",
+    "benchmarkCaseCount",
+    "contractSchemaCount",
+    "contractExampleCount"
+  ],
+  "title": "ReleaseMetadataReport",
+  "type": "object"
+}

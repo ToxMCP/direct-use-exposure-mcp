@@ -1,0 +1,791 @@
+{
+  "$defs": {
+    "AssumptionSourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "description": "Stable identifier for the source.",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "title": {
+          "description": "Human-readable source title.",
+          "title": "Title",
+          "type": "string"
+        },
+        "locator": {
+          "description": "URL, file path, or logical locator.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "version": {
+          "description": "Version or effective date for the source.",
+          "title": "Version",
+          "type": "string"
+        },
+        "hash_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Content hash when available.",
+          "title": "Hash Sha256"
+        }
+      },
+      "required": [
+        "source_id",
+        "title",
+        "locator",
+        "version"
+      ],
+      "title": "AssumptionSourceReference",
+      "type": "object"
+    },
+    "DoseUnit": {
+      "enum": [
+        "mg/day",
+        "mg/event",
+        "mg/kg-day",
+        "mg/m3"
+      ],
+      "title": "DoseUnit",
+      "type": "string"
+    },
+    "ExposureAssumptionRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureAssumptionRecord.v1",
+          "default": "exposureAssumptionRecord.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "name": {
+          "description": "Stable parameter name used by the engine.",
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The resolved assumption value.",
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Resolved unit, if applicable.",
+          "title": "Unit"
+        },
+        "source_kind": {
+          "$ref": "#/$defs/SourceKind",
+          "description": "Whether the value was user supplied, defaulted, or derived."
+        },
+        "source": {
+          "$ref": "#/$defs/AssumptionSourceReference",
+          "description": "Source reference for the assumption."
+        },
+        "confidence": {
+          "description": "Human-readable confidence label.",
+          "title": "Confidence",
+          "type": "string"
+        },
+        "default_applied": {
+          "description": "Whether a default value was applied.",
+          "title": "Default Applied",
+          "type": "boolean"
+        },
+        "rationale": {
+          "description": "Why this assumption was used.",
+          "title": "Rationale",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "value",
+        "source_kind",
+        "source",
+        "confidence",
+        "default_applied",
+        "rationale"
+      ],
+      "title": "ExposureAssumptionRecord",
+      "type": "object"
+    },
+    "ExposureScenario": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureScenario.v1",
+          "default": "exposureScenario.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "scenario_id": {
+          "description": "Stable scenario identifier.",
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "description": "Scenario class tag."
+        },
+        "external_dose": {
+          "$ref": "#/$defs/ScenarioDose",
+          "description": "Primary normalized external dose estimate."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Resolved product-use profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Resolved population profile."
+        },
+        "route_metrics": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Route-specific metrics.",
+          "title": "Route Metrics",
+          "type": "object"
+        },
+        "assumptions": {
+          "description": "Explicit parameter ledger.",
+          "items": {
+            "$ref": "#/$defs/ExposureAssumptionRecord"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceBundle",
+          "description": "Calculation provenance."
+        },
+        "limitations": {
+          "description": "Explicit limitations.",
+          "items": {
+            "$ref": "#/$defs/LimitationNote"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "quality_flags": {
+          "description": "Quality flags and warnings.",
+          "items": {
+            "$ref": "#/$defs/QualityFlag"
+          },
+          "title": "Quality Flags",
+          "type": "array"
+        },
+        "fit_for_purpose": {
+          "$ref": "#/$defs/FitForPurpose",
+          "description": "Fit-for-purpose metadata."
+        },
+        "interpretation_notes": {
+          "description": "Human-readable scenario notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Interpretation Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "chemical_id",
+        "route",
+        "scenario_class",
+        "external_dose",
+        "product_use_profile",
+        "population_profile",
+        "provenance",
+        "fit_for_purpose"
+      ],
+      "title": "ExposureScenario",
+      "type": "object"
+    },
+    "FitForPurpose": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "High-level fit-for-purpose label.",
+          "title": "Label",
+          "type": "string"
+        },
+        "suitable_for": {
+          "description": "Appropriate use cases.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Suitable For",
+          "type": "array"
+        },
+        "not_suitable_for": {
+          "description": "Known exclusions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Not Suitable For",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "FitForPurpose",
+      "type": "object"
+    },
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "PopulationProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "populationProfile.v1",
+          "default": "populationProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "population_group": {
+          "description": "Population group, for example adult or child.",
+          "title": "Population Group",
+          "type": "string"
+        },
+        "body_weight_kg": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Body weight in kilograms.",
+          "title": "Body Weight Kg"
+        },
+        "inhalation_rate_m3_per_hour": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inhalation rate for inhalation screening.",
+          "title": "Inhalation Rate M3 Per Hour"
+        },
+        "exposed_surface_area_cm2": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Exposed surface area for dermal scenarios.",
+          "title": "Exposed Surface Area Cm2"
+        },
+        "demographic_tags": {
+          "description": "Demographic descriptors for auditability.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Demographic Tags",
+          "type": "array"
+        },
+        "region": {
+          "default": "global",
+          "description": "Regional context for defaults or interpretation.",
+          "title": "Region",
+          "type": "string"
+        }
+      },
+      "required": [
+        "population_group"
+      ],
+      "title": "PopulationProfile",
+      "type": "object"
+    },
+    "ProductAmountUnit": {
+      "enum": [
+        "g",
+        "mL"
+      ],
+      "title": "ProductAmountUnit",
+      "type": "string"
+    },
+    "ProductUseProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseProfile.v1",
+          "default": "productUseProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "product_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional human-readable product label.",
+          "title": "Product Name"
+        },
+        "product_category": {
+          "description": "Product category or PUC-like category.",
+          "title": "Product Category",
+          "type": "string"
+        },
+        "physical_form": {
+          "description": "Physical form such as cream, liquid, spray, or gel.",
+          "title": "Physical Form",
+          "type": "string"
+        },
+        "application_method": {
+          "description": "How the product is applied, for example hand_application or trigger_spray.",
+          "title": "Application Method",
+          "type": "string"
+        },
+        "retention_type": {
+          "default": "leave_on",
+          "description": "Retention class such as leave_on or rinse_off.",
+          "title": "Retention Type",
+          "type": "string"
+        },
+        "concentration_fraction": {
+          "description": "Fraction of the target chemical in the product, 0-1.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Concentration Fraction",
+          "type": "number"
+        },
+        "use_amount_per_event": {
+          "description": "Product amount used per event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Amount Per Event",
+          "type": "number"
+        },
+        "use_amount_unit": {
+          "$ref": "#/$defs/ProductAmountUnit",
+          "description": "Unit for the use amount per event."
+        },
+        "use_events_per_day": {
+          "description": "Number of product-use events per day.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Events Per Day",
+          "type": "number"
+        },
+        "density_g_per_ml": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Density when the product amount is in mL.",
+          "title": "Density G Per Ml"
+        },
+        "transfer_efficiency": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Route modifier for external transfer.",
+          "title": "Transfer Efficiency"
+        },
+        "retention_factor": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Retention modifier for dermal screening.",
+          "title": "Retention Factor"
+        },
+        "ingestion_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass incidentally or directly ingested.",
+          "title": "Ingestion Fraction"
+        },
+        "aerosolized_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass released to air.",
+          "title": "Aerosolized Fraction"
+        },
+        "room_volume_m3": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Indoor room volume for inhalation screening.",
+          "title": "Room Volume M3"
+        },
+        "air_exchange_rate_per_hour": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Air exchange rate for inhalation screening.",
+          "title": "Air Exchange Rate Per Hour"
+        },
+        "exposure_duration_hours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration of exposure per event.",
+          "title": "Exposure Duration Hours"
+        }
+      },
+      "required": [
+        "product_category",
+        "physical_form",
+        "application_method",
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_amount_unit",
+        "use_events_per_day"
+      ],
+      "title": "ProductUseProfile",
+      "type": "object"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "QualityFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable quality flag code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "info",
+          "description": "Quality signal severity."
+        },
+        "message": {
+          "description": "Human-readable quality message.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "QualityFlag",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "ScenarioClass": {
+      "enum": [
+        "screening",
+        "aggregate",
+        "inhalation",
+        "refined",
+        "population_distribution"
+      ],
+      "title": "ScenarioClass",
+      "type": "string"
+    },
+    "ScenarioDose": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "description": "Dose metric label.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "description": "Numeric value for the dose metric.",
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/DoseUnit",
+          "description": "Canonical dose unit."
+        }
+      },
+      "required": [
+        "metric",
+        "value",
+        "unit"
+      ],
+      "title": "ScenarioDose",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "SourceKind": {
+      "enum": [
+        "user_input",
+        "default_registry",
+        "derived",
+        "system"
+      ],
+      "title": "SourceKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "chemical_id": {
+      "description": "Chemical ID shared across component scenarios.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "label": {
+      "description": "Human-readable aggregate label.",
+      "title": "Label",
+      "type": "string"
+    },
+    "component_scenarios": {
+      "description": "Component scenarios to aggregate.",
+      "items": {
+        "$ref": "#/$defs/ExposureScenario"
+      },
+      "minItems": 1,
+      "title": "Component Scenarios",
+      "type": "array"
+    }
+  },
+  "required": [
+    "chemical_id",
+    "label",
+    "component_scenarios"
+  ],
+  "title": "BuildAggregateExposureScenarioInput",
+  "type": "object"
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "releaseMetadataReport.v1",
+  "releaseVersion": "0.1.0",
+  "packageName": "exposure-scenario-mcp",
+  "packageVersion": "0.1.0",
+  "serverName": "exposure_scenario_mcp",
+  "serverVersion": "0.1.0",
+  "defaultsVersion": "2026.03.24.v3",
+  "readinessStatus": "ready_with_known_limitations",
+  "securityReviewStatus": "acceptable_with_warnings",
+  "benchmarkCaseCount": 2,
+  "benchmarkCaseIds": [
+    "dermal_hand_cream_screening",
+    "inhalation_trigger_spray_screening"
+  ],
+  "contractSchemaCount": 36,
+  "contractExampleCount": 19,
+  "distributionArtifacts": [
+    {
+      "kind": "wheel",
+      "filename": "exposure_scenario_mcp-0.1.0-py3-none-any.whl",
+      "relativePath": "dist/exposure_scenario_mcp-0.1.0-py3-none-any.whl",
+      "present": true,
+      "sha256": "4f0ca3f86c9eb4ec87d35dedc753b9d02c5cbf9496c559baad5d6d1457d19f5d",
+      "sizeBytes": 55343
+    },
+    {
+      "kind": "sdist",
+      "filename": "exposure_scenario_mcp-0.1.0.tar.gz",
+      "relativePath": "dist/exposure_scenario_mcp-0.1.0.tar.gz",
+      "present": true,
+      "sha256": "a0edca1d59f166aa192064bf487610916b1fccf3ffe4fd873fe5c480e20dd50b",
+      "sizeBytes": 217213
+    }
+  ],
+  "publishedDocs": [
+    "docs://release-notes",
+    "docs://conformance-report",
+    "docs://release-readiness",
+    "docs://security-provenance-review",
+    "docs/releases/v0.1.0.md"
+  ],
+  "validationCommands": [
+    "uv run ruff check .",
+    "uv run pytest",
+    "uv build",
+    "uv run generate-exposure-contracts",
+    "uv run check-exposure-release-artifacts"
+  ],
+  "migrationNotes": [
+    "This is the first public v0.1.0 release, so no prior stable migration path applies.",
+    "Pre-release PBPK wrappers that nested requests under `toolCall.arguments.bundle` are superseded by the published v0.1.0 top-level request payload."
+  ],
+  "knownLimitations": [
+    "This is a deterministic-first v0.1.0 server; no probabilistic population engine is shipped.",
+    "The module does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.",
+    "Remote `streamable-http` deployment requires external authentication and origin controls.",
+    "Some screening factors still resolve from heuristic defaults packs and should be treated as flagged screening-level assumptions until curated replacements are added.",
+    "PBPK request alignment should be re-validated whenever PBPK MCP changes its published contract version or request model."
+  ]
+}

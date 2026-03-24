@@ -1,0 +1,43 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "toxclawReportClaim.v1",
+      "default": "toxclawReportClaim.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "claimId": {
+      "title": "Claimid",
+      "type": "string"
+    },
+    "confidence": {
+      "enum": [
+        "heuristic",
+        "provisional",
+        "supported",
+        "unverified"
+      ],
+      "title": "Confidence",
+      "type": "string"
+    },
+    "evidenceIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidenceids",
+      "type": "array"
+    },
+    "text": {
+      "title": "Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claimId",
+    "confidence",
+    "text"
+  ],
+  "title": "ToxClawReportClaim",
+  "type": "object"
+}

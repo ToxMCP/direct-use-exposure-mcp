@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "pbpkExternalImportToolCall.v1",
+  "toolName": "ingest_external_pbpk_bundle",
+  "arguments": {
+    "sourcePlatform": "exposure-scenario-mcp",
+    "sourceVersion": "0.1.0",
+    "modelName": "exp-330cdd3f7591-upstream-context",
+    "modelType": "exposure-scenario-context",
+    "executionDate": "2026-03-24T22:34:30.371366+00:00",
+    "runId": "exp-330cdd3f7591-external-context",
+    "operator": null,
+    "sponsor": null,
+    "rawArtifacts": [],
+    "assessmentContext": {
+      "contextOfUse": "screening-brief",
+      "scientificPurpose": "external exposure scenario translation for PBPK",
+      "decisionContext": "upstream external exposure context only",
+      "decisionOwner": "external-orchestrator",
+      "handoffTarget": "pbpk-mcp",
+      "requestedSubject": "Example Solvent A",
+      "sourceScenarioId": "exp-330cdd3f7591",
+      "domain": {
+        "species": "human",
+        "route": "dermal",
+        "lifeStage": "adult",
+        "population": "adult",
+        "compound": "Example Solvent A",
+        "region": "EU"
+      },
+      "doseScenario": {
+        "scenarioId": "exp-330cdd3f7591",
+        "externalDose": {
+          "metric": "normalized_external_dose",
+          "value": 0.95625,
+          "unit": "mg/kg-day"
+        },
+        "eventsPerDay": 3.0,
+        "eventDurationHours": null,
+        "timingPattern": "3 events/day",
+        "productCategory": "personal_care",
+        "applicationMethod": "hand_application",
+        "retentionType": "leave_on",
+        "bodyWeightKg": 80.0
+      },
+      "targetOutput": "normalized_external_dose"
+    },
+    "internalExposure": {},
+    "qualification": {
+      "summary": "Imported upstream external-exposure context only; PBPK execution and qualification outputs are expected downstream from PBPK MCP.",
+      "evidenceLevel": "upstream-context-only",
+      "verificationStatus": "awaiting-pbpk-execution",
+      "performanceEvidenceBoundary": "pbpk-results-not-yet-produced",
+      "contextOfUse": "screening-brief",
+      "scientificPurpose": "external exposure scenario translation for PBPK",
+      "missingEvidenceCount": 0
+    },
+    "uncertainty": {
+      "status": "declared",
+      "source": "exposure-scenario-mcp",
+      "issueCount": 6,
+      "hasResidualUncertainty": true,
+      "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
+      "sources": [
+        "Benchmark population defaults mapped to EPA exposure-factor source families",
+        "Exposure Scenario MCP heuristic screening defaults",
+        "Exposure Scenario MCP runtime"
+      ],
+      "residualUncertainty": "upstream-exposure-scenario-assumptions",
+      "bundleMetadata": {
+        "sourceScenarioId": "exp-330cdd3f7591"
+      }
+    },
+    "uncertaintyRegister": {
+      "source": "Exposure Scenario MCP",
+      "scope": "upstream-external-exposure-context",
+      "summary": "Exposure-scenario limitations remain upstream and must be synthesized with PBPK and NAM uncertainty downstream."
+    },
+    "pod": {},
+    "trueDoseAdjustment": {
+      "applied": false,
+      "summary": "Not applicable at the upstream external-exposure stage."
+    },
+    "comparisonMetric": "cmax"
+  }
+}

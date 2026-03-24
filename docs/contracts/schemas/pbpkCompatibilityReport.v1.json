@@ -1,0 +1,137 @@
+{
+  "$defs": {
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "pbpkCompatibilityReport.v1",
+      "default": "pbpkCompatibilityReport.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_scenario_id": {
+      "description": "Source scenario identifier.",
+      "title": "Source Scenario Id",
+      "type": "string"
+    },
+    "compatible": {
+      "description": "Whether the object is PBPK-compatible.",
+      "title": "Compatible",
+      "type": "boolean"
+    },
+    "target_tool": {
+      "const": "ingest_external_pbpk_bundle",
+      "default": "ingest_external_pbpk_bundle",
+      "description": "PBPK MCP tool evaluated for downstream readiness.",
+      "title": "Target Tool",
+      "type": "string"
+    },
+    "checked_route": {
+      "$ref": "#/$defs/Route",
+      "description": "Route checked for compatibility."
+    },
+    "checked_dose_unit": {
+      "description": "Dose unit checked for compatibility.",
+      "title": "Checked Dose Unit",
+      "type": "string"
+    },
+    "ready_for_external_pbpk_import": {
+      "description": "Whether the scenario alone contains enough data to populate the PBPK external-import path without additional PBPK execution outputs.",
+      "title": "Ready For External Pbpk Import",
+      "type": "boolean"
+    },
+    "supported_pbpk_objects": {
+      "description": "Published PBPK object families this scenario can prefill or support.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Supported Pbpk Objects",
+      "type": "array"
+    },
+    "missing_external_bundle_fields": {
+      "description": "PBPK external-import fields still missing for a richer downstream handoff.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing External Bundle Fields",
+      "type": "array"
+    },
+    "checked_fields": {
+      "description": "Fields explicitly checked during compatibility validation.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Checked Fields",
+      "type": "array"
+    },
+    "issues": {
+      "description": "Compatibility issues or warnings.",
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "recommended_next_steps": {
+      "description": "Concrete actions to strengthen the PBPK handoff.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Recommended Next Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_scenario_id",
+    "compatible",
+    "checked_route",
+    "checked_dose_unit",
+    "ready_for_external_pbpk_import"
+  ],
+  "title": "PbpkCompatibilityReport",
+  "type": "object"
+}

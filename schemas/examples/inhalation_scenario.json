@@ -1,0 +1,385 @@
+{
+  "schema_version": "exposureScenario.v1",
+  "scenario_id": "inh-f2a804f91a9a",
+  "chemical_id": "DTXSID7020182",
+  "chemical_name": "Example Solvent A",
+  "route": "inhalation",
+  "scenario_class": "inhalation",
+  "external_dose": {
+    "metric": "normalized_external_dose",
+    "value": 0.02007912,
+    "unit": "mg/kg-day"
+  },
+  "product_use_profile": {
+    "schema_version": "productUseProfile.v1",
+    "product_name": "Example Trigger Spray",
+    "product_category": "household_cleaner",
+    "physical_form": "spray",
+    "application_method": "trigger_spray",
+    "retention_type": "surface_contact",
+    "concentration_fraction": 0.05,
+    "use_amount_per_event": 12.0,
+    "use_amount_unit": "mL",
+    "use_events_per_day": 1.0,
+    "density_g_per_ml": null,
+    "transfer_efficiency": null,
+    "retention_factor": null,
+    "ingestion_fraction": null,
+    "aerosolized_fraction": null,
+    "room_volume_m3": 25.0,
+    "air_exchange_rate_per_hour": null,
+    "exposure_duration_hours": 0.5
+  },
+  "population_profile": {
+    "schema_version": "populationProfile.v1",
+    "population_group": "adult",
+    "body_weight_kg": 68.0,
+    "inhalation_rate_m3_per_hour": 0.9,
+    "exposed_surface_area_cm2": null,
+    "demographic_tags": [],
+    "region": "EU"
+  },
+  "route_metrics": {
+    "chemical_mass_mg_per_event": 600.0,
+    "released_mass_mg_per_event": 120.0,
+    "average_air_concentration_mg_per_m3": 3.03417868,
+    "inhaled_mass_mg_per_day": 1.36538041
+  },
+  "assumptions": [
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "use_amount_per_event",
+      "value": 12.0,
+      "unit": "mL",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Product amount per event was supplied in milliliters and converted with density."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "density_g_per_ml",
+      "value": 1.0,
+      "unit": "g/mL",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "heuristic_screening_defaults_v1",
+        "title": "Exposure Scenario MCP heuristic screening defaults",
+        "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+        "version": "2026.03.24.v3",
+        "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category and physical form when available."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "product_mass_g_per_event",
+      "value": 12.0,
+      "unit": "g",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Converted volume-based use amount into mass using density."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "concentration_fraction",
+      "value": 0.05,
+      "unit": "fraction",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Chemical fraction in the product was supplied explicitly."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "use_events_per_day",
+      "value": 1.0,
+      "unit": "events/day",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Use frequency was supplied explicitly."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "chemical_mass_mg_per_event",
+      "value": 600.0,
+      "unit": "mg/event",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Product mass per event multiplied by concentration fraction."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "aerosolized_fraction",
+      "value": 0.2,
+      "unit": "fraction",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "heuristic_screening_defaults_v1",
+        "title": "Exposure Scenario MCP heuristic screening defaults",
+        "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+        "version": "2026.03.24.v3",
+        "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Aerosolized fraction defaulted from application_method='trigger_spray' and product_category='household_cleaner'."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "room_volume_m3",
+      "value": 25.0,
+      "unit": "m3",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Room volume was supplied explicitly."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "air_exchange_rate_per_hour",
+      "value": 2.0,
+      "unit": "1/h",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "echa_consumer_inhalation_room_defaults",
+        "title": "ECHA consumer inhalation room-default benchmark",
+        "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
+        "version": "public ECHA dossier entry accessed 2026-03-24",
+        "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Air exchange rate defaulted from the shared inhalation defaults pack."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "exposure_duration_hours",
+      "value": 0.5,
+      "unit": "h",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "echa_consumer_inhalation_room_defaults",
+        "title": "ECHA consumer inhalation room-default benchmark",
+        "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
+        "version": "public ECHA dossier entry accessed 2026-03-24",
+        "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Exposure duration defaulted from the shared inhalation defaults pack."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "inhalation_rate_m3_per_hour",
+      "value": 0.9,
+      "unit": "m3/h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Inhalation rate was supplied explicitly."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "body_weight_kg",
+      "value": 68.0,
+      "unit": "kg",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Body weight was supplied explicitly for dose normalization."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "released_mass_mg_per_event",
+      "value": 120.0,
+      "unit": "mg/event",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Released mass = chemical mass per event x aerosolized fraction."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "average_air_concentration_mg_per_m3",
+      "value": 3.034178682377077,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Average air concentration derived from a well-mixed room model with first-order air exchange removal."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "inhaled_mass_mg_per_day",
+      "value": 1.3653804070696847,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Inhaled mass = average concentration x inhalation rate x event duration x events/day."
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "normalized_external_dose_mg_per_kg_day",
+      "value": 0.020079123633377716,
+      "unit": "mg/kg-day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Normalized external dose = inhaled mass per day / body weight."
+    }
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "inhalation.room_well_mixed.v1",
+    "plugin_id": "inhalation_screening_plugin",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.03.24.v3",
+    "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+    "generated_at": "2026-03-24T22:34:30.371471+00:00",
+    "notes": [
+      "Deterministic-first v0.1 engine.",
+      "All defaults are surfaced through exposureAssumptionRecord entries."
+    ]
+  },
+  "limitations": [],
+  "quality_flags": [
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'density_g_per_ml'."
+    },
+    {
+      "code": "heuristic_default_source",
+      "severity": "warning",
+      "message": "Default value for 'density_g_per_ml' comes from a heuristic screening source rather than a curated factor pack."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'aerosolized_fraction'."
+    },
+    {
+      "code": "heuristic_default_source",
+      "severity": "warning",
+      "message": "Default value for 'aerosolized_fraction' comes from a heuristic screening source rather than a curated factor pack."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'air_exchange_rate_per_hour'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'exposure_duration_hours'."
+    }
+  ],
+  "fit_for_purpose": {
+    "label": "inhalation_screening",
+    "suitable_for": [
+      "screening prioritization",
+      "PBPK scenario preparation",
+      "auditable scenario comparison"
+    ],
+    "not_suitable_for": [
+      "internal exposure estimation",
+      "final risk characterization",
+      "population-scale probabilistic inference"
+    ]
+  },
+  "interpretation_notes": [
+    "Deterministic inhalation screening scenario using a well-mixed room assumption.",
+    "Air exchange acts as a first-order removal term rather than a full CFD treatment."
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "defaults_version": "2026.03.24.v3",
+  "sources": [
+    {
+      "source_id": "benchmark_population_defaults_v1",
+      "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+      "locator": "docs://defaults-evidence-map#population-defaults",
+      "version": "2026.03.24.v3"
+    },
+    {
+      "source_id": "heuristic_screening_defaults_v1",
+      "title": "Exposure Scenario MCP heuristic screening defaults",
+      "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+      "version": "2026.03.24.v3"
+    },
+    {
+      "source_id": "epa_exposure_factors_handbook_2011",
+      "title": "US EPA Exposure Factors Handbook: 2011 Edition",
+      "locator": "https://www.epa.gov/expobox/exposure-factors-handbook-2011-edition",
+      "version": "2011 edition"
+    },
+    {
+      "source_id": "echa_consumer_inhalation_room_defaults",
+      "title": "ECHA consumer inhalation room-default benchmark",
+      "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
+      "version": "public ECHA dossier entry accessed 2026-03-24"
+    }
+  ],
+  "conversion_defaults": {
+    "global": {
+      "density_g_per_ml": 1.0,
+      "source_id": "heuristic_screening_defaults_v1"
+    },
+    "product_category_overrides": {
+      "personal_care": {
+        "density_g_per_ml": 0.98,
+        "source_id": "heuristic_screening_defaults_v1"
+      }
+    },
+    "physical_form_overrides": {
+      "cream": {
+        "density_g_per_ml": 0.95,
+        "source_id": "heuristic_screening_defaults_v1"
+      },
+      "gel": {
+        "density_g_per_ml": 1.05,
+        "source_id": "heuristic_screening_defaults_v1"
+      }
+    }
+  },
+  "population_defaults": {
+    "adult": {
+      "body_weight_kg": 80.0,
+      "inhalation_rate_m3_per_hour": 0.83,
+      "exposed_surface_area_cm2": 5700.0,
+      "source_id": "benchmark_population_defaults_v1"
+    },
+    "child": {
+      "body_weight_kg": 15.0,
+      "inhalation_rate_m3_per_hour": 0.5,
+      "exposed_surface_area_cm2": 2800.0,
+      "source_id": "benchmark_population_defaults_v1"
+    },
+    "infant": {
+      "body_weight_kg": 7.5,
+      "inhalation_rate_m3_per_hour": 0.25,
+      "exposed_surface_area_cm2": 1800.0,
+      "source_id": "benchmark_population_defaults_v1"
+    }
+  },
+  "retention_factor_defaults": {
+    "leave_on": {
+      "value": 1.0,
+      "source_id": "heuristic_screening_defaults_v1"
+    },
+    "rinse_off": {
+      "value": 0.01,
+      "source_id": "heuristic_screening_defaults_v1"
+    },
+    "surface_contact": {
+      "value": 0.2,
+      "source_id": "heuristic_screening_defaults_v1"
+    }
+  },
+  "transfer_efficiency_defaults": {
+    "global": {
+      "hand_application": {
+        "value": 0.85,
+        "source_id": "heuristic_screening_defaults_v1"
+      },
+      "wipe": {
+        "value": 0.75,
+        "source_id": "heuristic_screening_defaults_v1"
+      },
+      "pour": {
+        "value": 0.9,
+        "source_id": "heuristic_screening_defaults_v1"
+      },
+      "direct_oral": {
+        "value": 1.0,
+        "source_id": "heuristic_screening_defaults_v1"
+      },
+      "trigger_spray": {
+        "value": 1.0,
+        "source_id": "heuristic_screening_defaults_v1"
+      }
+    },
+    "product_category_overrides": {
+      "household_cleaner": {
+        "wipe": {
+          "value": 0.65,
+          "source_id": "heuristic_screening_defaults_v1"
+        }
+      }
+    }
+  },
+  "ingestion_fraction_defaults": {
+    "direct_oral": {
+      "value": 1.0,
+      "source_id": "heuristic_screening_defaults_v1"
+    },
+    "incidental_oral": {
+      "value": 0.1,
+      "source_id": "heuristic_screening_defaults_v1"
+    }
+  },
+  "aerosolized_fraction_defaults": {
+    "global": {
+      "trigger_spray": {
+        "value": 0.2,
+        "source_id": "heuristic_screening_defaults_v1"
+      },
+      "pump_spray": {
+        "value": 0.25,
+        "source_id": "heuristic_screening_defaults_v1"
+      },
+      "aerosol_spray": {
+        "value": 0.35,
+        "source_id": "heuristic_screening_defaults_v1"
+      }
+    },
+    "product_category_overrides": {
+      "household_cleaner": {
+        "pump_spray": {
+          "value": 0.3,
+          "source_id": "heuristic_screening_defaults_v1"
+        }
+      }
+    }
+  },
+  "room_defaults": {
+    "global": {
+      "room_volume_m3": 20.0,
+      "air_exchange_rate_per_hour": 0.45,
+      "exposure_duration_hours": 0.5,
+      "source_id": "heuristic_screening_defaults_v1"
+    },
+    "regional_overrides": {
+      "eu": {
+        "room_volume_m3": 20.0,
+        "air_exchange_rate_per_hour": 2.0,
+        "exposure_duration_hours": 0.5,
+        "source_id": "echa_consumer_inhalation_room_defaults"
+      }
+    }
+  }
+}

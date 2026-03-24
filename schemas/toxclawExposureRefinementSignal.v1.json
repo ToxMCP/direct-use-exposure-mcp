@@ -1,0 +1,151 @@
+{
+  "$defs": {
+    "ExposureWorkflowHook": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "exposureWorkflowHook.v1",
+          "default": "exposureWorkflowHook.v1",
+          "title": "Schemaversion",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "scenario_comparison",
+            "route_recalculation",
+            "aggregate_variant",
+            "pbpk_export"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "toolName": {
+          "enum": [
+            "exposure_compare_exposure_scenarios",
+            "exposure_build_screening_exposure_scenario",
+            "exposure_build_inhalation_screening_scenario",
+            "exposure_build_aggregate_exposure_scenario",
+            "exposure_export_pbpk_external_import_bundle"
+          ],
+          "title": "Toolname",
+          "type": "string"
+        },
+        "whenToUse": {
+          "title": "Whentouse",
+          "type": "string"
+        },
+        "requiredInputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Requiredinputs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "action",
+        "toolName",
+        "whenToUse"
+      ],
+      "title": "ExposureWorkflowHook",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "toxclawExposureRefinementSignal.v1",
+      "default": "toxclawExposureRefinementSignal.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "recommendation": {
+      "const": "refine_exposure",
+      "default": "refine_exposure",
+      "title": "Recommendation",
+      "type": "string"
+    },
+    "refinementRecommendation": {
+      "default": "Refine exposure characterization before relying on the screening recommendation.",
+      "title": "Refinementrecommendation",
+      "type": "string"
+    },
+    "loeCandidateKeys": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Loecandidatekeys",
+      "type": "array"
+    },
+    "workflowAction": {
+      "enum": [
+        "scenario_comparison",
+        "route_recalculation",
+        "aggregate_variant"
+      ],
+      "title": "Workflowaction",
+      "type": "string"
+    },
+    "routeChanged": {
+      "title": "Routechanged",
+      "type": "boolean"
+    },
+    "changedAssumptionNames": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Changedassumptionnames",
+      "type": "array"
+    },
+    "changedAssumptionCount": {
+      "title": "Changedassumptioncount",
+      "type": "integer"
+    },
+    "doseDeltaDirection": {
+      "enum": [
+        "increase",
+        "decrease",
+        "no_change"
+      ],
+      "title": "Dosedeltadirection",
+      "type": "string"
+    },
+    "percentDelta": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Percentdelta"
+    },
+    "materialChange": {
+      "title": "Materialchange",
+      "type": "boolean"
+    },
+    "boundaryNote": {
+      "title": "Boundarynote",
+      "type": "string"
+    },
+    "workflowHooks": {
+      "items": {
+        "$ref": "#/$defs/ExposureWorkflowHook"
+      },
+      "title": "Workflowhooks",
+      "type": "array"
+    }
+  },
+  "required": [
+    "workflowAction",
+    "routeChanged",
+    "changedAssumptionCount",
+    "doseDeltaDirection",
+    "materialChange",
+    "boundaryNote"
+  ],
+  "title": "ToxClawExposureRefinementSignal",
+  "type": "object"
+}

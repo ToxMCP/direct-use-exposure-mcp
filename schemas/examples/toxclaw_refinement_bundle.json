@@ -1,0 +1,775 @@
+{
+  "schemaVersion": "toxclawExposureRefinementBundle.v1",
+  "caseId": "case-example-001",
+  "reportId": "report-example-001",
+  "contextOfUse": "screening-refinement",
+  "sourceModule": "exposure-scenario-mcp",
+  "workflowAction": "scenario_comparison",
+  "summary": "Exposure scenario comparison decreased external dose by 38.82% relative to baseline.",
+  "baselineScenario": {
+    "schema_version": "exposureScenario.v1",
+    "scenario_id": "exp-330cdd3f7591",
+    "chemical_id": "DTXSID7020182",
+    "chemical_name": "Example Solvent A",
+    "route": "dermal",
+    "scenario_class": "screening",
+    "external_dose": {
+      "metric": "normalized_external_dose",
+      "value": 0.95625,
+      "unit": "mg/kg-day"
+    },
+    "product_use_profile": {
+      "schema_version": "productUseProfile.v1",
+      "product_name": "Example Hand Cream",
+      "product_category": "personal_care",
+      "physical_form": "cream",
+      "application_method": "hand_application",
+      "retention_type": "leave_on",
+      "concentration_fraction": 0.02,
+      "use_amount_per_event": 1.5,
+      "use_amount_unit": "g",
+      "use_events_per_day": 3.0,
+      "density_g_per_ml": null,
+      "transfer_efficiency": null,
+      "retention_factor": null,
+      "ingestion_fraction": null,
+      "aerosolized_fraction": null,
+      "room_volume_m3": null,
+      "air_exchange_rate_per_hour": null,
+      "exposure_duration_hours": null
+    },
+    "population_profile": {
+      "schema_version": "populationProfile.v1",
+      "population_group": "adult",
+      "body_weight_kg": 80.0,
+      "inhalation_rate_m3_per_hour": null,
+      "exposed_surface_area_cm2": null,
+      "demographic_tags": [
+        "consumer",
+        "general_population"
+      ],
+      "region": "EU"
+    },
+    "route_metrics": {
+      "chemical_mass_mg_per_event": 30.0,
+      "external_mass_mg_per_day": 76.5,
+      "surface_loading_mg_per_cm2_day": 0.01342105
+    },
+    "assumptions": [
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "use_amount_per_event",
+        "value": 1.5,
+        "unit": "g",
+        "source_kind": "user_input",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Product amount per event was supplied directly in grams."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "concentration_fraction",
+        "value": 0.02,
+        "unit": "fraction",
+        "source_kind": "user_input",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Chemical fraction in the product was supplied explicitly."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "use_events_per_day",
+        "value": 3.0,
+        "unit": "events/day",
+        "source_kind": "user_input",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Use frequency was supplied explicitly."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "chemical_mass_mg_per_event",
+        "value": 30.0,
+        "unit": "mg/event",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Product mass per event multiplied by concentration fraction."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "body_weight_kg",
+        "value": 80.0,
+        "unit": "kg",
+        "source_kind": "default_registry",
+        "source": {
+          "source_id": "benchmark_population_defaults_v1",
+          "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+          "locator": "docs://defaults-evidence-map#population-defaults",
+          "version": "2026.03.24.v3",
+          "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+        },
+        "confidence": "registry_default",
+        "default_applied": true,
+        "rationale": "Resolved from population defaults for 'adult'."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "retention_factor",
+        "value": 1.0,
+        "unit": "fraction",
+        "source_kind": "default_registry",
+        "source": {
+          "source_id": "heuristic_screening_defaults_v1",
+          "title": "Exposure Scenario MCP heuristic screening defaults",
+          "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+          "version": "2026.03.24.v3",
+          "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+        },
+        "confidence": "registry_default",
+        "default_applied": true,
+        "rationale": "Retention factor defaulted from retention_type='leave_on'."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "transfer_efficiency",
+        "value": 0.85,
+        "unit": "fraction",
+        "source_kind": "default_registry",
+        "source": {
+          "source_id": "heuristic_screening_defaults_v1",
+          "title": "Exposure Scenario MCP heuristic screening defaults",
+          "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+          "version": "2026.03.24.v3",
+          "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+        },
+        "confidence": "registry_default",
+        "default_applied": true,
+        "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "external_mass_mg_per_day",
+        "value": 76.5,
+        "unit": "mg/day",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "exposed_surface_area_cm2",
+        "value": 5700.0,
+        "unit": "cm2",
+        "source_kind": "default_registry",
+        "source": {
+          "source_id": "benchmark_population_defaults_v1",
+          "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+          "locator": "docs://defaults-evidence-map#population-defaults",
+          "version": "2026.03.24.v3",
+          "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+        },
+        "confidence": "registry_default",
+        "default_applied": true,
+        "rationale": "Resolved from population defaults for 'adult'."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "normalized_external_dose_mg_per_kg_day",
+        "value": 0.95625,
+        "unit": "mg/kg-day",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Normalized external dose = external mass per day / body weight."
+      }
+    ],
+    "provenance": {
+      "schema_version": "provenanceBundle.v1",
+      "algorithm_id": "screening.external_dose.v1",
+      "plugin_id": "screening_scenario_plugin",
+      "plugin_version": "0.1.0",
+      "defaults_version": "2026.03.24.v3",
+      "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+      "generated_at": "2026-03-24T22:34:30.371366+00:00",
+      "notes": [
+        "Deterministic-first v0.1 engine.",
+        "All defaults are surfaced through exposureAssumptionRecord entries."
+      ]
+    },
+    "limitations": [],
+    "quality_flags": [
+      {
+        "code": "default_applied",
+        "severity": "info",
+        "message": "Default value applied for 'body_weight_kg'."
+      },
+      {
+        "code": "default_applied",
+        "severity": "info",
+        "message": "Default value applied for 'retention_factor'."
+      },
+      {
+        "code": "heuristic_default_source",
+        "severity": "warning",
+        "message": "Default value for 'retention_factor' comes from a heuristic screening source rather than a curated factor pack."
+      },
+      {
+        "code": "default_applied",
+        "severity": "info",
+        "message": "Default value applied for 'transfer_efficiency'."
+      },
+      {
+        "code": "heuristic_default_source",
+        "severity": "warning",
+        "message": "Default value for 'transfer_efficiency' comes from a heuristic screening source rather than a curated factor pack."
+      },
+      {
+        "code": "default_applied",
+        "severity": "info",
+        "message": "Default value applied for 'exposed_surface_area_cm2'."
+      }
+    ],
+    "fit_for_purpose": {
+      "label": "deterministic_screening",
+      "suitable_for": [
+        "screening prioritization",
+        "PBPK scenario preparation",
+        "auditable scenario comparison"
+      ],
+      "not_suitable_for": [
+        "internal exposure estimation",
+        "final risk characterization",
+        "population-scale probabilistic inference"
+      ]
+    },
+    "interpretation_notes": [
+      "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
+    ]
+  },
+  "comparisonScenario": {
+    "schema_version": "exposureScenario.v1",
+    "scenario_id": "exp-96ae0ae64784",
+    "chemical_id": "DTXSID7020182",
+    "chemical_name": "Example Solvent A",
+    "route": "dermal",
+    "scenario_class": "screening",
+    "external_dose": {
+      "metric": "normalized_external_dose",
+      "value": 0.585,
+      "unit": "mg/kg-day"
+    },
+    "product_use_profile": {
+      "schema_version": "productUseProfile.v1",
+      "product_name": "Example Hand Cream",
+      "product_category": "personal_care",
+      "physical_form": "cream",
+      "application_method": "hand_application",
+      "retention_type": "leave_on",
+      "concentration_fraction": 0.02,
+      "use_amount_per_event": 1.5,
+      "use_amount_unit": "g",
+      "use_events_per_day": 3.0,
+      "density_g_per_ml": null,
+      "transfer_efficiency": 0.8,
+      "retention_factor": 0.65,
+      "ingestion_fraction": null,
+      "aerosolized_fraction": null,
+      "room_volume_m3": null,
+      "air_exchange_rate_per_hour": null,
+      "exposure_duration_hours": null
+    },
+    "population_profile": {
+      "schema_version": "populationProfile.v1",
+      "population_group": "adult",
+      "body_weight_kg": 80.0,
+      "inhalation_rate_m3_per_hour": null,
+      "exposed_surface_area_cm2": null,
+      "demographic_tags": [
+        "consumer",
+        "general_population"
+      ],
+      "region": "EU"
+    },
+    "route_metrics": {
+      "chemical_mass_mg_per_event": 30.0,
+      "external_mass_mg_per_day": 46.8,
+      "surface_loading_mg_per_cm2_day": 0.00821053
+    },
+    "assumptions": [
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "use_amount_per_event",
+        "value": 1.5,
+        "unit": "g",
+        "source_kind": "user_input",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Product amount per event was supplied directly in grams."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "concentration_fraction",
+        "value": 0.02,
+        "unit": "fraction",
+        "source_kind": "user_input",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Chemical fraction in the product was supplied explicitly."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "use_events_per_day",
+        "value": 3.0,
+        "unit": "events/day",
+        "source_kind": "user_input",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Use frequency was supplied explicitly."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "chemical_mass_mg_per_event",
+        "value": 30.0,
+        "unit": "mg/event",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Product mass per event multiplied by concentration fraction."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "body_weight_kg",
+        "value": 80.0,
+        "unit": "kg",
+        "source_kind": "default_registry",
+        "source": {
+          "source_id": "benchmark_population_defaults_v1",
+          "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+          "locator": "docs://defaults-evidence-map#population-defaults",
+          "version": "2026.03.24.v3",
+          "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+        },
+        "confidence": "registry_default",
+        "default_applied": true,
+        "rationale": "Resolved from population defaults for 'adult'."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "retention_factor",
+        "value": 0.65,
+        "unit": "fraction",
+        "source_kind": "user_input",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Dermal retention factor was supplied explicitly."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "transfer_efficiency",
+        "value": 0.8,
+        "unit": "fraction",
+        "source_kind": "user_input",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Transfer efficiency was supplied explicitly."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "external_mass_mg_per_day",
+        "value": 46.800000000000004,
+        "unit": "mg/day",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "exposed_surface_area_cm2",
+        "value": 5700.0,
+        "unit": "cm2",
+        "source_kind": "default_registry",
+        "source": {
+          "source_id": "benchmark_population_defaults_v1",
+          "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+          "locator": "docs://defaults-evidence-map#population-defaults",
+          "version": "2026.03.24.v3",
+          "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+        },
+        "confidence": "registry_default",
+        "default_applied": true,
+        "rationale": "Resolved from population defaults for 'adult'."
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "normalized_external_dose_mg_per_kg_day",
+        "value": 0.5850000000000001,
+        "unit": "mg/kg-day",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Normalized external dose = external mass per day / body weight."
+      }
+    ],
+    "provenance": {
+      "schema_version": "provenanceBundle.v1",
+      "algorithm_id": "screening.external_dose.v1",
+      "plugin_id": "screening_scenario_plugin",
+      "plugin_version": "0.1.0",
+      "defaults_version": "2026.03.24.v3",
+      "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+      "generated_at": "2026-03-24T22:34:30.371520+00:00",
+      "notes": [
+        "Deterministic-first v0.1 engine.",
+        "All defaults are surfaced through exposureAssumptionRecord entries."
+      ]
+    },
+    "limitations": [],
+    "quality_flags": [
+      {
+        "code": "default_applied",
+        "severity": "info",
+        "message": "Default value applied for 'body_weight_kg'."
+      },
+      {
+        "code": "default_applied",
+        "severity": "info",
+        "message": "Default value applied for 'exposed_surface_area_cm2'."
+      }
+    ],
+    "fit_for_purpose": {
+      "label": "deterministic_screening",
+      "suitable_for": [
+        "screening prioritization",
+        "PBPK scenario preparation",
+        "auditable scenario comparison"
+      ],
+      "not_suitable_for": [
+        "internal exposure estimation",
+        "final risk characterization",
+        "population-scale probabilistic inference"
+      ]
+    },
+    "interpretation_notes": [
+      "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
+    ]
+  },
+  "comparisonRecord": {
+    "schema_version": "scenarioComparisonRecord.v1",
+    "baseline_scenario_id": "exp-330cdd3f7591",
+    "comparison_scenario_id": "exp-96ae0ae64784",
+    "chemical_id": "DTXSID7020182",
+    "baseline_dose": {
+      "metric": "normalized_external_dose",
+      "value": 0.95625,
+      "unit": "mg/kg-day"
+    },
+    "comparison_dose": {
+      "metric": "normalized_external_dose",
+      "value": 0.585,
+      "unit": "mg/kg-day"
+    },
+    "absolute_delta": -0.37125,
+    "percent_delta": -38.8235,
+    "changed_assumptions": [
+      {
+        "name": "external_mass_mg_per_day",
+        "baseline_value": 76.5,
+        "comparison_value": 46.800000000000004,
+        "unit": "mg/day"
+      },
+      {
+        "name": "normalized_external_dose_mg_per_kg_day",
+        "baseline_value": 0.95625,
+        "comparison_value": 0.5850000000000001,
+        "unit": "mg/kg-day"
+      },
+      {
+        "name": "retention_factor",
+        "baseline_value": 1.0,
+        "comparison_value": 0.65,
+        "unit": "fraction"
+      },
+      {
+        "name": "transfer_efficiency",
+        "baseline_value": 0.85,
+        "comparison_value": 0.8,
+        "unit": "fraction"
+      }
+    ],
+    "interpretation_notes": [
+      "Comparison dose decreased by 38.82% relative to baseline."
+    ],
+    "provenance": {
+      "schema_version": "provenanceBundle.v1",
+      "algorithm_id": "scenario.compare.v1",
+      "plugin_id": "scenario_comparison_service",
+      "plugin_version": "0.1.0",
+      "defaults_version": "2026.03.24.v3",
+      "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+      "generated_at": "2026-03-24T22:34:30.371934+00:00",
+      "notes": [
+        "Deterministic-first v0.1 engine.",
+        "All defaults are surfaced through exposureAssumptionRecord entries."
+      ]
+    }
+  },
+  "evidenceRecord": {
+    "schemaVersion": "toxclawEvidenceRecord.v1",
+    "caseId": "case-example-001",
+    "contentHash": "f4f93e08a79a94d6e1989ab2512b125f196ab476fe061919f67dbbf81bc8bd9d",
+    "dataClassification": "internal",
+    "evidenceId": "evidence-b506805209064c68",
+    "qualityFlag": null,
+    "rawPointer": null,
+    "redactionStatus": null,
+    "retrievedAt": "2026-03-24T22:34:30.371934+00:00",
+    "runId": null,
+    "source": "exposure-scenario-mcp",
+    "sourceRef": "exp-330cdd3f7591::exp-96ae0ae64784",
+    "summary": "Exposure scenario comparison decreased external dose by 38.82% relative to baseline.",
+    "tags": [
+      "dermal",
+      "exposure-refinement",
+      "personal_care",
+      "refinement",
+      "scenario-comparison",
+      "scenario_comparison"
+    ],
+    "trustLabel": "module-output",
+    "type": "exposure-refinement"
+  },
+  "reportEvidenceReference": {
+    "schemaVersion": "toxclawReportEvidenceReference.v1",
+    "contentHash": "f4f93e08a79a94d6e1989ab2512b125f196ab476fe061919f67dbbf81bc8bd9d",
+    "evidenceId": "evidence-b506805209064c68",
+    "qualityFlag": null,
+    "rawPointer": null,
+    "redactionStatus": null,
+    "retrievedAt": "2026-03-24T22:34:30.371934+00:00",
+    "source": "exposure-scenario-mcp",
+    "sourceRef": "exp-330cdd3f7591::exp-96ae0ae64784",
+    "summary": "Exposure scenario comparison decreased external dose by 38.82% relative to baseline.",
+    "tags": [
+      "dermal",
+      "exposure-refinement",
+      "personal_care",
+      "refinement",
+      "scenario-comparison",
+      "scenario_comparison"
+    ],
+    "trustLabel": "module-output",
+    "type": "exposure-refinement"
+  },
+  "reportSection": {
+    "schemaVersion": "toxclawReportSection.v1",
+    "body": "- Baseline scenario exp-330cdd3f7591 estimates 0.95625 mg/kg-day; comparison scenario exp-96ae0ae64784 estimates 0.585 mg/kg-day.\n- Comparison dose decreased by 38.82% relative to baseline.\n- Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency.\n- This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation.",
+    "claims": [
+      {
+        "schemaVersion": "toxclawReportClaim.v1",
+        "claimId": "claim-4430e1e25a443da1",
+        "confidence": "supported",
+        "evidenceIds": [
+          "evidence-b506805209064c68"
+        ],
+        "text": "Baseline scenario exp-330cdd3f7591 estimates 0.95625 mg/kg-day; comparison scenario exp-96ae0ae64784 estimates 0.585 mg/kg-day."
+      },
+      {
+        "schemaVersion": "toxclawReportClaim.v1",
+        "claimId": "claim-9265919b6d39ec15",
+        "confidence": "supported",
+        "evidenceIds": [
+          "evidence-b506805209064c68"
+        ],
+        "text": "Comparison dose decreased by 38.82% relative to baseline."
+      },
+      {
+        "schemaVersion": "toxclawReportClaim.v1",
+        "claimId": "claim-98be2d7dd8221ca2",
+        "confidence": "supported",
+        "evidenceIds": [
+          "evidence-b506805209064c68"
+        ],
+        "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
+      },
+      {
+        "schemaVersion": "toxclawReportClaim.v1",
+        "claimId": "claim-0409d2d114518ff0",
+        "confidence": "supported",
+        "evidenceIds": [
+          "evidence-b506805209064c68"
+        ],
+        "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
+      }
+    ],
+    "evidenceIds": [
+      "evidence-b506805209064c68"
+    ],
+    "sectionKey": "exposure-refinement",
+    "title": "Exposure Refinement Delta"
+  },
+  "refinementSignal": {
+    "schemaVersion": "toxclawExposureRefinementSignal.v1",
+    "recommendation": "refine_exposure",
+    "refinementRecommendation": "Refine exposure characterization before relying on the screening recommendation.",
+    "loeCandidateKeys": [
+      "exposure_context"
+    ],
+    "workflowAction": "scenario_comparison",
+    "routeChanged": false,
+    "changedAssumptionNames": [
+      "external_mass_mg_per_day",
+      "normalized_external_dose_mg_per_kg_day",
+      "retention_factor",
+      "transfer_efficiency"
+    ],
+    "changedAssumptionCount": 4,
+    "doseDeltaDirection": "decrease",
+    "percentDelta": -38.8235,
+    "materialChange": true,
+    "boundaryNote": "This bundle supports exposure-context refinement only. ToxClaw still owns line-of-evidence synthesis and the final recommendation.",
+    "workflowHooks": [
+      {
+        "schemaVersion": "exposureWorkflowHook.v1",
+        "action": "scenario_comparison",
+        "toolName": "exposure_compare_exposure_scenarios",
+        "whenToUse": "Use after generating a revised scenario to quantify the external-dose delta without making risk or PBPK claims.",
+        "requiredInputs": [
+          "baseline scenario",
+          "comparison scenario"
+        ]
+      },
+      {
+        "schemaVersion": "exposureWorkflowHook.v1",
+        "action": "route_recalculation",
+        "toolName": "exposure_build_screening_exposure_scenario",
+        "whenToUse": "Use when ToxClaw needs a route-specific recomputation of the candidate scenario before comparing it against the current screening baseline.",
+        "requiredInputs": [
+          "chemical_id",
+          "route-specific product_use_profile",
+          "population_profile"
+        ]
+      },
+      {
+        "schemaVersion": "exposureWorkflowHook.v1",
+        "action": "aggregate_variant",
+        "toolName": "exposure_build_aggregate_exposure_scenario",
+        "whenToUse": "Use when the refinement question depends on a combined multi-component or multi-route screening variant.",
+        "requiredInputs": [
+          "shared chemical_id",
+          "component scenarios",
+          "aggregate label"
+        ]
+      },
+      {
+        "schemaVersion": "exposureWorkflowHook.v1",
+        "action": "pbpk_export",
+        "toolName": "exposure_export_pbpk_external_import_bundle",
+        "whenToUse": "Use only after selecting the scenario that should advance from external-dose refinement into PBPK translation.",
+        "requiredInputs": [
+          "selected source scenario"
+        ]
+      }
+    ]
+  }
+}

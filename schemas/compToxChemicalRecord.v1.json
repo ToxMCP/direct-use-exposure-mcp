@@ -1,0 +1,80 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "compToxChemicalRecord.v1",
+      "default": "compToxChemicalRecord.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Stable CompTox chemical identifier.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "preferred_name": {
+      "description": "Preferred chemical name.",
+      "title": "Preferred Name",
+      "type": "string"
+    },
+    "casrn": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "CAS Registry Number when known.",
+      "title": "Casrn"
+    },
+    "product_use_categories": {
+      "description": "Relevant product-use categories discovered upstream.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Product Use Categories",
+      "type": "array"
+    },
+    "physchem_summary": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Physicochemical context that can support downstream scenario interpretation.",
+      "title": "Physchem Summary",
+      "type": "object"
+    },
+    "evidence_sources": {
+      "description": "Upstream evidence or record identifiers backing the CompTox record.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Sources",
+      "type": "array"
+    }
+  },
+  "required": [
+    "chemical_id",
+    "preferred_name"
+  ],
+  "title": "CompToxChemicalRecord",
+  "type": "object"
+}

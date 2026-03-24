@@ -1,0 +1,252 @@
+{
+  "$defs": {
+    "AssumptionDelta": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Assumption name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "baseline_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Baseline value.",
+          "title": "Baseline Value"
+        },
+        "comparison_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Comparison value.",
+          "title": "Comparison Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Assumption unit if applicable.",
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "name",
+        "baseline_value",
+        "comparison_value"
+      ],
+      "title": "AssumptionDelta",
+      "type": "object"
+    },
+    "DoseUnit": {
+      "enum": [
+        "mg/day",
+        "mg/event",
+        "mg/kg-day",
+        "mg/m3"
+      ],
+      "title": "DoseUnit",
+      "type": "string"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "ScenarioDose": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "description": "Dose metric label.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "description": "Numeric value for the dose metric.",
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/DoseUnit",
+          "description": "Canonical dose unit."
+        }
+      },
+      "required": [
+        "metric",
+        "value",
+        "unit"
+      ],
+      "title": "ScenarioDose",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "scenarioComparisonRecord.v1",
+      "default": "scenarioComparisonRecord.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "baseline_scenario_id": {
+      "description": "Baseline scenario ID.",
+      "title": "Baseline Scenario Id",
+      "type": "string"
+    },
+    "comparison_scenario_id": {
+      "description": "Comparison scenario ID.",
+      "title": "Comparison Scenario Id",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Shared chemical identifier.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "baseline_dose": {
+      "$ref": "#/$defs/ScenarioDose",
+      "description": "Baseline primary dose."
+    },
+    "comparison_dose": {
+      "$ref": "#/$defs/ScenarioDose",
+      "description": "Comparison primary dose."
+    },
+    "absolute_delta": {
+      "description": "Comparison minus baseline.",
+      "title": "Absolute Delta",
+      "type": "number"
+    },
+    "percent_delta": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Percentage delta relative to the baseline.",
+      "title": "Percent Delta"
+    },
+    "changed_assumptions": {
+      "description": "Changed assumptions.",
+      "items": {
+        "$ref": "#/$defs/AssumptionDelta"
+      },
+      "title": "Changed Assumptions",
+      "type": "array"
+    },
+    "interpretation_notes": {
+      "description": "Human-readable interpretation notes.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Interpretation Notes",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle",
+      "description": "Comparison provenance."
+    }
+  },
+  "required": [
+    "baseline_scenario_id",
+    "comparison_scenario_id",
+    "chemical_id",
+    "baseline_dose",
+    "comparison_dose",
+    "absolute_delta",
+    "provenance"
+  ],
+  "title": "ScenarioComparisonRecord",
+  "type": "object"
+}

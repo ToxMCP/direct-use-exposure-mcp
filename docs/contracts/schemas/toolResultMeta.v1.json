@@ -1,0 +1,110 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "toolResultMeta.v1",
+      "default": "toolResultMeta.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "executionMode": {
+      "enum": [
+        "sync",
+        "async"
+      ],
+      "title": "Executionmode",
+      "type": "string"
+    },
+    "resultStatus": {
+      "enum": [
+        "accepted",
+        "running",
+        "completed",
+        "failed"
+      ],
+      "title": "Resultstatus",
+      "type": "string"
+    },
+    "terminal": {
+      "title": "Terminal",
+      "type": "boolean"
+    },
+    "futureAsyncCompatible": {
+      "default": true,
+      "title": "Futureasynccompatible",
+      "type": "boolean"
+    },
+    "queueRequired": {
+      "default": false,
+      "title": "Queuerequired",
+      "type": "boolean"
+    },
+    "responseSchema": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Responseschema"
+    },
+    "jobId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Jobid"
+    },
+    "statusCheckUri": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Statuscheckuri"
+    },
+    "retryable": {
+      "default": false,
+      "title": "Retryable",
+      "type": "boolean"
+    },
+    "errorCode": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Errorcode"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "executionMode",
+    "resultStatus",
+    "terminal"
+  ],
+  "title": "ToolResultMeta",
+  "type": "object"
+}

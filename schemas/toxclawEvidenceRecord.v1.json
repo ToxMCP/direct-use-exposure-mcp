@@ -1,0 +1,134 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "toxclawEvidenceRecord.v1",
+      "default": "toxclawEvidenceRecord.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "caseId": {
+      "title": "Caseid",
+      "type": "string"
+    },
+    "contentHash": {
+      "title": "Contenthash",
+      "type": "string"
+    },
+    "dataClassification": {
+      "enum": [
+        "public",
+        "internal",
+        "restricted",
+        "regulated"
+      ],
+      "title": "Dataclassification",
+      "type": "string"
+    },
+    "evidenceId": {
+      "title": "Evidenceid",
+      "type": "string"
+    },
+    "qualityFlag": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Qualityflag"
+    },
+    "rawPointer": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rawpointer"
+    },
+    "redactionStatus": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Redactionstatus"
+    },
+    "retrievedAt": {
+      "title": "Retrievedat",
+      "type": "string"
+    },
+    "runId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Runid"
+    },
+    "source": {
+      "description": "ToxClaw evidence source string.",
+      "title": "Source",
+      "type": "string"
+    },
+    "sourceRef": {
+      "title": "Sourceref",
+      "type": "string"
+    },
+    "summary": {
+      "description": "Human-readable evidence summary.",
+      "title": "Summary",
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    },
+    "trustLabel": {
+      "enum": [
+        "module-output",
+        "untrusted-document",
+        "untrusted-external-data"
+      ],
+      "title": "Trustlabel",
+      "type": "string"
+    },
+    "type": {
+      "description": "ToxClaw evidence type label.",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "caseId",
+    "contentHash",
+    "dataClassification",
+    "evidenceId",
+    "retrievedAt",
+    "source",
+    "sourceRef",
+    "summary",
+    "trustLabel",
+    "type"
+  ],
+  "title": "ToxClawEvidenceRecord",
+  "type": "object"
+}

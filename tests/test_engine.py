@@ -1,0 +1,296 @@
+from __future__ import annotations
+
+import pytest
+
+from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.models import (
+    BuildAggregateExposureScenarioInput,
+    CompareExposureScenariosInput,
+    ExposureScenarioRequest,
+    InhalationScenarioRequest,
+    PopulationProfile,
+    ProductUseProfile,
+    Route,
+    ScenarioClass,
+)
+from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.runtime import (
+    PluginRegistry,
+    ScenarioEngine,
+    aggregate_scenarios,
+    compare_scenarios,
+)
+
+
+def build_engine() -> ScenarioEngine:
+    registry = PluginRegistry()
+    registry.register(ScreeningScenarioPlugin())
+    registry.register(InhalationScreeningPlugin())
+    return ScenarioEngine(registry=registry, defaults_registry=DefaultsRegistry.load())
+
+
+def test_dermal_screening_defaults_and_dose() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+        ),
+        population_profile=PopulationProfile(population_group="adult"),
+    )
+
+    scenario = engine.build(request)
+
+    assert scenario.external_dose.unit.value == "mg/kg-day"
+    assert scenario.external_dose.value == pytest.approx(0.95625, rel=1e-6)
+    assert scenario.route_metrics["surface_loading_mg_per_cm2_day"] == pytest.approx(
+        0.01342105, rel=1e-6
+    )
+    assumption_names = {item.name for item in scenario.assumptions}
+    assert {"retention_factor", "transfer_efficiency", "body_weight_kg"} <= assumption_names
+    assert any(flag.code == "heuristic_default_source" for flag in scenario.quality_flags)
+
+
+def test_inhalation_screening_defaults_and_dose() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert scenario.external_dose.value == pytest.approx(0.02844477, rel=1e-6)
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        4.29832067, rel=1e-6
+    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(1.9342443, rel=1e-6)
+
+
+def test_eu_inhalation_room_defaults_use_regional_source() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+    air_exchange = next(
+        item for item in scenario.assumptions if item.name == "air_exchange_rate_per_hour"
+    )
+
+    assert air_exchange.value == pytest.approx(2.0, rel=1e-6)
+    assert air_exchange.source.source_id == "echa_consumer_inhalation_room_defaults"
+
+
+def test_volume_based_cream_uses_physical_form_density_override() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.05,
+            use_amount_per_event=2,
+            use_amount_unit="mL",
+            use_events_per_day=2,
+        ),
+        population_profile=PopulationProfile(population_group="adult"),
+    )
+
+    scenario = engine.build(request)
+    density = next(item for item in scenario.assumptions if item.name == "density_g_per_ml")
+
+    assert density.value == pytest.approx(0.95, rel=1e-6)
+    assert density.source.source_id == "heuristic_screening_defaults_v1"
+    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(161.5, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(2.01875, rel=1e-6)
+
+
+def test_household_cleaner_wipe_uses_product_category_transfer_override() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="wipe",
+            application_method="wipe",
+            retention_type="surface_contact",
+            concentration_fraction=0.1,
+            use_amount_per_event=5,
+            use_amount_unit="g",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(population_group="adult"),
+    )
+
+    scenario = engine.build(request)
+    transfer_efficiency = next(
+        item for item in scenario.assumptions if item.name == "transfer_efficiency"
+    )
+
+    assert transfer_efficiency.value == pytest.approx(0.65, rel=1e-6)
+    assert transfer_efficiency.source.source_id == "heuristic_screening_defaults_v1"
+    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(65.0, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(0.8125, rel=1e-6)
+
+
+def test_household_cleaner_pump_spray_uses_product_category_aerosol_override() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="pump_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.1,
+            use_amount_per_event=10,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=20,
+            air_exchange_rate_per_hour=1.0,
+            exposure_duration_hours=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            inhalation_rate_m3_per_hour=1.0,
+        ),
+    )
+
+    scenario = engine.build(request)
+    aerosolized_fraction = next(
+        item for item in scenario.assumptions if item.name == "aerosolized_fraction"
+    )
+
+    assert aerosolized_fraction.value == pytest.approx(0.3, rel=1e-6)
+    assert aerosolized_fraction.source.source_id == "heuristic_screening_defaults_v1"
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        9.48180838, rel=1e-6
+    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
+        9.48180838, rel=1e-6
+    )
+    assert scenario.external_dose.value == pytest.approx(0.13545441, rel=1e-6)
+
+
+def test_aggregate_and_compare_flows() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+
+    baseline_request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+        ),
+        population_profile=PopulationProfile(population_group="adult"),
+    )
+    inhalation_request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+        ),
+    )
+    comparison_request = baseline_request.model_copy(
+        update={
+            "product_use_profile": baseline_request.product_use_profile.model_copy(
+                update={"retention_factor": 0.65, "transfer_efficiency": 0.8}
+            )
+        }
+    )
+
+    baseline = engine.build(baseline_request)
+    inhalation = engine.build(inhalation_request)
+    comparison = engine.build(comparison_request)
+
+    aggregate = aggregate_scenarios(
+        BuildAggregateExposureScenarioInput(
+            chemical_id="DTXSID123",
+            label="co-use",
+            component_scenarios=[baseline, inhalation],
+        ),
+        defaults_registry,
+    )
+    delta = compare_scenarios(
+        CompareExposureScenariosInput(baseline=baseline, comparison=comparison),
+        defaults_registry,
+    )
+
+    assert aggregate.normalized_total_external_dose is not None
+    assert aggregate.normalized_total_external_dose.value == pytest.approx(0.98469477, rel=1e-6)
+    assert any(item.code == "cross_route_aggregate" for item in aggregate.limitations)
+    assert delta.absolute_delta == pytest.approx(-0.37125, rel=1e-6)
+    assert delta.percent_delta == pytest.approx(-38.8235, rel=1e-6)
+    assert any(item.name == "retention_factor" for item in delta.changed_assumptions)

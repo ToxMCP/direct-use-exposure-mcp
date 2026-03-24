@@ -1,0 +1,77 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "populationProfile.v1",
+      "default": "populationProfile.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "population_group": {
+      "description": "Population group, for example adult or child.",
+      "title": "Population Group",
+      "type": "string"
+    },
+    "body_weight_kg": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Body weight in kilograms.",
+      "title": "Body Weight Kg"
+    },
+    "inhalation_rate_m3_per_hour": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Inhalation rate for inhalation screening.",
+      "title": "Inhalation Rate M3 Per Hour"
+    },
+    "exposed_surface_area_cm2": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Exposed surface area for dermal scenarios.",
+      "title": "Exposed Surface Area Cm2"
+    },
+    "demographic_tags": {
+      "description": "Demographic descriptors for auditability.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Demographic Tags",
+      "type": "array"
+    },
+    "region": {
+      "default": "global",
+      "description": "Regional context for defaults or interpretation.",
+      "title": "Region",
+      "type": "string"
+    }
+  },
+  "required": [
+    "population_group"
+  ],
+  "title": "PopulationProfile",
+  "type": "object"
+}

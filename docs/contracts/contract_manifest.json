@@ -1,0 +1,203 @@
+{
+  "schema_version": "contractManifest.v1",
+  "server_name": "exposure_scenario_mcp",
+  "server_version": "0.1.0",
+  "defaults_version": "2026.03.24.v3",
+  "tools": [
+    {
+      "name": "exposure_build_screening_exposure_scenario",
+      "request_schema": "exposureScenarioRequest.v1",
+      "response_schema": "exposureScenario.v1",
+      "description": "Build one deterministic dermal or oral external exposure screening scenario."
+    },
+    {
+      "name": "exposure_build_aggregate_exposure_scenario",
+      "request_schema": "buildAggregateExposureScenarioInput.v1",
+      "response_schema": "aggregateExposureSummary.v1",
+      "description": "Combine component scenarios into a simple additive aggregate summary."
+    },
+    {
+      "name": "exposure_build_inhalation_screening_scenario",
+      "request_schema": "inhalationScenarioRequest.v1",
+      "response_schema": "exposureScenario.v1",
+      "description": "Build a deterministic inhalation screening scenario using room semantics."
+    },
+    {
+      "name": "exposure_export_pbpk_scenario_input",
+      "request_schema": "exportPbpkScenarioInputRequest.v1",
+      "response_schema": "pbpkScenarioInput.v1",
+      "description": "Export a PBPK-ready handoff object from a source scenario."
+    },
+    {
+      "name": "exposure_export_pbpk_external_import_bundle",
+      "request_schema": "exportPbpkExternalImportBundleRequest.v1",
+      "response_schema": "pbpkExternalImportPackage.v1",
+      "description": "Export a PBPK MCP external-import payload template plus readiness report."
+    },
+    {
+      "name": "exposure_export_toxclaw_evidence_bundle",
+      "request_schema": "exportToxClawEvidenceBundleRequest.v1",
+      "response_schema": "toxclawEvidenceBundle.v1",
+      "description": "Export deterministic ToxClaw evidence and report-section primitives."
+    },
+    {
+      "name": "exposure_export_toxclaw_refinement_bundle",
+      "request_schema": "exportToxClawRefinementBundleRequest.v1",
+      "response_schema": "toxclawExposureRefinementBundle.v1",
+      "description": "Export a ToxClaw-facing exposure refinement delta with workflow hooks."
+    },
+    {
+      "name": "exposure_compare_exposure_scenarios",
+      "request_schema": "compareExposureScenariosInput.v1",
+      "response_schema": "scenarioComparisonRecord.v1",
+      "description": "Compare two scenarios and surface dose and assumption deltas."
+    }
+  ],
+  "resources": [
+    {
+      "uri": "contracts://manifest",
+      "description": "Machine-readable contract manifest."
+    },
+    {
+      "uri": "defaults://manifest",
+      "description": "Versioned defaults manifest."
+    },
+    {
+      "uri": "docs://algorithm-notes",
+      "description": "Algorithm notes for the deterministic engines."
+    },
+    {
+      "uri": "docs://defaults-evidence-map",
+      "description": "Source register and interpretation notes for defaults and heuristics."
+    },
+    {
+      "uri": "docs://operator-guide",
+      "description": "Operator guide for validation, transports, and interpretation boundaries."
+    },
+    {
+      "uri": "docs://provenance-policy",
+      "description": "Provenance and assumption-emission policy for auditability."
+    },
+    {
+      "uri": "docs://result-status-semantics",
+      "description": "Non-breaking result-status conventions carried in top-level tool-result metadata."
+    },
+    {
+      "uri": "docs://suite-integration-guide",
+      "description": "Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP."
+    },
+    {
+      "uri": "docs://troubleshooting",
+      "description": "Troubleshooting guide for common scenario, aggregation, and export failures."
+    },
+    {
+      "uri": "docs://release-readiness",
+      "description": "Release-readiness guidance derived from the current contract surface."
+    },
+    {
+      "uri": "docs://release-notes",
+      "description": "Release notes and migration notes for the current published candidate."
+    },
+    {
+      "uri": "docs://conformance-report",
+      "description": "Human-readable conformance summary across validation, benchmarks, and release checks."
+    },
+    {
+      "uri": "docs://security-provenance-review",
+      "description": "Human-readable security and provenance review derived from the current tool, resource, and defaults surface."
+    },
+    {
+      "uri": "benchmarks://manifest",
+      "description": "Machine-readable benchmark and regression corpus manifest."
+    },
+    {
+      "uri": "release://readiness-report",
+      "description": "Machine-readable release-readiness report with validation and security checks."
+    },
+    {
+      "uri": "release://metadata-report",
+      "description": "Machine-readable release metadata with package, benchmark, schema, and limitation details."
+    },
+    {
+      "uri": "release://security-provenance-review-report",
+      "description": "Machine-readable security and provenance review with pass, warning, and blocked findings."
+    },
+    {
+      "uri": "schemas://{schema_name}",
+      "description": "JSON Schema by schema name."
+    },
+    {
+      "uri": "examples://{example_name}",
+      "description": "Generated example payload by name."
+    }
+  ],
+  "prompts": [
+    {
+      "name": "exposure_refinement_playbook",
+      "description": "Checklist for refining a screening scenario without collapsing auditability."
+    },
+    {
+      "name": "exposure_pbpk_handoff_checklist",
+      "description": "Checklist for validating PBPK handoff readiness from a source scenario."
+    }
+  ],
+  "schemas": {
+    "productUseProfile.v1": "schemas/productUseProfile.v1.json",
+    "populationProfile.v1": "schemas/populationProfile.v1.json",
+    "exposureScenarioRequest.v1": "schemas/exposureScenarioRequest.v1.json",
+    "inhalationScenarioRequest.v1": "schemas/inhalationScenarioRequest.v1.json",
+    "exposureScenario.v1": "schemas/exposureScenario.v1.json",
+    "aggregateExposureSummary.v1": "schemas/aggregateExposureSummary.v1.json",
+    "exposureAssumptionRecord.v1": "schemas/exposureAssumptionRecord.v1.json",
+    "pbpkScenarioInput.v1": "schemas/pbpkScenarioInput.v1.json",
+    "scenarioComparisonRecord.v1": "schemas/scenarioComparisonRecord.v1.json",
+    "provenanceBundle.v1": "schemas/provenanceBundle.v1.json",
+    "buildAggregateExposureScenarioInput.v1": "schemas/buildAggregateExposureScenarioInput.v1.json",
+    "exportPbpkScenarioInputRequest.v1": "schemas/exportPbpkScenarioInputRequest.v1.json",
+    "exportPbpkExternalImportBundleRequest.v1": "schemas/exportPbpkExternalImportBundleRequest.v1.json",
+    "exportToxClawEvidenceBundleRequest.v1": "schemas/exportToxClawEvidenceBundleRequest.v1.json",
+    "exportToxClawRefinementBundleRequest.v1": "schemas/exportToxClawRefinementBundleRequest.v1.json",
+    "compareExposureScenariosInput.v1": "schemas/compareExposureScenariosInput.v1.json",
+    "compToxChemicalRecord.v1": "schemas/compToxChemicalRecord.v1.json",
+    "toxclawEvidenceEnvelope.v1": "schemas/toxclawEvidenceEnvelope.v1.json",
+    "toxclawEvidenceRecord.v1": "schemas/toxclawEvidenceRecord.v1.json",
+    "toxclawReportEvidenceReference.v1": "schemas/toxclawReportEvidenceReference.v1.json",
+    "toxclawReportClaim.v1": "schemas/toxclawReportClaim.v1.json",
+    "toxclawReportSection.v1": "schemas/toxclawReportSection.v1.json",
+    "toxclawEvidenceBundle.v1": "schemas/toxclawEvidenceBundle.v1.json",
+    "exposureWorkflowHook.v1": "schemas/exposureWorkflowHook.v1.json",
+    "toxclawExposureRefinementSignal.v1": "schemas/toxclawExposureRefinementSignal.v1.json",
+    "toxclawExposureRefinementBundle.v1": "schemas/toxclawExposureRefinementBundle.v1.json",
+    "pbpkCompatibilityReport.v1": "schemas/pbpkCompatibilityReport.v1.json",
+    "pbpkExternalImportBundle.v1": "schemas/pbpkExternalImportBundle.v1.json",
+    "pbpkExternalImportRequest.v1": "schemas/pbpkExternalImportRequest.v1.json",
+    "pbpkExternalImportToolCall.v1": "schemas/pbpkExternalImportToolCall.v1.json",
+    "pbpkExternalImportPackage.v1": "schemas/pbpkExternalImportPackage.v1.json",
+    "toxclawPbpkModuleParams.v1": "schemas/toxclawPbpkModuleParams.v1.json",
+    "toolResultMeta.v1": "schemas/toolResultMeta.v1.json",
+    "releaseMetadataReport.v1": "schemas/releaseMetadataReport.v1.json",
+    "releaseReadinessReport.v1": "schemas/releaseReadinessReport.v1.json",
+    "securityProvenanceReviewReport.v1": "schemas/securityProvenanceReviewReport.v1.json"
+  },
+  "examples": {
+    "screening_dermal_request": "schemas/examples/screening_dermal_request.json",
+    "screening_dermal_scenario": "schemas/examples/screening_dermal_scenario.json",
+    "inhalation_request": "schemas/examples/inhalation_request.json",
+    "inhalation_scenario": "schemas/examples/inhalation_scenario.json",
+    "aggregate_summary": "schemas/examples/aggregate_summary.json",
+    "pbpk_input": "schemas/examples/pbpk_input.json",
+    "pbpk_external_import_request": "schemas/examples/pbpk_external_import_request.json",
+    "pbpk_external_import_tool_call": "schemas/examples/pbpk_external_import_tool_call.json",
+    "toxclaw_pbpk_module_params": "schemas/examples/toxclaw_pbpk_module_params.json",
+    "pbpk_external_import_package": "schemas/examples/pbpk_external_import_package.json",
+    "comparison_record": "schemas/examples/comparison_record.json",
+    "comp_tox_record": "schemas/examples/comp_tox_record.json",
+    "comp_tox_enriched_request": "schemas/examples/comp_tox_enriched_request.json",
+    "toxclaw_evidence_envelope": "schemas/examples/toxclaw_evidence_envelope.json",
+    "toxclaw_evidence_bundle": "schemas/examples/toxclaw_evidence_bundle.json",
+    "toxclaw_refinement_bundle": "schemas/examples/toxclaw_refinement_bundle.json",
+    "pbpk_compatibility_report": "schemas/examples/pbpk_compatibility_report.json",
+    "tool_result_meta_completed": "schemas/examples/tool_result_meta_completed.json",
+    "tool_result_meta_failed": "schemas/examples/tool_result_meta_failed.json"
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "$defs": {
+    "PublicSurfaceSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "toolCount": {
+          "minimum": 0,
+          "title": "Toolcount",
+          "type": "integer"
+        },
+        "resourceCount": {
+          "minimum": 0,
+          "title": "Resourcecount",
+          "type": "integer"
+        },
+        "promptCount": {
+          "minimum": 0,
+          "title": "Promptcount",
+          "type": "integer"
+        },
+        "transports": {
+          "items": {
+            "enum": [
+              "stdio",
+              "streamable-http"
+            ],
+            "type": "string"
+          },
+          "title": "Transports",
+          "type": "array"
+        }
+      },
+      "required": [
+        "toolCount",
+        "resourceCount",
+        "promptCount"
+      ],
+      "title": "PublicSurfaceSummary",
+      "type": "object"
+    },
+    "ReleaseReadinessCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "checkId": {
+          "title": "Checkid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "warning",
+            "blocked"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "blocking": {
+          "default": false,
+          "title": "Blocking",
+          "type": "boolean"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommendation"
+        }
+      },
+      "required": [
+        "checkId",
+        "title",
+        "status",
+        "evidence"
+      ],
+      "title": "ReleaseReadinessCheck",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "releaseReadinessReport.v1",
+      "default": "releaseReadinessReport.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "releaseCandidate": {
+      "title": "Releasecandidate",
+      "type": "string"
+    },
+    "serverName": {
+      "title": "Servername",
+      "type": "string"
+    },
+    "serverVersion": {
+      "title": "Serverversion",
+      "type": "string"
+    },
+    "defaultsVersion": {
+      "title": "Defaultsversion",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ready",
+        "ready_with_known_limitations",
+        "blocked"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "publicSurface": {
+      "$ref": "#/$defs/PublicSurfaceSummary"
+    },
+    "validationCommands": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Validationcommands",
+      "type": "array"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/ReleaseReadinessCheck"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "knownLimitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Knownlimitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "releaseCandidate",
+    "serverName",
+    "serverVersion",
+    "defaultsVersion",
+    "status",
+    "summary",
+    "publicSurface"
+  ],
+  "title": "ReleaseReadinessReport",
+  "type": "object"
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "pbpkCompatibilityReport.v1",
+  "source_scenario_id": "exp-330cdd3f7591",
+  "compatible": true,
+  "target_tool": "ingest_external_pbpk_bundle",
+  "checked_route": "dermal",
+  "checked_dose_unit": "mg/kg-day",
+  "ready_for_external_pbpk_import": true,
+  "supported_pbpk_objects": [
+    "ingest_external_pbpk_bundle.arguments",
+    "pbpk-mcp.ngraObjects.assessmentContext.v1",
+    "pbpk-mcp.ngraObjects.pbpkQualificationSummary.v1",
+    "pbpk-mcp.ngraObjects.uncertaintySummary.v1",
+    "pbpk-mcp.ngraObjects.uncertaintyHandoff.v1",
+    "pbpk-mcp.ngraObjects.internalExposureEstimate.v1",
+    "pbpk-mcp.ngraObjects.pointOfDepartureReference.v1",
+    "pbpk-mcp.ngraObjects.berInputBundle.v1"
+  ],
+  "missing_external_bundle_fields": [],
+  "checked_fields": [
+    "toolCall.arguments.assessmentContext.domain.route",
+    "toolCall.arguments.assessmentContext.doseScenario.externalDose.unit",
+    "toolCall.arguments.assessmentContext.doseScenario.eventsPerDay",
+    "toolCall.arguments.assessmentContext.doseScenario.bodyWeightKg",
+    "toolCall.arguments.assessmentContext.doseScenario.eventDurationHours",
+    "toolCall.arguments.assessmentContext.domain.compound"
+  ],
+  "issues": [
+    {
+      "code": "pbpk_downstream_review_required",
+      "severity": "warning",
+      "message": "This bundle is an upstream external-exposure handoff only. PBPK execution, internal dose estimation, and qualification review remain downstream responsibilities."
+    }
+  ],
+  "recommended_next_steps": [
+    "Call PBPK MCP `ingest_external_pbpk_bundle` with `toolCall.arguments`.",
+    "Preserve `bundle.supportingHandoffs` and `toxclawModuleParams` as additive exposure-side context outside the exact PBPK request payload.",
+    "Review returned internalExposureEstimate and pbpkQualificationSummary before downstream interpretation."
+  ]
+}

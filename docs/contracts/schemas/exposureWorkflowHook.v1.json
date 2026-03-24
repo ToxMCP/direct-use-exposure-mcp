@@ -1,0 +1,50 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "exposureWorkflowHook.v1",
+      "default": "exposureWorkflowHook.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "action": {
+      "enum": [
+        "scenario_comparison",
+        "route_recalculation",
+        "aggregate_variant",
+        "pbpk_export"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "toolName": {
+      "enum": [
+        "exposure_compare_exposure_scenarios",
+        "exposure_build_screening_exposure_scenario",
+        "exposure_build_inhalation_screening_scenario",
+        "exposure_build_aggregate_exposure_scenario",
+        "exposure_export_pbpk_external_import_bundle"
+      ],
+      "title": "Toolname",
+      "type": "string"
+    },
+    "whenToUse": {
+      "title": "Whentouse",
+      "type": "string"
+    },
+    "requiredInputs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Requiredinputs",
+      "type": "array"
+    }
+  },
+  "required": [
+    "action",
+    "toolName",
+    "whenToUse"
+  ],
+  "title": "ExposureWorkflowHook",
+  "type": "object"
+}

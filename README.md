@@ -1,0 +1,238 @@
+# Exposure Scenario MCP
+
+[![CI](https://github.com/ToxMCP/expossure-scenario-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/expossure-scenario-mcp/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+
+> Part of **ToxMCP** Suite
+
+**Public MCP server for deterministic external exposure scenario construction in exposure-led NGRA workflows.**
+It turns product-use assumptions into auditable dermal, oral, inhalation, and aggregate
+external-dose scenarios, then exports ToxClaw-ready evidence objects and PBPK-ready
+handoff payloads without taking over PBPK execution, WoE synthesis, BER, PoD derivation,
+or final risk decisions.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph Clients["Clients and Orchestrators"]
+        Codex["Codex CLI / Desktop"]
+        ToxClaw["ToxClaw"]
+        Scripts["Scripts / notebooks"]
+        Other["Other MCP-aware agents"]
+    end
+
+    subgraph MCP["FastMCP Service"]
+        Server["Tool and resource surface"]
+        Contracts["Schemas, examples,\ncontract manifest"]
+        Prompts["Refinement and\nhandoff prompts"]
+    end
+
+    subgraph Engine["Scenario Engine"]
+        Runtime["Deterministic runtime"]
+        Screening["Dermal / oral screening plugin"]
+        Inhalation["Inhalation screening plugin"]
+        Aggregate["Aggregate/co-use summary"]
+    end
+
+    subgraph Evidence["Scientific Control Layer"]
+        Defaults["Versioned defaults packs"]
+        Provenance["Assumption ledger,\nprovenance, quality flags"]
+        Review["Release readiness,\nsecurity, provenance review"]
+    end
+
+    subgraph Downstream["Suite Handoffs"]
+        PBPK["PBPK MCP import bundle"]
+        EvidenceBundle["ToxClaw evidence bundle"]
+        Refinement["ToxClaw refinement bundle"]
+    end
+
+    Clients --> Server
+    Server --> Contracts
+    Server --> Prompts
+    Server --> Runtime
+    Runtime --> Screening
+    Runtime --> Inhalation
+    Runtime --> Aggregate
+    Runtime --> Defaults
+    Runtime --> Provenance
+    Server --> Review
+    Server --> PBPK
+    Server --> EvidenceBundle
+    Server --> Refinement
+```
+
+The design is intentionally narrow:
+
+- `Exposure Scenario MCP` owns external-dose construction only.
+- `PBPK MCP` owns kinetic translation and internal-dose interpretation.
+- `ToxClaw` owns evidence orchestration, review flow, and NGRA-facing report synthesis.
+- Defaults, assumptions, provenance, and limitations are first-class outputs, not hidden internals.
+
+## What's in v0.1.0
+
+- Deterministic dermal and oral screening scenario construction
+- Deterministic inhalation screening with room-volume and ventilation semantics
+- Simple additive aggregate exposure summaries
+- Scenario comparison and refinement deltas
+- ToxClaw evidence export and refinement-bundle export
+- PBPK scenario export plus exact external-import payload packaging
+- Published JSON schemas, examples, contract manifest, and release metadata
+- Release-readiness, result-status, troubleshooting, and provenance resources
+
+## Why this project exists
+
+Exposure information is often the weakest structured input in early NGRA orchestration:
+there may be CompTox context, product-use hints in prompts, or local refinement notes,
+but not a stable, auditable external-dose object that downstream systems can trust.
+
+Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
+
+- **deterministic-first** for transparent screening use
+- **MCP-native** with typed tools, resources, prompts, schemas, and examples
+- **auditable** through assumption records, defaults versioning, provenance, and quality flags
+- **bounded** so it complements PBPK and ToxClaw instead of overlapping them
+
+## Feature snapshot
+
+| Capability | Description |
+| --- | --- |
+| `Screening scenarios` | Builds route-specific external-dose scenarios for dermal, oral, and inhalation screening use cases. |
+| `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
+| `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
+| `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
+| `Refinement workflow support` | Emits comparison/refinement bundles with explicit `refine_exposure` semantics and workflow hooks. |
+| `Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
+| `Scientific guardrails` | Keeps BER, PoD derivation, PBPK execution, and final risk conclusions outside this server. |
+
+## Table of contents
+
+1. [Architecture](#architecture)
+2. [What's in v010](#whats-in-v010)
+3. [Why this project exists](#why-this-project-exists)
+4. [Feature snapshot](#feature-snapshot)
+5. [Tool catalog](#tool-catalog)
+6. [Resource catalog](#resource-catalog)
+7. [Quick start](#quick-start)
+8. [Release verification](#release-verification)
+9. [Repository layout](#repository-layout)
+10. [Current limitations](#current-limitations)
+11. [Scientific boundaries](#scientific-boundaries)
+
+## Tool catalog
+
+### Scenario construction
+
+- `exposure_build_screening_exposure_scenario`
+- `exposure_build_inhalation_screening_scenario`
+- `exposure_build_aggregate_exposure_scenario`
+- `exposure_compare_exposure_scenarios`
+
+### Handoff export
+
+- `exposure_export_pbpk_scenario_input`
+- `exposure_export_pbpk_external_import_bundle`
+- `exposure_export_toxclaw_evidence_bundle`
+- `exposure_export_toxclaw_refinement_bundle`
+
+## Resource catalog
+
+### Contracts and examples
+
+- `contracts://manifest`
+- `schemas://{schema_name}`
+- `examples://{example_name}`
+- `defaults://manifest`
+- `benchmarks://manifest`
+
+### Operator and scientific documentation
+
+- `docs://algorithm-notes`
+- `docs://defaults-evidence-map`
+- `docs://operator-guide`
+- `docs://provenance-policy`
+- `docs://result-status-semantics`
+- `docs://suite-integration-guide`
+- `docs://troubleshooting`
+
+### Release and review artifacts
+
+- `docs://release-notes`
+- `docs://conformance-report`
+- `docs://release-readiness`
+- `docs://security-provenance-review`
+- `release://metadata-report`
+- `release://readiness-report`
+- `release://security-provenance-review-report`
+
+## Prompt catalog
+
+- `exposure_refinement_playbook`
+- `exposure_pbpk_handoff_checklist`
+
+## Quick start
+
+```bash
+git clone https://github.com/ToxMCP/expossure-scenario-mcp.git
+cd expossure-scenario-mcp
+
+uv sync --extra dev
+uv run generate-exposure-contracts
+uv run pytest
+uv run exposure-scenario-mcp --transport stdio
+```
+
+Run over Streamable HTTP:
+
+```bash
+uv run exposure-scenario-mcp --transport streamable-http
+```
+
+## Release verification
+
+```bash
+uv run ruff check .
+uv run pytest
+uv build
+uv run generate-exposure-contracts
+uv run check-exposure-release-artifacts
+```
+
+Current published package version: `0.1.0`
+
+## Repository layout
+
+- `src/exposure_scenario_mcp/` - server, models, runtime, defaults, provenance, integrations
+- `defaults/` - versioned defaults packs
+- `schemas/` - generated schemas and examples
+- `docs/contracts/` - published schemas and contract manifest mirrors
+- `docs/releases/` - release notes and release metadata
+- `docs/` - operator, troubleshooting, provenance, readiness, and suite integration docs
+- `evals/` - read-only evaluation bundle
+- `tests/` - runtime, contract, integration, and release-artifact tests
+
+## Current limitations
+
+The current `v0.1.0` release is intentionally honest about what it does not do:
+
+- It is deterministic-first and does not ship a probabilistic population engine.
+- It does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.
+- Some screening factors still resolve from heuristic defaults packs and should be treated as screening-level assumptions.
+- Remote `streamable-http` deployment still requires external authentication and origin hardening.
+- PBPK request alignment should be re-validated whenever PBPK MCP changes its published contract version.
+
+## Scientific boundaries
+
+Exposure Scenario MCP is the **external-dose construction** layer in the suite.
+That means:
+
+- it may infer and default screening inputs
+- it may compare and aggregate scenarios
+- it may export PBPK- and ToxClaw-facing handoff objects
+
+It does **not**:
+
+- claim toxicokinetic authority
+- replace mechanistic or WoE interpretation
+- produce final risk judgments
+- silently elevate heuristic screening assumptions into decision-ready conclusions

@@ -1,0 +1,42 @@
+<evaluation>
+  <qa_pair>
+    <question>Inspect the contract manifest and the example dermal screening scenario. What exact canonical unit is used for the primary external dose? Answer with the unit string only.</question>
+    <answer>mg/kg-day</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Using the example inhalation request and the corresponding inhalation scenario output, what room volume is used for the screening calculation? Respond with the numeric value only.</question>
+    <answer>25.0</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Read the defaults manifest or any example provenance bundle. What defaults pack version is in force for this server? Answer exactly.</question>
+    <answer>2026.03.24.v1</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>From the example inhalation scenario, what is the average air concentration value? Respond with the numeric value only and keep all shown decimal places.</question>
+    <answer>4.29832067</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Look at the aggregate summary example and determine which route contributes the larger route-wise total. Answer with one of dermal, oral, or inhalation.</question>
+    <answer>dermal</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Count the public tools declared in the machine-readable contract manifest. Respond with the number only.</question>
+    <answer>5</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Compare the dermal baseline and refined example scenarios using the comparison record. Did the comparison dose increase or decrease relative to baseline? Answer with increase or decrease only.</question>
+    <answer>decrease</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Inspect the PBPK export example and the contract manifest. Which exact schema name describes the PBPK export response object? Answer exactly.</question>
+    <answer>pbpkScenarioInput.v1</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>In the dermal screening example, which assumption name provides the denominator used to normalize the daily external dose? Answer with the assumption name only.</question>
+    <answer>body_weight_kg</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Using the comparison example, identify the changed assumption that governs product-to-skin transfer rather than retention. Answer with the exact assumption name only.</question>
+    <answer>transfer_efficiency</answer>
+  </qa_pair>
+</evaluation>

@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "AssumptionSourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "description": "Stable identifier for the source.",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "title": {
+          "description": "Human-readable source title.",
+          "title": "Title",
+          "type": "string"
+        },
+        "locator": {
+          "description": "URL, file path, or logical locator.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "version": {
+          "description": "Version or effective date for the source.",
+          "title": "Version",
+          "type": "string"
+        },
+        "hash_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Content hash when available.",
+          "title": "Hash Sha256"
+        }
+      },
+      "required": [
+        "source_id",
+        "title",
+        "locator",
+        "version"
+      ],
+      "title": "AssumptionSourceReference",
+      "type": "object"
+    },
+    "SourceKind": {
+      "enum": [
+        "user_input",
+        "default_registry",
+        "derived",
+        "system"
+      ],
+      "title": "SourceKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "exposureAssumptionRecord.v1",
+      "default": "exposureAssumptionRecord.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "name": {
+      "description": "Stable parameter name used by the engine.",
+      "title": "Name",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The resolved assumption value.",
+      "title": "Value"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Resolved unit, if applicable.",
+      "title": "Unit"
+    },
+    "source_kind": {
+      "$ref": "#/$defs/SourceKind",
+      "description": "Whether the value was user supplied, defaulted, or derived."
+    },
+    "source": {
+      "$ref": "#/$defs/AssumptionSourceReference",
+      "description": "Source reference for the assumption."
+    },
+    "confidence": {
+      "description": "Human-readable confidence label.",
+      "title": "Confidence",
+      "type": "string"
+    },
+    "default_applied": {
+      "description": "Whether a default value was applied.",
+      "title": "Default Applied",
+      "type": "boolean"
+    },
+    "rationale": {
+      "description": "Why this assumption was used.",
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "value",
+    "source_kind",
+    "source",
+    "confidence",
+    "default_applied",
+    "rationale"
+  ],
+  "title": "ExposureAssumptionRecord",
+  "type": "object"
+}

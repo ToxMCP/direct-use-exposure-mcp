@@ -1,0 +1,176 @@
+{
+  "$defs": {
+    "ReviewedSurfaceIndex": {
+      "additionalProperties": false,
+      "properties": {
+        "toolNames": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Toolnames",
+          "type": "array"
+        },
+        "resourceUris": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Resourceuris",
+          "type": "array"
+        },
+        "promptNames": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Promptnames",
+          "type": "array"
+        }
+      },
+      "title": "ReviewedSurfaceIndex",
+      "type": "object"
+    },
+    "SecurityProvenanceReviewFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "findingId": {
+          "title": "Findingid",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "contract_integrity",
+            "defaults_integrity",
+            "provenance_auditability",
+            "deterministic_evidence_hashing",
+            "transport_security",
+            "scientific_boundary"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "warning",
+            "blocked"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "appliesTo": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Appliesto",
+          "type": "array"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommendation"
+        },
+        "references": {
+          "items": {
+            "type": "string"
+          },
+          "title": "References",
+          "type": "array"
+        }
+      },
+      "required": [
+        "findingId",
+        "category",
+        "title",
+        "status",
+        "evidence"
+      ],
+      "title": "SecurityProvenanceReviewFinding",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "securityProvenanceReviewReport.v1",
+      "default": "securityProvenanceReviewReport.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "reviewId": {
+      "title": "Reviewid",
+      "type": "string"
+    },
+    "serverName": {
+      "title": "Servername",
+      "type": "string"
+    },
+    "serverVersion": {
+      "title": "Serverversion",
+      "type": "string"
+    },
+    "defaultsVersion": {
+      "title": "Defaultsversion",
+      "type": "string"
+    },
+    "reviewedAt": {
+      "title": "Reviewedat",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "acceptable",
+        "acceptable_with_warnings",
+        "blocked"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "reviewedSurface": {
+      "$ref": "#/$defs/ReviewedSurfaceIndex"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/SecurityProvenanceReviewFinding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "externalRequirements": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Externalrequirements",
+      "type": "array"
+    }
+  },
+  "required": [
+    "reviewId",
+    "serverName",
+    "serverVersion",
+    "defaultsVersion",
+    "reviewedAt",
+    "status",
+    "summary",
+    "reviewedSurface"
+  ],
+  "title": "SecurityProvenanceReviewReport",
+  "type": "object"
+}

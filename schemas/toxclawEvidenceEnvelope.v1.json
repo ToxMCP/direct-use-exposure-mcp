@@ -1,0 +1,264 @@
+{
+  "$defs": {
+    "FitForPurpose": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "High-level fit-for-purpose label.",
+          "title": "Label",
+          "type": "string"
+        },
+        "suitable_for": {
+          "description": "Appropriate use cases.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Suitable For",
+          "type": "array"
+        },
+        "not_suitable_for": {
+          "description": "Known exclusions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Not Suitable For",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "FitForPurpose",
+      "type": "object"
+    },
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "QualityFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable quality flag code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "info",
+          "description": "Quality signal severity."
+        },
+        "message": {
+          "description": "Human-readable quality message.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "QualityFlag",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "toxclawEvidenceEnvelope.v1",
+      "default": "toxclawEvidenceEnvelope.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_module": {
+      "const": "exposure_scenario_mcp",
+      "default": "exposure_scenario_mcp",
+      "title": "Source Module",
+      "type": "string"
+    },
+    "record_kind": {
+      "description": "Scenario, aggregate summary, or comparison record.",
+      "title": "Record Kind",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Shared chemical identifier.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "context_of_use": {
+      "description": "Why the evidence is being emitted.",
+      "title": "Context Of Use",
+      "type": "string"
+    },
+    "route": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Primary route when applicable.",
+      "title": "Route"
+    },
+    "scenario_class": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Primary scenario class when applicable.",
+      "title": "Scenario Class"
+    },
+    "summary": {
+      "description": "One-line evidence summary for orchestration.",
+      "title": "Summary",
+      "type": "string"
+    },
+    "fit_for_purpose": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FitForPurpose"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Fit-for-purpose metadata if the wrapped record has it."
+    },
+    "limitations": {
+      "description": "Limitations preserved from the wrapped record.",
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "quality_flags": {
+      "description": "Quality flags preserved from the wrapped record.",
+      "items": {
+        "$ref": "#/$defs/QualityFlag"
+      },
+      "title": "Quality Flags",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle",
+      "description": "Provenance of the wrapped record."
+    },
+    "payload": {
+      "additionalProperties": true,
+      "description": "Wrapped record payload.",
+      "title": "Payload",
+      "type": "object"
+    }
+  },
+  "required": [
+    "record_kind",
+    "chemical_id",
+    "context_of_use",
+    "summary",
+    "provenance",
+    "payload"
+  ],
+  "title": "ToxClawEvidenceEnvelope",
+  "type": "object"
+}
