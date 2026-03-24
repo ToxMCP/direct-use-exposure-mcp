@@ -1,10 +1,10 @@
 {
   "sourcePlatform": "exposure-scenario-mcp",
   "sourceVersion": "0.1.0",
-  "modelName": "exp-330cdd3f7591-upstream-context",
+  "modelName": "exp-example-dermal-001-upstream-context",
   "modelType": "exposure-scenario-context",
-  "executionDate": "2026-03-24T22:34:30.371366+00:00",
-  "runId": "exp-330cdd3f7591-external-context",
+  "executionDate": "2026-03-24T00:00:00+00:00",
+  "runId": "exp-example-dermal-001-external-context",
   "operator": null,
   "sponsor": null,
   "rawArtifacts": [],
@@ -15,7 +15,7 @@
     "decisionOwner": "external-orchestrator",
     "handoffTarget": "pbpk-mcp",
     "requestedSubject": "Example Solvent A",
-    "sourceScenarioId": "exp-330cdd3f7591",
+    "sourceScenarioId": "exp-example-dermal-001",
     "domain": {
       "species": "human",
       "route": "dermal",
@@ -25,7 +25,7 @@
       "region": "EU"
     },
     "doseScenario": {
-      "scenarioId": "exp-330cdd3f7591",
+      "scenarioId": "exp-example-dermal-001",
       "externalDose": {
         "metric": "normalized_external_dose",
         "value": 0.95625,
@@ -64,7 +64,7 @@
     ],
     "residualUncertainty": "upstream-exposure-scenario-assumptions",
     "bundleMetadata": {
-      "sourceScenarioId": "exp-330cdd3f7591"
+      "sourceScenarioId": "exp-example-dermal-001"
     }
   },
   "uncertaintyRegister": {

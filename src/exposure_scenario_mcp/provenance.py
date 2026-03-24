@@ -148,7 +148,11 @@ class AssumptionTracker:
         )
 
     def provenance(
-        self, plugin_id: str, algorithm_id: str, plugin_version: str = "0.1.0"
+        self,
+        plugin_id: str,
+        algorithm_id: str,
+        plugin_version: str = "0.1.0",
+        generated_at: str | None = None,
     ) -> ProvenanceBundle:
         return ProvenanceBundle(
             algorithm_id=algorithm_id,
@@ -156,7 +160,7 @@ class AssumptionTracker:
             plugin_version=plugin_version,
             defaults_version=self.registry.version,
             defaults_hash_sha256=self.registry.sha256,
-            generated_at=datetime.now(UTC).isoformat(),
+            generated_at=generated_at or datetime.now(UTC).isoformat(),
             notes=[
                 "Deterministic-first v0.1 engine.",
                 "All defaults are surfaced through exposureAssumptionRecord entries.",

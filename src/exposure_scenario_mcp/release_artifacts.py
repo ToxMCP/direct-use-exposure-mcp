@@ -18,7 +18,7 @@ def sha256_path(path: Path) -> str:
 
 
 def distribution_artifacts_for_release(
-    package_name: str, version: str, dist_dir: Path
+    package_name: str, version: str, dist_dir: Path | None
 ) -> list[ReleaseDistributionArtifact]:
     normalized = package_name.replace("-", "_")
     expected = [
@@ -26,14 +26,15 @@ def distribution_artifacts_for_release(
         ("sdist", f"{normalized}-{version}.tar.gz"),
     ]
     artifacts: list[ReleaseDistributionArtifact] = []
+    dist_label = dist_dir.name if dist_dir is not None else "dist"
     for kind, filename in expected:
-        artifact_path = dist_dir / filename
-        if artifact_path.exists():
+        artifact_path = None if dist_dir is None else dist_dir / filename
+        if artifact_path is not None and artifact_path.exists():
             artifacts.append(
                 ReleaseDistributionArtifact(
                     kind=kind,
                     filename=filename,
-                    relativePath=f"{dist_dir.name}/{filename}",
+                    relativePath=f"{dist_label}/{filename}",
                     present=True,
                     sha256=sha256_path(artifact_path),
                     sizeBytes=artifact_path.stat().st_size,
@@ -44,7 +45,7 @@ def distribution_artifacts_for_release(
             ReleaseDistributionArtifact(
                 kind=kind,
                 filename=filename,
-                relativePath=f"{dist_dir.name}/{filename}",
+                relativePath=f"{dist_label}/{filename}",
                 present=False,
             )
         )

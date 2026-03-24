@@ -37,6 +37,52 @@ from exposure_scenario_mcp.runtime import (
     export_pbpk_input,
 )
 
+EXAMPLE_GENERATED_AT = "2026-03-24T00:00:00+00:00"
+EXAMPLE_IDS = {
+    "screening_dermal_scenario": "exp-example-dermal-001",
+    "screening_dermal_refined_scenario": "exp-example-dermal-refined-001",
+    "inhalation_scenario": "inh-example-room-001",
+    "aggregate_summary": "agg-example-couse-001",
+}
+
+
+def _freeze_provenance(provenance):
+    return provenance.model_copy(update={"generated_at": EXAMPLE_GENERATED_AT}, deep=True)
+
+
+def _freeze_scenario(scenario, scenario_id: str):
+    return scenario.model_copy(
+        update={
+            "scenario_id": scenario_id,
+            "provenance": _freeze_provenance(scenario.provenance),
+        },
+        deep=True,
+    )
+
+
+def _freeze_aggregate(summary):
+    return summary.model_copy(
+        update={
+            "scenario_id": EXAMPLE_IDS["aggregate_summary"],
+            "provenance": _freeze_provenance(summary.provenance),
+        },
+        deep=True,
+    )
+
+
+def _freeze_comparison(record):
+    return record.model_copy(
+        update={"provenance": _freeze_provenance(record.provenance)},
+        deep=True,
+    )
+
+
+def _freeze_pbpk_input(pbpk_input):
+    return pbpk_input.model_copy(
+        update={"provenance": _freeze_provenance(pbpk_input.provenance)},
+        deep=True,
+    )
+
 
 def _engine() -> ScenarioEngine:
     defaults_registry = DefaultsRegistry.load()
@@ -72,7 +118,10 @@ def build_examples() -> dict[str, dict]:
             region="EU",
         ),
     )
-    dermal_scenario = engine.build(dermal_request)
+    dermal_scenario = _freeze_scenario(
+        engine.build(dermal_request),
+        EXAMPLE_IDS["screening_dermal_scenario"],
+    )
 
     inhalation_request = InhalationScenarioRequest(
         chemical_id="DTXSID7020182",
@@ -97,7 +146,10 @@ def build_examples() -> dict[str, dict]:
             region="EU",
         ),
     )
-    inhalation_scenario = engine.build(inhalation_request)
+    inhalation_scenario = _freeze_scenario(
+        engine.build(inhalation_request),
+        EXAMPLE_IDS["inhalation_scenario"],
+    )
 
     refined_request = dermal_request.model_copy(
         update={
@@ -106,23 +158,30 @@ def build_examples() -> dict[str, dict]:
             )
         }
     )
-    refined_scenario = engine.build(refined_request)
+    refined_scenario = _freeze_scenario(
+        engine.build(refined_request),
+        EXAMPLE_IDS["screening_dermal_refined_scenario"],
+    )
 
     aggregate_input = BuildAggregateExposureScenarioInput(
         chemical_id="DTXSID7020182",
         label="Example co-use summary",
         component_scenarios=[dermal_scenario, inhalation_scenario],
     )
-    aggregate_summary = aggregate_scenarios(aggregate_input, defaults_registry)
-    pbpk_input = export_pbpk_input(
-        ExportPbpkScenarioInputRequest(
-            scenario=dermal_scenario, regimen_name="screening_daily_use"
-        ),
-        defaults_registry,
+    aggregate_summary = _freeze_aggregate(aggregate_scenarios(aggregate_input, defaults_registry))
+    pbpk_input = _freeze_pbpk_input(
+        export_pbpk_input(
+            ExportPbpkScenarioInputRequest(
+                scenario=dermal_scenario, regimen_name="screening_daily_use"
+            ),
+            defaults_registry,
+        )
     )
-    comparison = compare_scenarios(
-        CompareExposureScenariosInput(baseline=dermal_scenario, comparison=refined_scenario),
-        defaults_registry,
+    comparison = _freeze_comparison(
+        compare_scenarios(
+            CompareExposureScenariosInput(baseline=dermal_scenario, comparison=refined_scenario),
+            defaults_registry,
+        )
     )
     comp_tox_record = CompToxChemicalRecord(
         chemical_id="DTXSID7020182",
@@ -152,14 +211,16 @@ def build_examples() -> dict[str, dict]:
             case_id="case-example-001",
             report_id="report-example-001",
             workflow_action="scenario_comparison",
-        )
+        ),
+        generated_at=EXAMPLE_GENERATED_AT,
     )
     pbpk_compatibility = check_pbpk_compatibility(dermal_scenario)
     pbpk_external_import_package = build_pbpk_external_import_package(
         ExportPbpkExternalImportBundleRequest(
             scenario=dermal_scenario,
             context_of_use="screening-brief",
-        )
+        ),
+        generated_at=EXAMPLE_GENERATED_AT,
     )
     tool_result_meta_completed = build_tool_result_meta(
         result_status="completed",

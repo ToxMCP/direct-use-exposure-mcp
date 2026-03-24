@@ -21,4 +21,22 @@ jobs:
         run: uv run ruff check .
       - name: Test
         run: uv run pytest
+      - name: Build distribution artifacts
+        run: uv build
+      - name: Wheel install smoke test
+        run: |
+          python -m venv .wheel-smoke
+          . .wheel-smoke/bin/activate
+          pip install dist/exposure_scenario_mcp-0.1.0-py3-none-any.whl
+          python -m exposure_scenario_mcp --help >/dev/null
+          python - <<'PY'
+          from exposure_scenario_mcp import __version__
+          from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
+          from exposure_scenario_mcp.contracts import build_release_metadata_report
+          from exposure_scenario_mcp.defaults import DefaultsRegistry
 
+          registry = DefaultsRegistry.load()
+          assert registry.version == "2026.03.24.v3"
+          assert len(load_benchmark_manifest()["cases"]) >= 2
+          assert build_release_metadata_report(registry).package_version == __version__
+          PY

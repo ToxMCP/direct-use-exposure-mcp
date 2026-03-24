@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import tomllib
 from datetime import UTC, datetime
-from pathlib import Path
 
+from exposure_scenario_mcp.assets import repo_path
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.examples import build_examples
@@ -58,6 +58,7 @@ from exposure_scenario_mcp.models import (
     SecurityProvenanceReviewReport,
     ToolResultMeta,
 )
+from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
 
 SCHEMA_MODELS = {
@@ -98,11 +99,6 @@ SCHEMA_MODELS = {
     "releaseReadinessReport.v1": ReleaseReadinessReport,
     "securityProvenanceReviewReport.v1": SecurityProvenanceReviewReport,
 }
-
-REPO_ROOT = Path(__file__).resolve().parents[2]
-PYPROJECT_PATH = REPO_ROOT / "pyproject.toml"
-DIST_DIR = REPO_ROOT / "dist"
-
 
 def schema_payloads() -> dict[str, dict]:
     return {name: model.model_json_schema() for name, model in SCHEMA_MODELS.items()}
@@ -338,13 +334,16 @@ def benchmark_manifest() -> dict:
 
 
 def _project_metadata() -> tuple[str, str]:
-    payload = tomllib.loads(PYPROJECT_PATH.read_text(encoding="utf-8"))
-    project = payload["project"]
-    return str(project["name"]), str(project["version"])
+    pyproject_path = repo_path("pyproject.toml")
+    if pyproject_path is not None and pyproject_path.exists():
+        payload = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+        project = payload["project"]
+        return str(project["name"]), str(project["version"])
+    return PACKAGE_NAME, __version__
 
 
 def _distribution_artifacts(package_name: str, version: str) -> list[ReleaseDistributionArtifact]:
-    return distribution_artifacts_for_release(package_name, version, DIST_DIR)
+    return distribution_artifacts_for_release(package_name, version, repo_path("dist"))
 
 
 def _review_status(findings: list[SecurityProvenanceReviewFinding]) -> str:

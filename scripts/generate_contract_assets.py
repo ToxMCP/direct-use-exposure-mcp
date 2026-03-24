@@ -11,7 +11,7 @@ from exposure_scenario_mcp.contracts import (
     build_release_metadata_report,
     schema_payloads,
 )
-from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.defaults import DEFAULTS_REPO_RELATIVE_PATH, DefaultsRegistry
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = REPO_ROOT / "schemas"
@@ -47,7 +47,7 @@ def main() -> None:
         DEFAULTS_MANIFEST_PATH,
         {
             **defaults_registry.manifest(),
-            "defaults_file": str(defaults_registry.path.relative_to(REPO_ROOT)),
+            "defaults_file": str(DEFAULTS_REPO_RELATIVE_PATH),
         },
     )
 

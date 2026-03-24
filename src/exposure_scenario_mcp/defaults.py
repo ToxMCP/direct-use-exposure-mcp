@@ -9,18 +9,20 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from exposure_scenario_mcp.assets import read_text_asset
 from exposure_scenario_mcp.errors import ExposureScenarioError, ensure
 from exposure_scenario_mcp.models import AssumptionSourceReference
 
-PACKAGE_ROOT = Path(__file__).resolve().parents[2]
-DEFAULTS_PATH = PACKAGE_ROOT / "defaults" / "v1" / "core_defaults.json"
+DEFAULTS_REPO_RELATIVE_PATH = Path("defaults/v1/core_defaults.json")
+DEFAULTS_PACKAGE_RELATIVE_PATH = "data/defaults/v1/core_defaults.json"
 
 
 @dataclass(slots=True)
 class DefaultsRegistry:
     """Loads immutable defaults and source metadata for deterministic calculations."""
 
-    path: Path
+    path: Path | None
+    location: str
     payload: dict[str, Any]
     sha256: str
 
@@ -31,11 +33,18 @@ class DefaultsRegistry:
     @classmethod
     @lru_cache(maxsize=4)
     def load(cls, path: Path | None = None) -> DefaultsRegistry:
-        target = path or DEFAULTS_PATH
-        raw_text = target.read_text(encoding="utf-8")
+        if path is not None:
+            raw_text = path.read_text(encoding="utf-8")
+            location = str(path)
+            target = path
+        else:
+            raw_text, location, target = read_text_asset(
+                DEFAULTS_PACKAGE_RELATIVE_PATH,
+                str(DEFAULTS_REPO_RELATIVE_PATH),
+            )
         payload = json.loads(raw_text)
         sha256 = hashlib.sha256(raw_text.encode("utf-8")).hexdigest()
-        return cls(path=target, payload=payload, sha256=sha256)
+        return cls(path=target, location=location, payload=payload, sha256=sha256)
 
     def manifest(self) -> dict[str, Any]:
         room_defaults = self.payload.get("room_defaults", {})
@@ -45,7 +54,7 @@ class DefaultsRegistry:
             "defaults_hash_sha256": self.sha256,
             "source_count": len(self.payload.get("sources", [])),
             "supported_regions": sorted(["global", *regional_overrides.keys()]),
-            "path": str(self.path),
+            "path": self.location,
         }
 
     def _source(self, source_id: str) -> AssumptionSourceReference:

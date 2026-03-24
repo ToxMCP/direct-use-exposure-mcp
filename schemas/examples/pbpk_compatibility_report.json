@@ -1,6 +1,6 @@
 {
   "schema_version": "pbpkCompatibilityReport.v1",
-  "source_scenario_id": "exp-330cdd3f7591",
+  "source_scenario_id": "exp-example-dermal-001",
   "compatible": true,
   "target_tool": "ingest_external_pbpk_bundle",
   "checked_route": "dermal",

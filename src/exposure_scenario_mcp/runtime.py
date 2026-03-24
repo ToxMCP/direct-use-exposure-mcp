@@ -262,6 +262,8 @@ def aggregate_scenarios(
 def export_pbpk_input(
     params: ExportPbpkScenarioInputRequest,
     registry: DefaultsRegistry,
+    *,
+    generated_at: str | None = None,
 ) -> PbpkScenarioInput:
     scenario = params.scenario
     tracker = AssumptionTracker(registry=registry)
@@ -306,6 +308,7 @@ def export_pbpk_input(
         provenance=tracker.provenance(
             plugin_id="pbpk_export_service",
             algorithm_id="pbpk.export.v1",
+            generated_at=generated_at,
         ),
         limitations=tracker.limitations,
     )
@@ -314,6 +317,8 @@ def export_pbpk_input(
 def compare_scenarios(
     params: CompareExposureScenariosInput,
     registry: DefaultsRegistry,
+    *,
+    generated_at: str | None = None,
 ) -> ScenarioComparisonRecord:
     baseline = params.baseline
     comparison = params.comparison
@@ -385,6 +390,7 @@ def compare_scenarios(
         provenance=tracker.provenance(
             plugin_id="scenario_comparison_service",
             algorithm_id="scenario.compare.v1",
+            generated_at=generated_at,
         ),
     )
 

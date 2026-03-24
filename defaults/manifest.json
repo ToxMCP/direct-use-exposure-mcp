@@ -6,6 +6,6 @@
     "eu",
     "global"
   ],
-  "path": "/Users/ivodjidrovski/Exposure_Scenario_MCP/defaults/v1/core_defaults.json",
+  "path": "defaults/v1/core_defaults.json",
   "defaults_file": "defaults/v1/core_defaults.json"
 }

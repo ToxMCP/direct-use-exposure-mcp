@@ -5,10 +5,10 @@
     "schemaVersion": "pbpkExternalImportBundle.v1",
     "sourcePlatform": "exposure-scenario-mcp",
     "sourceVersion": "0.1.0",
-    "modelName": "exp-330cdd3f7591-upstream-context",
+    "modelName": "exp-example-dermal-001-upstream-context",
     "modelType": "exposure-scenario-context",
-    "executionDate": "2026-03-24T22:34:30.371366+00:00",
-    "runId": "exp-330cdd3f7591-external-context",
+    "executionDate": "2026-03-24T00:00:00+00:00",
+    "runId": "exp-example-dermal-001-external-context",
     "operator": null,
     "sponsor": null,
     "rawArtifacts": [],
@@ -19,7 +19,7 @@
       "decisionOwner": "external-orchestrator",
       "handoffTarget": "pbpk-mcp",
       "requestedSubject": "Example Solvent A",
-      "sourceScenarioId": "exp-330cdd3f7591",
+      "sourceScenarioId": "exp-example-dermal-001",
       "domain": {
         "species": "human",
         "route": "dermal",
@@ -29,7 +29,7 @@
         "region": "EU"
       },
       "doseScenario": {
-        "scenarioId": "exp-330cdd3f7591",
+        "scenarioId": "exp-example-dermal-001",
         "externalDose": {
           "metric": "normalized_external_dose",
           "value": 0.95625,
@@ -51,12 +51,12 @@
       "preferredName": "Example Solvent A",
       "label": "Example Solvent A",
       "sourceModule": "exposure-scenario-mcp",
-      "summary": "Identity context derived from exposure scenario exp-330cdd3f7591."
+      "summary": "Identity context derived from exposure scenario exp-example-dermal-001."
     },
     "supportingHandoffs": {
       "exposureScenario": {
         "schema_version": "exposureScenario.v1",
-        "scenario_id": "exp-330cdd3f7591",
+        "scenario_id": "exp-example-dermal-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
@@ -282,7 +282,7 @@
           "plugin_version": "0.1.0",
           "defaults_version": "2026.03.24.v3",
           "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-          "generated_at": "2026-03-24T22:34:30.371366+00:00",
+          "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
             "All defaults are surfaced through exposureAssumptionRecord entries."
@@ -340,7 +340,7 @@
       },
       "pbpkScenarioInput": {
         "schema_version": "pbpkScenarioInput.v1",
-        "source_scenario_id": "exp-330cdd3f7591",
+        "source_scenario_id": "exp-example-dermal-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
@@ -375,7 +375,7 @@
           "plugin_version": "0.1.0",
           "defaults_version": "2026.03.24.v3",
           "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-          "generated_at": "2026-03-24T22:34:30.372386+00:00",
+          "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
             "All defaults are surfaced through exposureAssumptionRecord entries."
@@ -413,7 +413,7 @@
       ],
       "residualUncertainty": "upstream-exposure-scenario-assumptions",
       "bundleMetadata": {
-        "sourceScenarioId": "exp-330cdd3f7591"
+        "sourceScenarioId": "exp-example-dermal-001"
       }
     },
     "uncertaintyRegister": {
@@ -431,10 +431,10 @@
   "requestPayload": {
     "sourcePlatform": "exposure-scenario-mcp",
     "sourceVersion": "0.1.0",
-    "modelName": "exp-330cdd3f7591-upstream-context",
+    "modelName": "exp-example-dermal-001-upstream-context",
     "modelType": "exposure-scenario-context",
-    "executionDate": "2026-03-24T22:34:30.371366+00:00",
-    "runId": "exp-330cdd3f7591-external-context",
+    "executionDate": "2026-03-24T00:00:00+00:00",
+    "runId": "exp-example-dermal-001-external-context",
     "operator": null,
     "sponsor": null,
     "rawArtifacts": [],
@@ -445,7 +445,7 @@
       "decisionOwner": "external-orchestrator",
       "handoffTarget": "pbpk-mcp",
       "requestedSubject": "Example Solvent A",
-      "sourceScenarioId": "exp-330cdd3f7591",
+      "sourceScenarioId": "exp-example-dermal-001",
       "domain": {
         "species": "human",
         "route": "dermal",
@@ -455,7 +455,7 @@
         "region": "EU"
       },
       "doseScenario": {
-        "scenarioId": "exp-330cdd3f7591",
+        "scenarioId": "exp-example-dermal-001",
         "externalDose": {
           "metric": "normalized_external_dose",
           "value": 0.95625,
@@ -494,7 +494,7 @@
       ],
       "residualUncertainty": "upstream-exposure-scenario-assumptions",
       "bundleMetadata": {
-        "sourceScenarioId": "exp-330cdd3f7591"
+        "sourceScenarioId": "exp-example-dermal-001"
       }
     },
     "uncertaintyRegister": {
@@ -515,10 +515,10 @@
     "arguments": {
       "sourcePlatform": "exposure-scenario-mcp",
       "sourceVersion": "0.1.0",
-      "modelName": "exp-330cdd3f7591-upstream-context",
+      "modelName": "exp-example-dermal-001-upstream-context",
       "modelType": "exposure-scenario-context",
-      "executionDate": "2026-03-24T22:34:30.371366+00:00",
-      "runId": "exp-330cdd3f7591-external-context",
+      "executionDate": "2026-03-24T00:00:00+00:00",
+      "runId": "exp-example-dermal-001-external-context",
       "operator": null,
       "sponsor": null,
       "rawArtifacts": [],
@@ -529,7 +529,7 @@
         "decisionOwner": "external-orchestrator",
         "handoffTarget": "pbpk-mcp",
         "requestedSubject": "Example Solvent A",
-        "sourceScenarioId": "exp-330cdd3f7591",
+        "sourceScenarioId": "exp-example-dermal-001",
         "domain": {
           "species": "human",
           "route": "dermal",
@@ -539,7 +539,7 @@
           "region": "EU"
         },
         "doseScenario": {
-          "scenarioId": "exp-330cdd3f7591",
+          "scenarioId": "exp-example-dermal-001",
           "externalDose": {
             "metric": "normalized_external_dose",
             "value": 0.95625,
@@ -578,7 +578,7 @@
         ],
         "residualUncertainty": "upstream-exposure-scenario-assumptions",
         "bundleMetadata": {
-          "sourceScenarioId": "exp-330cdd3f7591"
+          "sourceScenarioId": "exp-example-dermal-001"
         }
       },
       "uncertaintyRegister": {
@@ -600,10 +600,10 @@
     "arguments": {
       "sourcePlatform": "exposure-scenario-mcp",
       "sourceVersion": "0.1.0",
-      "modelName": "exp-330cdd3f7591-upstream-context",
+      "modelName": "exp-example-dermal-001-upstream-context",
       "modelType": "exposure-scenario-context",
-      "executionDate": "2026-03-24T22:34:30.371366+00:00",
-      "runId": "exp-330cdd3f7591-external-context",
+      "executionDate": "2026-03-24T00:00:00+00:00",
+      "runId": "exp-example-dermal-001-external-context",
       "operator": null,
       "sponsor": null,
       "rawArtifacts": [],
@@ -614,7 +614,7 @@
         "decisionOwner": "external-orchestrator",
         "handoffTarget": "pbpk-mcp",
         "requestedSubject": "Example Solvent A",
-        "sourceScenarioId": "exp-330cdd3f7591",
+        "sourceScenarioId": "exp-example-dermal-001",
         "domain": {
           "species": "human",
           "route": "dermal",
@@ -624,7 +624,7 @@
           "region": "EU"
         },
         "doseScenario": {
-          "scenarioId": "exp-330cdd3f7591",
+          "scenarioId": "exp-example-dermal-001",
           "externalDose": {
             "metric": "normalized_external_dose",
             "value": 0.95625,
@@ -663,7 +663,7 @@
         ],
         "residualUncertainty": "upstream-exposure-scenario-assumptions",
         "bundleMetadata": {
-          "sourceScenarioId": "exp-330cdd3f7591"
+          "sourceScenarioId": "exp-example-dermal-001"
         }
       },
       "uncertaintyRegister": {
@@ -684,12 +684,12 @@
       "preferredName": "Example Solvent A",
       "label": "Example Solvent A",
       "sourceModule": "exposure-scenario-mcp",
-      "summary": "Identity context derived from exposure scenario exp-330cdd3f7591."
+      "summary": "Identity context derived from exposure scenario exp-example-dermal-001."
     },
     "supportingHandoffs": {
       "exposureScenario": {
         "schema_version": "exposureScenario.v1",
-        "scenario_id": "exp-330cdd3f7591",
+        "scenario_id": "exp-example-dermal-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
@@ -915,7 +915,7 @@
           "plugin_version": "0.1.0",
           "defaults_version": "2026.03.24.v3",
           "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-          "generated_at": "2026-03-24T22:34:30.371366+00:00",
+          "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
             "All defaults are surfaced through exposureAssumptionRecord entries."
@@ -973,7 +973,7 @@
       },
       "pbpkScenarioInput": {
         "schema_version": "pbpkScenarioInput.v1",
-        "source_scenario_id": "exp-330cdd3f7591",
+        "source_scenario_id": "exp-example-dermal-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
@@ -1008,7 +1008,7 @@
           "plugin_version": "0.1.0",
           "defaults_version": "2026.03.24.v3",
           "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-          "generated_at": "2026-03-24T22:34:30.372386+00:00",
+          "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
             "All defaults are surfaced through exposureAssumptionRecord entries."
@@ -1026,7 +1026,7 @@
   },
   "compatibilityReport": {
     "schema_version": "pbpkCompatibilityReport.v1",
-    "source_scenario_id": "exp-330cdd3f7591",
+    "source_scenario_id": "exp-example-dermal-001",
     "compatible": true,
     "target_tool": "ingest_external_pbpk_bundle",
     "checked_route": "dermal",

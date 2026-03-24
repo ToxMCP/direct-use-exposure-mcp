@@ -8,16 +8,16 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "22255af40f01e8bf93ede2581f6570663ee1925f903a1b0e4644b21b02013719",
+    "contentHash": "fecbf69d3edf005039754a098f61f5015537c1f5134a18320ddf86be0268a79d",
     "dataClassification": "internal",
-    "evidenceId": "evidence-486a318e5f086ba9",
+    "evidenceId": "evidence-8969be30cf5b1599",
     "qualityFlag": "default_applied",
     "rawPointer": null,
     "redactionStatus": null,
-    "retrievedAt": "2026-03-24T22:34:30.371366+00:00",
+    "retrievedAt": "2026-03-24T00:00:00+00:00",
     "runId": null,
     "source": "exposure-scenario-mcp",
-    "sourceRef": "exp-330cdd3f7591",
+    "sourceRef": "exp-example-dermal-001",
     "summary": "dermal screening scenario with external dose 0.95625 mg/kg-day",
     "tags": [
       "adult",
@@ -31,14 +31,14 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "22255af40f01e8bf93ede2581f6570663ee1925f903a1b0e4644b21b02013719",
-    "evidenceId": "evidence-486a318e5f086ba9",
+    "contentHash": "fecbf69d3edf005039754a098f61f5015537c1f5134a18320ddf86be0268a79d",
+    "evidenceId": "evidence-8969be30cf5b1599",
     "qualityFlag": "default_applied",
     "rawPointer": null,
     "redactionStatus": null,
-    "retrievedAt": "2026-03-24T22:34:30.371366+00:00",
+    "retrievedAt": "2026-03-24T00:00:00+00:00",
     "source": "exposure-scenario-mcp",
-    "sourceRef": "exp-330cdd3f7591",
+    "sourceRef": "exp-example-dermal-001",
     "summary": "dermal screening scenario with external dose 0.95625 mg/kg-day",
     "tags": [
       "adult",
@@ -59,7 +59,7 @@
         "claimId": "claim-d28354efdd0faa0e",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-486a318e5f086ba9"
+          "evidence-8969be30cf5b1599"
         ],
         "text": "The dermal screening scenario estimates 0.95625 mg/kg-day external dose."
       },
@@ -68,7 +68,7 @@
         "claimId": "claim-7705a199bf3cd2d5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-486a318e5f086ba9"
+          "evidence-8969be30cf5b1599"
         ],
         "text": "The scenario represents adult use of personal_care with 3 event(s) per day."
       },
@@ -77,13 +77,13 @@
         "claimId": "claim-78430fd5a8303de5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-486a318e5f086ba9"
+          "evidence-8969be30cf5b1599"
         ],
         "text": "The scenario is labeled deterministic_screening for external-dose screening use."
       }
     ],
     "evidenceIds": [
-      "evidence-486a318e5f086ba9"
+      "evidence-8969be30cf5b1599"
     ],
     "sectionKey": "exposure-scenario",
     "title": "Exposure Scenario"

@@ -1,6 +1,5 @@
 """Exposure Scenario MCP package."""
 
-from exposure_scenario_mcp.server import create_mcp_server
+from exposure_scenario_mcp.package_metadata import __version__
 
-__all__ = ["create_mcp_server"]
-__version__ = "0.1.0"
+__all__ = ["__version__"]

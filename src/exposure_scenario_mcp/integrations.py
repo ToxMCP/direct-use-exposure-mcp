@@ -770,6 +770,8 @@ def build_toxclaw_evidence_bundle(
 
 def build_toxclaw_refinement_bundle(
     params: ExportToxClawRefinementBundleRequest,
+    *,
+    generated_at: str | None = None,
 ) -> ToxClawExposureRefinementBundle:
     """Export a ToxClaw-facing refinement delta with evidence and workflow hooks."""
 
@@ -779,6 +781,7 @@ def build_toxclaw_refinement_bundle(
             comparison=params.comparison,
         ),
         DefaultsRegistry.load(),
+        generated_at=generated_at,
     )
     changed_assumption_names = [item.name for item in comparison.changed_assumptions]
     summary = _comparison_summary(comparison, params.workflow_action)
@@ -1074,6 +1077,8 @@ def check_pbpk_compatibility(scenario: ExposureScenario) -> PbpkCompatibilityRep
 
 def build_pbpk_external_import_package(
     params: ExportPbpkExternalImportBundleRequest,
+    *,
+    generated_at: str | None = None,
 ) -> PbpkExternalImportPackage:
     """Build a PBPK MCP external-import payload template from an exposure scenario."""
 
@@ -1082,6 +1087,7 @@ def build_pbpk_external_import_package(
     pbpk_input = export_pbpk_input(
         ExportPbpkScenarioInputRequest(scenario=scenario),
         DefaultsRegistry.load(),
+        generated_at=generated_at,
     )
     uncertainty_summary = _upstream_uncertainty_summary(scenario)
     assessment_context = {

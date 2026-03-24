@@ -8,7 +8,7 @@
   "summary": "Exposure scenario comparison decreased external dose by 38.82% relative to baseline.",
   "baselineScenario": {
     "schema_version": "exposureScenario.v1",
-    "scenario_id": "exp-330cdd3f7591",
+    "scenario_id": "exp-example-dermal-001",
     "chemical_id": "DTXSID7020182",
     "chemical_name": "Example Solvent A",
     "route": "dermal",
@@ -234,7 +234,7 @@
       "plugin_version": "0.1.0",
       "defaults_version": "2026.03.24.v3",
       "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-      "generated_at": "2026-03-24T22:34:30.371366+00:00",
+      "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
         "All defaults are surfaced through exposureAssumptionRecord entries."
@@ -292,7 +292,7 @@
   },
   "comparisonScenario": {
     "schema_version": "exposureScenario.v1",
-    "scenario_id": "exp-96ae0ae64784",
+    "scenario_id": "exp-example-dermal-refined-001",
     "chemical_id": "DTXSID7020182",
     "chemical_name": "Example Solvent A",
     "route": "dermal",
@@ -518,7 +518,7 @@
       "plugin_version": "0.1.0",
       "defaults_version": "2026.03.24.v3",
       "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-      "generated_at": "2026-03-24T22:34:30.371520+00:00",
+      "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
         "All defaults are surfaced through exposureAssumptionRecord entries."
@@ -556,8 +556,8 @@
   },
   "comparisonRecord": {
     "schema_version": "scenarioComparisonRecord.v1",
-    "baseline_scenario_id": "exp-330cdd3f7591",
-    "comparison_scenario_id": "exp-96ae0ae64784",
+    "baseline_scenario_id": "exp-example-dermal-001",
+    "comparison_scenario_id": "exp-example-dermal-refined-001",
     "chemical_id": "DTXSID7020182",
     "baseline_dose": {
       "metric": "normalized_external_dose",
@@ -607,7 +607,7 @@
       "plugin_version": "0.1.0",
       "defaults_version": "2026.03.24.v3",
       "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-      "generated_at": "2026-03-24T22:34:30.371934+00:00",
+      "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
         "All defaults are surfaced through exposureAssumptionRecord entries."
@@ -617,16 +617,16 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "f4f93e08a79a94d6e1989ab2512b125f196ab476fe061919f67dbbf81bc8bd9d",
+    "contentHash": "8488a17871eb24711768466c7560c14615c4fac1e7ebdd2ce93f33d5a72001b7",
     "dataClassification": "internal",
-    "evidenceId": "evidence-b506805209064c68",
+    "evidenceId": "evidence-ca7b9ab7d2ce4e12",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
-    "retrievedAt": "2026-03-24T22:34:30.371934+00:00",
+    "retrievedAt": "2026-03-24T00:00:00+00:00",
     "runId": null,
     "source": "exposure-scenario-mcp",
-    "sourceRef": "exp-330cdd3f7591::exp-96ae0ae64784",
+    "sourceRef": "exp-example-dermal-001::exp-example-dermal-refined-001",
     "summary": "Exposure scenario comparison decreased external dose by 38.82% relative to baseline.",
     "tags": [
       "dermal",
@@ -641,14 +641,14 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "f4f93e08a79a94d6e1989ab2512b125f196ab476fe061919f67dbbf81bc8bd9d",
-    "evidenceId": "evidence-b506805209064c68",
+    "contentHash": "8488a17871eb24711768466c7560c14615c4fac1e7ebdd2ce93f33d5a72001b7",
+    "evidenceId": "evidence-ca7b9ab7d2ce4e12",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
-    "retrievedAt": "2026-03-24T22:34:30.371934+00:00",
+    "retrievedAt": "2026-03-24T00:00:00+00:00",
     "source": "exposure-scenario-mcp",
-    "sourceRef": "exp-330cdd3f7591::exp-96ae0ae64784",
+    "sourceRef": "exp-example-dermal-001::exp-example-dermal-refined-001",
     "summary": "Exposure scenario comparison decreased external dose by 38.82% relative to baseline.",
     "tags": [
       "dermal",
@@ -663,23 +663,23 @@
   },
   "reportSection": {
     "schemaVersion": "toxclawReportSection.v1",
-    "body": "- Baseline scenario exp-330cdd3f7591 estimates 0.95625 mg/kg-day; comparison scenario exp-96ae0ae64784 estimates 0.585 mg/kg-day.\n- Comparison dose decreased by 38.82% relative to baseline.\n- Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency.\n- This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation.",
+    "body": "- Baseline scenario exp-example-dermal-001 estimates 0.95625 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day.\n- Comparison dose decreased by 38.82% relative to baseline.\n- Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency.\n- This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation.",
     "claims": [
       {
         "schemaVersion": "toxclawReportClaim.v1",
-        "claimId": "claim-4430e1e25a443da1",
+        "claimId": "claim-ccedda32d15779e5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-b506805209064c68"
+          "evidence-ca7b9ab7d2ce4e12"
         ],
-        "text": "Baseline scenario exp-330cdd3f7591 estimates 0.95625 mg/kg-day; comparison scenario exp-96ae0ae64784 estimates 0.585 mg/kg-day."
+        "text": "Baseline scenario exp-example-dermal-001 estimates 0.95625 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day."
       },
       {
         "schemaVersion": "toxclawReportClaim.v1",
         "claimId": "claim-9265919b6d39ec15",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-b506805209064c68"
+          "evidence-ca7b9ab7d2ce4e12"
         ],
         "text": "Comparison dose decreased by 38.82% relative to baseline."
       },
@@ -688,7 +688,7 @@
         "claimId": "claim-98be2d7dd8221ca2",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-b506805209064c68"
+          "evidence-ca7b9ab7d2ce4e12"
         ],
         "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
       },
@@ -697,13 +697,13 @@
         "claimId": "claim-0409d2d114518ff0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-b506805209064c68"
+          "evidence-ca7b9ab7d2ce4e12"
         ],
         "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
       }
     ],
     "evidenceIds": [
-      "evidence-b506805209064c68"
+      "evidence-ca7b9ab7d2ce4e12"
     ],
     "sectionKey": "exposure-refinement",
     "title": "Exposure Refinement Delta"

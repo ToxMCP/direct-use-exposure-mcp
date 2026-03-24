@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-BENCHMARK_FIXTURE_PATH = REPO_ROOT / "tests" / "fixtures" / "benchmark_cases.json"
+from exposure_scenario_mcp.assets import read_text_asset
 
 
 def load_benchmark_manifest() -> dict:
-    return json.loads(BENCHMARK_FIXTURE_PATH.read_text(encoding="utf-8"))
+    raw_text, _, _ = read_text_asset(
+        "data/benchmarks/benchmark_cases.json",
+        "tests/fixtures/benchmark_cases.json",
+    )
+    return json.loads(raw_text)

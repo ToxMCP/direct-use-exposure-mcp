@@ -1,6 +1,6 @@
 {
   "schema_version": "pbpkScenarioInput.v1",
-  "source_scenario_id": "exp-330cdd3f7591",
+  "source_scenario_id": "exp-example-dermal-001",
   "chemical_id": "DTXSID7020182",
   "chemical_name": "Example Solvent A",
   "route": "dermal",
@@ -35,7 +35,7 @@
     "plugin_version": "0.1.0",
     "defaults_version": "2026.03.24.v3",
     "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-    "generated_at": "2026-03-24T22:34:30.371583+00:00",
+    "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
       "All defaults are surfaced through exposureAssumptionRecord entries."
