@@ -75,6 +75,9 @@ def provenance_policy() -> str:
 - Every scenario, comparison, aggregate summary, and PBPK export must carry explicit provenance.
 - Every applied default must appear in `exposureAssumptionRecord` output with a versioned source.
 - Derived values remain visible as deterministic assumptions; they are not silently folded away.
+- Every assumption now carries explicit governance metadata for evidence grade, applicability,
+  uncertainty type, and default visibility.
+- Every scenario now carries `tierSemantics` so screening outputs cannot quietly overclaim.
 
 ## Source Hierarchy
 

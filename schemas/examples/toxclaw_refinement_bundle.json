@@ -71,7 +71,22 @@
         },
         "confidence": "explicit_user_input",
         "default_applied": false,
-        "rationale": "Product amount per event was supplied directly in grams."
+        "rationale": "Product amount per event was supplied directly in grams.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "user_asserted",
+          "uncertainty_types": [
+            "variability",
+            "parameter_uncertainty"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -88,7 +103,21 @@
         },
         "confidence": "explicit_user_input",
         "default_applied": false,
-        "rationale": "Chemical fraction in the product was supplied explicitly."
+        "rationale": "Chemical fraction in the product was supplied explicitly.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "user_asserted",
+          "uncertainty_types": [
+            "parameter_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "physical_form": "cream"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -105,7 +134,21 @@
         },
         "confidence": "explicit_user_input",
         "default_applied": false,
-        "rationale": "Use frequency was supplied explicitly."
+        "rationale": "Use frequency was supplied explicitly.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "user_asserted",
+          "uncertainty_types": [
+            "variability"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "application_method": "hand_application",
+            "population_group": "adult"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -122,7 +165,27 @@
         },
         "confidence": "deterministic_derived",
         "default_applied": false,
-        "rationale": "Product mass per event multiplied by concentration fraction."
+        "rationale": "Product mass per event multiplied by concentration fraction.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "parameter_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -139,7 +202,20 @@
         },
         "confidence": "registry_default",
         "default_applied": true,
-        "rationale": "Resolved from population defaults for 'adult'."
+        "rationale": "Resolved from population defaults for 'adult'.",
+        "governance": {
+          "evidence_grade": "grade_3",
+          "evidence_basis": "curated_default",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "in_domain",
+          "uncertainty_types": [
+            "variability"
+          ],
+          "applicability_domain": {
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -156,7 +232,23 @@
         },
         "confidence": "registry_default",
         "default_applied": true,
-        "rationale": "Retention factor defaulted from retention_type='leave_on'."
+        "rationale": "Retention factor defaulted from retention_type='leave_on'.",
+        "governance": {
+          "evidence_grade": "grade_1",
+          "evidence_basis": "heuristic_default",
+          "default_visibility": "warn",
+          "applicability_status": "screening_extrapolation",
+          "uncertainty_types": [
+            "parameter_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -173,7 +265,22 @@
         },
         "confidence": "registry_default",
         "default_applied": true,
-        "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'."
+        "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
+        "governance": {
+          "evidence_grade": "grade_1",
+          "evidence_basis": "heuristic_default",
+          "default_visibility": "warn",
+          "applicability_status": "screening_extrapolation",
+          "uncertainty_types": [
+            "parameter_uncertainty",
+            "model_uncertainty"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -190,7 +297,27 @@
         },
         "confidence": "deterministic_derived",
         "default_applied": false,
-        "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency."
+        "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "model_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -207,7 +334,21 @@
         },
         "confidence": "registry_default",
         "default_applied": true,
-        "rationale": "Resolved from population defaults for 'adult'."
+        "rationale": "Resolved from population defaults for 'adult'.",
+        "governance": {
+          "evidence_grade": "grade_3",
+          "evidence_basis": "curated_default",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "in_domain",
+          "uncertainty_types": [
+            "variability",
+            "parameter_uncertainty"
+          ],
+          "applicability_domain": {
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -224,7 +365,27 @@
         },
         "confidence": "deterministic_derived",
         "default_applied": false,
-        "rationale": "Normalized external dose = external mass per day / body weight."
+        "rationale": "Normalized external dose = external mass per day / body weight.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "model_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       }
     ],
     "provenance": {
@@ -284,6 +445,18 @@
         "internal exposure estimation",
         "final risk characterization",
         "population-scale probabilistic inference"
+      ]
+    },
+    "tier_semantics": {
+      "tier_claimed": "tier_0",
+      "tier_earned": "tier_0",
+      "tier_rationale": "Route-specific external exposure is produced with deterministic screening equations and may rely on default factor packs.",
+      "assumption_checks_passed": true,
+      "required_caveats": [
+        "Interpret the result as an external dermal load at the skin boundary; it does not include dermal absorption."
+      ],
+      "forbidden_interpretations": [
+        "Do not interpret this screening result as absorbed dermal dose, systemic exposure, or a final risk conclusion."
       ]
     },
     "interpretation_notes": [
@@ -355,7 +528,22 @@
         },
         "confidence": "explicit_user_input",
         "default_applied": false,
-        "rationale": "Product amount per event was supplied directly in grams."
+        "rationale": "Product amount per event was supplied directly in grams.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "user_asserted",
+          "uncertainty_types": [
+            "variability",
+            "parameter_uncertainty"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -372,7 +560,21 @@
         },
         "confidence": "explicit_user_input",
         "default_applied": false,
-        "rationale": "Chemical fraction in the product was supplied explicitly."
+        "rationale": "Chemical fraction in the product was supplied explicitly.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "user_asserted",
+          "uncertainty_types": [
+            "parameter_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "physical_form": "cream"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -389,7 +591,21 @@
         },
         "confidence": "explicit_user_input",
         "default_applied": false,
-        "rationale": "Use frequency was supplied explicitly."
+        "rationale": "Use frequency was supplied explicitly.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "user_asserted",
+          "uncertainty_types": [
+            "variability"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "application_method": "hand_application",
+            "population_group": "adult"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -406,7 +622,27 @@
         },
         "confidence": "deterministic_derived",
         "default_applied": false,
-        "rationale": "Product mass per event multiplied by concentration fraction."
+        "rationale": "Product mass per event multiplied by concentration fraction.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "parameter_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -423,7 +659,20 @@
         },
         "confidence": "registry_default",
         "default_applied": true,
-        "rationale": "Resolved from population defaults for 'adult'."
+        "rationale": "Resolved from population defaults for 'adult'.",
+        "governance": {
+          "evidence_grade": "grade_3",
+          "evidence_basis": "curated_default",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "in_domain",
+          "uncertainty_types": [
+            "variability"
+          ],
+          "applicability_domain": {
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -440,7 +689,23 @@
         },
         "confidence": "explicit_user_input",
         "default_applied": false,
-        "rationale": "Dermal retention factor was supplied explicitly."
+        "rationale": "Dermal retention factor was supplied explicitly.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "user_asserted",
+          "uncertainty_types": [
+            "parameter_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -457,7 +722,22 @@
         },
         "confidence": "explicit_user_input",
         "default_applied": false,
-        "rationale": "Transfer efficiency was supplied explicitly."
+        "rationale": "Transfer efficiency was supplied explicitly.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "user_asserted",
+          "uncertainty_types": [
+            "parameter_uncertainty",
+            "model_uncertainty"
+          ],
+          "applicability_domain": {
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -474,7 +754,27 @@
         },
         "confidence": "deterministic_derived",
         "default_applied": false,
-        "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency."
+        "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "model_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -491,7 +791,21 @@
         },
         "confidence": "registry_default",
         "default_applied": true,
-        "rationale": "Resolved from population defaults for 'adult'."
+        "rationale": "Resolved from population defaults for 'adult'.",
+        "governance": {
+          "evidence_grade": "grade_3",
+          "evidence_basis": "curated_default",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "in_domain",
+          "uncertainty_types": [
+            "variability",
+            "parameter_uncertainty"
+          ],
+          "applicability_domain": {
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
@@ -508,7 +822,27 @@
         },
         "confidence": "deterministic_derived",
         "default_applied": false,
-        "rationale": "Normalized external dose = external mass per day / body weight."
+        "rationale": "Normalized external dose = external mass per day / body weight.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "model_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
       }
     ],
     "provenance": {
@@ -548,6 +882,18 @@
         "internal exposure estimation",
         "final risk characterization",
         "population-scale probabilistic inference"
+      ]
+    },
+    "tier_semantics": {
+      "tier_claimed": "tier_0",
+      "tier_earned": "tier_0",
+      "tier_rationale": "Route-specific external exposure is produced with deterministic screening equations and may rely on default factor packs.",
+      "assumption_checks_passed": true,
+      "required_caveats": [
+        "Interpret the result as an external dermal load at the skin boundary; it does not include dermal absorption."
+      ],
+      "forbidden_interpretations": [
+        "Do not interpret this screening result as absorbed dermal dose, systemic exposure, or a final risk conclusion."
       ]
     },
     "interpretation_notes": [
@@ -617,9 +963,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "8488a17871eb24711768466c7560c14615c4fac1e7ebdd2ce93f33d5a72001b7",
+    "contentHash": "7b05f7906f897652a97e61e9fa83ec4a598c642a09219fd469b6d84844878dea",
     "dataClassification": "internal",
-    "evidenceId": "evidence-ca7b9ab7d2ce4e12",
+    "evidenceId": "evidence-04654ca4ad46cb7d",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -641,8 +987,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "8488a17871eb24711768466c7560c14615c4fac1e7ebdd2ce93f33d5a72001b7",
-    "evidenceId": "evidence-ca7b9ab7d2ce4e12",
+    "contentHash": "7b05f7906f897652a97e61e9fa83ec4a598c642a09219fd469b6d84844878dea",
+    "evidenceId": "evidence-04654ca4ad46cb7d",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -670,7 +1016,7 @@
         "claimId": "claim-ccedda32d15779e5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-ca7b9ab7d2ce4e12"
+          "evidence-04654ca4ad46cb7d"
         ],
         "text": "Baseline scenario exp-example-dermal-001 estimates 0.95625 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day."
       },
@@ -679,7 +1025,7 @@
         "claimId": "claim-9265919b6d39ec15",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-ca7b9ab7d2ce4e12"
+          "evidence-04654ca4ad46cb7d"
         ],
         "text": "Comparison dose decreased by 38.82% relative to baseline."
       },
@@ -688,7 +1034,7 @@
         "claimId": "claim-98be2d7dd8221ca2",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-ca7b9ab7d2ce4e12"
+          "evidence-04654ca4ad46cb7d"
         ],
         "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
       },
@@ -697,13 +1043,13 @@
         "claimId": "claim-0409d2d114518ff0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-ca7b9ab7d2ce4e12"
+          "evidence-04654ca4ad46cb7d"
         ],
         "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
       }
     ],
     "evidenceIds": [
-      "evidence-ca7b9ab7d2ce4e12"
+      "evidence-04654ca4ad46cb7d"
     ],
     "sectionKey": "exposure-refinement",
     "title": "Exposure Refinement Delta"

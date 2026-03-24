@@ -80,6 +80,7 @@ The design is intentionally narrow:
 - PBPK scenario export plus exact external-import payload packaging
 - Published JSON schemas, examples, contract manifest, and release metadata
 - Release-readiness, result-status, troubleshooting, and provenance resources
+- Assumption-level evidence/applicability governance and explicit Tier-0 interpretation bounds
 
 ## Why this project exists
 
@@ -104,7 +105,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
 | `Refinement workflow support` | Emits comparison/refinement bundles with explicit `refine_exposure` semantics and workflow hooks. |
 | `Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
-| `Scientific guardrails` | Keeps BER, PoD derivation, PBPK execution, and final risk conclusions outside this server. |
+| `Scientific guardrails` | Keeps BER, PoD derivation, PBPK execution, and final risk conclusions outside this server while publishing assumption governance and tier semantics on every scenario. |
 
 ## Table of contents
 

@@ -55,6 +55,47 @@ class Severity(StrEnum):
     ERROR = "error"
 
 
+class EvidenceGrade(StrEnum):
+    GRADE_4 = "grade_4"
+    GRADE_3 = "grade_3"
+    GRADE_2 = "grade_2"
+    GRADE_1 = "grade_1"
+
+
+class EvidenceBasis(StrEnum):
+    EXPLICIT_INPUT = "explicit_input"
+    CURATED_DEFAULT = "curated_default"
+    HEURISTIC_DEFAULT = "heuristic_default"
+    DERIVED = "derived"
+
+
+class DefaultVisibility(StrEnum):
+    SILENT_TRACEABLE = "silent_traceable"
+    WARN = "warn"
+    BLOCK = "block"
+
+
+class ApplicabilityStatus(StrEnum):
+    USER_ASSERTED = "user_asserted"
+    IN_DOMAIN = "in_domain"
+    SCREENING_EXTRAPOLATION = "screening_extrapolation"
+    DERIVED = "derived"
+
+
+class UncertaintyType(StrEnum):
+    VARIABILITY = "variability"
+    PARAMETER_UNCERTAINTY = "parameter_uncertainty"
+    MODEL_UNCERTAINTY = "model_uncertainty"
+    SCENARIO_UNCERTAINTY = "scenario_uncertainty"
+
+
+class TierLevel(StrEnum):
+    TIER_0 = "tier_0"
+    TIER_1 = "tier_1"
+    TIER_2 = "tier_2"
+    TIER_3 = "tier_3"
+
+
 class AssumptionSourceReference(StrictModel):
     source_id: str = Field(..., description="Stable identifier for the source.")
     title: str = Field(..., description="Human-readable source title.")
@@ -81,6 +122,65 @@ class FitForPurpose(StrictModel):
     not_suitable_for: list[str] = Field(default_factory=list, description="Known exclusions.")
 
 
+class AssumptionGovernance(StrictModel):
+    evidence_grade: EvidenceGrade | None = Field(
+        default=None,
+        description=(
+            "Ordinal evidence grade for defaults or curated source families, where "
+            "grade_4 is strongest and grade_1 is heuristic."
+        ),
+    )
+    evidence_basis: EvidenceBasis = Field(
+        ...,
+        description=(
+            "Whether the value was explicit input, curated default, heuristic, or derived."
+        ),
+    )
+    default_visibility: DefaultVisibility = Field(
+        ...,
+        description=(
+            "Whether the assumption can remain silently traceable, must warn, or would block."
+        ),
+    )
+    applicability_status: ApplicabilityStatus = Field(
+        ...,
+        description=(
+            "Whether the parameter is in-domain, user-asserted, or a screening extrapolation."
+        ),
+    )
+    uncertainty_types: list[UncertaintyType] = Field(
+        default_factory=list,
+        description="Primary uncertainty families attached to the parameter.",
+    )
+    applicability_domain: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        description=(
+            "Structured scenario context that describes where this value is intended to apply."
+        ),
+    )
+
+
+class TierSemantics(StrictModel):
+    tier_claimed: TierLevel = Field(
+        ..., description="Tier family implemented by the active model."
+    )
+    tier_earned: TierLevel = Field(
+        ..., description="Tier earned after the current checks and defaults."
+    )
+    tier_rationale: str = Field(..., description="Short rationale for the current tier assignment.")
+    assumption_checks_passed: bool = Field(
+        ..., description="Whether the minimum checks for the earned tier passed."
+    )
+    required_caveats: list[str] = Field(
+        default_factory=list,
+        description="Caveats that should stay attached to interpretation of the result.",
+    )
+    forbidden_interpretations: list[str] = Field(
+        default_factory=list,
+        description="Interpretations that the result must not support at the current tier.",
+    )
+
+
 class ExposureAssumptionRecord(StrictModel):
     schema_version: Literal["exposureAssumptionRecord.v1"] = "exposureAssumptionRecord.v1"
     name: str = Field(..., description="Stable parameter name used by the engine.")
@@ -95,6 +195,12 @@ class ExposureAssumptionRecord(StrictModel):
     confidence: str = Field(..., description="Human-readable confidence label.")
     default_applied: bool = Field(..., description="Whether a default value was applied.")
     rationale: str = Field(..., description="Why this assumption was used.")
+    governance: AssumptionGovernance = Field(
+        ...,
+        description=(
+            "Scientific-governance metadata for defaulting, applicability, and uncertainty."
+        ),
+    )
 
 
 class ProvenanceBundle(StrictModel):
@@ -246,6 +352,9 @@ class ExposureScenario(StrictModel):
         default_factory=list, description="Quality flags and warnings."
     )
     fit_for_purpose: FitForPurpose = Field(..., description="Fit-for-purpose metadata.")
+    tier_semantics: TierSemantics = Field(
+        ..., description="Tier and interpretation-boundary semantics for the active model."
+    )
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable scenario notes."
     )

@@ -1,0 +1,59 @@
+{
+  "$defs": {
+    "TierLevel": {
+      "enum": [
+        "tier_0",
+        "tier_1",
+        "tier_2",
+        "tier_3"
+      ],
+      "title": "TierLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "tier_claimed": {
+      "$ref": "#/$defs/TierLevel",
+      "description": "Tier family implemented by the active model."
+    },
+    "tier_earned": {
+      "$ref": "#/$defs/TierLevel",
+      "description": "Tier earned after the current checks and defaults."
+    },
+    "tier_rationale": {
+      "description": "Short rationale for the current tier assignment.",
+      "title": "Tier Rationale",
+      "type": "string"
+    },
+    "assumption_checks_passed": {
+      "description": "Whether the minimum checks for the earned tier passed.",
+      "title": "Assumption Checks Passed",
+      "type": "boolean"
+    },
+    "required_caveats": {
+      "description": "Caveats that should stay attached to interpretation of the result.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Caveats",
+      "type": "array"
+    },
+    "forbidden_interpretations": {
+      "description": "Interpretations that the result must not support at the current tier.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Forbidden Interpretations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "tier_claimed",
+    "tier_earned",
+    "tier_rationale",
+    "assumption_checks_passed"
+  ],
+  "title": "TierSemantics",
+  "type": "object"
+}

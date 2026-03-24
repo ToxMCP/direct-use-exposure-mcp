@@ -4,14 +4,19 @@ import pytest
 
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
+    ApplicabilityStatus,
     BuildAggregateExposureScenarioInput,
     CompareExposureScenariosInput,
+    DefaultVisibility,
+    EvidenceBasis,
+    EvidenceGrade,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
     PopulationProfile,
     ProductUseProfile,
     Route,
     ScenarioClass,
+    TierLevel,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.runtime import (
@@ -58,6 +63,15 @@ def test_dermal_screening_defaults_and_dose() -> None:
     assumption_names = {item.name for item in scenario.assumptions}
     assert {"retention_factor", "transfer_efficiency", "body_weight_kg"} <= assumption_names
     assert any(flag.code == "heuristic_default_source" for flag in scenario.quality_flags)
+    retention = next(item for item in scenario.assumptions if item.name == "retention_factor")
+    assert retention.governance.evidence_basis == EvidenceBasis.HEURISTIC_DEFAULT
+    assert retention.governance.evidence_grade == EvidenceGrade.GRADE_1
+    assert retention.governance.default_visibility == DefaultVisibility.WARN
+    assert retention.governance.applicability_status == ApplicabilityStatus.SCREENING_EXTRAPOLATION
+    assert retention.governance.applicability_domain["retention_type"] == "leave_on"
+    assert scenario.tier_semantics.tier_claimed == TierLevel.TIER_0
+    assert scenario.tier_semantics.tier_earned == TierLevel.TIER_0
+    assert scenario.tier_semantics.assumption_checks_passed is True
 
 
 def test_inhalation_screening_defaults_and_dose() -> None:
@@ -90,6 +104,11 @@ def test_inhalation_screening_defaults_and_dose() -> None:
         4.29832067, rel=1e-6
     )
     assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(1.9342443, rel=1e-6)
+    assert any(item.code == "breathing_zone_not_modeled" for item in scenario.limitations)
+    assert any(item.code == "tier_0_spray_screening" for item in scenario.quality_flags)
+    assert "breathing-zone peak concentration" in " ".join(
+        scenario.tier_semantics.forbidden_interpretations
+    )
 
 
 def test_eu_inhalation_room_defaults_use_regional_source() -> None:
@@ -148,6 +167,7 @@ def test_volume_based_cream_uses_physical_form_density_override() -> None:
 
     assert density.value == pytest.approx(0.95, rel=1e-6)
     assert density.source.source_id == "heuristic_screening_defaults_v1"
+    assert density.governance.applicability_domain["physical_form"] == "cream"
     assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(161.5, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(2.01875, rel=1e-6)
 

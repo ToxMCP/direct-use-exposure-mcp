@@ -29,6 +29,7 @@ from exposure_scenario_mcp.integrations import (
 )
 from exposure_scenario_mcp.models import (
     AggregateExposureSummary,
+    AssumptionGovernance,
     BuildAggregateExposureScenarioInput,
     CompareExposureScenariosInput,
     ContractManifest,
@@ -56,6 +57,7 @@ from exposure_scenario_mcp.models import (
     ScenarioComparisonRecord,
     SecurityProvenanceReviewFinding,
     SecurityProvenanceReviewReport,
+    TierSemantics,
     ToolResultMeta,
 )
 from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
@@ -69,9 +71,11 @@ SCHEMA_MODELS = {
     "exposureScenario.v1": ExposureScenario,
     "aggregateExposureSummary.v1": AggregateExposureSummary,
     "exposureAssumptionRecord.v1": ExposureAssumptionRecord,
+    "assumptionGovernance.v1": AssumptionGovernance,
     "pbpkScenarioInput.v1": PbpkScenarioInput,
     "scenarioComparisonRecord.v1": ScenarioComparisonRecord,
     "provenanceBundle.v1": ProvenanceBundle,
+    "tierSemantics.v1": TierSemantics,
     "buildAggregateExposureScenarioInput.v1": BuildAggregateExposureScenarioInput,
     "exportPbpkScenarioInputRequest.v1": ExportPbpkScenarioInputRequest,
     "exportPbpkExternalImportBundleRequest.v1": ExportPbpkExternalImportBundleRequest,
@@ -296,6 +300,8 @@ def algorithm_notes() -> str:
 
 - Convert product amount per event into grams.
 - Convert grams into chemical mass per event using `concentration_fraction`.
+- Emit explicit assumption governance showing evidence grade, applicability status,
+  and uncertainty families for every resolved parameter.
 - Dermal:
   `external_mass_mg_day = chemical_mass_mg_event * use_events_per_day *
   retention_factor * transfer_efficiency`
@@ -303,6 +309,7 @@ def algorithm_notes() -> str:
   `external_mass_mg_day = chemical_mass_mg_event * use_events_per_day *
   ingestion_fraction`
 - Normalize by body weight to emit `mg/kg-day`.
+- Attach `tierSemantics` so the result stays bounded as Tier-0 deterministic screening.
 
 ## Inhalation Plugin
 
@@ -314,6 +321,7 @@ def algorithm_notes() -> str:
   `average_air_concentration * inhalation_rate * exposure_duration *
   events_per_day`.
 - Normalize by body weight to emit `mg/kg-day`.
+- Emit Tier-0 caveats that forbid interpreting room-average output as a breathing-zone peak.
 
 ## Aggregate Summary
 

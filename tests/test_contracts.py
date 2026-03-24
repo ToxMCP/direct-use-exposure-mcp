@@ -61,11 +61,13 @@ def test_contract_manifest_and_server_boot() -> None:
     assert manifest["server_name"] == "exposure_scenario_mcp"
     assert len(manifest["tools"]) == 8
     assert "exposureScenario.v1" in manifest["schemas"]
+    assert "assumptionGovernance.v1" in manifest["schemas"]
     assert "pbpkExternalImportPackage.v1" in manifest["schemas"]
     assert "pbpkExternalImportRequest.v1" in manifest["schemas"]
     assert "releaseMetadataReport.v1" in manifest["schemas"]
     assert "releaseReadinessReport.v1" in manifest["schemas"]
     assert "securityProvenanceReviewReport.v1" in manifest["schemas"]
+    assert "tierSemantics.v1" in manifest["schemas"]
     assert "screening_dermal_scenario" in manifest["examples"]
     assert "toxclaw_evidence_bundle" in manifest["examples"]
     assert "toxclaw_refinement_bundle" in manifest["examples"]

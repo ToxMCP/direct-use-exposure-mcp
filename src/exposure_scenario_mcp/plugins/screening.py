@@ -11,6 +11,7 @@ from exposure_scenario_mcp.models import (
     Route,
     ScenarioClass,
     ScenarioDose,
+    TierLevel,
 )
 from exposure_scenario_mcp.runtime import (
     ScenarioExecutionContext,
@@ -215,5 +216,34 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
             limitations=tracker.limitations,
             quality_flags=tracker.quality_flags,
             fit_for_purpose=tracker.fit_for_purpose("deterministic_screening"),
+            tier_semantics=tracker.tier_semantics(
+                tier_claimed=TierLevel.TIER_0,
+                tier_rationale=(
+                    "Route-specific external exposure is produced with deterministic screening "
+                    "equations and may rely on default factor packs."
+                ),
+                required_caveats=(
+                    [
+                        "Interpret the result as an external dermal load at the skin boundary; "
+                        "it does not include dermal absorption."
+                    ]
+                    if request.route == Route.DERMAL
+                    else [
+                        "Interpret the result as external oral intake mass; it does not include "
+                        "oral absorption or internal dose translation."
+                    ]
+                ),
+                forbidden_interpretations=(
+                    [
+                        "Do not interpret this screening result as absorbed dermal dose, "
+                        "systemic exposure, or a final risk conclusion."
+                    ]
+                    if request.route == Route.DERMAL
+                    else [
+                        "Do not interpret this screening result as absorbed oral dose, "
+                        "systemic exposure, or a final risk conclusion."
+                    ]
+                ),
+            ),
             interpretation_notes=notes,
         )

@@ -1,5 +1,83 @@
 {
   "$defs": {
+    "ApplicabilityStatus": {
+      "enum": [
+        "user_asserted",
+        "in_domain",
+        "screening_extrapolation",
+        "derived"
+      ],
+      "title": "ApplicabilityStatus",
+      "type": "string"
+    },
+    "AssumptionGovernance": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_grade": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceGrade"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ordinal evidence grade for defaults or curated source families, where grade_4 is strongest and grade_1 is heuristic."
+        },
+        "evidence_basis": {
+          "$ref": "#/$defs/EvidenceBasis",
+          "description": "Whether the value was explicit input, curated default, heuristic, or derived."
+        },
+        "default_visibility": {
+          "$ref": "#/$defs/DefaultVisibility",
+          "description": "Whether the assumption can remain silently traceable, must warn, or would block."
+        },
+        "applicability_status": {
+          "$ref": "#/$defs/ApplicabilityStatus",
+          "description": "Whether the parameter is in-domain, user-asserted, or a screening extrapolation."
+        },
+        "uncertainty_types": {
+          "description": "Primary uncertainty families attached to the parameter.",
+          "items": {
+            "$ref": "#/$defs/UncertaintyType"
+          },
+          "title": "Uncertainty Types",
+          "type": "array"
+        },
+        "applicability_domain": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Structured scenario context that describes where this value is intended to apply.",
+          "title": "Applicability Domain",
+          "type": "object"
+        }
+      },
+      "required": [
+        "evidence_basis",
+        "default_visibility",
+        "applicability_status"
+      ],
+      "title": "AssumptionGovernance",
+      "type": "object"
+    },
     "AssumptionSourceReference": {
       "additionalProperties": false,
       "properties": {
@@ -46,6 +124,35 @@
       "title": "AssumptionSourceReference",
       "type": "object"
     },
+    "DefaultVisibility": {
+      "enum": [
+        "silent_traceable",
+        "warn",
+        "block"
+      ],
+      "title": "DefaultVisibility",
+      "type": "string"
+    },
+    "EvidenceBasis": {
+      "enum": [
+        "explicit_input",
+        "curated_default",
+        "heuristic_default",
+        "derived"
+      ],
+      "title": "EvidenceBasis",
+      "type": "string"
+    },
+    "EvidenceGrade": {
+      "enum": [
+        "grade_4",
+        "grade_3",
+        "grade_2",
+        "grade_1"
+      ],
+      "title": "EvidenceGrade",
+      "type": "string"
+    },
     "SourceKind": {
       "enum": [
         "user_input",
@@ -54,6 +161,16 @@
         "system"
       ],
       "title": "SourceKind",
+      "type": "string"
+    },
+    "UncertaintyType": {
+      "enum": [
+        "variability",
+        "parameter_uncertainty",
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "title": "UncertaintyType",
       "type": "string"
     }
   },
@@ -126,6 +243,10 @@
       "description": "Why this assumption was used.",
       "title": "Rationale",
       "type": "string"
+    },
+    "governance": {
+      "$ref": "#/$defs/AssumptionGovernance",
+      "description": "Scientific-governance metadata for defaulting, applicability, and uncertainty."
     }
   },
   "required": [
@@ -135,7 +256,8 @@
     "source",
     "confidence",
     "default_applied",
-    "rationale"
+    "rationale",
+    "governance"
   ],
   "title": "ExposureAssumptionRecord",
   "type": "object"

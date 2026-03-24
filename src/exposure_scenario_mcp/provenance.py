@@ -7,14 +7,23 @@ from datetime import UTC, datetime
 
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
+    ApplicabilityStatus,
+    AssumptionGovernance,
     AssumptionSourceReference,
+    DefaultVisibility,
+    EvidenceBasis,
+    EvidenceGrade,
     ExposureAssumptionRecord,
     FitForPurpose,
     LimitationNote,
     ProvenanceBundle,
     QualityFlag,
+    ScalarValue,
     Severity,
     SourceKind,
+    TierLevel,
+    TierSemantics,
+    UncertaintyType,
 )
 
 SYSTEM_SOURCE = AssumptionSourceReference(
@@ -25,6 +34,107 @@ SYSTEM_SOURCE = AssumptionSourceReference(
     hash_sha256=None,
 )
 
+DEFAULT_SOURCE_GRADE_HINTS = {
+    "benchmark_": EvidenceGrade.GRADE_3,
+    "epa_": EvidenceGrade.GRADE_4,
+    "echa_": EvidenceGrade.GRADE_3,
+    "heuristic_": EvidenceGrade.GRADE_1,
+}
+
+ASSUMPTION_UNCERTAINTY_TYPES: dict[str, tuple[UncertaintyType, ...]] = {
+    "body_weight_kg": (UncertaintyType.VARIABILITY,),
+    "inhalation_rate_m3_per_hour": (UncertaintyType.VARIABILITY,),
+    "exposed_surface_area_cm2": (
+        UncertaintyType.VARIABILITY,
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+    ),
+    "density_g_per_ml": (UncertaintyType.PARAMETER_UNCERTAINTY,),
+    "retention_factor": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "transfer_efficiency": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.MODEL_UNCERTAINTY,
+    ),
+    "ingestion_fraction": (
+        UncertaintyType.VARIABILITY,
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+    ),
+    "aerosolized_fraction": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.MODEL_UNCERTAINTY,
+    ),
+    "room_volume_m3": (
+        UncertaintyType.VARIABILITY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "air_exchange_rate_per_hour": (
+        UncertaintyType.VARIABILITY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "exposure_duration_hours": (
+        UncertaintyType.VARIABILITY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "use_events_per_day": (UncertaintyType.VARIABILITY,),
+    "use_amount_per_event": (
+        UncertaintyType.VARIABILITY,
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+    ),
+    "concentration_fraction": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "product_mass_g_per_event": (UncertaintyType.PARAMETER_UNCERTAINTY,),
+    "chemical_mass_mg_per_event": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "external_mass_mg_per_day": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "released_mass_mg_per_event": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "average_air_concentration_mg_per_m3": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "inhaled_mass_mg_per_day": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "normalized_external_dose_mg_per_kg_day": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+}
+
+ASSUMPTION_DOMAIN_FIELDS: dict[str, tuple[str, ...]] = {
+    "body_weight_kg": ("population_group", "region"),
+    "inhalation_rate_m3_per_hour": ("population_group", "region"),
+    "exposed_surface_area_cm2": ("population_group", "region"),
+    "density_g_per_ml": ("product_category", "physical_form"),
+    "retention_factor": (
+        "product_category",
+        "physical_form",
+        "application_method",
+        "retention_type",
+    ),
+    "transfer_efficiency": ("product_category", "physical_form", "application_method"),
+    "ingestion_fraction": ("product_category", "application_method", "population_group"),
+    "aerosolized_fraction": ("product_category", "physical_form", "application_method"),
+    "room_volume_m3": ("region", "product_category", "application_method"),
+    "air_exchange_rate_per_hour": ("region", "product_category", "application_method"),
+    "exposure_duration_hours": ("region", "application_method"),
+    "use_events_per_day": ("population_group", "product_category", "application_method"),
+    "use_amount_per_event": ("product_category", "physical_form", "application_method"),
+    "concentration_fraction": ("product_category", "physical_form"),
+}
+
 
 @dataclass(slots=True)
 class AssumptionTracker:
@@ -34,6 +144,85 @@ class AssumptionTracker:
     assumptions: list[ExposureAssumptionRecord] = field(default_factory=list)
     limitations: list[LimitationNote] = field(default_factory=list)
     quality_flags: list[QualityFlag] = field(default_factory=list)
+    scenario_context: dict[str, ScalarValue] = field(default_factory=dict)
+
+    def set_context(self, **context: ScalarValue) -> None:
+        self.scenario_context = {key: value for key, value in context.items() if value is not None}
+
+    def _evidence_grade(
+        self,
+        source_kind: SourceKind,
+        source: AssumptionSourceReference,
+    ) -> EvidenceGrade | None:
+        if source_kind != SourceKind.DEFAULT_REGISTRY:
+            return None
+        for prefix, grade in DEFAULT_SOURCE_GRADE_HINTS.items():
+            if source.source_id.startswith(prefix):
+                return grade
+        return EvidenceGrade.GRADE_2
+
+    def _evidence_basis(
+        self,
+        source_kind: SourceKind,
+        source: AssumptionSourceReference,
+    ) -> EvidenceBasis:
+        if source_kind == SourceKind.USER_INPUT:
+            return EvidenceBasis.EXPLICIT_INPUT
+        if source_kind == SourceKind.DERIVED:
+            return EvidenceBasis.DERIVED
+        if source.source_id.startswith("heuristic_"):
+            return EvidenceBasis.HEURISTIC_DEFAULT
+        return EvidenceBasis.CURATED_DEFAULT
+
+    def _default_visibility(
+        self,
+        source_kind: SourceKind,
+        source: AssumptionSourceReference,
+    ) -> DefaultVisibility:
+        if source_kind == SourceKind.DEFAULT_REGISTRY and source.source_id.startswith("heuristic_"):
+            return DefaultVisibility.WARN
+        return DefaultVisibility.SILENT_TRACEABLE
+
+    def _applicability_status(
+        self,
+        source_kind: SourceKind,
+        source: AssumptionSourceReference,
+    ) -> ApplicabilityStatus:
+        if source_kind == SourceKind.USER_INPUT:
+            return ApplicabilityStatus.USER_ASSERTED
+        if source_kind == SourceKind.DERIVED:
+            return ApplicabilityStatus.DERIVED
+        if source.source_id.startswith("heuristic_"):
+            return ApplicabilityStatus.SCREENING_EXTRAPOLATION
+        return ApplicabilityStatus.IN_DOMAIN
+
+    def _uncertainty_types(self, name: str) -> list[UncertaintyType]:
+        return list(ASSUMPTION_UNCERTAINTY_TYPES.get(name, ()))
+
+    def _applicability_domain(self, name: str) -> dict[str, ScalarValue]:
+        field_names = ASSUMPTION_DOMAIN_FIELDS.get(name)
+        if not field_names:
+            return dict(self.scenario_context)
+        return {
+            key: value
+            for key, value in self.scenario_context.items()
+            if key in field_names and value is not None
+        }
+
+    def _governance(
+        self,
+        name: str,
+        source_kind: SourceKind,
+        source: AssumptionSourceReference,
+    ) -> AssumptionGovernance:
+        return AssumptionGovernance(
+            evidence_grade=self._evidence_grade(source_kind, source),
+            evidence_basis=self._evidence_basis(source_kind, source),
+            default_visibility=self._default_visibility(source_kind, source),
+            applicability_status=self._applicability_status(source_kind, source),
+            uncertainty_types=self._uncertainty_types(name),
+            applicability_domain=self._applicability_domain(name),
+        )
 
     def add(
         self,
@@ -56,6 +245,7 @@ class AssumptionTracker:
                 confidence=confidence,
                 default_applied=default_applied,
                 rationale=rationale,
+                governance=self._governance(name, source_kind, source),
             )
         )
 
@@ -145,6 +335,25 @@ class AssumptionTracker:
                 "final risk characterization",
                 "population-scale probabilistic inference",
             ],
+        )
+
+    def tier_semantics(
+        self,
+        *,
+        tier_claimed: TierLevel,
+        tier_earned: TierLevel | None = None,
+        tier_rationale: str,
+        required_caveats: list[str] | None = None,
+        forbidden_interpretations: list[str] | None = None,
+        assumption_checks_passed: bool = True,
+    ) -> TierSemantics:
+        return TierSemantics(
+            tier_claimed=tier_claimed,
+            tier_earned=tier_earned or tier_claimed,
+            tier_rationale=tier_rationale,
+            assumption_checks_passed=assumption_checks_passed,
+            required_caveats=required_caveats or [],
+            forbidden_interpretations=forbidden_interpretations or [],
         )
 
     def provenance(

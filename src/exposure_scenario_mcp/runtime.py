@@ -419,5 +419,15 @@ class ScenarioEngine:
                 ),
             ) from error
         tracker = AssumptionTracker(registry=self.defaults_registry)
+        tracker.set_context(
+            route=request.route.value,
+            scenario_class=request.scenario_class.value,
+            product_category=request.product_use_profile.product_category,
+            physical_form=request.product_use_profile.physical_form,
+            application_method=request.product_use_profile.application_method,
+            retention_type=request.product_use_profile.retention_type,
+            population_group=request.population_profile.population_group,
+            region=request.population_profile.region,
+        )
         context = ScenarioExecutionContext(registry=self.defaults_registry, tracker=tracker)
         return plugin.build(request, context)

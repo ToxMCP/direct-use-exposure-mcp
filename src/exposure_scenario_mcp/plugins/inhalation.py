@@ -11,6 +11,8 @@ from exposure_scenario_mcp.models import (
     Route,
     ScenarioClass,
     ScenarioDose,
+    Severity,
+    TierLevel,
 )
 from exposure_scenario_mcp.runtime import (
     ScenarioExecutionContext,
@@ -32,6 +34,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
         profile = request.product_use_profile
         population = request.population_profile
         registry = context.registry
+        spray_methods = {"trigger_spray", "pump_spray", "aerosol_spray"}
 
         product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
         chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
@@ -194,6 +197,22 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             "mg/kg-day",
             "Normalized external dose = inhaled mass per day / body weight.",
         )
+        if profile.application_method in spray_methods:
+            tracker.add_limitation(
+                "breathing_zone_not_modeled",
+                (
+                    "Tier-0 inhalation uses a well-mixed room average and does not resolve "
+                    "near-field breathing-zone peaks for spray events."
+                ),
+            )
+            tracker.add_quality_flag(
+                "tier_0_spray_screening",
+                (
+                    "Spray event was evaluated with the Tier-0 well-mixed screening model; "
+                    "consider a near-field/far-field tier for directed or short-duration sprays."
+                ),
+                severity=Severity.WARNING,
+            )
 
         return ExposureScenario(
             scenario_id=f"inh-{uuid4().hex[:12]}",
@@ -226,6 +245,24 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             limitations=tracker.limitations,
             quality_flags=tracker.quality_flags,
             fit_for_purpose=tracker.fit_for_purpose("inhalation_screening"),
+            tier_semantics=tracker.tier_semantics(
+                tier_claimed=TierLevel.TIER_0,
+                tier_rationale=(
+                    "Inhalation output uses a deterministic single-zone, well-mixed room model "
+                    "with first-order air exchange removal."
+                ),
+                required_caveats=[
+                    "Interpret the reported air concentration as a room-average screening value.",
+                    "Air exchange is represented as a first-order removal term rather than a "
+                    "full airflow or aerosol-dynamics treatment.",
+                ],
+                forbidden_interpretations=[
+                    "Do not interpret this result as a breathing-zone peak concentration.",
+                    "Do not treat directed or source-proximal spray events as near-field resolved.",
+                    "Do not interpret the result as deposited dose, absorbed dose, or a final "
+                    "risk conclusion.",
+                ],
+            ),
             interpretation_notes=[
                 "Deterministic inhalation screening scenario using a well-mixed room assumption.",
                 "Air exchange acts as a first-order removal term rather than a full CFD treatment.",

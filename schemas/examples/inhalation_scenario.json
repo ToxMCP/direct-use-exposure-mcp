@@ -61,7 +61,22 @@
       },
       "confidence": "explicit_user_input",
       "default_applied": false,
-      "rationale": "Product amount per event was supplied in milliliters and converted with density."
+      "rationale": "Product amount per event was supplied in milliliters and converted with density.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -78,7 +93,20 @@
       },
       "confidence": "registry_default",
       "default_applied": true,
-      "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category and physical form when available."
+      "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category and physical form when available.",
+      "governance": {
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
+        "uncertainty_types": [
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "physical_form": "spray"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -95,7 +123,26 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Converted volume-based use amount into mass using density."
+      "rationale": "Converted volume-based use amount into mass using density.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -112,7 +159,21 @@
       },
       "confidence": "explicit_user_input",
       "default_applied": false,
-      "rationale": "Chemical fraction in the product was supplied explicitly."
+      "rationale": "Chemical fraction in the product was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "physical_form": "spray"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -129,7 +190,21 @@
       },
       "confidence": "explicit_user_input",
       "default_applied": false,
-      "rationale": "Use frequency was supplied explicitly."
+      "rationale": "Use frequency was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "trigger_spray",
+          "population_group": "adult"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -146,7 +221,27 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Product mass per event multiplied by concentration fraction."
+      "rationale": "Product mass per event multiplied by concentration fraction.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -163,7 +258,22 @@
       },
       "confidence": "registry_default",
       "default_applied": true,
-      "rationale": "Aerosolized fraction defaulted from application_method='trigger_spray' and product_category='household_cleaner'."
+      "rationale": "Aerosolized fraction defaulted from application_method='trigger_spray' and product_category='household_cleaner'.",
+      "governance": {
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -180,7 +290,22 @@
       },
       "confidence": "explicit_user_input",
       "default_applied": false,
-      "rationale": "Room volume was supplied explicitly."
+      "rationale": "Room volume was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -197,7 +322,22 @@
       },
       "confidence": "registry_default",
       "default_applied": true,
-      "rationale": "Air exchange rate defaulted from the shared inhalation defaults pack."
+      "rationale": "Air exchange rate defaulted from the shared inhalation defaults pack.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -214,7 +354,21 @@
       },
       "confidence": "registry_default",
       "default_applied": true,
-      "rationale": "Exposure duration defaulted from the shared inhalation defaults pack."
+      "rationale": "Exposure duration defaulted from the shared inhalation defaults pack.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -231,7 +385,20 @@
       },
       "confidence": "explicit_user_input",
       "default_applied": false,
-      "rationale": "Inhalation rate was supplied explicitly."
+      "rationale": "Inhalation rate was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -248,7 +415,20 @@
       },
       "confidence": "explicit_user_input",
       "default_applied": false,
-      "rationale": "Body weight was supplied explicitly for dose normalization."
+      "rationale": "Body weight was supplied explicitly for dose normalization.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -265,7 +445,27 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Released mass = chemical mass per event x aerosolized fraction."
+      "rationale": "Released mass = chemical mass per event x aerosolized fraction.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -282,7 +482,27 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Average air concentration derived from a well-mixed room model with first-order air exchange removal."
+      "rationale": "Average air concentration derived from a well-mixed room model with first-order air exchange removal.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -299,7 +519,27 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Inhaled mass = average concentration x inhalation rate x event duration x events/day."
+      "rationale": "Inhaled mass = average concentration x inhalation rate x event duration x events/day.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
@@ -316,7 +556,27 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Normalized external dose = inhaled mass per day / body weight."
+      "rationale": "Normalized external dose = inhaled mass per day / body weight.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
     }
   ],
   "provenance": {
@@ -332,7 +592,13 @@
       "All defaults are surfaced through exposureAssumptionRecord entries."
     ]
   },
-  "limitations": [],
+  "limitations": [
+    {
+      "code": "breathing_zone_not_modeled",
+      "severity": "warning",
+      "message": "Tier-0 inhalation uses a well-mixed room average and does not resolve near-field breathing-zone peaks for spray events."
+    }
+  ],
   "quality_flags": [
     {
       "code": "default_applied",
@@ -363,6 +629,11 @@
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'exposure_duration_hours'."
+    },
+    {
+      "code": "tier_0_spray_screening",
+      "severity": "warning",
+      "message": "Spray event was evaluated with the Tier-0 well-mixed screening model; consider a near-field/far-field tier for directed or short-duration sprays."
     }
   ],
   "fit_for_purpose": {
@@ -376,6 +647,21 @@
       "internal exposure estimation",
       "final risk characterization",
       "population-scale probabilistic inference"
+    ]
+  },
+  "tier_semantics": {
+    "tier_claimed": "tier_0",
+    "tier_earned": "tier_0",
+    "tier_rationale": "Inhalation output uses a deterministic single-zone, well-mixed room model with first-order air exchange removal.",
+    "assumption_checks_passed": true,
+    "required_caveats": [
+      "Interpret the reported air concentration as a room-average screening value.",
+      "Air exchange is represented as a first-order removal term rather than a full airflow or aerosol-dynamics treatment."
+    ],
+    "forbidden_interpretations": [
+      "Do not interpret this result as a breathing-zone peak concentration.",
+      "Do not treat directed or source-proximal spray events as near-field resolved.",
+      "Do not interpret the result as deposited dose, absorbed dose, or a final risk conclusion."
     ]
   },
   "interpretation_notes": [
