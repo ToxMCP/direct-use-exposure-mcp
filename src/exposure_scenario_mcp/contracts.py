@@ -397,7 +397,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ),
             ContractResourceEntry(
                 uri="docs://validation-dossier",
-                description="Validation dossier with external candidate coverage and open gaps.",
+                description="Validation dossier with cited external references and open gaps.",
             ),
             ContractResourceEntry(
                 uri="docs://suite-integration-guide",
@@ -440,13 +440,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ),
             ContractResourceEntry(
                 uri="validation://manifest",
-                description="Machine-readable validation and external-dataset candidate manifest.",
+                description="Machine-readable validation and external-reference manifest.",
             ),
             ContractResourceEntry(
                 uri="validation://dossier-report",
                 description=(
-                    "Machine-readable validation dossier with external candidates "
-                    "and open gaps."
+                    "Machine-readable validation dossier with external references and "
+                    "open gaps."
                 ),
             ),
             ContractResourceEntry(

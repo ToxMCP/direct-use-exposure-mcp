@@ -57,12 +57,13 @@
     "uncertainty": {
       "status": "declared",
       "source": "exposure-scenario-mcp",
-      "issueCount": 6,
+      "issueCount": 5,
       "hasResidualUncertainty": true,
       "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
       "sources": [
         "Benchmark population defaults mapped to EPA exposure-factor source families",
-        "Exposure Scenario MCP heuristic screening defaults",
+        "Exposure Scenario MCP curated screening route-semantics defaults",
+        "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
         "Exposure Scenario MCP runtime"
       ],
       "residualUncertainty": "upstream-exposure-scenario-assumptions",

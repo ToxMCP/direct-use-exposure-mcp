@@ -177,9 +177,9 @@ def test_validation_dossier_report_matches_schema_and_surface() -> None:
     )
 
     validate(instance=report, schema=schema)
-    assert report["policyVersion"] == "2026.03.25.v2"
+    assert report["policyVersion"] == "2026.03.25.v3"
     assert "heuristic_defaults_active" in {item["gapId"] for item in report["openGaps"]}
-    assert "near_field_far_field_spray_candidate" in {
+    assert "consumer_spray_inhalation_exposure_2015" in {
         item["datasetId"] for item in report["externalDatasets"]
     }
 

@@ -245,8 +245,8 @@
               "source_id": "benchmark_population_defaults_v1",
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -272,20 +272,20 @@
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "screening_route_semantics_defaults_v1",
+              "title": "Exposure Scenario MCP curated screening route-semantics defaults",
+              "locator": "docs://defaults-evidence-map#screening-route-semantics",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
             "rationale": "Retention factor defaulted from retention_type='leave_on'.",
             "governance": {
-              "evidence_grade": "grade_1",
-              "evidence_basis": "heuristic_default",
-              "default_visibility": "warn",
-              "applicability_status": "screening_extrapolation",
+              "evidence_grade": "grade_2",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "scenario_uncertainty"
@@ -305,11 +305,11 @@
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "heuristic_transfer_efficiency_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -377,8 +377,8 @@
               "source_id": "benchmark_population_defaults_v1",
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -441,8 +441,8 @@
           "algorithm_id": "screening.external_dose.v1",
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+          "defaults_version": "2026.03.25.v4",
+          "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -460,11 +460,6 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'retention_factor'."
-          },
-          {
-            "code": "heuristic_default_source",
-            "severity": "warning",
-            "message": "Default value for 'retention_factor' comes from a heuristic screening source rather than a curated factor pack."
           },
           {
             "code": "default_applied",
@@ -521,22 +516,6 @@
             "impactLevel": "high",
             "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
             "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
-          },
-          {
-            "entryId": "assumption-retention_factor",
-            "title": "Resolved assumption `retention_factor` carries default uncertainty",
-            "uncertaintyTypes": [
-              "parameter_uncertainty",
-              "scenario_uncertainty"
-            ],
-            "relatedAssumptions": [
-              "retention_factor"
-            ],
-            "quantificationStatus": "qualitative_only",
-            "biasDirection": "unknown",
-            "impactLevel": "high",
-            "summary": "`retention_factor` resolved as `heuristic_default` with `screening_extrapolation` status.",
-            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
           },
           {
             "entryId": "assumption-transfer_efficiency",
@@ -673,15 +652,14 @@
             "dermal_hand_cream_screening"
           ],
           "externalDatasetIds": [
-            "dermal_surface_loading_candidate"
+            "skin_protection_cream_dose_per_area_2012"
           ],
-          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "evidenceReadiness": "external_partial",
           "heuristicAssumptionNames": [
-            "retention_factor",
             "transfer_efficiency"
           ],
           "validationGapIds": [
-            "dermal_transfer_external_validation_candidate_only",
+            "dermal_validation_partial_only",
             "heuristic_defaults_active"
           ],
           "highestSupportedUncertaintyTier": "tier_b",
@@ -733,8 +711,8 @@
           "algorithm_id": "pbpk.export.v1",
           "plugin_id": "pbpk_export_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+          "defaults_version": "2026.03.25.v4",
+          "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -745,7 +723,7 @@
       },
       "upstreamUncertaintySummary": {
         "source": "exposure-scenario-mcp",
-        "issueCount": 6,
+        "issueCount": 5,
         "hasResidualUncertainty": true,
         "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation."
       }
@@ -763,12 +741,13 @@
     "uncertainty": {
       "status": "declared",
       "source": "exposure-scenario-mcp",
-      "issueCount": 6,
+      "issueCount": 5,
       "hasResidualUncertainty": true,
       "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
       "sources": [
         "Benchmark population defaults mapped to EPA exposure-factor source families",
-        "Exposure Scenario MCP heuristic screening defaults",
+        "Exposure Scenario MCP curated screening route-semantics defaults",
+        "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
         "Exposure Scenario MCP runtime"
       ],
       "residualUncertainty": "upstream-exposure-scenario-assumptions",
@@ -844,12 +823,13 @@
     "uncertainty": {
       "status": "declared",
       "source": "exposure-scenario-mcp",
-      "issueCount": 6,
+      "issueCount": 5,
       "hasResidualUncertainty": true,
       "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
       "sources": [
         "Benchmark population defaults mapped to EPA exposure-factor source families",
-        "Exposure Scenario MCP heuristic screening defaults",
+        "Exposure Scenario MCP curated screening route-semantics defaults",
+        "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
         "Exposure Scenario MCP runtime"
       ],
       "residualUncertainty": "upstream-exposure-scenario-assumptions",
@@ -928,12 +908,13 @@
       "uncertainty": {
         "status": "declared",
         "source": "exposure-scenario-mcp",
-        "issueCount": 6,
+        "issueCount": 5,
         "hasResidualUncertainty": true,
         "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
         "sources": [
           "Benchmark population defaults mapped to EPA exposure-factor source families",
-          "Exposure Scenario MCP heuristic screening defaults",
+          "Exposure Scenario MCP curated screening route-semantics defaults",
+          "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
           "Exposure Scenario MCP runtime"
         ],
         "residualUncertainty": "upstream-exposure-scenario-assumptions",
@@ -1013,12 +994,13 @@
       "uncertainty": {
         "status": "declared",
         "source": "exposure-scenario-mcp",
-        "issueCount": 6,
+        "issueCount": 5,
         "hasResidualUncertainty": true,
         "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
         "sources": [
           "Benchmark population defaults mapped to EPA exposure-factor source families",
-          "Exposure Scenario MCP heuristic screening defaults",
+          "Exposure Scenario MCP curated screening route-semantics defaults",
+          "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
           "Exposure Scenario MCP runtime"
         ],
         "residualUncertainty": "upstream-exposure-scenario-assumptions",
@@ -1238,8 +1220,8 @@
               "source_id": "benchmark_population_defaults_v1",
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1265,20 +1247,20 @@
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "screening_route_semantics_defaults_v1",
+              "title": "Exposure Scenario MCP curated screening route-semantics defaults",
+              "locator": "docs://defaults-evidence-map#screening-route-semantics",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
             "rationale": "Retention factor defaulted from retention_type='leave_on'.",
             "governance": {
-              "evidence_grade": "grade_1",
-              "evidence_basis": "heuristic_default",
-              "default_visibility": "warn",
-              "applicability_status": "screening_extrapolation",
+              "evidence_grade": "grade_2",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "scenario_uncertainty"
@@ -1298,11 +1280,11 @@
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "heuristic_transfer_efficiency_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1370,8 +1352,8 @@
               "source_id": "benchmark_population_defaults_v1",
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1434,8 +1416,8 @@
           "algorithm_id": "screening.external_dose.v1",
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+          "defaults_version": "2026.03.25.v4",
+          "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1453,11 +1435,6 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'retention_factor'."
-          },
-          {
-            "code": "heuristic_default_source",
-            "severity": "warning",
-            "message": "Default value for 'retention_factor' comes from a heuristic screening source rather than a curated factor pack."
           },
           {
             "code": "default_applied",
@@ -1514,22 +1491,6 @@
             "impactLevel": "high",
             "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
             "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
-          },
-          {
-            "entryId": "assumption-retention_factor",
-            "title": "Resolved assumption `retention_factor` carries default uncertainty",
-            "uncertaintyTypes": [
-              "parameter_uncertainty",
-              "scenario_uncertainty"
-            ],
-            "relatedAssumptions": [
-              "retention_factor"
-            ],
-            "quantificationStatus": "qualitative_only",
-            "biasDirection": "unknown",
-            "impactLevel": "high",
-            "summary": "`retention_factor` resolved as `heuristic_default` with `screening_extrapolation` status.",
-            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
           },
           {
             "entryId": "assumption-transfer_efficiency",
@@ -1666,15 +1627,14 @@
             "dermal_hand_cream_screening"
           ],
           "externalDatasetIds": [
-            "dermal_surface_loading_candidate"
+            "skin_protection_cream_dose_per_area_2012"
           ],
-          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "evidenceReadiness": "external_partial",
           "heuristicAssumptionNames": [
-            "retention_factor",
             "transfer_efficiency"
           ],
           "validationGapIds": [
-            "dermal_transfer_external_validation_candidate_only",
+            "dermal_validation_partial_only",
             "heuristic_defaults_active"
           ],
           "highestSupportedUncertaintyTier": "tier_b",
@@ -1726,8 +1686,8 @@
           "algorithm_id": "pbpk.export.v1",
           "plugin_id": "pbpk_export_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+          "defaults_version": "2026.03.25.v4",
+          "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1738,7 +1698,7 @@
       },
       "upstreamUncertaintySummary": {
         "source": "exposure-scenario-mcp",
-        "issueCount": 6,
+        "issueCount": 5,
         "hasResidualUncertainty": true,
         "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation."
       }

@@ -119,7 +119,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
 | `Refinement workflow support` | Emits comparison/refinement bundles with explicit `refine_exposure` semantics and workflow hooks. |
-| `Validation dossier` | Publishes a typed validation dossier with benchmark domains, external dataset candidates, heuristic-source families, and open evidence gaps, and threads evidence-readiness plus gap IDs into every scenario-level `validationSummary`. |
+| `Validation dossier` | Publishes a typed validation dossier with benchmark domains, cited external validation datasets, heuristic-source families, and open evidence gaps, and threads evidence-readiness plus gap IDs into every scenario-level `validationSummary`. |
 | `Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
 | `Scientific guardrails` | Keeps BER, PoD derivation, PBPK execution, and final risk conclusions outside this server while publishing assumption governance and tier semantics on every scenario. |
 

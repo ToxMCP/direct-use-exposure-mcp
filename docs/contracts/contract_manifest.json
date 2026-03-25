@@ -2,7 +2,7 @@
   "schema_version": "contractManifest.v1",
   "server_name": "exposure_scenario_mcp",
   "server_version": "0.1.0",
-  "defaults_version": "2026.03.24.v3",
+  "defaults_version": "2026.03.25.v4",
   "tools": [
     {
       "name": "exposure_build_screening_exposure_scenario",
@@ -160,7 +160,7 @@
     },
     {
       "uri": "docs://validation-dossier",
-      "description": "Validation dossier with external candidate coverage and open gaps."
+      "description": "Validation dossier with cited external references and open gaps."
     },
     {
       "uri": "docs://suite-integration-guide",
@@ -192,11 +192,11 @@
     },
     {
       "uri": "validation://manifest",
-      "description": "Machine-readable validation and external-dataset candidate manifest."
+      "description": "Machine-readable validation and external-reference manifest."
     },
     {
       "uri": "validation://dossier-report",
-      "description": "Machine-readable validation dossier with external candidates and open gaps."
+      "description": "Machine-readable validation dossier with external references and open gaps."
     },
     {
       "uri": "release://readiness-report",

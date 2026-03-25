@@ -453,7 +453,7 @@ def validation_framework() -> str:
         "# Validation Framework",
         "",
         "Current validation posture is verification plus benchmark regression, with a typed",
-        "validation dossier for external-dataset readiness and open evidence gaps.",
+        "validation dossier for external-reference readiness and open evidence gaps.",
         "",
         "## Benchmark Domains",
         "",
@@ -464,11 +464,12 @@ def validation_framework() -> str:
         )
         for note in item.notes:
             lines.append(f"  note: {note}")
-    lines.extend(["", "## External Dataset Candidates", ""])
+    lines.extend(["", "## External Validation Datasets", ""])
     for item in report.external_datasets:
-        lines.append(
-            f"- `{item.dataset_id}` [{item.status.value}] {item.observable}: {item.note}"
-        )
+        prefix = f"- `{item.dataset_id}` [{item.status.value}] {item.observable}: {item.note}"
+        if item.reference_title and item.reference_locator:
+            prefix += f" Reference: {item.reference_title} ({item.reference_locator})."
+        lines.append(prefix)
     lines.extend(["", "## Heuristic Source Families", ""])
     for source_id in report.heuristic_source_ids:
         lines.append(f"- `{source_id}`")
@@ -487,7 +488,7 @@ def validation_dossier_markdown() -> str:
         "",
         f"- Policy version: `{report.policy_version}`",
         f"- Benchmark domains: `{len(report.benchmark_domains)}`",
-        f"- External dataset candidates: `{len(report.external_datasets)}`",
+        f"- External validation datasets: `{len(report.external_datasets)}`",
         f"- Heuristic source families still active: `{len(report.heuristic_source_ids)}`",
         "",
         "## Open Gaps",

@@ -365,7 +365,28 @@ class ExternalValidationDataset(StrictModel):
         default_factory=list, alias="applicableTierClaims"
     )
     product_families: list[str] = Field(default_factory=list, alias="productFamilies")
+    reference_title: str | None = Field(
+        default=None,
+        alias="referenceTitle",
+        description="Reference title when the validation target is tied to a concrete study.",
+    )
+    reference_locator: str | None = Field(
+        default=None,
+        alias="referenceLocator",
+        description="URL or DOI for the cited validation reference, when available.",
+    )
     note: str
+
+    @model_validator(mode="after")
+    def validate_reference_fields(self) -> ExternalValidationDataset:
+        if self.status != ExternalValidationDatasetStatus.CANDIDATE_ONLY and (
+            not self.reference_title or not self.reference_locator
+        ):
+            raise ValueError(
+                "referenceTitle and referenceLocator are required when status is not "
+                "candidate_only."
+            )
+        return self
 
 
 class ValidationGap(StrictModel):

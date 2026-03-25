@@ -72,61 +72,87 @@ BENCHMARK_DOMAIN_NOTES = {
     ],
 }
 
-EXTERNAL_DATASET_CANDIDATES = [
+EXTERNAL_VALIDATION_DATASETS = [
     ExternalValidationDataset(
-        datasetId="air_chamber_spray_time_series_candidate",
+        datasetId="cleaning_trigger_spray_airborne_mass_fraction_2019",
         domain="inhalation_well_mixed_spray",
-        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
-        observable="air concentration time series",
-        targetMetrics=["average_air_concentration_mg_per_m3", "inhaled_mass_mg_per_day"],
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable="total airborne mass fraction and aerosol size distribution",
+        targetMetrics=["aerosolized_fraction", "average_air_concentration_mg_per_m3"],
         applicableTierClaims=[TierLevel.TIER_0],
-        productFamilies=["household_cleaner", "personal_care"],
+        productFamilies=["household_cleaner"],
+        referenceTitle=(
+            "Characterization of airborne particles from cleaning sprays and their "
+            "corresponding respiratory deposition fractions"
+        ),
+        referenceLocator="https://pubmed.ncbi.nlm.nih.gov/31361572/",
         note=(
-            "Candidate family for future external validation of Tier 0 spray or volatilization "
-            "microenvironment models."
+            "Seven ready-to-use trigger cleaning sprays produced total airborne mass "
+            "fractions between 2.7% and 32.2% of emitted mass. This is a useful emission-side "
+            "anchor for Tier 0 spray screening, but it is not a full executable "
+            "scenario-to-dose calibration set."
         ),
     ),
     ExternalValidationDataset(
-        datasetId="near_field_far_field_spray_candidate",
+        datasetId="consumer_spray_inhalation_exposure_2015",
         domain="inhalation_near_field_far_field",
-        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
-        observable="near-field and far-field concentration time series",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable="breathing-zone inhalation exposure and deposited dose during spray use",
         targetMetrics=[
-            "near_field_active_spray_concentration_mg_per_m3",
-            "far_field_average_air_concentration_mg_per_m3",
             "breathing_zone_time_weighted_average_mg_per_m3",
+            "inhaled_mass_mg_per_day",
         ],
         applicableTierClaims=[TierLevel.TIER_1],
         productFamilies=["household_cleaner", "personal_care"],
+        referenceTitle=(
+            "Quantitative assessment of inhalation exposure and deposited dose of aerosol "
+            "from nanotechnology-based consumer sprays"
+        ),
+        referenceLocator="https://pmc.ncbi.nlm.nih.gov/articles/PMC4303255/",
         note=(
-            "Candidate family for future validation of Tier 1 near-field/far-field spray "
-            "screening models."
+            "Mannequin-head sampling under realistic consumer spray application reported "
+            "product-specific inhalation exposure and deposited-dose ranges. This is useful "
+            "for near-field burden checks, but it is not a direct calibration dataset for "
+            "the MCP NF/FF mass-balance solver."
         ),
     ),
     ExternalValidationDataset(
-        datasetId="dermal_surface_loading_candidate",
+        datasetId="skin_protection_cream_dose_per_area_2012",
         domain="dermal_direct_application",
-        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
-        observable="surface loading or transfer recovery",
-        targetMetrics=["external_mass_mg_per_day", "surface_loading_mg_per_cm2_day"],
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable="applied product mass per hand surface area in workplace use",
+        targetMetrics=["use_amount_per_event", "surface_loading_mg_per_cm2_day"],
         applicableTierClaims=[TierLevel.TIER_0],
-        productFamilies=["personal_care", "household_cleaner"],
+        productFamilies=["personal_care"],
+        referenceTitle=(
+            "How much skin protection cream is actually applied in the workplace? "
+            "Determination of dose per skin surface area in nurses"
+        ),
+        referenceLocator="https://pubmed.ncbi.nlm.nih.gov/22709142/",
         note=(
-            "Candidate family for future external validation of dermal transfer and removal "
-            "assumptions."
+            "Observed mean skin-protection-cream dose was 0.97 ± 0.6 mg/cm² across 31 nurses "
+            "over five workdays. This is useful for direct-application amount realism, but "
+            "it does not validate the MCP transfer or retention factors."
         ),
     ),
     ExternalValidationDataset(
-        datasetId="direct_oral_liquid_regimen_candidate",
+        datasetId="vigabatrin_ready_to_use_dosing_accuracy_2025",
         domain="oral_direct_intake",
-        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
-        observable="dispensed amount or dose recovery",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable="delivered oral dose relative to a target dose during caregiver use",
         targetMetrics=["chemical_mass_mg_per_event", "external_mass_mg_per_day"],
         applicableTierClaims=[TierLevel.TIER_0],
         productFamilies=["medicinal_liquid"],
+        referenceTitle=(
+            "Liquid Medication Dosing Errors: Comparison of a Ready-to-Use Vigabatrin "
+            "Solution to Reconstituted Solutions of Vigabatrin Powder for Oral Solution"
+        ),
+        referenceLocator="https://doi.org/10.1007/s12325-024-03089-0",
         note=(
-            "Candidate family for future direct-oral screening validation using dispensed "
-            "amount and regimen recovery observations."
+            "Thirty lay users delivered single oral doses to a collection bottle against a "
+            "1125 mg target; the ready-to-use solution stayed within ±5%, while the "
+            "reconstituted product stayed within ±10% for 23 of 30 users. This is useful "
+            "for delivered-dose realism, but it is not a general medication-use calibration set."
         ),
     ),
     ExternalValidationDataset(
@@ -157,64 +183,81 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
     heuristic_source_ids = _heuristic_source_ids(registry)
     gaps = [
         ValidationGap(
-            gapId="tier1_nf_ff_external_validation_candidate_only",
-            title="Tier 1 NF/FF external validation remains candidate-only",
+            gapId="tier1_nf_ff_external_validation_partial_only",
+            title="Tier 1 NF/FF external validation is reference-linked but not executable",
             severity=ValidationGapSeverity.HIGH,
             appliesToDomains=["inhalation_near_field_far_field"],
             relatedSourceIds=["benchmark_tier1_nf_ff_parameter_pack_v1"],
             note=(
-                "Tier 1 NF/FF spray screening now has executable benchmark coverage, but "
-                "external dataset linkage remains at the candidate stage."
+                "Tier 1 NF/FF spray screening now has benchmark coverage plus a cited "
+                "consumer-spray inhalation study, but the dossier still lacks raw time-series "
+                "datasets and acceptance bands that can be executed against the NF/FF solver."
             ),
             recommendation=(
-                "Prioritize chamber or breathing-zone datasets with time-series coverage for "
-                "near-field and far-field concentrations in personal-care and cleaner "
-                "spray contexts."
+                "Add chamber or breathing-zone datasets with raw time-series coverage and "
+                "scenario metadata for near-field and far-field concentrations in "
+                "personal-care and cleaner spray contexts."
             ),
         ),
         ValidationGap(
-            gapId="tier0_spray_external_validation_candidate_only",
-            title="Tier 0 spray external validation remains candidate-only",
+            gapId="tier0_spray_external_validation_partial_only",
+            title="Tier 0 spray validation is partial and still not executable",
             severity=ValidationGapSeverity.MEDIUM,
             appliesToDomains=["inhalation_well_mixed_spray"],
-            relatedSourceIds=["heuristic_screening_defaults_v1"],
+            relatedSourceIds=[
+                "peer_reviewed_cleaning_trigger_spray_airborne_fraction_2019",
+                "heuristic_residual_spray_airborne_fraction_defaults_v1",
+            ],
             note=(
-                "Tier 0 spray screening is benchmark-regressed, but room-average spray "
-                "validation still depends on candidate external datasets."
+                "Tier 0 spray screening is benchmark-regressed and now tied to a real "
+                "cleaning-spray study for trigger-spray airborne fractions, but pump-spray "
+                "and aerosol-spray defaults remain heuristic and no executable chamber "
+                "validation is wired in."
             ),
             recommendation=(
-                "Add external chamber or room-concentration datasets before promoting spray "
-                "screening defaults beyond benchmark-level evidence."
+                "Add raw chamber or room-concentration datasets before promoting spray "
+                "screening defaults beyond partial reference support."
             ),
         ),
         ValidationGap(
-            gapId="dermal_transfer_external_validation_candidate_only",
-            title="Dermal transfer and retention validation remains candidate-only",
+            gapId="dermal_validation_partial_only",
+            title="Dermal validation is partial for direct application and thin for transfer",
             severity=ValidationGapSeverity.MEDIUM,
             appliesToDomains=["dermal_direct_application", "dermal_secondary_transfer"],
-            relatedSourceIds=["heuristic_screening_defaults_v1"],
+            relatedSourceIds=[
+                "screening_route_semantics_defaults_v1",
+                "heuristic_retention_defaults_v1",
+                "heuristic_transfer_efficiency_defaults_v1",
+            ],
             note=(
-                "Dermal direct-application arithmetic is benchmarked, but transfer and "
-                "retention factors still depend on candidate external validation families."
+                "Dermal direct-application amount realism is now linked to a real workplace "
+                "cream-application study, but transfer efficiency and retention factors "
+                "remain screening defaults and secondary-transfer validation is still thin."
             ),
             recommendation=(
                 "Replace transfer and retention heuristics with curated packs tied to product "
-                "family and route-specific external recovery datasets."
+                "family and external recovery datasets, especially for wipe and surface-contact "
+                "contexts."
             ),
         ),
         ValidationGap(
-            gapId="oral_regimen_external_validation_candidate_only",
-            title="Direct-oral regimen validation remains candidate-only",
+            gapId="oral_regimen_validation_partial_only",
+            title="Direct-oral regimen validation is reference-linked but narrow",
             severity=ValidationGapSeverity.MEDIUM,
             appliesToDomains=["oral_direct_intake"],
-            relatedSourceIds=["heuristic_screening_defaults_v1"],
+            relatedSourceIds=[
+                "screening_route_semantics_defaults_v1",
+                "heuristic_density_defaults_v1",
+                "heuristic_incidental_oral_defaults_v1",
+            ],
             note=(
-                "Direct-oral screening is benchmarked internally, but external regimen or "
-                "dispensed-amount validation is still only planned."
+                "Direct-oral screening is benchmarked internally and now linked to a real "
+                "delivered-dose study, but that reference is a narrow medicinal-liquid use "
+                "case rather than a broad oral-product calibration set."
             ),
             recommendation=(
-                "Add observed dosing or dispensed-amount datasets before broadening the "
-                "direct-oral evidence posture."
+                "Add broader observed dosing or dispensed-amount datasets before broadening "
+                "the direct-oral evidence posture beyond medicinal-liquid workflows."
             ),
         ),
         ValidationGap(
@@ -229,7 +272,8 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             ),
             recommendation=(
                 "Prioritize curated replacements for transfer efficiency, retention, density, "
-                "aerosolization, and regional room defaults."
+                "residual spray airborne fractions, incidental oral defaults, and global room "
+                "microenvironment defaults."
             ),
         ),
     ]
@@ -277,21 +321,25 @@ def build_validation_dossier_report(
         for domain, case_ids in sorted(benchmark_domains.items())
     ]
     return ValidationDossierReport(
-        policyVersion="2026.03.25.v2",
+        policyVersion="2026.03.25.v3",
         benchmarkDomains=domains,
-        externalDatasets=EXTERNAL_DATASET_CANDIDATES,
+        externalDatasets=EXTERNAL_VALIDATION_DATASETS,
         heuristicSourceIds=_heuristic_source_ids(active_registry),
         openGaps=_open_validation_gaps(active_registry),
         notes=[
             (
                 "Current validation posture is benchmark regression plus verification, "
-                "with typed external-dataset candidates and open gap tracking."
+                "with typed external validation references, benchmark domains, and open "
+                "gap tracking."
             ),
-            "No external validation datasets are wired into executable scoring yet.",
+            (
+                "Reference-linked validation targets are published for inhalation, dermal, "
+                "and direct-oral screening, but none are wired into executable scoring yet."
+            ),
             (
                 "Tier 1 inhalation NF/FF screening is implemented for spray scenarios, but "
-                "external validation remains a governed future capability rather than "
-                "an active pass gate."
+                "external validation remains a governed future capability rather than an "
+                "active pass gate."
             ),
             (
                 "Probabilistic tiers remain gated until dependency handling and "

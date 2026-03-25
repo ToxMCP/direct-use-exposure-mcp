@@ -107,11 +107,11 @@
             "unit": "g/mL",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "heuristic_density_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic density screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -272,11 +272,11 @@
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1039,8 +1039,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+          "defaults_version": "2026.03.25.v4",
+          "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1405,15 +1405,15 @@
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
           "externalDatasetIds": [
-            "near_field_far_field_spray_candidate"
+            "consumer_spray_inhalation_exposure_2015"
           ],
-          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "evidenceReadiness": "external_partial",
           "heuristicAssumptionNames": [
             "aerosolized_fraction",
             "density_g_per_ml"
           ],
           "validationGapIds": [
-            "tier1_nf_ff_external_validation_candidate_only",
+            "tier1_nf_ff_external_validation_partial_only",
             "heuristic_defaults_active"
           ],
           "highestSupportedUncertaintyTier": "tier_c",
@@ -1531,11 +1531,11 @@
             "unit": "g/mL",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "heuristic_density_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic density screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1696,11 +1696,11 @@
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2463,8 +2463,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+          "defaults_version": "2026.03.25.v4",
+          "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -2829,15 +2829,15 @@
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
           "externalDatasetIds": [
-            "near_field_far_field_spray_candidate"
+            "consumer_spray_inhalation_exposure_2015"
           ],
-          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "evidenceReadiness": "external_partial",
           "heuristicAssumptionNames": [
             "aerosolized_fraction",
             "density_g_per_ml"
           ],
           "validationGapIds": [
-            "tier1_nf_ff_external_validation_candidate_only",
+            "tier1_nf_ff_external_validation_partial_only",
             "heuristic_defaults_active"
           ],
           "highestSupportedUncertaintyTier": "tier_c",
@@ -2955,11 +2955,11 @@
             "unit": "g/mL",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "heuristic_density_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic density screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3120,11 +3120,11 @@
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
+              "version": "2026.03.25.v4",
+              "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3887,8 +3887,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+          "defaults_version": "2026.03.25.v4",
+          "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -4253,15 +4253,15 @@
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
           "externalDatasetIds": [
-            "near_field_far_field_spray_candidate"
+            "consumer_spray_inhalation_exposure_2015"
           ],
-          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "evidenceReadiness": "external_partial",
           "heuristicAssumptionNames": [
             "aerosolized_fraction",
             "density_g_per_ml"
           ],
           "validationGapIds": [
-            "tier1_nf_ff_external_validation_candidate_only",
+            "tier1_nf_ff_external_validation_partial_only",
             "heuristic_defaults_active"
           ],
           "highestSupportedUncertaintyTier": "tier_c",
@@ -4500,15 +4500,15 @@
       "inhalation_tier1_trigger_spray_nf_ff"
     ],
     "externalDatasetIds": [
-      "near_field_far_field_spray_candidate"
+      "consumer_spray_inhalation_exposure_2015"
     ],
-    "evidenceReadiness": "benchmark_plus_external_candidates",
+    "evidenceReadiness": "external_partial",
     "heuristicAssumptionNames": [
       "aerosolized_fraction",
       "density_g_per_ml"
     ],
     "validationGapIds": [
-      "tier1_nf_ff_external_validation_candidate_only",
+      "tier1_nf_ff_external_validation_partial_only",
       "heuristic_defaults_active"
     ],
     "highestSupportedUncertaintyTier": "tier_c",
@@ -4525,8 +4525,8 @@
     "algorithm_id": "uncertainty.envelope.v1",
     "plugin_id": "deterministic_envelope_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.24.v3",
-    "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+    "defaults_version": "2026.03.25.v4",
+    "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

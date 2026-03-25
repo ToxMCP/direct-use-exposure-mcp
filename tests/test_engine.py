@@ -93,10 +93,10 @@ def test_dermal_screening_defaults_and_dose() -> None:
     assert {"retention_factor", "transfer_efficiency", "body_weight_kg"} <= assumption_names
     assert any(flag.code == "heuristic_default_source" for flag in scenario.quality_flags)
     retention = next(item for item in scenario.assumptions if item.name == "retention_factor")
-    assert retention.governance.evidence_basis == EvidenceBasis.HEURISTIC_DEFAULT
-    assert retention.governance.evidence_grade == EvidenceGrade.GRADE_1
-    assert retention.governance.default_visibility == DefaultVisibility.WARN
-    assert retention.governance.applicability_status == ApplicabilityStatus.SCREENING_EXTRAPOLATION
+    assert retention.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
+    assert retention.governance.evidence_grade == EvidenceGrade.GRADE_2
+    assert retention.governance.default_visibility == DefaultVisibility.SILENT_TRACEABLE
+    assert retention.governance.applicability_status == ApplicabilityStatus.IN_DOMAIN
     assert retention.governance.applicability_domain["retention_type"] == "leave_on"
     assert scenario.tier_semantics.tier_claimed == TierLevel.TIER_0
     assert scenario.tier_semantics.tier_earned == TierLevel.TIER_0
@@ -104,10 +104,10 @@ def test_dermal_screening_defaults_and_dose() -> None:
     assert scenario.uncertainty_tier == UncertaintyTier.TIER_A
     assert scenario.validation_summary is not None
     assert scenario.validation_summary.validation_status.value == "benchmark_regression"
-    assert scenario.validation_summary.evidence_readiness.value == (
-        "benchmark_plus_external_candidates"
-    )
-    assert "retention_factor" in scenario.validation_summary.heuristic_assumption_names
+    assert scenario.validation_summary.evidence_readiness.value == "external_partial"
+    assert "transfer_efficiency" in scenario.validation_summary.heuristic_assumption_names
+    assert "retention_factor" not in scenario.validation_summary.heuristic_assumption_names
+    assert "dermal_validation_partial_only" in scenario.validation_summary.validation_gap_ids
     assert "heuristic_defaults_active" in scenario.validation_summary.validation_gap_ids
     assert scenario.sensitivity_ranking[0].parameter_name in {
         "body_weight_kg",
@@ -167,10 +167,8 @@ def test_inhalation_screening_defaults_and_dose() -> None:
     )
     assert scenario.validation_summary is not None
     assert scenario.validation_summary.route_mechanism == "inhalation_well_mixed_spray"
-    assert scenario.validation_summary.evidence_readiness.value == (
-        "benchmark_plus_external_candidates"
-    )
-    assert "tier0_spray_external_validation_candidate_only" in (
+    assert scenario.validation_summary.evidence_readiness.value == "external_partial"
+    assert "tier0_spray_external_validation_partial_only" in (
         scenario.validation_summary.validation_gap_ids
     )
     assert any(
@@ -259,7 +257,7 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
     assert enriched.validation_summary is not None
     assert enriched.validation_summary.route_mechanism == "inhalation_near_field_far_field"
     assert enriched.validation_summary.highest_supported_uncertainty_tier == UncertaintyTier.TIER_C
-    assert "tier1_nf_ff_external_validation_candidate_only" in (
+    assert "tier1_nf_ff_external_validation_partial_only" in (
         enriched.validation_summary.validation_gap_ids
     )
     assert any(
@@ -410,7 +408,7 @@ def test_volume_based_cream_uses_physical_form_density_override() -> None:
     density = next(item for item in scenario.assumptions if item.name == "density_g_per_ml")
 
     assert density.value == pytest.approx(0.95, rel=1e-6)
-    assert density.source.source_id == "heuristic_screening_defaults_v1"
+    assert density.source.source_id == "heuristic_density_defaults_v1"
     assert density.governance.applicability_domain["physical_form"] == "cream"
     assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(161.5, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(2.01875, rel=1e-6)
@@ -441,7 +439,7 @@ def test_household_cleaner_wipe_uses_product_category_transfer_override() -> Non
     )
 
     assert transfer_efficiency.value == pytest.approx(0.65, rel=1e-6)
-    assert transfer_efficiency.source.source_id == "heuristic_screening_defaults_v1"
+    assert transfer_efficiency.source.source_id == "heuristic_transfer_efficiency_defaults_v1"
     assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(65.0, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(0.8125, rel=1e-6)
 
@@ -477,7 +475,10 @@ def test_household_cleaner_pump_spray_uses_product_category_aerosol_override() -
     )
 
     assert aerosolized_fraction.value == pytest.approx(0.3, rel=1e-6)
-    assert aerosolized_fraction.source.source_id == "heuristic_screening_defaults_v1"
+    assert (
+        aerosolized_fraction.source.source_id
+        == "heuristic_residual_spray_airborne_fraction_defaults_v1"
+    )
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         9.48180838, rel=1e-6
     )

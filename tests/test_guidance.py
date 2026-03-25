@@ -78,8 +78,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`tier1_profile_anchor_divergence`" in tier1_parameter_guide
     assert "source_distance_m" in inhalation_tier_guide
     assert "benchmarkDomains" not in validation
-    assert "External Dataset Candidates" in validation
-    assert "`air_chamber_spray_time_series_candidate`" in validation
+    assert "External Validation Datasets" in validation
+    assert "`cleaning_trigger_spray_airborne_mass_fraction_2019`" in validation
+    assert "pubmed.ncbi.nlm.nih.gov/31361572" in validation
     assert "Validation Dossier" in dossier
     assert "`heuristic_defaults_active`" in dossier
-    assert "`tier1_nf_ff_external_validation_candidate_only`" in dossier
+    assert "`tier1_nf_ff_external_validation_partial_only`" in dossier

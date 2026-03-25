@@ -649,7 +649,7 @@ def create_mcp_server() -> FastMCP:
 
     @mcp.resource("validation://dossier-report")
     def validation_dossier_report_resource() -> str:
-        """Machine-readable validation dossier with coverage, candidates, and gaps."""
+        """Machine-readable validation dossier with coverage, references, and gaps."""
 
         payload = build_validation_dossier_report(defaults_registry).model_dump(
             mode="json", by_alias=True

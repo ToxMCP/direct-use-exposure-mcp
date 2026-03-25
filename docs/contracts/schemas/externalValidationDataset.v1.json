@@ -59,6 +59,32 @@
       "title": "Productfamilies",
       "type": "array"
     },
+    "referenceTitle": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference title when the validation target is tied to a concrete study.",
+      "title": "Referencetitle"
+    },
+    "referenceLocator": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "URL or DOI for the cited validation reference, when available.",
+      "title": "Referencelocator"
+    },
     "note": {
       "title": "Note",
       "type": "string"

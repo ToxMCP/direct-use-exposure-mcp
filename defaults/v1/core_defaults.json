@@ -1,17 +1,59 @@
 {
-  "defaults_version": "2026.03.24.v3",
+  "defaults_version": "2026.03.25.v4",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
       "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
       "locator": "docs://defaults-evidence-map#population-defaults",
-      "version": "2026.03.24.v3"
+      "version": "2026.03.25.v4"
     },
     {
-      "source_id": "heuristic_screening_defaults_v1",
-      "title": "Exposure Scenario MCP heuristic screening defaults",
-      "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-      "version": "2026.03.24.v3"
+      "source_id": "screening_route_semantics_defaults_v1",
+      "title": "Exposure Scenario MCP curated screening route-semantics defaults",
+      "locator": "docs://defaults-evidence-map#screening-route-semantics",
+      "version": "2026.03.25.v4"
+    },
+    {
+      "source_id": "heuristic_density_defaults_v1",
+      "title": "Exposure Scenario MCP heuristic density screening defaults",
+      "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
+      "version": "2026.03.25.v4"
+    },
+    {
+      "source_id": "heuristic_retention_defaults_v1",
+      "title": "Exposure Scenario MCP heuristic retention screening defaults",
+      "locator": "docs://defaults-evidence-map#heuristic-retention-defaults",
+      "version": "2026.03.25.v4"
+    },
+    {
+      "source_id": "heuristic_transfer_efficiency_defaults_v1",
+      "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
+      "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
+      "version": "2026.03.25.v4"
+    },
+    {
+      "source_id": "heuristic_incidental_oral_defaults_v1",
+      "title": "Exposure Scenario MCP heuristic incidental-oral screening defaults",
+      "locator": "docs://defaults-evidence-map#heuristic-incidental-oral-defaults",
+      "version": "2026.03.25.v4"
+    },
+    {
+      "source_id": "peer_reviewed_cleaning_trigger_spray_airborne_fraction_2019",
+      "title": "Characterization of airborne particles from cleaning sprays and their corresponding respiratory deposition fractions",
+      "locator": "https://pubmed.ncbi.nlm.nih.gov/31361572/",
+      "version": "J Aerosol Sci. 2019"
+    },
+    {
+      "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
+      "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
+      "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
+      "version": "2026.03.25.v4"
+    },
+    {
+      "source_id": "heuristic_global_room_defaults_v1",
+      "title": "Exposure Scenario MCP heuristic global room screening defaults",
+      "locator": "docs://defaults-evidence-map#heuristic-global-room-defaults",
+      "version": "2026.03.25.v4"
     },
     {
       "source_id": "epa_exposure_factors_handbook_2011",
@@ -29,22 +71,22 @@
   "conversion_defaults": {
     "global": {
       "density_g_per_ml": 1.0,
-      "source_id": "heuristic_screening_defaults_v1"
+      "source_id": "heuristic_density_defaults_v1"
     },
     "product_category_overrides": {
       "personal_care": {
         "density_g_per_ml": 0.98,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_density_defaults_v1"
       }
     },
     "physical_form_overrides": {
       "cream": {
         "density_g_per_ml": 0.95,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_density_defaults_v1"
       },
       "gel": {
         "density_g_per_ml": 1.05,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_density_defaults_v1"
       }
     }
   },
@@ -71,45 +113,45 @@
   "retention_factor_defaults": {
     "leave_on": {
       "value": 1.0,
-      "source_id": "heuristic_screening_defaults_v1"
+      "source_id": "screening_route_semantics_defaults_v1"
     },
     "rinse_off": {
       "value": 0.01,
-      "source_id": "heuristic_screening_defaults_v1"
+      "source_id": "heuristic_retention_defaults_v1"
     },
     "surface_contact": {
       "value": 0.2,
-      "source_id": "heuristic_screening_defaults_v1"
+      "source_id": "heuristic_retention_defaults_v1"
     }
   },
   "transfer_efficiency_defaults": {
     "global": {
       "hand_application": {
         "value": 0.85,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_transfer_efficiency_defaults_v1"
       },
       "wipe": {
         "value": 0.75,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_transfer_efficiency_defaults_v1"
       },
       "pour": {
         "value": 0.9,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_transfer_efficiency_defaults_v1"
       },
       "direct_oral": {
         "value": 1.0,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "screening_route_semantics_defaults_v1"
       },
       "trigger_spray": {
         "value": 1.0,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_transfer_efficiency_defaults_v1"
       }
     },
     "product_category_overrides": {
       "household_cleaner": {
         "wipe": {
           "value": 0.65,
-          "source_id": "heuristic_screening_defaults_v1"
+          "source_id": "heuristic_transfer_efficiency_defaults_v1"
         }
       }
     }
@@ -117,33 +159,33 @@
   "ingestion_fraction_defaults": {
     "direct_oral": {
       "value": 1.0,
-      "source_id": "heuristic_screening_defaults_v1"
+      "source_id": "screening_route_semantics_defaults_v1"
     },
     "incidental_oral": {
       "value": 0.1,
-      "source_id": "heuristic_screening_defaults_v1"
+      "source_id": "heuristic_incidental_oral_defaults_v1"
     }
   },
   "aerosolized_fraction_defaults": {
     "global": {
       "trigger_spray": {
         "value": 0.2,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "peer_reviewed_cleaning_trigger_spray_airborne_fraction_2019"
       },
       "pump_spray": {
         "value": 0.25,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1"
       },
       "aerosol_spray": {
         "value": 0.35,
-        "source_id": "heuristic_screening_defaults_v1"
+        "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1"
       }
     },
     "product_category_overrides": {
       "household_cleaner": {
         "pump_spray": {
           "value": 0.3,
-          "source_id": "heuristic_screening_defaults_v1"
+          "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1"
         }
       }
     }
@@ -153,7 +195,7 @@
       "room_volume_m3": 20.0,
       "air_exchange_rate_per_hour": 0.45,
       "exposure_duration_hours": 0.5,
-      "source_id": "heuristic_screening_defaults_v1"
+      "source_id": "heuristic_global_room_defaults_v1"
     },
     "regional_overrides": {
       "eu": {
