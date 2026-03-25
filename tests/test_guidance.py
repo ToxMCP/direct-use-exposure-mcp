@@ -10,6 +10,8 @@ from exposure_scenario_mcp.guidance import (
     conformance_report_markdown,
     release_notes_markdown,
     release_readiness_markdown,
+    uncertainty_framework,
+    validation_framework,
 )
 
 
@@ -29,3 +31,14 @@ def test_release_guidance_mentions_current_benchmark_matrix() -> None:
     assert "`dermal_pbpk_external_import_package`" in readiness_markdown
     assert f"Benchmark cases published: `{metadata.benchmark_case_count}`" in conformance
     assert "`dermal_pbpk_external_import_package`" in conformance
+
+
+def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
+    uncertainty = uncertainty_framework()
+    validation = validation_framework()
+
+    assert "Tier A" in uncertainty
+    assert "Tier B" in uncertainty
+    assert "benchmarkDomains" not in validation
+    assert "External Dataset Candidates" in validation
+    assert "`air_chamber_spray_time_series_candidate`" in validation

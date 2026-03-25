@@ -1,0 +1,62 @@
+{
+  "$defs": {
+    "DependencyHandlingStrategy": {
+      "enum": [
+        "scenario_packaged",
+        "conditional_model_required",
+        "joint_model_required",
+        "not_quantified"
+      ],
+      "title": "DependencyHandlingStrategy",
+      "type": "string"
+    },
+    "DependencyRelationship": {
+      "enum": [
+        "structural",
+        "physiological",
+        "behavioral",
+        "mechanistic",
+        "scenario_package"
+      ],
+      "title": "DependencyRelationship",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "dependencyId": {
+      "title": "Dependencyid",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "relationshipType": {
+      "$ref": "#/$defs/DependencyRelationship"
+    },
+    "assumptionNames": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptionnames",
+      "type": "array"
+    },
+    "handlingStrategy": {
+      "$ref": "#/$defs/DependencyHandlingStrategy"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "dependencyId",
+    "title",
+    "relationshipType",
+    "handlingStrategy",
+    "note"
+  ],
+  "title": "DependencyDescriptor",
+  "type": "object"
+}

@@ -29,6 +29,10 @@ from exposure_scenario_mcp.models import (
     ScenarioDose,
 )
 from exposure_scenario_mcp.provenance import AssumptionTracker
+from exposure_scenario_mcp.uncertainty import (
+    build_aggregate_uncertainty,
+    enrich_scenario_uncertainty,
+)
 
 
 @dataclass(slots=True)
@@ -236,6 +240,8 @@ def aggregate_scenarios(
             for item in ranked[:3]
         ]
 
+    diagnostics = build_aggregate_uncertainty(params.component_scenarios)
+
     return AggregateExposureSummary(
         scenario_id=f"agg-{uuid4().hex[:12]}",
         chemical_id=params.chemical_id,
@@ -252,6 +258,10 @@ def aggregate_scenarios(
         dominant_contributors=dominant_contributors,
         limitations=tracker.limitations,
         quality_flags=tracker.quality_flags,
+        uncertainty_tier=diagnostics["uncertainty_tier"],
+        uncertainty_register=diagnostics["uncertainty_register"],
+        dependency_metadata=diagnostics["dependency_metadata"],
+        validation_summary=diagnostics["validation_summary"],
         provenance=tracker.provenance(
             plugin_id="aggregate_summary_service",
             algorithm_id="aggregate.simple_additive.v1",
@@ -402,7 +412,12 @@ class ScenarioEngine:
         self.registry = registry
         self.defaults_registry = defaults_registry
 
-    def build(self, request: ExposureScenarioRequest) -> ExposureScenario:
+    def build(
+        self,
+        request: ExposureScenarioRequest,
+        *,
+        include_diagnostics: bool = True,
+    ) -> ExposureScenario:
         try:
             plugin = self.registry.get(request.scenario_class, request.route)
         except LookupError as error:
@@ -430,4 +445,7 @@ class ScenarioEngine:
             region=request.population_profile.region,
         )
         context = ScenarioExecutionContext(registry=self.defaults_registry, tracker=tracker)
-        return plugin.build(request, context)
+        scenario = plugin.build(request, context)
+        if not include_diagnostics:
+            return scenario
+        return enrich_scenario_uncertainty(self, scenario)

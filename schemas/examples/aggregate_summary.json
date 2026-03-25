@@ -67,6 +67,52 @@
     }
   ],
   "quality_flags": [],
+  "uncertaintyTier": "tier_a",
+  "uncertaintyRegister": [
+    {
+      "entryId": "aggregate-screening-summary",
+      "title": "Aggregate result remains a Tier A additive screening summary",
+      "uncertaintyTypes": [
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "bidirectional",
+      "impactLevel": "high",
+      "summary": "The aggregate output preserves route totals but does not model co-use dependencies or population correlations.",
+      "recommendation": "Use Tier B scenario packages or a future population engine before interpreting aggregate totals as realistic population behavior."
+    }
+  ],
+  "dependencyMetadata": [
+    {
+      "dependencyId": "aggregate-stacking-cluster",
+      "title": "Aggregate totals preserve route-specific dependence rather than joint sampling",
+      "relationshipType": "scenario_package",
+      "assumptionNames": [
+        "component_scenarios",
+        "route_totals"
+      ],
+      "handlingStrategy": "not_quantified",
+      "note": "The aggregate output is a deterministic stacking summary and does not encode behavioral co-use correlations."
+    }
+  ],
+  "validationSummary": {
+    "validationStatus": "benchmark_regression",
+    "routeMechanism": "aggregate_cross_route_screening",
+    "benchmarkCaseIds": [
+      "cross_route_aggregate_summary"
+    ],
+    "externalDatasetIds": [
+      "aggregate_external_proxy_candidate"
+    ],
+    "highestSupportedUncertaintyTier": "tier_b",
+    "probabilisticEnablement": "blocked",
+    "notes": [
+      "Aggregate outputs are benchmarked as deterministic screening summaries only.",
+      "Cross-route co-use dependencies are not modeled probabilistically in v0.1."
+    ]
+  },
   "provenance": {
     "schema_version": "provenanceBundle.v1",
     "algorithm_id": "aggregate.simple_additive.v1",

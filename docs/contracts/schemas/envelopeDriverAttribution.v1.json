@@ -1,0 +1,80 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "parameterName": {
+      "title": "Parametername",
+      "type": "string"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "minValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Minvalue"
+    },
+    "maxValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Maxvalue"
+    },
+    "scenarioLabels": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Scenariolabels",
+      "type": "array"
+    },
+    "attributionNote": {
+      "title": "Attributionnote",
+      "type": "string"
+    }
+  },
+  "required": [
+    "parameterName",
+    "minValue",
+    "maxValue",
+    "attributionNote"
+  ],
+  "title": "EnvelopeDriverAttribution",
+  "type": "object"
+}

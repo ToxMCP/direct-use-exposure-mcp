@@ -8,6 +8,7 @@ from exposure_scenario_mcp.models import (
     ReleaseReadinessReport,
     SecurityProvenanceReviewReport,
 )
+from exposure_scenario_mcp.validation import validation_manifest
 
 
 def _benchmark_matrix_lines() -> list[str]:
@@ -56,7 +57,9 @@ uv run check-exposure-release-artifacts
 
 - Treat every output as external-exposure context only.
 - Do not reinterpret screening outputs as internal dose, BER, PoD, or final risk conclusions.
-- Review `qualityFlags`, `limitations`, and `provenance` before using any scenario downstream.
+- Review `qualityFlags`, `limitations`, `uncertaintyRegister`, and `provenance` before using any
+  scenario downstream.
+- Treat `sensitivityRanking` as driver triage, not as a probabilistic uncertainty measure.
 
 ## Operational Checklist
 
@@ -97,6 +100,54 @@ def provenance_policy() -> str:
 - Provenance demonstrates how external-dose outputs were produced.
 - Provenance does not convert screening outputs into validated internal-dose or risk decisions.
 """
+
+
+def uncertainty_framework() -> str:
+    return """# Uncertainty Framework
+
+## Tier A
+
+- Deterministic point estimate plus explicit `uncertaintyRegister`.
+- Deterministic one-at-a-time `sensitivityRanking`.
+- Known dependencies preserved as `dependencyMetadata`.
+- No probabilistic claims, confidence intervals, or population statements.
+
+## Tier B
+
+- Named deterministic scenario envelopes built from explicit archetypes.
+- Envelope spans are bounded scenario sets, not confidence intervals.
+- Driver attribution is based on explicit archetype differences, not Monte Carlo decomposition.
+
+## Current Guardrail
+
+- `v0.1.0` supports Tier A on every scenario output and Tier B via deterministic envelopes.
+- Probabilistic tiers remain blocked until validation evidence, dependency handling, and
+  distribution governance mature.
+"""
+
+
+def validation_framework() -> str:
+    manifest = validation_manifest()
+    lines = [
+        "# Validation Framework",
+        "",
+        "Current validation posture is verification plus benchmark regression.",
+        "",
+        "## Benchmark Domains",
+        "",
+    ]
+    for item in manifest["benchmarkDomains"]:
+        lines.append(
+            f"- `{item['domain']}`: {', '.join(f'`{case_id}`' for case_id in item['caseIds'])}"
+        )
+    lines.extend(["", "## External Dataset Candidates", ""])
+    for item in manifest["externalDatasets"]:
+        lines.append(
+            f"- `{item['datasetId']}` [{item['status']}] {item['observable']}: {item['note']}"
+        )
+    lines.extend(["", "## Notes", ""])
+    lines.extend(f"- {item}" for item in manifest["notes"])
+    return "\n".join(lines)
 
 
 def troubleshooting_guide() -> str:

@@ -31,16 +31,22 @@ from exposure_scenario_mcp.models import (
     AggregateExposureSummary,
     AssumptionGovernance,
     BuildAggregateExposureScenarioInput,
+    BuildExposureEnvelopeInput,
     CompareExposureScenariosInput,
     ContractManifest,
     ContractPromptEntry,
     ContractResourceEntry,
     ContractToolEntry,
+    DependencyDescriptor,
+    EnvelopeArchetypeInput,
+    EnvelopeArchetypeResult,
+    EnvelopeDriverAttribution,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
     ExportToxClawEvidenceBundleRequest,
     ExportToxClawRefinementBundleRequest,
     ExposureAssumptionRecord,
+    ExposureEnvelopeSummary,
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
@@ -57,8 +63,11 @@ from exposure_scenario_mcp.models import (
     ScenarioComparisonRecord,
     SecurityProvenanceReviewFinding,
     SecurityProvenanceReviewReport,
+    SensitivityRankingEntry,
     TierSemantics,
     ToolResultMeta,
+    UncertaintyRegisterEntry,
+    ValidationSummary,
 )
 from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
@@ -69,6 +78,10 @@ SCHEMA_MODELS = {
     "exposureScenarioRequest.v1": ExposureScenarioRequest,
     "inhalationScenarioRequest.v1": InhalationScenarioRequest,
     "exposureScenario.v1": ExposureScenario,
+    "uncertaintyRegisterEntry.v1": UncertaintyRegisterEntry,
+    "sensitivityRankingEntry.v1": SensitivityRankingEntry,
+    "dependencyDescriptor.v1": DependencyDescriptor,
+    "validationSummary.v1": ValidationSummary,
     "aggregateExposureSummary.v1": AggregateExposureSummary,
     "exposureAssumptionRecord.v1": ExposureAssumptionRecord,
     "assumptionGovernance.v1": AssumptionGovernance,
@@ -76,6 +89,11 @@ SCHEMA_MODELS = {
     "scenarioComparisonRecord.v1": ScenarioComparisonRecord,
     "provenanceBundle.v1": ProvenanceBundle,
     "tierSemantics.v1": TierSemantics,
+    "buildExposureEnvelopeInput.v1": BuildExposureEnvelopeInput,
+    "envelopeArchetypeInput.v1": EnvelopeArchetypeInput,
+    "envelopeArchetypeResult.v1": EnvelopeArchetypeResult,
+    "envelopeDriverAttribution.v1": EnvelopeDriverAttribution,
+    "exposureEnvelopeSummary.v1": ExposureEnvelopeSummary,
     "buildAggregateExposureScenarioInput.v1": BuildAggregateExposureScenarioInput,
     "exportPbpkScenarioInputRequest.v1": ExportPbpkScenarioInputRequest,
     "exportPbpkExternalImportBundleRequest.v1": ExportPbpkExternalImportBundleRequest,
@@ -122,6 +140,12 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description=(
                     "Build one deterministic dermal or oral external exposure screening scenario."
                 ),
+            ),
+            ContractToolEntry(
+                name="exposure_build_exposure_envelope",
+                request_schema="buildExposureEnvelopeInput.v1",
+                response_schema="exposureEnvelopeSummary.v1",
+                description="Build a deterministic Tier B envelope from named scenario archetypes.",
             ),
             ContractToolEntry(
                 name="exposure_build_aggregate_exposure_scenario",
@@ -208,6 +232,14 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractResourceEntry(
+                uri="docs://uncertainty-framework",
+                description="Tier A/B uncertainty guidance and interpretation boundaries.",
+            ),
+            ContractResourceEntry(
+                uri="docs://validation-framework",
+                description="Validation and benchmark-domain posture for current route models.",
+            ),
+            ContractResourceEntry(
                 uri="docs://suite-integration-guide",
                 description="Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP.",
             ),
@@ -245,6 +277,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="benchmarks://manifest",
                 description="Machine-readable benchmark and regression corpus manifest.",
+            ),
+            ContractResourceEntry(
+                uri="validation://manifest",
+                description="Machine-readable validation and external-dataset candidate manifest.",
             ),
             ContractResourceEntry(
                 uri="release://readiness-report",
@@ -310,6 +346,8 @@ def algorithm_notes() -> str:
   ingestion_fraction`
 - Normalize by body weight to emit `mg/kg-day`.
 - Attach `tierSemantics` so the result stays bounded as Tier-0 deterministic screening.
+- Attach Tier A diagnostics: `uncertaintyRegister`, `sensitivityRanking`,
+  `dependencyMetadata`, and `validationSummary`.
 
 ## Inhalation Plugin
 
@@ -322,12 +360,22 @@ def algorithm_notes() -> str:
   events_per_day`.
 - Normalize by body weight to emit `mg/kg-day`.
 - Emit Tier-0 caveats that forbid interpreting room-average output as a breathing-zone peak.
+- Preserve inhalation-specific uncertainty entries when spray assumptions
+  exceed well-mixed validity.
 
 ## Aggregate Summary
 
 - Sum compatible normalized doses across components.
 - Preserve route-wise subtotals.
 - Emit an explicit limitation when multiple routes are rolled into a single screening summary.
+- Attach Tier A aggregate uncertainty notes explaining that co-use dependence is not modeled.
+
+## Deterministic Envelope
+
+- Build named archetype scenarios with the same route, scenario class, chemical, and dose unit.
+- Report minimum, median, and maximum deterministic dose across the archetypes.
+- Attribute envelope span to explicit assumption differences between the low and high archetypes.
+- Label the result as Tier B bounded uncertainty, not as a confidence interval.
 
 ## Comparison
 

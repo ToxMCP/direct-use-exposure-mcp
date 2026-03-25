@@ -213,6 +213,112 @@
       "title": "DoseUnit",
       "type": "string"
     },
+    "EnvelopeArchetypeResult": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "Archetype label.",
+          "title": "Label",
+          "type": "string"
+        },
+        "description": {
+          "description": "Archetype description.",
+          "title": "Description",
+          "type": "string"
+        },
+        "scenario": {
+          "$ref": "#/$defs/ExposureScenario",
+          "description": "Resolved scenario for this archetype."
+        }
+      },
+      "required": [
+        "label",
+        "description",
+        "scenario"
+      ],
+      "title": "EnvelopeArchetypeResult",
+      "type": "object"
+    },
+    "EnvelopeDriverAttribution": {
+      "additionalProperties": false,
+      "properties": {
+        "parameterName": {
+          "title": "Parametername",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "minValue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Minvalue"
+        },
+        "maxValue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Maxvalue"
+        },
+        "scenarioLabels": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Scenariolabels",
+          "type": "array"
+        },
+        "attributionNote": {
+          "title": "Attributionnote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "parameterName",
+        "minValue",
+        "maxValue",
+        "attributionNote"
+      ],
+      "title": "EnvelopeDriverAttribution",
+      "type": "object"
+    },
     "EvidenceBasis": {
       "enum": [
         "explicit_input",
@@ -320,6 +426,183 @@
         "governance"
       ],
       "title": "ExposureAssumptionRecord",
+      "type": "object"
+    },
+    "ExposureScenario": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureScenario.v1",
+          "default": "exposureScenario.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "scenario_id": {
+          "description": "Stable scenario identifier.",
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "description": "Scenario class tag."
+        },
+        "external_dose": {
+          "$ref": "#/$defs/ScenarioDose",
+          "description": "Primary normalized external dose estimate."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Resolved product-use profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Resolved population profile."
+        },
+        "route_metrics": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Route-specific metrics.",
+          "title": "Route Metrics",
+          "type": "object"
+        },
+        "assumptions": {
+          "description": "Explicit parameter ledger.",
+          "items": {
+            "$ref": "#/$defs/ExposureAssumptionRecord"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceBundle",
+          "description": "Calculation provenance."
+        },
+        "limitations": {
+          "description": "Explicit limitations.",
+          "items": {
+            "$ref": "#/$defs/LimitationNote"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "quality_flags": {
+          "description": "Quality flags and warnings.",
+          "items": {
+            "$ref": "#/$defs/QualityFlag"
+          },
+          "title": "Quality Flags",
+          "type": "array"
+        },
+        "fit_for_purpose": {
+          "$ref": "#/$defs/FitForPurpose",
+          "description": "Fit-for-purpose metadata."
+        },
+        "tier_semantics": {
+          "$ref": "#/$defs/TierSemantics",
+          "description": "Tier and interpretation-boundary semantics for the active model."
+        },
+        "uncertaintyTier": {
+          "$ref": "#/$defs/UncertaintyTier",
+          "default": "tier_a",
+          "description": "Current uncertainty-governance tier for this output."
+        },
+        "uncertaintyRegister": {
+          "description": "Qualitative or bounded uncertainty entries attached to the scenario.",
+          "items": {
+            "$ref": "#/$defs/UncertaintyRegisterEntry"
+          },
+          "title": "Uncertaintyregister",
+          "type": "array"
+        },
+        "sensitivityRanking": {
+          "description": "Deterministic one-at-a-time sensitivity ranking for the primary dose metric.",
+          "items": {
+            "$ref": "#/$defs/SensitivityRankingEntry"
+          },
+          "title": "Sensitivityranking",
+          "type": "array"
+        },
+        "dependencyMetadata": {
+          "description": "Known dependence structures that matter for later uncertainty work.",
+          "items": {
+            "$ref": "#/$defs/DependencyDescriptor"
+          },
+          "title": "Dependencymetadata",
+          "type": "array"
+        },
+        "validationSummary": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ValidationSummary"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Current validation posture for the route and mechanism represented."
+        },
+        "interpretation_notes": {
+          "description": "Human-readable scenario notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Interpretation Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "chemical_id",
+        "route",
+        "scenario_class",
+        "external_dose",
+        "product_use_profile",
+        "population_profile",
+        "provenance",
+        "fit_for_purpose",
+        "tier_semantics"
+      ],
+      "title": "ExposureScenario",
       "type": "object"
     },
     "FitForPurpose": {
@@ -1124,137 +1407,80 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "exposureScenario.v1",
-      "default": "exposureScenario.v1",
+      "const": "exposureEnvelopeSummary.v1",
+      "default": "exposureEnvelopeSummary.v1",
       "title": "Schema Version",
       "type": "string"
     },
-    "scenario_id": {
-      "description": "Stable scenario identifier.",
-      "title": "Scenario Id",
+    "envelopeId": {
+      "title": "Envelopeid",
       "type": "string"
     },
     "chemical_id": {
-      "description": "Stable chemical identifier.",
+      "description": "Shared chemical identifier.",
       "title": "Chemical Id",
       "type": "string"
     },
-    "chemical_name": {
+    "route": {
+      "$ref": "#/$defs/Route",
+      "description": "Common route across the archetypes."
+    },
+    "scenarioClass": {
+      "$ref": "#/$defs/ScenarioClass"
+    },
+    "label": {
+      "description": "Human-readable envelope label.",
+      "title": "Label",
+      "type": "string"
+    },
+    "uncertaintyTier": {
+      "$ref": "#/$defs/UncertaintyTier",
+      "default": "tier_b"
+    },
+    "archetypes": {
+      "description": "Resolved archetype scenarios.",
+      "items": {
+        "$ref": "#/$defs/EnvelopeArchetypeResult"
+      },
+      "title": "Archetypes",
+      "type": "array"
+    },
+    "minDose": {
+      "$ref": "#/$defs/ScenarioDose"
+    },
+    "medianDose": {
+      "$ref": "#/$defs/ScenarioDose"
+    },
+    "maxDose": {
+      "$ref": "#/$defs/ScenarioDose"
+    },
+    "spanRatio": {
       "anyOf": [
         {
-          "type": "string"
+          "type": "number"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Optional chemical name.",
-      "title": "Chemical Name"
+      "title": "Spanratio"
     },
-    "route": {
-      "$ref": "#/$defs/Route",
-      "description": "Exposure route."
-    },
-    "scenario_class": {
-      "$ref": "#/$defs/ScenarioClass",
-      "description": "Scenario class tag."
-    },
-    "external_dose": {
-      "$ref": "#/$defs/ScenarioDose",
-      "description": "Primary normalized external dose estimate."
-    },
-    "product_use_profile": {
-      "$ref": "#/$defs/ProductUseProfile",
-      "description": "Resolved product-use profile."
-    },
-    "population_profile": {
-      "$ref": "#/$defs/PopulationProfile",
-      "description": "Resolved population profile."
-    },
-    "route_metrics": {
-      "additionalProperties": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "number"
-          },
-          {
-            "type": "integer"
-          },
-          {
-            "type": "boolean"
-          },
-          {
-            "type": "null"
-          }
-        ]
-      },
-      "description": "Route-specific metrics.",
-      "title": "Route Metrics",
-      "type": "object"
-    },
-    "assumptions": {
-      "description": "Explicit parameter ledger.",
+    "driverAttribution": {
       "items": {
-        "$ref": "#/$defs/ExposureAssumptionRecord"
+        "$ref": "#/$defs/EnvelopeDriverAttribution"
       },
-      "title": "Assumptions",
+      "title": "Driverattribution",
       "type": "array"
-    },
-    "provenance": {
-      "$ref": "#/$defs/ProvenanceBundle",
-      "description": "Calculation provenance."
-    },
-    "limitations": {
-      "description": "Explicit limitations.",
-      "items": {
-        "$ref": "#/$defs/LimitationNote"
-      },
-      "title": "Limitations",
-      "type": "array"
-    },
-    "quality_flags": {
-      "description": "Quality flags and warnings.",
-      "items": {
-        "$ref": "#/$defs/QualityFlag"
-      },
-      "title": "Quality Flags",
-      "type": "array"
-    },
-    "fit_for_purpose": {
-      "$ref": "#/$defs/FitForPurpose",
-      "description": "Fit-for-purpose metadata."
-    },
-    "tier_semantics": {
-      "$ref": "#/$defs/TierSemantics",
-      "description": "Tier and interpretation-boundary semantics for the active model."
-    },
-    "uncertaintyTier": {
-      "$ref": "#/$defs/UncertaintyTier",
-      "default": "tier_a",
-      "description": "Current uncertainty-governance tier for this output."
     },
     "uncertaintyRegister": {
-      "description": "Qualitative or bounded uncertainty entries attached to the scenario.",
       "items": {
         "$ref": "#/$defs/UncertaintyRegisterEntry"
       },
       "title": "Uncertaintyregister",
       "type": "array"
     },
-    "sensitivityRanking": {
-      "description": "Deterministic one-at-a-time sensitivity ranking for the primary dose metric.",
-      "items": {
-        "$ref": "#/$defs/SensitivityRankingEntry"
-      },
-      "title": "Sensitivityranking",
-      "type": "array"
-    },
     "dependencyMetadata": {
-      "description": "Known dependence structures that matter for later uncertainty work.",
       "items": {
         "$ref": "#/$defs/DependencyDescriptor"
       },
@@ -1270,11 +1496,14 @@
           "type": "null"
         }
       ],
-      "default": null,
-      "description": "Current validation posture for the route and mechanism represented."
+      "default": null
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle",
+      "description": "Envelope provenance."
     },
     "interpretation_notes": {
-      "description": "Human-readable scenario notes.",
+      "description": "Human-readable interpretation notes.",
       "items": {
         "type": "string"
       },
@@ -1283,17 +1512,16 @@
     }
   },
   "required": [
-    "scenario_id",
+    "envelopeId",
     "chemical_id",
     "route",
-    "scenario_class",
-    "external_dose",
-    "product_use_profile",
-    "population_profile",
-    "provenance",
-    "fit_for_purpose",
-    "tier_semantics"
+    "scenarioClass",
+    "label",
+    "minDose",
+    "medianDose",
+    "maxDose",
+    "provenance"
   ],
-  "title": "ExposureScenario",
+  "title": "ExposureEnvelopeSummary",
   "type": "object"
 }

@@ -451,6 +451,182 @@
       "Do not interpret this screening result as absorbed dermal dose, systemic exposure, or a final risk conclusion."
     ]
   },
+  "uncertaintyTier": "tier_a",
+  "uncertaintyRegister": [
+    {
+      "entryId": "tier-a-model-boundary",
+      "title": "Tier A deterministic screening boundary remains in force",
+      "uncertaintyTypes": [
+        "model_uncertainty"
+      ],
+      "relatedAssumptions": [],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
+      "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
+    },
+    {
+      "entryId": "assumption-retention_factor",
+      "title": "Resolved assumption `retention_factor` carries default uncertainty",
+      "uncertaintyTypes": [
+        "parameter_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "retention_factor"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "`retention_factor` resolved as `heuristic_default` with `screening_extrapolation` status.",
+      "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+    },
+    {
+      "entryId": "assumption-transfer_efficiency",
+      "title": "Resolved assumption `transfer_efficiency` carries default uncertainty",
+      "uncertaintyTypes": [
+        "parameter_uncertainty",
+        "model_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "transfer_efficiency"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "`transfer_efficiency` resolved as `heuristic_default` with `screening_extrapolation` status.",
+      "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+    },
+    {
+      "entryId": "dependency-handling-required",
+      "title": "Known dependencies are preserved qualitatively, not numerically",
+      "uncertaintyTypes": [
+        "variability",
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "The output carries known dependence structures, but no joint sampling or correlation model is applied in Tier A.",
+      "recommendation": "Use scenario packaging for Tier B and reserve probabilistic propagation for later tiers with explicit joint models."
+    }
+  ],
+  "sensitivityRanking": [
+    {
+      "parameterName": "use_events_per_day",
+      "sourceKind": "user_input",
+      "baselineValue": 3.0,
+      "perturbedValue": 3.3,
+      "unit": "events/day",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.095625,
+      "percentDelta": 10.0,
+      "elasticity": 1.0,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "use_amount_per_event",
+      "sourceKind": "user_input",
+      "baselineValue": 1.5,
+      "perturbedValue": 1.65,
+      "unit": "g",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.095625,
+      "percentDelta": 10.0,
+      "elasticity": 1.0,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "transfer_efficiency",
+      "sourceKind": "default_registry",
+      "baselineValue": 0.85,
+      "perturbedValue": 0.935,
+      "unit": "fraction",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.095625,
+      "percentDelta": 10.0,
+      "elasticity": 1.0,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "retention_factor",
+      "sourceKind": "default_registry",
+      "baselineValue": 1.0,
+      "perturbedValue": 1.1,
+      "unit": "fraction",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.095625,
+      "percentDelta": 10.0,
+      "elasticity": 1.0,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "concentration_fraction",
+      "sourceKind": "user_input",
+      "baselineValue": 0.02,
+      "perturbedValue": 0.022,
+      "unit": "fraction",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.095625,
+      "percentDelta": 10.0,
+      "elasticity": 1.0,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "body_weight_kg",
+      "sourceKind": "default_registry",
+      "baselineValue": 80.0,
+      "perturbedValue": 88.0,
+      "unit": "kg",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": -0.08693182,
+      "percentDelta": -9.090909,
+      "elasticity": -0.909091,
+      "direction": "negative"
+    }
+  ],
+  "dependencyMetadata": [
+    {
+      "dependencyId": "use-intensity-cluster",
+      "title": "Use amount and frequency should be treated as a behavioral package",
+      "relationshipType": "behavioral",
+      "assumptionNames": [
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "handlingStrategy": "scenario_packaged",
+      "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+    }
+  ],
+  "validationSummary": {
+    "validationStatus": "benchmark_regression",
+    "routeMechanism": "dermal_direct_application",
+    "benchmarkCaseIds": [
+      "dermal_density_precedence_volume_case",
+      "dermal_hand_cream_screening"
+    ],
+    "externalDatasetIds": [
+      "dermal_surface_loading_candidate"
+    ],
+    "highestSupportedUncertaintyTier": "tier_b",
+    "probabilisticEnablement": "blocked",
+    "notes": [
+      "Deterministic verification and benchmark regression are available for this domain.",
+      "External validation remains a documented future capability rather than an active gate.",
+      "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
+    ]
+  },
   "interpretation_notes": [
     "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
   ]

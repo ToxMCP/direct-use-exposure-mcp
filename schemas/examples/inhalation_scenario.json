@@ -664,6 +664,263 @@
       "Do not interpret the result as deposited dose, absorbed dose, or a final risk conclusion."
     ]
   },
+  "uncertaintyTier": "tier_a",
+  "uncertaintyRegister": [
+    {
+      "entryId": "tier-a-model-boundary",
+      "title": "Tier A deterministic screening boundary remains in force",
+      "uncertaintyTypes": [
+        "model_uncertainty"
+      ],
+      "relatedAssumptions": [],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
+      "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
+    },
+    {
+      "entryId": "assumption-density_g_per_ml",
+      "title": "Resolved assumption `density_g_per_ml` carries default uncertainty",
+      "uncertaintyTypes": [
+        "parameter_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "density_g_per_ml"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "`density_g_per_ml` resolved as `heuristic_default` with `screening_extrapolation` status.",
+      "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+    },
+    {
+      "entryId": "assumption-aerosolized_fraction",
+      "title": "Resolved assumption `aerosolized_fraction` carries default uncertainty",
+      "uncertaintyTypes": [
+        "parameter_uncertainty",
+        "model_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "aerosolized_fraction"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "`aerosolized_fraction` resolved as `heuristic_default` with `screening_extrapolation` status.",
+      "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+    },
+    {
+      "entryId": "limitation-breathing_zone_not_modeled",
+      "title": "Limitation `breathing_zone_not_modeled` remains unquantified",
+      "uncertaintyTypes": [
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "likely_underestimate",
+      "impactLevel": "high",
+      "summary": "Tier-0 inhalation uses a well-mixed room average and does not resolve near-field breathing-zone peaks for spray events.",
+      "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
+    },
+    {
+      "entryId": "dependency-handling-required",
+      "title": "Known dependencies are preserved qualitatively, not numerically",
+      "uncertaintyTypes": [
+        "variability",
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "aerosolized_fraction",
+        "air_exchange_rate_per_hour",
+        "application_method",
+        "body_weight_kg",
+        "exposure_duration_hours",
+        "inhalation_rate_m3_per_hour",
+        "physical_form",
+        "room_volume_m3",
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "The output carries known dependence structures, but no joint sampling or correlation model is applied in Tier A.",
+      "recommendation": "Use scenario packaging for Tier B and reserve probabilistic propagation for later tiers with explicit joint models."
+    }
+  ],
+  "sensitivityRanking": [
+    {
+      "parameterName": "use_events_per_day",
+      "sourceKind": "user_input",
+      "baselineValue": 1.0,
+      "perturbedValue": 1.1,
+      "unit": "events/day",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00200792,
+      "percentDelta": 10.00004,
+      "elasticity": 1.000004,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "use_amount_per_event",
+      "sourceKind": "user_input",
+      "baselineValue": 12.0,
+      "perturbedValue": 13.2,
+      "unit": "mL",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00200792,
+      "percentDelta": 10.00004,
+      "elasticity": 1.000004,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "inhalation_rate_m3_per_hour",
+      "sourceKind": "user_input",
+      "baselineValue": 0.9,
+      "perturbedValue": 0.99,
+      "unit": "m3/h",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00200792,
+      "percentDelta": 10.00004,
+      "elasticity": 1.000004,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "density_g_per_ml",
+      "sourceKind": "default_registry",
+      "baselineValue": 1.0,
+      "perturbedValue": 1.1,
+      "unit": "g/mL",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00200792,
+      "percentDelta": 10.00004,
+      "elasticity": 1.000004,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "concentration_fraction",
+      "sourceKind": "user_input",
+      "baselineValue": 0.05,
+      "perturbedValue": 0.055,
+      "unit": "fraction",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00200792,
+      "percentDelta": 10.00004,
+      "elasticity": 1.000004,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "aerosolized_fraction",
+      "sourceKind": "default_registry",
+      "baselineValue": 0.2,
+      "perturbedValue": 0.22,
+      "unit": "fraction",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00200792,
+      "percentDelta": 10.00004,
+      "elasticity": 1.000004,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "room_volume_m3",
+      "sourceKind": "user_input",
+      "baselineValue": 25.0,
+      "perturbedValue": 27.5,
+      "unit": "m3",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": -0.00182537,
+      "percentDelta": -9.090886,
+      "elasticity": -0.909089,
+      "direction": "negative"
+    },
+    {
+      "parameterName": "body_weight_kg",
+      "sourceKind": "user_input",
+      "baselineValue": 68.0,
+      "perturbedValue": 74.8,
+      "unit": "kg",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": -0.00182537,
+      "percentDelta": -9.090886,
+      "elasticity": -0.909089,
+      "direction": "negative"
+    }
+  ],
+  "dependencyMetadata": [
+    {
+      "dependencyId": "use-intensity-cluster",
+      "title": "Use amount and frequency should be treated as a behavioral package",
+      "relationshipType": "behavioral",
+      "assumptionNames": [
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "handlingStrategy": "scenario_packaged",
+      "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+    },
+    {
+      "dependencyId": "body-size-scaling-cluster",
+      "title": "Body size and physiology should scale together",
+      "relationshipType": "physiological",
+      "assumptionNames": [
+        "body_weight_kg",
+        "inhalation_rate_m3_per_hour"
+      ],
+      "handlingStrategy": "joint_model_required",
+      "note": "Future probabilistic tiers should use a joint physiological model rather than independent sampling."
+    },
+    {
+      "dependencyId": "room-context-cluster",
+      "title": "Room size, ventilation, and duration form one scenario context",
+      "relationshipType": "scenario_package",
+      "assumptionNames": [
+        "room_volume_m3",
+        "air_exchange_rate_per_hour",
+        "exposure_duration_hours"
+      ],
+      "handlingStrategy": "scenario_packaged",
+      "note": "Microenvironment parameters should be changed as coherent room archetypes instead of independent marginals."
+    },
+    {
+      "dependencyId": "spray-mechanism-cluster",
+      "title": "Aerosol release depends on spray mechanism and physical form",
+      "relationshipType": "mechanistic",
+      "assumptionNames": [
+        "aerosolized_fraction",
+        "application_method",
+        "physical_form"
+      ],
+      "handlingStrategy": "conditional_model_required",
+      "note": "Later uncertainty tiers should condition aerosol release on the spray mechanism rather than sample it independently."
+    }
+  ],
+  "validationSummary": {
+    "validationStatus": "benchmark_regression",
+    "routeMechanism": "inhalation_well_mixed_spray",
+    "benchmarkCaseIds": [
+      "inhalation_trigger_spray_screening"
+    ],
+    "externalDatasetIds": [
+      "air_chamber_spray_time_series_candidate"
+    ],
+    "highestSupportedUncertaintyTier": "tier_b",
+    "probabilisticEnablement": "blocked",
+    "notes": [
+      "Deterministic verification and benchmark regression are available for this domain.",
+      "External validation remains a documented future capability rather than an active gate.",
+      "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
+    ]
+  },
   "interpretation_notes": [
     "Deterministic inhalation screening scenario using a well-mixed room assumption.",
     "Air exchange acts as a first-order removal term rather than a full CFD treatment."

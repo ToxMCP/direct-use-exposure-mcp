@@ -124,6 +124,16 @@
       "title": "AssumptionSourceReference",
       "type": "object"
     },
+    "BiasDirection": {
+      "enum": [
+        "likely_overestimate",
+        "likely_underestimate",
+        "bidirectional",
+        "unknown"
+      ],
+      "title": "BiasDirection",
+      "type": "string"
+    },
     "DefaultVisibility": {
       "enum": [
         "silent_traceable",
@@ -131,6 +141,66 @@
         "block"
       ],
       "title": "DefaultVisibility",
+      "type": "string"
+    },
+    "DependencyDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "dependencyId": {
+          "title": "Dependencyid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "relationshipType": {
+          "$ref": "#/$defs/DependencyRelationship"
+        },
+        "assumptionNames": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptionnames",
+          "type": "array"
+        },
+        "handlingStrategy": {
+          "$ref": "#/$defs/DependencyHandlingStrategy"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependencyId",
+        "title",
+        "relationshipType",
+        "handlingStrategy",
+        "note"
+      ],
+      "title": "DependencyDescriptor",
+      "type": "object"
+    },
+    "DependencyHandlingStrategy": {
+      "enum": [
+        "scenario_packaged",
+        "conditional_model_required",
+        "joint_model_required",
+        "not_quantified"
+      ],
+      "title": "DependencyHandlingStrategy",
+      "type": "string"
+    },
+    "DependencyRelationship": {
+      "enum": [
+        "structural",
+        "physiological",
+        "behavioral",
+        "mechanistic",
+        "scenario_package"
+      ],
+      "title": "DependencyRelationship",
       "type": "string"
     },
     "DoseUnit": {
@@ -363,6 +433,47 @@
         "tier_semantics": {
           "$ref": "#/$defs/TierSemantics",
           "description": "Tier and interpretation-boundary semantics for the active model."
+        },
+        "uncertaintyTier": {
+          "$ref": "#/$defs/UncertaintyTier",
+          "default": "tier_a",
+          "description": "Current uncertainty-governance tier for this output."
+        },
+        "uncertaintyRegister": {
+          "description": "Qualitative or bounded uncertainty entries attached to the scenario.",
+          "items": {
+            "$ref": "#/$defs/UncertaintyRegisterEntry"
+          },
+          "title": "Uncertaintyregister",
+          "type": "array"
+        },
+        "sensitivityRanking": {
+          "description": "Deterministic one-at-a-time sensitivity ranking for the primary dose metric.",
+          "items": {
+            "$ref": "#/$defs/SensitivityRankingEntry"
+          },
+          "title": "Sensitivityranking",
+          "type": "array"
+        },
+        "dependencyMetadata": {
+          "description": "Known dependence structures that matter for later uncertainty work.",
+          "items": {
+            "$ref": "#/$defs/DependencyDescriptor"
+          },
+          "title": "Dependencymetadata",
+          "type": "array"
+        },
+        "validationSummary": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ValidationSummary"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Current validation posture for the route and mechanism represented."
         },
         "interpretation_notes": {
           "description": "Human-readable scenario notes.",
@@ -856,6 +967,98 @@
       "title": "ScenarioDose",
       "type": "object"
     },
+    "SensitivityDirection": {
+      "enum": [
+        "positive",
+        "negative",
+        "neutral"
+      ],
+      "title": "SensitivityDirection",
+      "type": "string"
+    },
+    "SensitivityRankingEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "parameterName": {
+          "title": "Parametername",
+          "type": "string"
+        },
+        "sourceKind": {
+          "$ref": "#/$defs/SourceKind"
+        },
+        "baselineValue": {
+          "title": "Baselinevalue",
+          "type": "number"
+        },
+        "perturbedValue": {
+          "title": "Perturbedvalue",
+          "type": "number"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "perturbationFraction": {
+          "title": "Perturbationfraction",
+          "type": "number"
+        },
+        "responseMetric": {
+          "title": "Responsemetric",
+          "type": "string"
+        },
+        "absoluteDelta": {
+          "title": "Absolutedelta",
+          "type": "number"
+        },
+        "percentDelta": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Percentdelta"
+        },
+        "elasticity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Elasticity"
+        },
+        "direction": {
+          "$ref": "#/$defs/SensitivityDirection"
+        }
+      },
+      "required": [
+        "parameterName",
+        "sourceKind",
+        "baselineValue",
+        "perturbedValue",
+        "perturbationFraction",
+        "responseMetric",
+        "absoluteDelta",
+        "direction"
+      ],
+      "title": "SensitivityRankingEntry",
+      "type": "object"
+    },
     "Severity": {
       "enum": [
         "info",
@@ -932,6 +1135,95 @@
       "title": "TierSemantics",
       "type": "object"
     },
+    "UncertaintyQuantificationStatus": {
+      "enum": [
+        "qualitative_only",
+        "bounded",
+        "probability_bounds",
+        "probabilistic"
+      ],
+      "title": "UncertaintyQuantificationStatus",
+      "type": "string"
+    },
+    "UncertaintyRegisterEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "entryId": {
+          "title": "Entryid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "uncertaintyTypes": {
+          "items": {
+            "$ref": "#/$defs/UncertaintyType"
+          },
+          "title": "Uncertaintytypes",
+          "type": "array"
+        },
+        "relatedAssumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Relatedassumptions",
+          "type": "array"
+        },
+        "quantificationStatus": {
+          "$ref": "#/$defs/UncertaintyQuantificationStatus"
+        },
+        "biasDirection": {
+          "$ref": "#/$defs/BiasDirection"
+        },
+        "impactLevel": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "Impactlevel",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommendation"
+        }
+      },
+      "required": [
+        "entryId",
+        "title",
+        "quantificationStatus",
+        "biasDirection",
+        "impactLevel",
+        "summary"
+      ],
+      "title": "UncertaintyRegisterEntry",
+      "type": "object"
+    },
+    "UncertaintyTier": {
+      "enum": [
+        "tier_a",
+        "tier_b",
+        "tier_c",
+        "tier_d",
+        "tier_e"
+      ],
+      "title": "UncertaintyTier",
+      "type": "string"
+    },
     "UncertaintyType": {
       "enum": [
         "variability",
@@ -941,6 +1233,69 @@
       ],
       "title": "UncertaintyType",
       "type": "string"
+    },
+    "ValidationStatus": {
+      "enum": [
+        "verification_only",
+        "benchmark_regression",
+        "external_validation_partial",
+        "calibrated"
+      ],
+      "title": "ValidationStatus",
+      "type": "string"
+    },
+    "ValidationSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "validationStatus": {
+          "$ref": "#/$defs/ValidationStatus"
+        },
+        "routeMechanism": {
+          "title": "Routemechanism",
+          "type": "string"
+        },
+        "benchmarkCaseIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Benchmarkcaseids",
+          "type": "array"
+        },
+        "externalDatasetIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Externaldatasetids",
+          "type": "array"
+        },
+        "highestSupportedUncertaintyTier": {
+          "$ref": "#/$defs/UncertaintyTier"
+        },
+        "probabilisticEnablement": {
+          "enum": [
+            "blocked",
+            "gated",
+            "enabled"
+          ],
+          "title": "Probabilisticenablement",
+          "type": "string"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "validationStatus",
+        "routeMechanism",
+        "highestSupportedUncertaintyTier",
+        "probabilisticEnablement"
+      ],
+      "title": "ValidationSummary",
+      "type": "object"
     }
   },
   "additionalProperties": false,

@@ -1,62 +1,655 @@
 {
-  "schemaVersion": "pbpkExternalImportPackage.v1",
-  "ingestToolName": "ingest_external_pbpk_bundle",
-  "bundle": {
-    "schemaVersion": "pbpkExternalImportBundle.v1",
-    "sourcePlatform": "exposure-scenario-mcp",
-    "sourceVersion": "0.1.0",
-    "modelName": "exp-example-dermal-001-upstream-context",
-    "modelType": "exposure-scenario-context",
-    "executionDate": "2026-03-24T00:00:00+00:00",
-    "runId": "exp-example-dermal-001-external-context",
-    "operator": null,
-    "sponsor": null,
-    "rawArtifacts": [],
-    "assessmentContext": {
-      "contextOfUse": "screening-brief",
-      "scientificPurpose": "external exposure scenario translation for PBPK",
-      "decisionContext": "upstream external exposure context only",
-      "decisionOwner": "external-orchestrator",
-      "handoffTarget": "pbpk-mcp",
-      "requestedSubject": "Example Solvent A",
-      "sourceScenarioId": "exp-example-dermal-001",
-      "domain": {
-        "species": "human",
+  "schema_version": "exposureEnvelopeSummary.v1",
+  "envelopeId": "env-example-dermal-001",
+  "chemical_id": "DTXSID7020182",
+  "route": "dermal",
+  "scenarioClass": "screening",
+  "label": "Example dermal use envelope",
+  "uncertaintyTier": "tier_b",
+  "archetypes": [
+    {
+      "label": "Lower plausible use",
+      "description": "Reduced amount and lower frequency archetype.",
+      "scenario": {
+        "schema_version": "exposureScenario.v1",
+        "scenario_id": "exp-example-envelope-low-001",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
         "route": "dermal",
-        "lifeStage": "adult",
-        "population": "adult",
-        "compound": "Example Solvent A",
-        "region": "EU"
-      },
-      "doseScenario": {
-        "scenarioId": "exp-example-dermal-001",
-        "externalDose": {
+        "scenario_class": "screening",
+        "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.95625,
+          "value": 0.425,
           "unit": "mg/kg-day"
         },
-        "eventsPerDay": 3.0,
-        "eventDurationHours": null,
-        "timingPattern": "3 events/day",
-        "productCategory": "personal_care",
-        "applicationMethod": "hand_application",
-        "retentionType": "leave_on",
-        "bodyWeightKg": 80.0
-      },
-      "targetOutput": "normalized_external_dose"
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Hand Cream",
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 1.0,
+          "use_amount_unit": "g",
+          "use_events_per_day": 2.0,
+          "density_g_per_ml": null,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": null,
+          "air_exchange_rate_per_hour": null,
+          "exposure_duration_hours": null
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 80.0,
+          "inhalation_rate_m3_per_hour": null,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [
+            "consumer",
+            "general_population"
+          ],
+          "region": "EU"
+        },
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 20.0,
+          "external_mass_mg_per_day": 34.0,
+          "surface_loading_mg_per_cm2_day": 0.00596491
+        },
+        "assumptions": [
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "use_amount_per_event",
+            "value": 1.0,
+            "unit": "g",
+            "source_kind": "user_input",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Exposure Scenario MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "explicit_user_input",
+            "default_applied": false,
+            "rationale": "Product amount per event was supplied directly in grams.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "explicit_input",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "user_asserted",
+              "uncertainty_types": [
+                "variability",
+                "parameter_uncertainty"
+              ],
+              "applicability_domain": {
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "concentration_fraction",
+            "value": 0.02,
+            "unit": "fraction",
+            "source_kind": "user_input",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Exposure Scenario MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "explicit_user_input",
+            "default_applied": false,
+            "rationale": "Chemical fraction in the product was supplied explicitly.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "explicit_input",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "user_asserted",
+              "uncertainty_types": [
+                "parameter_uncertainty",
+                "scenario_uncertainty"
+              ],
+              "applicability_domain": {
+                "product_category": "personal_care",
+                "physical_form": "cream"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "use_events_per_day",
+            "value": 2,
+            "unit": "events/day",
+            "source_kind": "user_input",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Exposure Scenario MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "explicit_user_input",
+            "default_applied": false,
+            "rationale": "Use frequency was supplied explicitly.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "explicit_input",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "user_asserted",
+              "uncertainty_types": [
+                "variability"
+              ],
+              "applicability_domain": {
+                "product_category": "personal_care",
+                "application_method": "hand_application",
+                "population_group": "adult"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "chemical_mass_mg_per_event",
+            "value": 20.0,
+            "unit": "mg/event",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Exposure Scenario MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Product mass per event multiplied by concentration fraction.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [
+                "parameter_uncertainty",
+                "scenario_uncertainty"
+              ],
+              "applicability_domain": {
+                "route": "dermal",
+                "scenario_class": "screening",
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on",
+                "population_group": "adult",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "body_weight_kg",
+            "value": 80.0,
+            "unit": "kg",
+            "source_kind": "default_registry",
+            "source": {
+              "source_id": "benchmark_population_defaults_v1",
+              "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+              "locator": "docs://defaults-evidence-map#population-defaults",
+              "version": "2026.03.24.v3",
+              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+            },
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Resolved from population defaults for 'adult'.",
+            "governance": {
+              "evidence_grade": "grade_3",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
+              "uncertainty_types": [
+                "variability"
+              ],
+              "applicability_domain": {
+                "population_group": "adult",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "retention_factor",
+            "value": 1.0,
+            "unit": "fraction",
+            "source_kind": "default_registry",
+            "source": {
+              "source_id": "heuristic_screening_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+              "version": "2026.03.24.v3",
+              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+            },
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Retention factor defaulted from retention_type='leave_on'.",
+            "governance": {
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
+              "uncertainty_types": [
+                "parameter_uncertainty",
+                "scenario_uncertainty"
+              ],
+              "applicability_domain": {
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "transfer_efficiency",
+            "value": 0.85,
+            "unit": "fraction",
+            "source_kind": "default_registry",
+            "source": {
+              "source_id": "heuristic_screening_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+              "version": "2026.03.24.v3",
+              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+            },
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
+            "governance": {
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
+              "uncertainty_types": [
+                "parameter_uncertainty",
+                "model_uncertainty"
+              ],
+              "applicability_domain": {
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "external_mass_mg_per_day",
+            "value": 34.0,
+            "unit": "mg/day",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Exposure Scenario MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [
+                "model_uncertainty",
+                "scenario_uncertainty"
+              ],
+              "applicability_domain": {
+                "route": "dermal",
+                "scenario_class": "screening",
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on",
+                "population_group": "adult",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "exposed_surface_area_cm2",
+            "value": 5700.0,
+            "unit": "cm2",
+            "source_kind": "default_registry",
+            "source": {
+              "source_id": "benchmark_population_defaults_v1",
+              "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+              "locator": "docs://defaults-evidence-map#population-defaults",
+              "version": "2026.03.24.v3",
+              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+            },
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Resolved from population defaults for 'adult'.",
+            "governance": {
+              "evidence_grade": "grade_3",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
+              "uncertainty_types": [
+                "variability",
+                "parameter_uncertainty"
+              ],
+              "applicability_domain": {
+                "population_group": "adult",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "normalized_external_dose_mg_per_kg_day",
+            "value": 0.425,
+            "unit": "mg/kg-day",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Exposure Scenario MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Normalized external dose = external mass per day / body weight.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [
+                "model_uncertainty",
+                "scenario_uncertainty"
+              ],
+              "applicability_domain": {
+                "route": "dermal",
+                "scenario_class": "screening",
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on",
+                "population_group": "adult",
+                "region": "EU"
+              }
+            }
+          }
+        ],
+        "provenance": {
+          "schema_version": "provenanceBundle.v1",
+          "algorithm_id": "screening.external_dose.v1",
+          "plugin_id": "screening_scenario_plugin",
+          "plugin_version": "0.1.0",
+          "defaults_version": "2026.03.24.v3",
+          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+          "generated_at": "2026-03-24T00:00:00+00:00",
+          "notes": [
+            "Deterministic-first v0.1 engine.",
+            "All defaults are surfaced through exposureAssumptionRecord entries."
+          ]
+        },
+        "limitations": [],
+        "quality_flags": [
+          {
+            "code": "default_applied",
+            "severity": "info",
+            "message": "Default value applied for 'body_weight_kg'."
+          },
+          {
+            "code": "default_applied",
+            "severity": "info",
+            "message": "Default value applied for 'retention_factor'."
+          },
+          {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'retention_factor' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
+            "code": "default_applied",
+            "severity": "info",
+            "message": "Default value applied for 'transfer_efficiency'."
+          },
+          {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'transfer_efficiency' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
+            "code": "default_applied",
+            "severity": "info",
+            "message": "Default value applied for 'exposed_surface_area_cm2'."
+          }
+        ],
+        "fit_for_purpose": {
+          "label": "deterministic_screening",
+          "suitable_for": [
+            "screening prioritization",
+            "PBPK scenario preparation",
+            "auditable scenario comparison"
+          ],
+          "not_suitable_for": [
+            "internal exposure estimation",
+            "final risk characterization",
+            "population-scale probabilistic inference"
+          ]
+        },
+        "tier_semantics": {
+          "tier_claimed": "tier_0",
+          "tier_earned": "tier_0",
+          "tier_rationale": "Route-specific external exposure is produced with deterministic screening equations and may rely on default factor packs.",
+          "assumption_checks_passed": true,
+          "required_caveats": [
+            "Interpret the result as an external dermal load at the skin boundary; it does not include dermal absorption."
+          ],
+          "forbidden_interpretations": [
+            "Do not interpret this screening result as absorbed dermal dose, systemic exposure, or a final risk conclusion."
+          ]
+        },
+        "uncertaintyTier": "tier_a",
+        "uncertaintyRegister": [
+          {
+            "entryId": "tier-a-model-boundary",
+            "title": "Tier A deterministic screening boundary remains in force",
+            "uncertaintyTypes": [
+              "model_uncertainty"
+            ],
+            "relatedAssumptions": [],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "high",
+            "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
+            "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
+          },
+          {
+            "entryId": "assumption-retention_factor",
+            "title": "Resolved assumption `retention_factor` carries default uncertainty",
+            "uncertaintyTypes": [
+              "parameter_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "relatedAssumptions": [
+              "retention_factor"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "high",
+            "summary": "`retention_factor` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "assumption-transfer_efficiency",
+            "title": "Resolved assumption `transfer_efficiency` carries default uncertainty",
+            "uncertaintyTypes": [
+              "parameter_uncertainty",
+              "model_uncertainty"
+            ],
+            "relatedAssumptions": [
+              "transfer_efficiency"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "high",
+            "summary": "`transfer_efficiency` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "dependency-handling-required",
+            "title": "Known dependencies are preserved qualitatively, not numerically",
+            "uncertaintyTypes": [
+              "variability",
+              "scenario_uncertainty"
+            ],
+            "relatedAssumptions": [
+              "use_amount_per_event",
+              "use_events_per_day"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "high",
+            "summary": "The output carries known dependence structures, but no joint sampling or correlation model is applied in Tier A.",
+            "recommendation": "Use scenario packaging for Tier B and reserve probabilistic propagation for later tiers with explicit joint models."
+          }
+        ],
+        "sensitivityRanking": [
+          {
+            "parameterName": "use_events_per_day",
+            "sourceKind": "user_input",
+            "baselineValue": 2.0,
+            "perturbedValue": 2.2,
+            "unit": "events/day",
+            "perturbationFraction": 0.1,
+            "responseMetric": "normalized_external_dose",
+            "absoluteDelta": 0.0425,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
+            "direction": "positive"
+          },
+          {
+            "parameterName": "use_amount_per_event",
+            "sourceKind": "user_input",
+            "baselineValue": 1.0,
+            "perturbedValue": 1.1,
+            "unit": "g",
+            "perturbationFraction": 0.1,
+            "responseMetric": "normalized_external_dose",
+            "absoluteDelta": 0.0425,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
+            "direction": "positive"
+          },
+          {
+            "parameterName": "transfer_efficiency",
+            "sourceKind": "default_registry",
+            "baselineValue": 0.85,
+            "perturbedValue": 0.935,
+            "unit": "fraction",
+            "perturbationFraction": 0.1,
+            "responseMetric": "normalized_external_dose",
+            "absoluteDelta": 0.0425,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
+            "direction": "positive"
+          },
+          {
+            "parameterName": "retention_factor",
+            "sourceKind": "default_registry",
+            "baselineValue": 1.0,
+            "perturbedValue": 1.1,
+            "unit": "fraction",
+            "perturbationFraction": 0.1,
+            "responseMetric": "normalized_external_dose",
+            "absoluteDelta": 0.0425,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
+            "direction": "positive"
+          },
+          {
+            "parameterName": "concentration_fraction",
+            "sourceKind": "user_input",
+            "baselineValue": 0.02,
+            "perturbedValue": 0.022,
+            "unit": "fraction",
+            "perturbationFraction": 0.1,
+            "responseMetric": "normalized_external_dose",
+            "absoluteDelta": 0.0425,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
+            "direction": "positive"
+          },
+          {
+            "parameterName": "body_weight_kg",
+            "sourceKind": "default_registry",
+            "baselineValue": 80.0,
+            "perturbedValue": 88.0,
+            "unit": "kg",
+            "perturbationFraction": 0.1,
+            "responseMetric": "normalized_external_dose",
+            "absoluteDelta": -0.03863636,
+            "percentDelta": -9.090908,
+            "elasticity": -0.909091,
+            "direction": "negative"
+          }
+        ],
+        "dependencyMetadata": [
+          {
+            "dependencyId": "use-intensity-cluster",
+            "title": "Use amount and frequency should be treated as a behavioral package",
+            "relationshipType": "behavioral",
+            "assumptionNames": [
+              "use_amount_per_event",
+              "use_events_per_day"
+            ],
+            "handlingStrategy": "scenario_packaged",
+            "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+          }
+        ],
+        "validationSummary": {
+          "validationStatus": "benchmark_regression",
+          "routeMechanism": "dermal_direct_application",
+          "benchmarkCaseIds": [
+            "dermal_density_precedence_volume_case",
+            "dermal_hand_cream_screening"
+          ],
+          "externalDatasetIds": [
+            "dermal_surface_loading_candidate"
+          ],
+          "highestSupportedUncertaintyTier": "tier_b",
+          "probabilisticEnablement": "blocked",
+          "notes": [
+            "Deterministic verification and benchmark regression are available for this domain.",
+            "External validation remains a documented future capability rather than an active gate.",
+            "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
+          ]
+        },
+        "interpretation_notes": [
+          "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
+        ]
+      }
     },
-    "chemicalIdentity": {
-      "available": true,
-      "chemicalId": "DTXSID7020182",
-      "preferredName": "Example Solvent A",
-      "label": "Example Solvent A",
-      "sourceModule": "exposure-scenario-mcp",
-      "summary": "Identity context derived from exposure scenario exp-example-dermal-001."
-    },
-    "supportingHandoffs": {
-      "exposureScenario": {
+    {
+      "label": "Typical use",
+      "description": "Baseline screening archetype.",
+      "scenario": {
         "schema_version": "exposureScenario.v1",
-        "scenario_id": "exp-example-dermal-001",
+        "scenario_id": "exp-example-envelope-typical-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
@@ -686,366 +1279,21 @@
         "interpretation_notes": [
           "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
         ]
-      },
-      "pbpkScenarioInput": {
-        "schema_version": "pbpkScenarioInput.v1",
-        "source_scenario_id": "exp-example-dermal-001",
-        "chemical_id": "DTXSID7020182",
-        "chemical_name": "Example Solvent A",
-        "route": "dermal",
-        "dose_magnitude": 0.95625,
-        "dose_unit": "mg/kg-day",
-        "dose_metric": "normalized_external_dose",
-        "events_per_day": 3.0,
-        "event_duration_hours": null,
-        "timing_pattern": "3 events/day",
-        "population_context": {
-          "population_group": "adult",
-          "body_weight_kg": 80.0,
-          "inhalation_rate_m3_per_hour": null,
-          "region": "EU"
-        },
-        "supporting_assumption_names": [
-          "use_amount_per_event",
-          "concentration_fraction",
-          "use_events_per_day",
-          "chemical_mass_mg_per_event",
-          "body_weight_kg",
-          "retention_factor",
-          "transfer_efficiency",
-          "external_mass_mg_per_day",
-          "exposed_surface_area_cm2",
-          "normalized_external_dose_mg_per_kg_day"
-        ],
-        "provenance": {
-          "schema_version": "provenanceBundle.v1",
-          "algorithm_id": "pbpk.export.v1",
-          "plugin_id": "pbpk_export_service",
-          "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-          "generated_at": "2026-03-24T00:00:00+00:00",
-          "notes": [
-            "Deterministic-first v0.1 engine.",
-            "All defaults are surfaced through exposureAssumptionRecord entries."
-          ]
-        },
-        "limitations": []
-      },
-      "upstreamUncertaintySummary": {
-        "source": "exposure-scenario-mcp",
-        "issueCount": 6,
-        "hasResidualUncertainty": true,
-        "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation."
       }
     },
-    "internalExposure": {},
-    "qualification": {
-      "summary": "Imported upstream external-exposure context only; PBPK execution and qualification outputs are expected downstream from PBPK MCP.",
-      "evidenceLevel": "upstream-context-only",
-      "verificationStatus": "awaiting-pbpk-execution",
-      "performanceEvidenceBoundary": "pbpk-results-not-yet-produced",
-      "contextOfUse": "screening-brief",
-      "scientificPurpose": "external exposure scenario translation for PBPK",
-      "missingEvidenceCount": 0
-    },
-    "uncertainty": {
-      "status": "declared",
-      "source": "exposure-scenario-mcp",
-      "issueCount": 6,
-      "hasResidualUncertainty": true,
-      "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
-      "sources": [
-        "Benchmark population defaults mapped to EPA exposure-factor source families",
-        "Exposure Scenario MCP heuristic screening defaults",
-        "Exposure Scenario MCP runtime"
-      ],
-      "residualUncertainty": "upstream-exposure-scenario-assumptions",
-      "bundleMetadata": {
-        "sourceScenarioId": "exp-example-dermal-001"
-      }
-    },
-    "uncertaintyRegister": {
-      "source": "Exposure Scenario MCP",
-      "scope": "upstream-external-exposure-context",
-      "summary": "Exposure-scenario limitations remain upstream and must be synthesized with PBPK and NAM uncertainty downstream."
-    },
-    "pod": {},
-    "trueDoseAdjustment": {
-      "applied": false,
-      "summary": "Not applicable at the upstream external-exposure stage."
-    },
-    "comparisonMetric": "cmax"
-  },
-  "requestPayload": {
-    "sourcePlatform": "exposure-scenario-mcp",
-    "sourceVersion": "0.1.0",
-    "modelName": "exp-example-dermal-001-upstream-context",
-    "modelType": "exposure-scenario-context",
-    "executionDate": "2026-03-24T00:00:00+00:00",
-    "runId": "exp-example-dermal-001-external-context",
-    "operator": null,
-    "sponsor": null,
-    "rawArtifacts": [],
-    "assessmentContext": {
-      "contextOfUse": "screening-brief",
-      "scientificPurpose": "external exposure scenario translation for PBPK",
-      "decisionContext": "upstream external exposure context only",
-      "decisionOwner": "external-orchestrator",
-      "handoffTarget": "pbpk-mcp",
-      "requestedSubject": "Example Solvent A",
-      "sourceScenarioId": "exp-example-dermal-001",
-      "domain": {
-        "species": "human",
-        "route": "dermal",
-        "lifeStage": "adult",
-        "population": "adult",
-        "compound": "Example Solvent A",
-        "region": "EU"
-      },
-      "doseScenario": {
-        "scenarioId": "exp-example-dermal-001",
-        "externalDose": {
-          "metric": "normalized_external_dose",
-          "value": 0.95625,
-          "unit": "mg/kg-day"
-        },
-        "eventsPerDay": 3.0,
-        "eventDurationHours": null,
-        "timingPattern": "3 events/day",
-        "productCategory": "personal_care",
-        "applicationMethod": "hand_application",
-        "retentionType": "leave_on",
-        "bodyWeightKg": 80.0
-      },
-      "targetOutput": "normalized_external_dose"
-    },
-    "internalExposure": {},
-    "qualification": {
-      "summary": "Imported upstream external-exposure context only; PBPK execution and qualification outputs are expected downstream from PBPK MCP.",
-      "evidenceLevel": "upstream-context-only",
-      "verificationStatus": "awaiting-pbpk-execution",
-      "performanceEvidenceBoundary": "pbpk-results-not-yet-produced",
-      "contextOfUse": "screening-brief",
-      "scientificPurpose": "external exposure scenario translation for PBPK",
-      "missingEvidenceCount": 0
-    },
-    "uncertainty": {
-      "status": "declared",
-      "source": "exposure-scenario-mcp",
-      "issueCount": 6,
-      "hasResidualUncertainty": true,
-      "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
-      "sources": [
-        "Benchmark population defaults mapped to EPA exposure-factor source families",
-        "Exposure Scenario MCP heuristic screening defaults",
-        "Exposure Scenario MCP runtime"
-      ],
-      "residualUncertainty": "upstream-exposure-scenario-assumptions",
-      "bundleMetadata": {
-        "sourceScenarioId": "exp-example-dermal-001"
-      }
-    },
-    "uncertaintyRegister": {
-      "source": "Exposure Scenario MCP",
-      "scope": "upstream-external-exposure-context",
-      "summary": "Exposure-scenario limitations remain upstream and must be synthesized with PBPK and NAM uncertainty downstream."
-    },
-    "pod": {},
-    "trueDoseAdjustment": {
-      "applied": false,
-      "summary": "Not applicable at the upstream external-exposure stage."
-    },
-    "comparisonMetric": "cmax"
-  },
-  "toolCall": {
-    "schemaVersion": "pbpkExternalImportToolCall.v1",
-    "toolName": "ingest_external_pbpk_bundle",
-    "arguments": {
-      "sourcePlatform": "exposure-scenario-mcp",
-      "sourceVersion": "0.1.0",
-      "modelName": "exp-example-dermal-001-upstream-context",
-      "modelType": "exposure-scenario-context",
-      "executionDate": "2026-03-24T00:00:00+00:00",
-      "runId": "exp-example-dermal-001-external-context",
-      "operator": null,
-      "sponsor": null,
-      "rawArtifacts": [],
-      "assessmentContext": {
-        "contextOfUse": "screening-brief",
-        "scientificPurpose": "external exposure scenario translation for PBPK",
-        "decisionContext": "upstream external exposure context only",
-        "decisionOwner": "external-orchestrator",
-        "handoffTarget": "pbpk-mcp",
-        "requestedSubject": "Example Solvent A",
-        "sourceScenarioId": "exp-example-dermal-001",
-        "domain": {
-          "species": "human",
-          "route": "dermal",
-          "lifeStage": "adult",
-          "population": "adult",
-          "compound": "Example Solvent A",
-          "region": "EU"
-        },
-        "doseScenario": {
-          "scenarioId": "exp-example-dermal-001",
-          "externalDose": {
-            "metric": "normalized_external_dose",
-            "value": 0.95625,
-            "unit": "mg/kg-day"
-          },
-          "eventsPerDay": 3.0,
-          "eventDurationHours": null,
-          "timingPattern": "3 events/day",
-          "productCategory": "personal_care",
-          "applicationMethod": "hand_application",
-          "retentionType": "leave_on",
-          "bodyWeightKg": 80.0
-        },
-        "targetOutput": "normalized_external_dose"
-      },
-      "internalExposure": {},
-      "qualification": {
-        "summary": "Imported upstream external-exposure context only; PBPK execution and qualification outputs are expected downstream from PBPK MCP.",
-        "evidenceLevel": "upstream-context-only",
-        "verificationStatus": "awaiting-pbpk-execution",
-        "performanceEvidenceBoundary": "pbpk-results-not-yet-produced",
-        "contextOfUse": "screening-brief",
-        "scientificPurpose": "external exposure scenario translation for PBPK",
-        "missingEvidenceCount": 0
-      },
-      "uncertainty": {
-        "status": "declared",
-        "source": "exposure-scenario-mcp",
-        "issueCount": 6,
-        "hasResidualUncertainty": true,
-        "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
-        "sources": [
-          "Benchmark population defaults mapped to EPA exposure-factor source families",
-          "Exposure Scenario MCP heuristic screening defaults",
-          "Exposure Scenario MCP runtime"
-        ],
-        "residualUncertainty": "upstream-exposure-scenario-assumptions",
-        "bundleMetadata": {
-          "sourceScenarioId": "exp-example-dermal-001"
-        }
-      },
-      "uncertaintyRegister": {
-        "source": "Exposure Scenario MCP",
-        "scope": "upstream-external-exposure-context",
-        "summary": "Exposure-scenario limitations remain upstream and must be synthesized with PBPK and NAM uncertainty downstream."
-      },
-      "pod": {},
-      "trueDoseAdjustment": {
-        "applied": false,
-        "summary": "Not applicable at the upstream external-exposure stage."
-      },
-      "comparisonMetric": "cmax"
-    }
-  },
-  "toxclawModuleParams": {
-    "schemaVersion": "toxclawPbpkModuleParams.v1",
-    "ingestToolName": "ingest_external_pbpk_bundle",
-    "arguments": {
-      "sourcePlatform": "exposure-scenario-mcp",
-      "sourceVersion": "0.1.0",
-      "modelName": "exp-example-dermal-001-upstream-context",
-      "modelType": "exposure-scenario-context",
-      "executionDate": "2026-03-24T00:00:00+00:00",
-      "runId": "exp-example-dermal-001-external-context",
-      "operator": null,
-      "sponsor": null,
-      "rawArtifacts": [],
-      "assessmentContext": {
-        "contextOfUse": "screening-brief",
-        "scientificPurpose": "external exposure scenario translation for PBPK",
-        "decisionContext": "upstream external exposure context only",
-        "decisionOwner": "external-orchestrator",
-        "handoffTarget": "pbpk-mcp",
-        "requestedSubject": "Example Solvent A",
-        "sourceScenarioId": "exp-example-dermal-001",
-        "domain": {
-          "species": "human",
-          "route": "dermal",
-          "lifeStage": "adult",
-          "population": "adult",
-          "compound": "Example Solvent A",
-          "region": "EU"
-        },
-        "doseScenario": {
-          "scenarioId": "exp-example-dermal-001",
-          "externalDose": {
-            "metric": "normalized_external_dose",
-            "value": 0.95625,
-            "unit": "mg/kg-day"
-          },
-          "eventsPerDay": 3.0,
-          "eventDurationHours": null,
-          "timingPattern": "3 events/day",
-          "productCategory": "personal_care",
-          "applicationMethod": "hand_application",
-          "retentionType": "leave_on",
-          "bodyWeightKg": 80.0
-        },
-        "targetOutput": "normalized_external_dose"
-      },
-      "internalExposure": {},
-      "qualification": {
-        "summary": "Imported upstream external-exposure context only; PBPK execution and qualification outputs are expected downstream from PBPK MCP.",
-        "evidenceLevel": "upstream-context-only",
-        "verificationStatus": "awaiting-pbpk-execution",
-        "performanceEvidenceBoundary": "pbpk-results-not-yet-produced",
-        "contextOfUse": "screening-brief",
-        "scientificPurpose": "external exposure scenario translation for PBPK",
-        "missingEvidenceCount": 0
-      },
-      "uncertainty": {
-        "status": "declared",
-        "source": "exposure-scenario-mcp",
-        "issueCount": 6,
-        "hasResidualUncertainty": true,
-        "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
-        "sources": [
-          "Benchmark population defaults mapped to EPA exposure-factor source families",
-          "Exposure Scenario MCP heuristic screening defaults",
-          "Exposure Scenario MCP runtime"
-        ],
-        "residualUncertainty": "upstream-exposure-scenario-assumptions",
-        "bundleMetadata": {
-          "sourceScenarioId": "exp-example-dermal-001"
-        }
-      },
-      "uncertaintyRegister": {
-        "source": "Exposure Scenario MCP",
-        "scope": "upstream-external-exposure-context",
-        "summary": "Exposure-scenario limitations remain upstream and must be synthesized with PBPK and NAM uncertainty downstream."
-      },
-      "pod": {},
-      "trueDoseAdjustment": {
-        "applied": false,
-        "summary": "Not applicable at the upstream external-exposure stage."
-      },
-      "comparisonMetric": "cmax"
-    },
-    "chemicalIdentity": {
-      "available": true,
-      "chemicalId": "DTXSID7020182",
-      "preferredName": "Example Solvent A",
-      "label": "Example Solvent A",
-      "sourceModule": "exposure-scenario-mcp",
-      "summary": "Identity context derived from exposure scenario exp-example-dermal-001."
-    },
-    "supportingHandoffs": {
-      "exposureScenario": {
+    {
+      "label": "Upper plausible use",
+      "description": "Higher amount and explicit refinement modifiers.",
+      "scenario": {
         "schema_version": "exposureScenario.v1",
-        "scenario_id": "exp-example-dermal-001",
+        "scenario_id": "exp-example-envelope-high-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
         "scenario_class": "screening",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.95625,
+          "value": 1.04,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
@@ -1056,12 +1304,12 @@
           "application_method": "hand_application",
           "retention_type": "leave_on",
           "concentration_fraction": 0.02,
-          "use_amount_per_event": 1.5,
+          "use_amount_per_event": 2.0,
           "use_amount_unit": "g",
-          "use_events_per_day": 3.0,
+          "use_events_per_day": 4.0,
           "density_g_per_ml": null,
-          "transfer_efficiency": null,
-          "retention_factor": null,
+          "transfer_efficiency": 0.8,
+          "retention_factor": 0.65,
           "ingestion_fraction": null,
           "aerosolized_fraction": null,
           "room_volume_m3": null,
@@ -1081,15 +1329,15 @@
           "region": "EU"
         },
         "route_metrics": {
-          "chemical_mass_mg_per_event": 30.0,
-          "external_mass_mg_per_day": 76.5,
-          "surface_loading_mg_per_cm2_day": 0.01342105
+          "chemical_mass_mg_per_event": 40.0,
+          "external_mass_mg_per_day": 83.2,
+          "surface_loading_mg_per_cm2_day": 0.01459649
         },
         "assumptions": [
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "use_amount_per_event",
-            "value": 1.5,
+            "value": 2.0,
             "unit": "g",
             "source_kind": "user_input",
             "source": {
@@ -1152,7 +1400,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "use_events_per_day",
-            "value": 3.0,
+            "value": 4,
             "unit": "events/day",
             "source_kind": "user_input",
             "source": {
@@ -1183,7 +1431,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "chemical_mass_mg_per_event",
-            "value": 30.0,
+            "value": 40.0,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -1250,24 +1498,24 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "retention_factor",
-            "value": 1.0,
+            "value": 0.65,
             "unit": "fraction",
-            "source_kind": "default_registry",
+            "source_kind": "user_input",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "exposure_scenario_mcp",
+              "title": "Exposure Scenario MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
             },
-            "confidence": "registry_default",
-            "default_applied": true,
-            "rationale": "Retention factor defaulted from retention_type='leave_on'.",
+            "confidence": "explicit_user_input",
+            "default_applied": false,
+            "rationale": "Dermal retention factor was supplied explicitly.",
             "governance": {
-              "evidence_grade": "grade_1",
-              "evidence_basis": "heuristic_default",
-              "default_visibility": "warn",
-              "applicability_status": "screening_extrapolation",
+              "evidence_grade": null,
+              "evidence_basis": "explicit_input",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "user_asserted",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "scenario_uncertainty"
@@ -1283,24 +1531,24 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "transfer_efficiency",
-            "value": 0.85,
+            "value": 0.8,
             "unit": "fraction",
-            "source_kind": "default_registry",
+            "source_kind": "user_input",
             "source": {
-              "source_id": "heuristic_screening_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic screening defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
-              "version": "2026.03.24.v3",
-              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
+              "source_id": "exposure_scenario_mcp",
+              "title": "Exposure Scenario MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
             },
-            "confidence": "registry_default",
-            "default_applied": true,
-            "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
+            "confidence": "explicit_user_input",
+            "default_applied": false,
+            "rationale": "Transfer efficiency was supplied explicitly.",
             "governance": {
-              "evidence_grade": "grade_1",
-              "evidence_basis": "heuristic_default",
-              "default_visibility": "warn",
-              "applicability_status": "screening_extrapolation",
+              "evidence_grade": null,
+              "evidence_basis": "explicit_input",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "user_asserted",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "model_uncertainty"
@@ -1315,7 +1563,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "external_mass_mg_per_day",
-            "value": 76.5,
+            "value": 83.2,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -1383,7 +1631,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 0.95625,
+            "value": 1.04,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -1441,26 +1689,6 @@
           {
             "code": "default_applied",
             "severity": "info",
-            "message": "Default value applied for 'retention_factor'."
-          },
-          {
-            "code": "heuristic_default_source",
-            "severity": "warning",
-            "message": "Default value for 'retention_factor' comes from a heuristic screening source rather than a curated factor pack."
-          },
-          {
-            "code": "default_applied",
-            "severity": "info",
-            "message": "Default value applied for 'transfer_efficiency'."
-          },
-          {
-            "code": "heuristic_default_source",
-            "severity": "warning",
-            "message": "Default value for 'transfer_efficiency' comes from a heuristic screening source rather than a curated factor pack."
-          },
-          {
-            "code": "default_applied",
-            "severity": "info",
             "message": "Default value applied for 'exposed_surface_area_cm2'."
           }
         ],
@@ -1505,38 +1733,6 @@
             "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
           },
           {
-            "entryId": "assumption-retention_factor",
-            "title": "Resolved assumption `retention_factor` carries default uncertainty",
-            "uncertaintyTypes": [
-              "parameter_uncertainty",
-              "scenario_uncertainty"
-            ],
-            "relatedAssumptions": [
-              "retention_factor"
-            ],
-            "quantificationStatus": "qualitative_only",
-            "biasDirection": "unknown",
-            "impactLevel": "high",
-            "summary": "`retention_factor` resolved as `heuristic_default` with `screening_extrapolation` status.",
-            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
-          },
-          {
-            "entryId": "assumption-transfer_efficiency",
-            "title": "Resolved assumption `transfer_efficiency` carries default uncertainty",
-            "uncertaintyTypes": [
-              "parameter_uncertainty",
-              "model_uncertainty"
-            ],
-            "relatedAssumptions": [
-              "transfer_efficiency"
-            ],
-            "quantificationStatus": "qualitative_only",
-            "biasDirection": "unknown",
-            "impactLevel": "high",
-            "summary": "`transfer_efficiency` resolved as `heuristic_default` with `screening_extrapolation` status.",
-            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
-          },
-          {
             "entryId": "dependency-handling-required",
             "title": "Known dependencies are preserved qualitatively, not numerically",
             "uncertaintyTypes": [
@@ -1558,12 +1754,12 @@
           {
             "parameterName": "use_events_per_day",
             "sourceKind": "user_input",
-            "baselineValue": 3.0,
-            "perturbedValue": 3.3,
+            "baselineValue": 4.0,
+            "perturbedValue": 4.4,
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.095625,
+            "absoluteDelta": 0.104,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -1571,38 +1767,38 @@
           {
             "parameterName": "use_amount_per_event",
             "sourceKind": "user_input",
-            "baselineValue": 1.5,
-            "perturbedValue": 1.65,
+            "baselineValue": 2.0,
+            "perturbedValue": 2.2,
             "unit": "g",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.095625,
+            "absoluteDelta": 0.104,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
           },
           {
             "parameterName": "transfer_efficiency",
-            "sourceKind": "default_registry",
-            "baselineValue": 0.85,
-            "perturbedValue": 0.935,
+            "sourceKind": "user_input",
+            "baselineValue": 0.8,
+            "perturbedValue": 0.88,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.095625,
+            "absoluteDelta": 0.104,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
           },
           {
             "parameterName": "retention_factor",
-            "sourceKind": "default_registry",
-            "baselineValue": 1.0,
-            "perturbedValue": 1.1,
+            "sourceKind": "user_input",
+            "baselineValue": 0.65,
+            "perturbedValue": 0.715,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.095625,
+            "absoluteDelta": 0.104,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -1615,7 +1811,7 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.095625,
+            "absoluteDelta": 0.104,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -1628,7 +1824,7 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.08693182,
+            "absoluteDelta": -0.09454545,
             "percentDelta": -9.090909,
             "elasticity": -0.909091,
             "direction": "negative"
@@ -1668,98 +1864,172 @@
         "interpretation_notes": [
           "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
         ]
-      },
-      "pbpkScenarioInput": {
-        "schema_version": "pbpkScenarioInput.v1",
-        "source_scenario_id": "exp-example-dermal-001",
-        "chemical_id": "DTXSID7020182",
-        "chemical_name": "Example Solvent A",
-        "route": "dermal",
-        "dose_magnitude": 0.95625,
-        "dose_unit": "mg/kg-day",
-        "dose_metric": "normalized_external_dose",
-        "events_per_day": 3.0,
-        "event_duration_hours": null,
-        "timing_pattern": "3 events/day",
-        "population_context": {
-          "population_group": "adult",
-          "body_weight_kg": 80.0,
-          "inhalation_rate_m3_per_hour": null,
-          "region": "EU"
-        },
-        "supporting_assumption_names": [
-          "use_amount_per_event",
-          "concentration_fraction",
-          "use_events_per_day",
-          "chemical_mass_mg_per_event",
-          "body_weight_kg",
-          "retention_factor",
-          "transfer_efficiency",
-          "external_mass_mg_per_day",
-          "exposed_surface_area_cm2",
-          "normalized_external_dose_mg_per_kg_day"
-        ],
-        "provenance": {
-          "schema_version": "provenanceBundle.v1",
-          "algorithm_id": "pbpk.export.v1",
-          "plugin_id": "pbpk_export_service",
-          "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.24.v3",
-          "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
-          "generated_at": "2026-03-24T00:00:00+00:00",
-          "notes": [
-            "Deterministic-first v0.1 engine.",
-            "All defaults are surfaced through exposureAssumptionRecord entries."
-          ]
-        },
-        "limitations": []
-      },
-      "upstreamUncertaintySummary": {
-        "source": "exposure-scenario-mcp",
-        "issueCount": 6,
-        "hasResidualUncertainty": true,
-        "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation."
       }
     }
+  ],
+  "minDose": {
+    "metric": "normalized_external_dose",
+    "value": 0.425,
+    "unit": "mg/kg-day"
   },
-  "compatibilityReport": {
-    "schema_version": "pbpkCompatibilityReport.v1",
-    "source_scenario_id": "exp-example-dermal-001",
-    "compatible": true,
-    "target_tool": "ingest_external_pbpk_bundle",
-    "checked_route": "dermal",
-    "checked_dose_unit": "mg/kg-day",
-    "ready_for_external_pbpk_import": true,
-    "supported_pbpk_objects": [
-      "ingest_external_pbpk_bundle.arguments",
-      "pbpk-mcp.ngraObjects.assessmentContext.v1",
-      "pbpk-mcp.ngraObjects.pbpkQualificationSummary.v1",
-      "pbpk-mcp.ngraObjects.uncertaintySummary.v1",
-      "pbpk-mcp.ngraObjects.uncertaintyHandoff.v1",
-      "pbpk-mcp.ngraObjects.internalExposureEstimate.v1",
-      "pbpk-mcp.ngraObjects.pointOfDepartureReference.v1",
-      "pbpk-mcp.ngraObjects.berInputBundle.v1"
+  "medianDose": {
+    "metric": "normalized_external_dose",
+    "value": 0.95625,
+    "unit": "mg/kg-day"
+  },
+  "maxDose": {
+    "metric": "normalized_external_dose",
+    "value": 1.04,
+    "unit": "mg/kg-day"
+  },
+  "spanRatio": 2.44705882,
+  "driverAttribution": [
+    {
+      "parameterName": "chemical_mass_mg_per_event",
+      "unit": "mg/event",
+      "minValue": 20.0,
+      "maxValue": 40.0,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Upper plausible use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    },
+    {
+      "parameterName": "external_mass_mg_per_day",
+      "unit": "mg/day",
+      "minValue": 34.0,
+      "maxValue": 83.2,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Upper plausible use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    },
+    {
+      "parameterName": "normalized_external_dose_mg_per_kg_day",
+      "unit": "mg/kg-day",
+      "minValue": 0.425,
+      "maxValue": 1.04,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Upper plausible use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    },
+    {
+      "parameterName": "retention_factor",
+      "unit": "fraction",
+      "minValue": 1.0,
+      "maxValue": 0.65,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Upper plausible use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    },
+    {
+      "parameterName": "transfer_efficiency",
+      "unit": "fraction",
+      "minValue": 0.85,
+      "maxValue": 0.8,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Upper plausible use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    },
+    {
+      "parameterName": "use_amount_per_event",
+      "unit": "g",
+      "minValue": 1.0,
+      "maxValue": 2.0,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Upper plausible use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    },
+    {
+      "parameterName": "use_events_per_day",
+      "unit": "events/day",
+      "minValue": 2,
+      "maxValue": 4,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Upper plausible use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    }
+  ],
+  "uncertaintyRegister": [
+    {
+      "entryId": "envelope-not-probabilistic",
+      "title": "Tier B envelope is bounded but not probabilistic",
+      "uncertaintyTypes": [
+        "scenario_uncertainty",
+        "parameter_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "chemical_mass_mg_per_event",
+        "external_mass_mg_per_day",
+        "normalized_external_dose_mg_per_kg_day",
+        "retention_factor",
+        "transfer_efficiency"
+      ],
+      "quantificationStatus": "bounded",
+      "biasDirection": "bidirectional",
+      "impactLevel": "high",
+      "summary": "Envelope outputs represent named deterministic archetypes and should not be interpreted as confidence intervals or population probabilities.",
+      "recommendation": "Keep archetype definitions explicit and add probability bounds or probabilistic methods only when evidence and dependencies justify them."
+    }
+  ],
+  "dependencyMetadata": [
+    {
+      "dependencyId": "use-intensity-cluster",
+      "title": "Use amount and frequency should be treated as a behavioral package",
+      "relationshipType": "behavioral",
+      "assumptionNames": [
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "handlingStrategy": "scenario_packaged",
+      "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+    }
+  ],
+  "validationSummary": {
+    "validationStatus": "benchmark_regression",
+    "routeMechanism": "dermal_direct_application",
+    "benchmarkCaseIds": [
+      "dermal_density_precedence_volume_case",
+      "dermal_hand_cream_screening"
     ],
-    "missing_external_bundle_fields": [],
-    "checked_fields": [
-      "toolCall.arguments.assessmentContext.domain.route",
-      "toolCall.arguments.assessmentContext.doseScenario.externalDose.unit",
-      "toolCall.arguments.assessmentContext.doseScenario.eventsPerDay",
-      "toolCall.arguments.assessmentContext.doseScenario.bodyWeightKg",
-      "toolCall.arguments.assessmentContext.doseScenario.eventDurationHours",
-      "toolCall.arguments.assessmentContext.domain.compound"
+    "externalDatasetIds": [
+      "dermal_surface_loading_candidate"
     ],
-    "issues": [
-      {
-        "code": "pbpk_downstream_review_required",
-        "severity": "warning",
-        "message": "This bundle is an upstream external-exposure handoff only. PBPK execution, internal dose estimation, and qualification review remain downstream responsibilities."
-      }
-    ],
-    "recommended_next_steps": [
-      "Call PBPK MCP `ingest_external_pbpk_bundle` with `toolCall.arguments`.",
-      "Preserve `bundle.supportingHandoffs` and `toxclawModuleParams` as additive exposure-side context outside the exact PBPK request payload.",
-      "Review returned internalExposureEstimate and pbpkQualificationSummary before downstream interpretation."
+    "highestSupportedUncertaintyTier": "tier_b",
+    "probabilisticEnablement": "blocked",
+    "notes": [
+      "Deterministic verification and benchmark regression are available for this domain.",
+      "External validation remains a documented future capability rather than an active gate.",
+      "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
     ]
-  }
+  },
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "uncertainty.envelope.v1",
+    "plugin_id": "deterministic_envelope_service",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.03.24.v3",
+    "defaults_hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Deterministic-first v0.1 engine.",
+      "All defaults are surfaced through exposureAssumptionRecord entries."
+    ]
+  },
+  "interpretation_notes": [
+    "This envelope is a deterministic Tier B scenario set, not a probabilistic interval.",
+    "Archetype definitions remain the primary explanation for the resulting span."
+  ]
 }

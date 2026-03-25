@@ -15,11 +15,14 @@ from exposure_scenario_mcp.integrations import (
 )
 from exposure_scenario_mcp.models import (
     BuildAggregateExposureScenarioInput,
+    BuildExposureEnvelopeInput,
     CompareExposureScenariosInput,
+    EnvelopeArchetypeInput,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
     ExportToxClawEvidenceBundleRequest,
     ExportToxClawRefinementBundleRequest,
+    ExposureEnvelopeSummary,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
     PopulationProfile,
@@ -36,6 +39,7 @@ from exposure_scenario_mcp.runtime import (
     compare_scenarios,
     export_pbpk_input,
 )
+from exposure_scenario_mcp.uncertainty import build_exposure_envelope
 
 EXAMPLE_GENERATED_AT = "2026-03-24T00:00:00+00:00"
 EXAMPLE_IDS = {
@@ -43,6 +47,10 @@ EXAMPLE_IDS = {
     "screening_dermal_refined_scenario": "exp-example-dermal-refined-001",
     "inhalation_scenario": "inh-example-room-001",
     "aggregate_summary": "agg-example-couse-001",
+    "envelope_summary": "env-example-dermal-001",
+    "envelope_low_scenario": "exp-example-envelope-low-001",
+    "envelope_typical_scenario": "exp-example-envelope-typical-001",
+    "envelope_high_scenario": "exp-example-envelope-high-001",
 }
 
 
@@ -80,6 +88,39 @@ def _freeze_comparison(record):
 def _freeze_pbpk_input(pbpk_input):
     return pbpk_input.model_copy(
         update={"provenance": _freeze_provenance(pbpk_input.provenance)},
+        deep=True,
+    )
+
+
+def _freeze_envelope(summary: ExposureEnvelopeSummary) -> ExposureEnvelopeSummary:
+    frozen_labels = {
+        "Lower plausible use": EXAMPLE_IDS["envelope_low_scenario"],
+        "Typical use": EXAMPLE_IDS["envelope_typical_scenario"],
+        "Upper plausible use": EXAMPLE_IDS["envelope_high_scenario"],
+    }
+    frozen_archetypes = []
+    for item in summary.archetypes:
+        scenario_id = frozen_labels.get(item.label, item.scenario.scenario_id)
+        frozen_archetypes.append(
+            item.model_copy(
+                update={"scenario": _freeze_scenario(item.scenario, scenario_id)},
+                deep=True,
+            )
+        )
+    min_dose = min(
+        frozen_archetypes, key=lambda item: item.scenario.external_dose.value
+    ).scenario.external_dose
+    max_dose = max(
+        frozen_archetypes, key=lambda item: item.scenario.external_dose.value
+    ).scenario.external_dose
+    return summary.model_copy(
+        update={
+            "envelope_id": EXAMPLE_IDS["envelope_summary"],
+            "archetypes": frozen_archetypes,
+            "min_dose": min_dose,
+            "max_dose": max_dose,
+            "provenance": _freeze_provenance(summary.provenance),
+        },
         deep=True,
     )
 
@@ -162,6 +203,56 @@ def build_examples() -> dict[str, dict]:
         engine.build(refined_request),
         EXAMPLE_IDS["screening_dermal_refined_scenario"],
     )
+    envelope_summary = _freeze_envelope(
+        build_exposure_envelope(
+            BuildExposureEnvelopeInput(
+                chemical_id="DTXSID7020182",
+                label="Example dermal use envelope",
+                archetypes=[
+                    EnvelopeArchetypeInput(
+                        label="Lower plausible use",
+                        description="Reduced amount and lower frequency archetype.",
+                        request=dermal_request.model_copy(
+                            update={
+                                "product_use_profile": (
+                                    dermal_request.product_use_profile.model_copy(
+                                        update={
+                                            "use_amount_per_event": 1.0,
+                                            "use_events_per_day": 2,
+                                        }
+                                    )
+                                )
+                            }
+                        ),
+                    ),
+                    EnvelopeArchetypeInput(
+                        label="Typical use",
+                        description="Baseline screening archetype.",
+                        request=dermal_request,
+                    ),
+                    EnvelopeArchetypeInput(
+                        label="Upper plausible use",
+                        description="Higher amount and explicit refinement modifiers.",
+                        request=refined_request.model_copy(
+                            update={
+                                "product_use_profile": (
+                                    refined_request.product_use_profile.model_copy(
+                                        update={
+                                            "use_amount_per_event": 2.0,
+                                            "use_events_per_day": 4,
+                                        }
+                                    )
+                                )
+                            }
+                        ),
+                    ),
+                ],
+            ),
+            engine,
+            defaults_registry,
+            generated_at=EXAMPLE_GENERATED_AT,
+        )
+    )
 
     aggregate_input = BuildAggregateExposureScenarioInput(
         chemical_id="DTXSID7020182",
@@ -239,6 +330,7 @@ def build_examples() -> dict[str, dict]:
         "screening_dermal_scenario": dermal_scenario.model_dump(mode="json", by_alias=True),
         "inhalation_request": inhalation_request.model_dump(mode="json", by_alias=True),
         "inhalation_scenario": inhalation_scenario.model_dump(mode="json", by_alias=True),
+        "exposure_envelope_summary": envelope_summary.model_dump(mode="json", by_alias=True),
         "aggregate_summary": aggregate_summary.model_dump(mode="json", by_alias=True),
         "pbpk_input": pbpk_input.model_dump(mode="json", by_alias=True),
         "pbpk_external_import_request": pbpk_external_import_package.request_payload.model_dump(

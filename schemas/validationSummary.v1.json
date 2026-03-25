@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "UncertaintyTier": {
+      "enum": [
+        "tier_a",
+        "tier_b",
+        "tier_c",
+        "tier_d",
+        "tier_e"
+      ],
+      "title": "UncertaintyTier",
+      "type": "string"
+    },
+    "ValidationStatus": {
+      "enum": [
+        "verification_only",
+        "benchmark_regression",
+        "external_validation_partial",
+        "calibrated"
+      ],
+      "title": "ValidationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "validationStatus": {
+      "$ref": "#/$defs/ValidationStatus"
+    },
+    "routeMechanism": {
+      "title": "Routemechanism",
+      "type": "string"
+    },
+    "benchmarkCaseIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Benchmarkcaseids",
+      "type": "array"
+    },
+    "externalDatasetIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Externaldatasetids",
+      "type": "array"
+    },
+    "highestSupportedUncertaintyTier": {
+      "$ref": "#/$defs/UncertaintyTier"
+    },
+    "probabilisticEnablement": {
+      "enum": [
+        "blocked",
+        "gated",
+        "enabled"
+      ],
+      "title": "Probabilisticenablement",
+      "type": "string"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "validationStatus",
+    "routeMechanism",
+    "highestSupportedUncertaintyTier",
+    "probabilisticEnablement"
+  ],
+  "title": "ValidationSummary",
+  "type": "object"
+}

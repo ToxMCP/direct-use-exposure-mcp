@@ -74,6 +74,8 @@ The design is intentionally narrow:
 
 - Deterministic dermal and oral screening scenario construction
 - Deterministic inhalation screening with room-volume and ventilation semantics
+- Tier A uncertainty registers, deterministic sensitivity ranking, and dependency metadata
+- Tier B deterministic scenario envelopes from named archetypes
 - Simple additive aggregate exposure summaries
 - Scenario comparison and refinement deltas
 - ToxClaw evidence export and refinement-bundle export
@@ -100,6 +102,8 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | Capability | Description |
 | --- | --- |
 | `Screening scenarios` | Builds route-specific external-dose scenarios for dermal, oral, and inhalation screening use cases. |
+| `Tier A uncertainty diagnostics` | Publishes qualitative uncertainty registers, one-at-a-time sensitivity ranking, dependency metadata, and validation posture on each scenario. |
+| `Tier B deterministic envelopes` | Builds named archetype envelopes with bounded min/median/max outputs and explicit driver attribution without probabilistic overclaiming. |
 | `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
@@ -129,6 +133,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 ### Scenario construction
 
 - `exposure_build_screening_exposure_scenario`
+- `exposure_build_exposure_envelope`
 - `exposure_build_inhalation_screening_scenario`
 - `exposure_build_aggregate_exposure_scenario`
 - `exposure_compare_exposure_scenarios`
@@ -149,6 +154,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `examples://{example_name}`
 - `defaults://manifest`
 - `benchmarks://manifest`
+- `validation://manifest`
 
 ### Operator and scientific documentation
 
@@ -157,6 +163,8 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `docs://operator-guide`
 - `docs://provenance-policy`
 - `docs://result-status-semantics`
+- `docs://uncertainty-framework`
+- `docs://validation-framework`
 - `docs://suite-integration-guide`
 - `docs://troubleshooting`
 

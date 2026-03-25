@@ -11,6 +11,12 @@
       "description": "Build one deterministic dermal or oral external exposure screening scenario."
     },
     {
+      "name": "exposure_build_exposure_envelope",
+      "request_schema": "buildExposureEnvelopeInput.v1",
+      "response_schema": "exposureEnvelopeSummary.v1",
+      "description": "Build a deterministic Tier B envelope from named scenario archetypes."
+    },
+    {
       "name": "exposure_build_aggregate_exposure_scenario",
       "request_schema": "buildAggregateExposureScenarioInput.v1",
       "response_schema": "aggregateExposureSummary.v1",
@@ -83,6 +89,14 @@
       "description": "Non-breaking result-status conventions carried in top-level tool-result metadata."
     },
     {
+      "uri": "docs://uncertainty-framework",
+      "description": "Tier A/B uncertainty guidance and interpretation boundaries."
+    },
+    {
+      "uri": "docs://validation-framework",
+      "description": "Validation and benchmark-domain posture for current route models."
+    },
+    {
       "uri": "docs://suite-integration-guide",
       "description": "Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP."
     },
@@ -109,6 +123,10 @@
     {
       "uri": "benchmarks://manifest",
       "description": "Machine-readable benchmark and regression corpus manifest."
+    },
+    {
+      "uri": "validation://manifest",
+      "description": "Machine-readable validation and external-dataset candidate manifest."
     },
     {
       "uri": "release://readiness-report",
@@ -147,6 +165,10 @@
     "exposureScenarioRequest.v1": "schemas/exposureScenarioRequest.v1.json",
     "inhalationScenarioRequest.v1": "schemas/inhalationScenarioRequest.v1.json",
     "exposureScenario.v1": "schemas/exposureScenario.v1.json",
+    "uncertaintyRegisterEntry.v1": "schemas/uncertaintyRegisterEntry.v1.json",
+    "sensitivityRankingEntry.v1": "schemas/sensitivityRankingEntry.v1.json",
+    "dependencyDescriptor.v1": "schemas/dependencyDescriptor.v1.json",
+    "validationSummary.v1": "schemas/validationSummary.v1.json",
     "aggregateExposureSummary.v1": "schemas/aggregateExposureSummary.v1.json",
     "exposureAssumptionRecord.v1": "schemas/exposureAssumptionRecord.v1.json",
     "assumptionGovernance.v1": "schemas/assumptionGovernance.v1.json",
@@ -154,6 +176,11 @@
     "scenarioComparisonRecord.v1": "schemas/scenarioComparisonRecord.v1.json",
     "provenanceBundle.v1": "schemas/provenanceBundle.v1.json",
     "tierSemantics.v1": "schemas/tierSemantics.v1.json",
+    "buildExposureEnvelopeInput.v1": "schemas/buildExposureEnvelopeInput.v1.json",
+    "envelopeArchetypeInput.v1": "schemas/envelopeArchetypeInput.v1.json",
+    "envelopeArchetypeResult.v1": "schemas/envelopeArchetypeResult.v1.json",
+    "envelopeDriverAttribution.v1": "schemas/envelopeDriverAttribution.v1.json",
+    "exposureEnvelopeSummary.v1": "schemas/exposureEnvelopeSummary.v1.json",
     "buildAggregateExposureScenarioInput.v1": "schemas/buildAggregateExposureScenarioInput.v1.json",
     "exportPbpkScenarioInputRequest.v1": "schemas/exportPbpkScenarioInputRequest.v1.json",
     "exportPbpkExternalImportBundleRequest.v1": "schemas/exportPbpkExternalImportBundleRequest.v1.json",
@@ -186,6 +213,7 @@
     "screening_dermal_scenario": "schemas/examples/screening_dermal_scenario.json",
     "inhalation_request": "schemas/examples/inhalation_request.json",
     "inhalation_scenario": "schemas/examples/inhalation_scenario.json",
+    "exposure_envelope_summary": "schemas/examples/exposure_envelope_summary.json",
     "aggregate_summary": "schemas/examples/aggregate_summary.json",
     "pbpk_input": "schemas/examples/pbpk_input.json",
     "pbpk_external_import_request": "schemas/examples/pbpk_external_import_request.json",

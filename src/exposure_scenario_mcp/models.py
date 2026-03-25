@@ -96,6 +96,56 @@ class TierLevel(StrEnum):
     TIER_3 = "tier_3"
 
 
+class UncertaintyTier(StrEnum):
+    TIER_A = "tier_a"
+    TIER_B = "tier_b"
+    TIER_C = "tier_c"
+    TIER_D = "tier_d"
+    TIER_E = "tier_e"
+
+
+class BiasDirection(StrEnum):
+    LIKELY_OVER = "likely_overestimate"
+    LIKELY_UNDER = "likely_underestimate"
+    BIDIRECTIONAL = "bidirectional"
+    UNKNOWN = "unknown"
+
+
+class UncertaintyQuantificationStatus(StrEnum):
+    QUALITATIVE_ONLY = "qualitative_only"
+    BOUNDED = "bounded"
+    PROBABILITY_BOUNDS = "probability_bounds"
+    PROBABILISTIC = "probabilistic"
+
+
+class SensitivityDirection(StrEnum):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    NEUTRAL = "neutral"
+
+
+class DependencyRelationship(StrEnum):
+    STRUCTURAL = "structural"
+    PHYSIOLOGICAL = "physiological"
+    BEHAVIORAL = "behavioral"
+    MECHANISTIC = "mechanistic"
+    SCENARIO_PACKAGE = "scenario_package"
+
+
+class DependencyHandlingStrategy(StrEnum):
+    SCENARIO_PACKAGED = "scenario_packaged"
+    CONDITIONAL_MODEL_REQUIRED = "conditional_model_required"
+    JOINT_MODEL_REQUIRED = "joint_model_required"
+    NOT_QUANTIFIED = "not_quantified"
+
+
+class ValidationStatus(StrEnum):
+    VERIFICATION_ONLY = "verification_only"
+    BENCHMARK_REGRESSION = "benchmark_regression"
+    EXTERNAL_VALIDATION_PARTIAL = "external_validation_partial"
+    CALIBRATED = "calibrated"
+
+
 class AssumptionSourceReference(StrictModel):
     source_id: str = Field(..., description="Stable identifier for the source.")
     title: str = Field(..., description="Human-readable source title.")
@@ -179,6 +229,59 @@ class TierSemantics(StrictModel):
         default_factory=list,
         description="Interpretations that the result must not support at the current tier.",
     )
+
+
+class UncertaintyRegisterEntry(StrictModel):
+    entry_id: str = Field(..., alias="entryId")
+    title: str
+    uncertainty_types: list[UncertaintyType] = Field(
+        default_factory=list, alias="uncertaintyTypes"
+    )
+    related_assumptions: list[str] = Field(default_factory=list, alias="relatedAssumptions")
+    quantification_status: UncertaintyQuantificationStatus = Field(
+        ..., alias="quantificationStatus"
+    )
+    bias_direction: BiasDirection = Field(..., alias="biasDirection")
+    impact_level: Literal["low", "medium", "high"] = Field(..., alias="impactLevel")
+    summary: str
+    recommendation: str | None = None
+
+
+class SensitivityRankingEntry(StrictModel):
+    parameter_name: str = Field(..., alias="parameterName")
+    source_kind: SourceKind = Field(..., alias="sourceKind")
+    baseline_value: float = Field(..., alias="baselineValue")
+    perturbed_value: float = Field(..., alias="perturbedValue")
+    unit: str | None = None
+    perturbation_fraction: float = Field(..., alias="perturbationFraction")
+    response_metric: str = Field(..., alias="responseMetric")
+    absolute_delta: float = Field(..., alias="absoluteDelta")
+    percent_delta: float | None = Field(default=None, alias="percentDelta")
+    elasticity: float | None = None
+    direction: SensitivityDirection
+
+
+class DependencyDescriptor(StrictModel):
+    dependency_id: str = Field(..., alias="dependencyId")
+    title: str
+    relationship_type: DependencyRelationship = Field(..., alias="relationshipType")
+    assumption_names: list[str] = Field(default_factory=list, alias="assumptionNames")
+    handling_strategy: DependencyHandlingStrategy = Field(..., alias="handlingStrategy")
+    note: str
+
+
+class ValidationSummary(StrictModel):
+    validation_status: ValidationStatus = Field(..., alias="validationStatus")
+    route_mechanism: str = Field(..., alias="routeMechanism")
+    benchmark_case_ids: list[str] = Field(default_factory=list, alias="benchmarkCaseIds")
+    external_dataset_ids: list[str] = Field(default_factory=list, alias="externalDatasetIds")
+    highest_supported_uncertainty_tier: UncertaintyTier = Field(
+        ..., alias="highestSupportedUncertaintyTier"
+    )
+    probabilistic_enablement: Literal["blocked", "gated", "enabled"] = Field(
+        ..., alias="probabilisticEnablement"
+    )
+    notes: list[str] = Field(default_factory=list)
 
 
 class ExposureAssumptionRecord(StrictModel):
@@ -355,6 +458,31 @@ class ExposureScenario(StrictModel):
     tier_semantics: TierSemantics = Field(
         ..., description="Tier and interpretation-boundary semantics for the active model."
     )
+    uncertainty_tier: UncertaintyTier = Field(
+        default=UncertaintyTier.TIER_A,
+        alias="uncertaintyTier",
+        description="Current uncertainty-governance tier for this output.",
+    )
+    uncertainty_register: list[UncertaintyRegisterEntry] = Field(
+        default_factory=list,
+        alias="uncertaintyRegister",
+        description="Qualitative or bounded uncertainty entries attached to the scenario.",
+    )
+    sensitivity_ranking: list[SensitivityRankingEntry] = Field(
+        default_factory=list,
+        alias="sensitivityRanking",
+        description="Deterministic one-at-a-time sensitivity ranking for the primary dose metric.",
+    )
+    dependency_metadata: list[DependencyDescriptor] = Field(
+        default_factory=list,
+        alias="dependencyMetadata",
+        description="Known dependence structures that matter for later uncertainty work.",
+    )
+    validation_summary: ValidationSummary | None = Field(
+        default=None,
+        alias="validationSummary",
+        description="Current validation posture for the route and mechanism represented.",
+    )
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable scenario notes."
     )
@@ -402,6 +530,18 @@ class AggregateExposureSummary(StrictModel):
     )
     quality_flags: list[QualityFlag] = Field(
         default_factory=list, description="Aggregate quality flags."
+    )
+    uncertainty_tier: UncertaintyTier = Field(
+        default=UncertaintyTier.TIER_A, alias="uncertaintyTier"
+    )
+    uncertainty_register: list[UncertaintyRegisterEntry] = Field(
+        default_factory=list, alias="uncertaintyRegister"
+    )
+    dependency_metadata: list[DependencyDescriptor] = Field(
+        default_factory=list, alias="dependencyMetadata"
+    )
+    validation_summary: ValidationSummary | None = Field(
+        default=None, alias="validationSummary"
     )
     provenance: ProvenanceBundle = Field(..., description="Aggregate provenance.")
 
@@ -475,6 +615,73 @@ class BuildAggregateExposureScenarioInput(StrictModel):
     label: str = Field(..., description="Human-readable aggregate label.")
     component_scenarios: list[ExposureScenario] = Field(
         ..., min_length=1, description="Component scenarios to aggregate."
+    )
+
+
+class EnvelopeArchetypeInput(StrictModel):
+    label: str = Field(..., description="Human-readable archetype label.")
+    description: str = Field(..., description="Why this archetype belongs in the envelope.")
+    request: ExposureScenarioRequest = Field(
+        ..., description="Full scenario request representing one deterministic archetype."
+    )
+
+
+class BuildExposureEnvelopeInput(StrictModel):
+    schema_version: Literal["buildExposureEnvelopeInput.v1"] = "buildExposureEnvelopeInput.v1"
+    chemical_id: str = Field(..., description="Chemical ID shared across archetypes.")
+    label: str = Field(..., description="Human-readable envelope label.")
+    archetypes: list[EnvelopeArchetypeInput] = Field(
+        ..., min_length=2, description="Named deterministic archetypes to evaluate."
+    )
+
+
+class EnvelopeArchetypeResult(StrictModel):
+    label: str = Field(..., description="Archetype label.")
+    description: str = Field(..., description="Archetype description.")
+    scenario: ExposureScenario = Field(..., description="Resolved scenario for this archetype.")
+
+
+class EnvelopeDriverAttribution(StrictModel):
+    parameter_name: str = Field(..., alias="parameterName")
+    unit: str | None = None
+    min_value: ScalarValue = Field(..., alias="minValue")
+    max_value: ScalarValue = Field(..., alias="maxValue")
+    scenario_labels: list[str] = Field(default_factory=list, alias="scenarioLabels")
+    attribution_note: str = Field(..., alias="attributionNote")
+
+
+class ExposureEnvelopeSummary(StrictModel):
+    schema_version: Literal["exposureEnvelopeSummary.v1"] = "exposureEnvelopeSummary.v1"
+    envelope_id: str = Field(..., alias="envelopeId")
+    chemical_id: str = Field(..., description="Shared chemical identifier.")
+    route: Route = Field(..., description="Common route across the archetypes.")
+    scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
+    label: str = Field(..., description="Human-readable envelope label.")
+    uncertainty_tier: UncertaintyTier = Field(
+        default=UncertaintyTier.TIER_B, alias="uncertaintyTier"
+    )
+    archetypes: list[EnvelopeArchetypeResult] = Field(
+        default_factory=list, description="Resolved archetype scenarios."
+    )
+    min_dose: ScenarioDose = Field(..., alias="minDose")
+    median_dose: ScenarioDose = Field(..., alias="medianDose")
+    max_dose: ScenarioDose = Field(..., alias="maxDose")
+    span_ratio: float | None = Field(default=None, alias="spanRatio")
+    driver_attribution: list[EnvelopeDriverAttribution] = Field(
+        default_factory=list, alias="driverAttribution"
+    )
+    uncertainty_register: list[UncertaintyRegisterEntry] = Field(
+        default_factory=list, alias="uncertaintyRegister"
+    )
+    dependency_metadata: list[DependencyDescriptor] = Field(
+        default_factory=list, alias="dependencyMetadata"
+    )
+    validation_summary: ValidationSummary | None = Field(
+        default=None, alias="validationSummary"
+    )
+    provenance: ProvenanceBundle = Field(..., description="Envelope provenance.")
+    interpretation_notes: list[str] = Field(
+        default_factory=list, description="Human-readable interpretation notes."
     )
 
 

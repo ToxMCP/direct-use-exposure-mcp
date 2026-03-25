@@ -1,0 +1,100 @@
+{
+  "$defs": {
+    "BiasDirection": {
+      "enum": [
+        "likely_overestimate",
+        "likely_underestimate",
+        "bidirectional",
+        "unknown"
+      ],
+      "title": "BiasDirection",
+      "type": "string"
+    },
+    "UncertaintyQuantificationStatus": {
+      "enum": [
+        "qualitative_only",
+        "bounded",
+        "probability_bounds",
+        "probabilistic"
+      ],
+      "title": "UncertaintyQuantificationStatus",
+      "type": "string"
+    },
+    "UncertaintyType": {
+      "enum": [
+        "variability",
+        "parameter_uncertainty",
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "title": "UncertaintyType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "entryId": {
+      "title": "Entryid",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "uncertaintyTypes": {
+      "items": {
+        "$ref": "#/$defs/UncertaintyType"
+      },
+      "title": "Uncertaintytypes",
+      "type": "array"
+    },
+    "relatedAssumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Relatedassumptions",
+      "type": "array"
+    },
+    "quantificationStatus": {
+      "$ref": "#/$defs/UncertaintyQuantificationStatus"
+    },
+    "biasDirection": {
+      "$ref": "#/$defs/BiasDirection"
+    },
+    "impactLevel": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "Impactlevel",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "recommendation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Recommendation"
+    }
+  },
+  "required": [
+    "entryId",
+    "title",
+    "quantificationStatus",
+    "biasDirection",
+    "impactLevel",
+    "summary"
+  ],
+  "title": "UncertaintyRegisterEntry",
+  "type": "object"
+}

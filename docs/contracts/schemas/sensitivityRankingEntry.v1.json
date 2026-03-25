@@ -1,0 +1,104 @@
+{
+  "$defs": {
+    "SensitivityDirection": {
+      "enum": [
+        "positive",
+        "negative",
+        "neutral"
+      ],
+      "title": "SensitivityDirection",
+      "type": "string"
+    },
+    "SourceKind": {
+      "enum": [
+        "user_input",
+        "default_registry",
+        "derived",
+        "system"
+      ],
+      "title": "SourceKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "parameterName": {
+      "title": "Parametername",
+      "type": "string"
+    },
+    "sourceKind": {
+      "$ref": "#/$defs/SourceKind"
+    },
+    "baselineValue": {
+      "title": "Baselinevalue",
+      "type": "number"
+    },
+    "perturbedValue": {
+      "title": "Perturbedvalue",
+      "type": "number"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "perturbationFraction": {
+      "title": "Perturbationfraction",
+      "type": "number"
+    },
+    "responseMetric": {
+      "title": "Responsemetric",
+      "type": "string"
+    },
+    "absoluteDelta": {
+      "title": "Absolutedelta",
+      "type": "number"
+    },
+    "percentDelta": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Percentdelta"
+    },
+    "elasticity": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Elasticity"
+    },
+    "direction": {
+      "$ref": "#/$defs/SensitivityDirection"
+    }
+  },
+  "required": [
+    "parameterName",
+    "sourceKind",
+    "baselineValue",
+    "perturbedValue",
+    "perturbationFraction",
+    "responseMetric",
+    "absoluteDelta",
+    "direction"
+  ],
+  "title": "SensitivityRankingEntry",
+  "type": "object"
+}

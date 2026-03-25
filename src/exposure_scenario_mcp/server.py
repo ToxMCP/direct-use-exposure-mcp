@@ -29,6 +29,8 @@ from exposure_scenario_mcp.guidance import (
     result_status_semantics,
     security_provenance_review_markdown,
     troubleshooting_guide,
+    uncertainty_framework,
+    validation_framework,
 )
 from exposure_scenario_mcp.integrations import (
     PbpkExternalImportPackage,
@@ -42,11 +44,13 @@ from exposure_scenario_mcp.integrations import (
 from exposure_scenario_mcp.models import (
     AggregateExposureSummary,
     BuildAggregateExposureScenarioInput,
+    BuildExposureEnvelopeInput,
     CompareExposureScenariosInput,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
     ExportToxClawEvidenceBundleRequest,
     ExportToxClawRefinementBundleRequest,
+    ExposureEnvelopeSummary,
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
@@ -62,6 +66,8 @@ from exposure_scenario_mcp.runtime import (
     compare_scenarios,
     export_pbpk_input,
 )
+from exposure_scenario_mcp.uncertainty import build_exposure_envelope
+from exposure_scenario_mcp.validation import validation_manifest
 
 
 def _success_result(message: str, payload_model) -> CallToolResult:
@@ -133,6 +139,30 @@ def create_mcp_server() -> FastMCP:
             return _success_result(
                 f"Built inhalation screening scenario {scenario.scenario_id}.",
                 scenario,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_exposure_envelope",
+        annotations={
+            "title": "Build Exposure Envelope",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_build_exposure_envelope(
+        params: BuildExposureEnvelopeInput,
+    ) -> Annotated[CallToolResult, ExposureEnvelopeSummary]:
+        """Build a deterministic Tier B envelope from named scenario archetypes."""
+
+        try:
+            envelope = build_exposure_envelope(params, engine, defaults_registry)
+            return _success_result(
+                f"Built deterministic envelope {envelope.envelope_id}.",
+                envelope,
             )
         except ExposureScenarioError as error:
             return _error_result(error)
@@ -327,6 +357,18 @@ def create_mcp_server() -> FastMCP:
 
         return result_status_semantics()
 
+    @mcp.resource("docs://uncertainty-framework")
+    def docs_uncertainty_framework() -> str:
+        """Tier A/B uncertainty design and interpretation guide."""
+
+        return uncertainty_framework()
+
+    @mcp.resource("docs://validation-framework")
+    def docs_validation_framework() -> str:
+        """Validation and benchmark posture for route and mechanism domains."""
+
+        return validation_framework()
+
     @mcp.resource("docs://suite-integration-guide")
     def docs_suite_integration_guide() -> str:
         """Boundary and integration guide for the ToxMCP suite."""
@@ -374,6 +416,12 @@ def create_mcp_server() -> FastMCP:
         """Benchmark corpus manifest used for deterministic regression checks."""
 
         return json.dumps(load_benchmark_manifest(), indent=2)
+
+    @mcp.resource("validation://manifest")
+    def validation_manifest_resource() -> str:
+        """Machine-readable validation and benchmark-domain metadata."""
+
+        return json.dumps(validation_manifest(), indent=2)
 
     @mcp.resource("release://readiness-report")
     def release_readiness_report() -> str:
