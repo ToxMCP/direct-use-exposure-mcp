@@ -1,0 +1,122 @@
+{
+  "$defs": {
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "ScenarioClass": {
+      "enum": [
+        "screening",
+        "aggregate",
+        "inhalation",
+        "refined",
+        "population_distribution"
+      ],
+      "title": "ScenarioClass",
+      "type": "string"
+    },
+    "ScenarioPackageProbabilityPointDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "pointId": {
+          "title": "Pointid",
+          "type": "string"
+        },
+        "templateId": {
+          "title": "Templateid",
+          "type": "string"
+        },
+        "cumulativeProbabilityLower": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Cumulativeprobabilitylower",
+          "type": "number"
+        },
+        "cumulativeProbabilityUpper": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Cumulativeprobabilityupper",
+          "type": "number"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pointId",
+        "templateId",
+        "cumulativeProbabilityLower",
+        "cumulativeProbabilityUpper",
+        "note"
+      ],
+      "title": "ScenarioPackageProbabilityPointDefinition",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "profileId": {
+      "title": "Profileid",
+      "type": "string"
+    },
+    "label": {
+      "description": "Human-readable scenario-package profile label.",
+      "title": "Label",
+      "type": "string"
+    },
+    "description": {
+      "description": "What coupled-driver package this probability profile represents.",
+      "title": "Description",
+      "type": "string"
+    },
+    "route": {
+      "$ref": "#/$defs/Route",
+      "description": "Route for which the package profile applies."
+    },
+    "scenarioClass": {
+      "$ref": "#/$defs/ScenarioClass"
+    },
+    "archetypeLibrarySetId": {
+      "title": "Archetypelibrarysetid",
+      "type": "string"
+    },
+    "dependencyCluster": {
+      "description": "Named coupled-driver cluster preserved by the package.",
+      "title": "Dependencycluster",
+      "type": "string"
+    },
+    "supportPoints": {
+      "items": {
+        "$ref": "#/$defs/ScenarioPackageProbabilityPointDefinition"
+      },
+      "minItems": 2,
+      "title": "Supportpoints",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "profileId",
+    "label",
+    "description",
+    "route",
+    "scenarioClass",
+    "archetypeLibrarySetId",
+    "dependencyCluster",
+    "supportPoints"
+  ],
+  "title": "ScenarioPackageProbabilityProfile",
+  "type": "object"
+}

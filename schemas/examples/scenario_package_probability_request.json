@@ -1,0 +1,7 @@
+{
+  "schema_version": "buildProbabilityBoundsFromScenarioPackageInput.v1",
+  "packageProfileId": "adult_leave_on_hand_cream_use_intensity_package",
+  "chemicalId": "DTXSID7020182",
+  "chemicalName": "Example Solvent A",
+  "label": "Example dermal scenario-package probability bounds"
+}

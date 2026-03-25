@@ -14,6 +14,7 @@ from exposure_scenario_mcp.errors import ExposureScenarioError, ensure
 from exposure_scenario_mcp.models import (
     ArchetypeLibraryManifest,
     ArchetypeLibrarySet,
+    ArchetypeLibraryTemplate,
     BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     EnvelopeArchetypeInput,
@@ -79,6 +80,24 @@ class ArchetypeLibraryRegistry:
         )
 
 
+def instantiate_library_request(
+    template_set: ArchetypeLibrarySet,
+    template: ArchetypeLibraryTemplate,
+    *,
+    chemical_id: str,
+    chemical_name: str | None,
+) -> ExposureScenarioRequest:
+    return ExposureScenarioRequest(
+        chemical_id=chemical_id,
+        chemical_name=chemical_name,
+        route=template_set.route,
+        scenario_class=template_set.scenario_class,
+        product_use_profile=template.product_use_profile,
+        population_profile=template.population_profile,
+        assumption_overrides={},
+    )
+
+
 def build_envelope_input_from_library(
     params: BuildExposureEnvelopeFromLibraryInput,
     library: ArchetypeLibraryRegistry,
@@ -95,14 +114,11 @@ def build_envelope_input_from_library(
             templateId=item.template_id,
             label=item.label,
             description=item.description,
-            request=ExposureScenarioRequest(
+            request=instantiate_library_request(
+                template_set,
+                item,
                 chemical_id=params.chemical_id,
                 chemical_name=params.chemical_name,
-                route=template_set.route,
-                scenario_class=template_set.scenario_class,
-                product_use_profile=item.product_use_profile,
-                population_profile=item.population_profile,
-                assumption_overrides={},
             ),
         )
         for item in template_set.archetypes

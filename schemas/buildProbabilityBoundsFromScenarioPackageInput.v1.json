@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "buildProbabilityBoundsFromScenarioPackageInput.v1",
+      "default": "buildProbabilityBoundsFromScenarioPackageInput.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "packageProfileId": {
+      "description": "Packaged coupled-driver scenario package ID.",
+      "title": "Packageprofileid",
+      "type": "string"
+    },
+    "chemicalId": {
+      "description": "Target chemical identifier.",
+      "title": "Chemicalid",
+      "type": "string"
+    },
+    "chemicalName": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional human-readable chemical name injected into every package scenario.",
+      "title": "Chemicalname"
+    },
+    "label": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional override for the resulting scenario-package summary label.",
+      "title": "Label"
+    }
+  },
+  "required": [
+    "packageProfileId",
+    "chemicalId"
+  ],
+  "title": "BuildProbabilityBoundsFromScenarioPackageInput",
+  "type": "object"
+}

@@ -2,14 +2,22 @@
 
 from __future__ import annotations
 
+from uuid import uuid4
+
+from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry, instantiate_library_request
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ensure
 from exposure_scenario_mcp.models import (
     BiasDirection,
     BuildProbabilityBoundsFromProfileInput,
+    BuildProbabilityBoundsFromScenarioPackageInput,
+    DependencyDescriptor,
     ProbabilityBoundDosePoint,
     ProbabilityBoundsDriverProfile,
     ProbabilityBoundsProfileSummary,
+    ScenarioPackageProbabilityPointResult,
+    ScenarioPackageProbabilityProfile,
+    ScenarioPackageProbabilitySummary,
     UncertaintyQuantificationStatus,
     UncertaintyRegisterEntry,
     UncertaintyTier,
@@ -17,6 +25,7 @@ from exposure_scenario_mcp.models import (
 )
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.provenance import AssumptionTracker
+from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.uncertainty import BOUNDS_PARAMETER_CONFIG, _with_override
 
 APPLICABILITY_MAP = {
@@ -226,6 +235,190 @@ def build_probability_bounds_from_profile(
             (
                 "Only the packaged driver varies across support points; all other "
                 "scenario inputs remain fixed."
+            ),
+        ]
+        + [f"Profile limitation: {item}" for item in profile.limitations],
+    )
+
+
+def _merge_dependency_metadata(scenarios) -> list[DependencyDescriptor]:
+    merged: dict[str, DependencyDescriptor] = {}
+    for scenario in scenarios:
+        for item in scenario.dependency_metadata:
+            if item.dependency_id not in merged:
+                merged[item.dependency_id] = item
+    return list(merged.values())
+
+
+def _validate_scenario_package_profile(
+    profile: ScenarioPackageProbabilityProfile,
+    template_set,
+) -> None:
+    ensure(
+        profile.route == template_set.route,
+        "scenario_package_probability_route_mismatch",
+        (
+            f"Profile `{profile.profile_id}` is for route `{profile.route.value}`, but the "
+            f"library set `{template_set.set_id}` is `{template_set.route.value}`."
+        ),
+        suggestion="Update the packaged profile so it references a route-compatible library set.",
+    )
+    ensure(
+        profile.scenario_class == template_set.scenario_class,
+        "scenario_package_probability_scenario_class_mismatch",
+        (
+            f"Profile `{profile.profile_id}` is for scenario class "
+            f"`{profile.scenario_class.value}`, but the library set "
+            f"`{template_set.set_id}` uses `{template_set.scenario_class.value}`."
+        ),
+        suggestion="Update the packaged profile so it references a scenario-class-compatible set.",
+    )
+
+
+def build_probability_bounds_from_scenario_package(
+    params: BuildProbabilityBoundsFromScenarioPackageInput,
+    engine,
+    registry: DefaultsRegistry,
+    archetypes: ArchetypeLibraryRegistry,
+    packages: ScenarioProbabilityPackageRegistry,
+    *,
+    generated_at: str | None = None,
+) -> ScenarioPackageProbabilitySummary:
+    profile = packages.get_profile(params.package_profile_id)
+    template_set = archetypes.get_set(profile.archetype_library_set_id)
+    _validate_scenario_package_profile(profile, template_set)
+    templates = {item.template_id: item for item in template_set.archetypes}
+    scenarios = []
+    for point in profile.support_points:
+        ensure(
+            point.template_id in templates,
+            "scenario_package_probability_template_missing",
+            (
+                f"Template `{point.template_id}` is not present in archetype-library set "
+                f"`{template_set.set_id}`."
+            ),
+            suggestion=(
+                "Update the packaged profile so every support point uses a known template ID."
+            ),
+        )
+        request = instantiate_library_request(
+            template_set,
+            templates[point.template_id],
+            chemical_id=params.chemical_id,
+            chemical_name=params.chemical_name,
+        )
+        scenarios.append((point, engine.build(request)))
+    minimum_dose = min(scenarios, key=lambda entry: entry[1].external_dose.value)[1].external_dose
+    maximum_dose = max(scenarios, key=lambda entry: entry[1].external_dose.value)[1].external_dose
+    support_points = [
+        ScenarioPackageProbabilityPointResult(
+            pointId=point.point_id,
+            templateId=point.template_id,
+            cumulativeProbabilityLower=point.cumulative_probability_lower,
+            cumulativeProbabilityUpper=point.cumulative_probability_upper,
+            note=point.note,
+            scenario=scenario,
+        )
+        for point, scenario in scenarios
+    ]
+    uncertainty_register = [
+        UncertaintyRegisterEntry(
+            entry_id="scenario-package-probability-bounds",
+            title="Scenario-package probability bounds preserve coupled drivers",
+            uncertainty_types=[
+                UncertaintyType.SCENARIO_UNCERTAINTY,
+                UncertaintyType.VARIABILITY,
+            ],
+            related_assumptions=[profile.dependency_cluster],
+            quantification_status=UncertaintyQuantificationStatus.PROBABILITY_BOUNDS,
+            bias_direction=BiasDirection.BIDIRECTIONAL,
+            impact_level="high",
+            summary=(
+                f"Profile `{profile.profile_id}` applies cumulative probability bounds to "
+                "packaged scenario states that preserve coupled drivers."
+            ),
+            recommendation=(
+                "Treat these outputs as bounded package frequencies, not as a full joint "
+                "population exposure model."
+            ),
+        )
+    ]
+    if profile.limitations:
+        uncertainty_register.append(
+            UncertaintyRegisterEntry(
+                entry_id="scenario-package-probability-bounds-limitations",
+                title="Scenario-package probability limitations remain in force",
+                uncertainty_types=[UncertaintyType.MODEL_UNCERTAINTY],
+                related_assumptions=[profile.dependency_cluster],
+                quantification_status=UncertaintyQuantificationStatus.PROBABILITY_BOUNDS,
+                bias_direction=BiasDirection.UNKNOWN,
+                impact_level="medium",
+                summary="; ".join(profile.limitations),
+                recommendation=(
+                    "Keep the package profile tied to its published archetype set and avoid "
+                    "extrapolating it to unmanaged contexts."
+                ),
+            )
+        )
+    dependency_metadata = _merge_dependency_metadata([scenario for _, scenario in scenarios])
+    representative_validation = scenarios[0][1].validation_summary
+    validation_summary = representative_validation.model_copy(
+        update={
+            "highest_supported_uncertainty_tier": UncertaintyTier.TIER_C,
+            "probabilistic_enablement": "gated",
+            "notes": [
+                *representative_validation.notes,
+                (
+                    "Scenario-package probability bounds preserve coupled "
+                    "drivers within packaged templates."
+                ),
+            ],
+        },
+        deep=True,
+    )
+    tracker = AssumptionTracker(registry=registry)
+    tracker.add_derived(
+        "scenario_package_profile_id",
+        profile.profile_id,
+        None,
+        "Packaged scenario-package probability profile identifier.",
+    )
+    tracker.add_derived(
+        "scenario_package_support_point_count",
+        len(profile.support_points),
+        None,
+        "Tier C scenario-package probability support-point count.",
+    )
+    return ScenarioPackageProbabilitySummary(
+        summaryId=f"pspkg-{uuid4().hex[:12]}",
+        chemical_id=params.chemical_id,
+        route=profile.route,
+        scenarioClass=profile.scenario_class,
+        label=params.label or profile.label,
+        packageProfileId=profile.profile_id,
+        dependencyCluster=profile.dependency_cluster,
+        profileVersion=packages.version,
+        archetypeLibrarySetId=template_set.set_id,
+        archetypeLibraryVersion=archetypes.version,
+        supportPoints=support_points,
+        minimumDose=minimum_dose,
+        maximumDose=maximum_dose,
+        uncertaintyRegister=uncertainty_register,
+        dependencyMetadata=dependency_metadata,
+        validationSummary=validation_summary,
+        provenance=tracker.provenance(
+            plugin_id="scenario_package_probability_service",
+            algorithm_id="uncertainty.scenario_package_probability.v1",
+            generated_at=generated_at,
+        ),
+        interpretation_notes=[
+            (
+                "This output applies probability bounds to packaged scenario states "
+                "that preserve coupled drivers."
+            ),
+            (
+                "It is not a joint Monte Carlo simulation or a validated "
+                "population exposure distribution."
             ),
         ]
         + [f"Profile limitation: {item}" for item in profile.limitations],

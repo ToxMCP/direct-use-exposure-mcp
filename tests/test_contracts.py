@@ -33,6 +33,8 @@ EXAMPLE_SCHEMA_MAP = {
     "parameter_bounds_summary": "parameterBoundsSummary.v1",
     "probability_bounds_from_profile_request": "buildProbabilityBoundsFromProfileInput.v1",
     "probability_bounds_profile_summary": "probabilityBoundsProfileSummary.v1",
+    "scenario_package_probability_request": "buildProbabilityBoundsFromScenarioPackageInput.v1",
+    "scenario_package_probability_summary": "scenarioPackageProbabilitySummary.v1",
     "aggregate_summary": "aggregateExposureSummary.v1",
     "pbpk_input": "pbpkScenarioInput.v1",
     "pbpk_external_import_request": "pbpkExternalImportRequest.v1",
@@ -65,13 +67,15 @@ def test_contract_manifest_and_server_boot() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
-    assert len(manifest["tools"]) == 12
+    assert len(manifest["tools"]) == 13
     assert "exposureScenario.v1" in manifest["schemas"]
     assert "archetypeLibraryManifest.v1" in manifest["schemas"]
     assert "archetypeLibrarySet.v1" in manifest["schemas"]
     assert "archetypeLibraryTemplate.v1" in manifest["schemas"]
     assert "probabilityBoundsProfileManifest.v1" in manifest["schemas"]
     assert "probabilityBoundsDriverProfile.v1" in manifest["schemas"]
+    assert "scenarioPackageProbabilityManifest.v1" in manifest["schemas"]
+    assert "scenarioPackageProbabilityProfile.v1" in manifest["schemas"]
     assert "assumptionGovernance.v1" in manifest["schemas"]
     assert "uncertaintyRegisterEntry.v1" in manifest["schemas"]
     assert "sensitivityRankingEntry.v1" in manifest["schemas"]
@@ -79,11 +83,13 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "validationSummary.v1" in manifest["schemas"]
     assert "buildExposureEnvelopeFromLibraryInput.v1" in manifest["schemas"]
     assert "buildProbabilityBoundsFromProfileInput.v1" in manifest["schemas"]
+    assert "buildProbabilityBoundsFromScenarioPackageInput.v1" in manifest["schemas"]
     assert "buildExposureEnvelopeInput.v1" in manifest["schemas"]
     assert "exposureEnvelopeSummary.v1" in manifest["schemas"]
     assert "buildParameterBoundsInput.v1" in manifest["schemas"]
     assert "parameterBoundsSummary.v1" in manifest["schemas"]
     assert "probabilityBoundsProfileSummary.v1" in manifest["schemas"]
+    assert "scenarioPackageProbabilitySummary.v1" in manifest["schemas"]
     assert "pbpkExternalImportPackage.v1" in manifest["schemas"]
     assert "pbpkExternalImportRequest.v1" in manifest["schemas"]
     assert "releaseMetadataReport.v1" in manifest["schemas"]
@@ -97,6 +103,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "parameter_bounds_summary" in manifest["examples"]
     assert "probability_bounds_from_profile_request" in manifest["examples"]
     assert "probability_bounds_profile_summary" in manifest["examples"]
+    assert "scenario_package_probability_request" in manifest["examples"]
+    assert "scenario_package_probability_summary" in manifest["examples"]
     assert "toxclaw_evidence_bundle" in manifest["examples"]
     assert "toxclaw_refinement_bundle" in manifest["examples"]
     assert {
@@ -110,6 +118,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://troubleshooting",
         "archetypes://manifest",
         "probability-bounds://manifest",
+        "scenario-probability://manifest",
         "docs://release-readiness",
         "docs://release-notes",
         "docs://conformance-report",

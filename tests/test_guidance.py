@@ -48,6 +48,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`adult_leave_on_hand_cream`" in archetypes
     assert "Packaged Probability Profiles" in probability_bounds
     assert "`adult_leave_on_hand_cream_use_amount_per_event`" in probability_bounds
+    assert "Packaged Scenario-Probability Profiles" in probability_bounds
+    assert "`adult_leave_on_hand_cream_use_intensity_package`" in probability_bounds
     assert "benchmarkDomains" not in validation
     assert "External Dataset Candidates" in validation
     assert "`air_chamber_spray_time_series_candidate`" in validation

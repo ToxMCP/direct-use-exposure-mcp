@@ -79,6 +79,7 @@ The design is intentionally narrow:
 - Packaged Tier B archetype-library sets for governed envelope construction
 - Tier B deterministic parameter-bounds propagation without probabilistic overclaiming
 - Packaged Tier C single-driver probability-bounds profiles
+- Packaged Tier C coupled-driver scenario-package probability profiles
 - Simple additive aggregate exposure summaries
 - Scenario comparison and refinement deltas
 - ToxClaw evidence export and refinement-bundle export
@@ -110,6 +111,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `Tier B archetype library` | Publishes governed packaged archetype sets and instantiates them into deterministic envelopes with set/version provenance. |
 | `Tier B parameter bounds` | Propagates explicit lower and upper parameter bounds through a deterministic scenario to produce min/max ranges, monotonicity checks, and bounded uncertainty records. |
 | `Tier C probability bounds` | Publishes packaged single-driver probability-bounds profiles and evaluates their support points without Monte Carlo or joint-distribution claims. |
+| `Tier C scenario packages` | Publishes dependency-aware packaged scenario states with cumulative probability bounds so coupled drivers remain preserved without Monte Carlo claims. |
 | `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
@@ -143,6 +145,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `exposure_build_exposure_envelope_from_library`
 - `exposure_build_parameter_bounds_summary`
 - `exposure_build_probability_bounds_from_profile`
+- `exposure_build_probability_bounds_from_scenario_package`
 - `exposure_build_inhalation_screening_scenario`
 - `exposure_build_aggregate_exposure_scenario`
 - `exposure_compare_exposure_scenarios`
@@ -164,6 +167,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `defaults://manifest`
 - `archetypes://manifest`
 - `probability-bounds://manifest`
+- `scenario-probability://manifest`
 - `benchmarks://manifest`
 - `validation://manifest`
 

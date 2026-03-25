@@ -19,24 +19,24 @@
     "dermal_pbpk_export",
     "dermal_pbpk_external_import_package"
   ],
-  "contractSchemaCount": 61,
-  "contractExampleCount": 25,
+  "contractSchemaCount": 67,
+  "contractExampleCount": 27,
   "distributionArtifacts": [
     {
       "kind": "wheel",
       "filename": "exposure_scenario_mcp-0.1.0-py3-none-any.whl",
       "relativePath": "dist/exposure_scenario_mcp-0.1.0-py3-none-any.whl",
       "present": true,
-      "sha256": "77beb834e30465abb60c11b14d07b5313ee08edb3debe4ab658bed6bf0070625",
-      "sizeBytes": 98067
+      "sha256": "b27af058a95a33991c5ed9c259e95e60f37b75d3619ba757fd3c93640819b78b",
+      "sizeBytes": 103090
     },
     {
       "kind": "sdist",
       "filename": "exposure_scenario_mcp-0.1.0.tar.gz",
       "relativePath": "dist/exposure_scenario_mcp-0.1.0.tar.gz",
       "present": true,
-      "sha256": "26bb7aae8eea68092c29f807383176e330ad281e14e0b0ec2a2fedcb667a9af2",
-      "sizeBytes": 536525
+      "sha256": "9e7572ecbdc4493cc85c597093e4456bdf7876ad5cac2bd3dafa6e99c1cb74ce",
+      "sizeBytes": 566690
     }
   ],
   "publishedDocs": [

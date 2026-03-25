@@ -11,6 +11,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     BuildProbabilityBoundsFromProfileInput,
+    BuildProbabilityBoundsFromScenarioPackageInput,
     CompareExposureScenariosInput,
     DefaultVisibility,
     EnvelopeArchetypeInput,
@@ -27,13 +28,19 @@ from exposure_scenario_mcp.models import (
     UncertaintyTier,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.probability_bounds import build_probability_bounds_from_profile
+from exposure_scenario_mcp.probability_bounds import (
+    build_probability_bounds_from_profile,
+    build_probability_bounds_from_scenario_package,
+)
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.runtime import (
     PluginRegistry,
     ScenarioEngine,
     aggregate_scenarios,
     compare_scenarios,
+)
+from exposure_scenario_mcp.scenario_probability_packages import (
+    ScenarioProbabilityPackageRegistry,
 )
 from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
@@ -534,5 +541,36 @@ def test_probability_bounds_profile_builds_tier_c_summary() -> None:
     assert summary.profile_version == profiles.version
     assert summary.archetype_library_set_id == "adult_leave_on_hand_cream"
     assert len(summary.support_points) == 3
+    assert summary.minimum_dose.value < summary.maximum_dose.value
+    assert summary.uncertainty_register[0].quantification_status.value == "probability_bounds"
+
+
+def test_scenario_package_probability_builds_tier_c_summary() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    archetype_library = ArchetypeLibraryRegistry.load()
+    packages = ScenarioProbabilityPackageRegistry.load()
+
+    summary = build_probability_bounds_from_scenario_package(
+        BuildProbabilityBoundsFromScenarioPackageInput(
+            packageProfileId="adult_leave_on_hand_cream_use_intensity_package",
+            chemicalId="DTXSID123",
+            chemicalName="Example Chemical",
+            label="Dermal scenario-package probability bounds",
+        ),
+        engine,
+        defaults_registry,
+        archetype_library,
+        packages,
+        generated_at="2026-03-25T00:00:00+00:00",
+    )
+
+    assert summary.uncertainty_tier == UncertaintyTier.TIER_C
+    assert summary.package_profile_id == "adult_leave_on_hand_cream_use_intensity_package"
+    assert summary.archetype_library_set_id == "adult_leave_on_hand_cream"
+    assert summary.archetype_library_version == archetype_library.version
+    assert summary.dependency_cluster == "use-intensity-cluster"
+    assert len(summary.support_points) == 3
+    assert all(item.scenario.route == Route.DERMAL for item in summary.support_points)
     assert summary.minimum_dose.value < summary.maximum_dose.value
     assert summary.uncertainty_register[0].quantification_status.value == "probability_bounds"

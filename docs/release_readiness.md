@@ -16,10 +16,12 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - Defaults are versioned and hashed.
 - Packaged Tier B archetype-library sets are versioned, hashed, and published as a machine-readable manifest.
 - Packaged Tier C probability-bounds profiles are versioned, hashed, and published as a machine-readable manifest.
+- Packaged Tier C coupled-driver scenario-package profiles are versioned, hashed, and published as a machine-readable manifest.
 - Scenario, aggregate, comparison, and PBPK export outputs carry provenance.
 - Scenario outputs publish Tier A uncertainty diagnostics, and Tier B support is limited to
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.
-- Tier C support is limited to packaged single-driver probability bounds with fixed base scenarios.
+- Tier C support is limited to packaged single-driver or scenario-package probability bounds
+  without Monte Carlo sampling or joint-distribution claims.
 - ToxClaw evidence and refinement bundles emit deterministic content hashes and stable IDs.
 - Security and provenance findings are published through `release://security-provenance-review-report`.
 - Release metadata is published through `release://metadata-report`.

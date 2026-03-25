@@ -19,6 +19,7 @@ from exposure_scenario_mcp.contracts import (
     build_release_readiness_report,
     build_security_provenance_review_report,
     probability_bounds_profile_manifest,
+    scenario_probability_package_manifest,
     schema_payloads,
 )
 from exposure_scenario_mcp.defaults import DefaultsRegistry, defaults_evidence_map
@@ -53,6 +54,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     BuildProbabilityBoundsFromProfileInput,
+    BuildProbabilityBoundsFromScenarioPackageInput,
     CompareExposureScenariosInput,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
@@ -66,9 +68,13 @@ from exposure_scenario_mcp.models import (
     PbpkScenarioInput,
     ProbabilityBoundsProfileSummary,
     ScenarioComparisonRecord,
+    ScenarioPackageProbabilitySummary,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.probability_bounds import build_probability_bounds_from_profile
+from exposure_scenario_mcp.probability_bounds import (
+    build_probability_bounds_from_profile,
+    build_probability_bounds_from_scenario_package,
+)
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.result_meta import build_tool_result_meta
 from exposure_scenario_mcp.runtime import (
@@ -78,6 +84,7 @@ from exposure_scenario_mcp.runtime import (
     compare_scenarios,
     export_pbpk_input,
 )
+from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
     build_exposure_envelope_from_library,
@@ -106,6 +113,7 @@ def create_mcp_server() -> FastMCP:
     defaults_registry = DefaultsRegistry.load()
     archetype_library = ArchetypeLibraryRegistry.load()
     probability_profiles = ProbabilityBoundsProfileRegistry.load()
+    scenario_probability_packages = ScenarioProbabilityPackageRegistry.load()
     plugin_registry = PluginRegistry()
     plugin_registry.register(ScreeningScenarioPlugin())
     plugin_registry.register(InhalationScreeningPlugin())
@@ -262,6 +270,36 @@ def create_mcp_server() -> FastMCP:
             )
             return _success_result(
                 f"Built probability-bounds summary {summary.summary_id}.",
+                summary,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_probability_bounds_from_scenario_package",
+        annotations={
+            "title": "Build Probability Bounds From Scenario Package",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_build_probability_bounds_from_scenario_package(
+        params: BuildProbabilityBoundsFromScenarioPackageInput,
+    ) -> Annotated[CallToolResult, ScenarioPackageProbabilitySummary]:
+        """Build a Tier C coupled-driver probability-bounds summary from a packaged profile."""
+
+        try:
+            summary = build_probability_bounds_from_scenario_package(
+                params,
+                engine,
+                defaults_registry,
+                archetype_library,
+                scenario_probability_packages,
+            )
+            return _success_result(
+                f"Built scenario-package probability summary {summary.summary_id}.",
                 summary,
             )
         except ExposureScenarioError as error:
@@ -438,6 +476,12 @@ def create_mcp_server() -> FastMCP:
         """Machine-readable packaged single-driver probability-bounds profile manifest."""
 
         return json.dumps(probability_bounds_profile_manifest(), indent=2)
+
+    @mcp.resource("scenario-probability://manifest")
+    def packaged_scenario_probability_manifest() -> str:
+        """Machine-readable packaged coupled-driver scenario-package profile manifest."""
+
+        return json.dumps(scenario_probability_package_manifest(), indent=2)
 
     @mcp.resource("docs://algorithm-notes")
     def docs_algorithm_notes() -> str:

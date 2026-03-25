@@ -360,6 +360,59 @@ class ProbabilityBoundsProfileManifest(StrictModel):
     profiles: list[ProbabilityBoundsDriverProfile] = Field(default_factory=list)
 
 
+class ScenarioPackageProbabilityPointDefinition(StrictModel):
+    point_id: str = Field(..., alias="pointId")
+    template_id: str = Field(..., alias="templateId")
+    cumulative_probability_lower: float = Field(
+        ..., alias="cumulativeProbabilityLower", ge=0.0, le=1.0
+    )
+    cumulative_probability_upper: float = Field(
+        ..., alias="cumulativeProbabilityUpper", ge=0.0, le=1.0
+    )
+    note: str
+
+    @model_validator(mode="after")
+    def validate_probability_bounds(self) -> ScenarioPackageProbabilityPointDefinition:
+        if self.cumulative_probability_upper < self.cumulative_probability_lower:
+            raise ValueError(
+                "cumulativeProbabilityUpper must be greater than or equal to "
+                "cumulativeProbabilityLower."
+            )
+        return self
+
+
+class ScenarioPackageProbabilityProfile(StrictModel):
+    profile_id: str = Field(..., alias="profileId")
+    label: str = Field(..., description="Human-readable scenario-package profile label.")
+    description: str = Field(
+        ..., description="What coupled-driver package this probability profile represents."
+    )
+    route: Route = Field(..., description="Route for which the package profile applies.")
+    scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
+    archetype_library_set_id: str = Field(..., alias="archetypeLibrarySetId")
+    dependency_cluster: str = Field(
+        ...,
+        alias="dependencyCluster",
+        description="Named coupled-driver cluster preserved by the package.",
+    )
+    support_points: list[ScenarioPackageProbabilityPointDefinition] = Field(
+        ..., alias="supportPoints", min_length=2
+    )
+    limitations: list[str] = Field(default_factory=list)
+
+
+class ScenarioPackageProbabilityManifest(StrictModel):
+    schema_version: Literal["scenarioPackageProbabilityManifest.v1"] = (
+        "scenarioPackageProbabilityManifest.v1"
+    )
+    profile_version: str = Field(..., alias="profileVersion")
+    profile_hash_sha256: str = Field(..., alias="profileHashSha256")
+    path: str = Field(..., description="Package or repository path for the profile manifest.")
+    profile_count: int = Field(..., alias="profileCount", ge=0)
+    notes: list[str] = Field(default_factory=list)
+    profiles: list[ScenarioPackageProbabilityProfile] = Field(default_factory=list)
+
+
 class ExposureAssumptionRecord(StrictModel):
     schema_version: Literal["exposureAssumptionRecord.v1"] = "exposureAssumptionRecord.v1"
     name: str = Field(..., description="Stable parameter name used by the engine.")
@@ -803,6 +856,25 @@ class BuildProbabilityBoundsFromProfileInput(StrictModel):
     )
 
 
+class BuildProbabilityBoundsFromScenarioPackageInput(StrictModel):
+    schema_version: Literal["buildProbabilityBoundsFromScenarioPackageInput.v1"] = (
+        "buildProbabilityBoundsFromScenarioPackageInput.v1"
+    )
+    package_profile_id: str = Field(
+        ..., alias="packageProfileId", description="Packaged coupled-driver scenario package ID."
+    )
+    chemical_id: str = Field(..., alias="chemicalId", description="Target chemical identifier.")
+    chemical_name: str | None = Field(
+        default=None,
+        alias="chemicalName",
+        description="Optional human-readable chemical name injected into every package scenario.",
+    )
+    label: str | None = Field(
+        default=None,
+        description="Optional override for the resulting scenario-package summary label.",
+    )
+
+
 class EnvelopeArchetypeResult(StrictModel):
     template_id: str | None = Field(default=None, alias="templateId")
     label: str = Field(..., description="Archetype label.")
@@ -940,6 +1012,62 @@ class ProbabilityBoundsProfileSummary(StrictModel):
         default=None, alias="validationSummary"
     )
     provenance: ProvenanceBundle = Field(..., description="Probability-bounds provenance.")
+    interpretation_notes: list[str] = Field(
+        default_factory=list, description="Human-readable interpretation notes."
+    )
+
+
+class ScenarioPackageProbabilityPointResult(StrictModel):
+    point_id: str = Field(..., alias="pointId")
+    template_id: str = Field(..., alias="templateId")
+    cumulative_probability_lower: float = Field(
+        ..., alias="cumulativeProbabilityLower", ge=0.0, le=1.0
+    )
+    cumulative_probability_upper: float = Field(
+        ..., alias="cumulativeProbabilityUpper", ge=0.0, le=1.0
+    )
+    note: str
+    scenario: ExposureScenario = Field(
+        ...,
+        description="Resolved deterministic scenario for this package point.",
+    )
+
+
+class ScenarioPackageProbabilitySummary(StrictModel):
+    schema_version: Literal["scenarioPackageProbabilitySummary.v1"] = (
+        "scenarioPackageProbabilitySummary.v1"
+    )
+    summary_id: str = Field(..., alias="summaryId")
+    chemical_id: str = Field(..., description="Shared chemical identifier.")
+    route: Route = Field(..., description="Route for which the package profile was evaluated.")
+    scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
+    label: str = Field(..., description="Human-readable scenario-package probability label.")
+    uncertainty_tier: UncertaintyTier = Field(
+        default=UncertaintyTier.TIER_C, alias="uncertaintyTier"
+    )
+    package_profile_id: str = Field(..., alias="packageProfileId")
+    dependency_cluster: str = Field(..., alias="dependencyCluster")
+    profile_version: str = Field(..., alias="profileVersion")
+    archetype_library_set_id: str = Field(..., alias="archetypeLibrarySetId")
+    archetype_library_version: str = Field(..., alias="archetypeLibraryVersion")
+    support_points: list[ScenarioPackageProbabilityPointResult] = Field(
+        default_factory=list, alias="supportPoints"
+    )
+    minimum_dose: ScenarioDose = Field(..., alias="minimumDose")
+    maximum_dose: ScenarioDose = Field(..., alias="maximumDose")
+    uncertainty_register: list[UncertaintyRegisterEntry] = Field(
+        default_factory=list, alias="uncertaintyRegister"
+    )
+    dependency_metadata: list[DependencyDescriptor] = Field(
+        default_factory=list, alias="dependencyMetadata"
+    )
+    validation_summary: ValidationSummary | None = Field(
+        default=None, alias="validationSummary"
+    )
+    provenance: ProvenanceBundle = Field(
+        ...,
+        description="Scenario-package probability-bounds provenance.",
+    )
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable interpretation notes."
     )

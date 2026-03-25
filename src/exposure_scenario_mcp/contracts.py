@@ -39,6 +39,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     BuildProbabilityBoundsFromProfileInput,
+    BuildProbabilityBoundsFromScenarioPackageInput,
     CompareExposureScenariosInput,
     ContractManifest,
     ContractPromptEntry,
@@ -76,6 +77,11 @@ from exposure_scenario_mcp.models import (
     ReleaseReadinessReport,
     ReviewedSurfaceIndex,
     ScenarioComparisonRecord,
+    ScenarioPackageProbabilityManifest,
+    ScenarioPackageProbabilityPointDefinition,
+    ScenarioPackageProbabilityPointResult,
+    ScenarioPackageProbabilityProfile,
+    ScenarioPackageProbabilitySummary,
     SecurityProvenanceReviewFinding,
     SecurityProvenanceReviewReport,
     SensitivityRankingEntry,
@@ -87,6 +93,7 @@ from exposure_scenario_mcp.models import (
 from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
+from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 
 SCHEMA_MODELS = {
     "productUseProfile.v1": ProductUseProfile,
@@ -108,6 +115,14 @@ SCHEMA_MODELS = {
     "buildProbabilityBoundsFromProfileInput.v1": BuildProbabilityBoundsFromProfileInput,
     "probabilityBoundDosePoint.v1": ProbabilityBoundDosePoint,
     "probabilityBoundsProfileSummary.v1": ProbabilityBoundsProfileSummary,
+    "scenarioPackageProbabilityPointDefinition.v1": ScenarioPackageProbabilityPointDefinition,
+    "scenarioPackageProbabilityProfile.v1": ScenarioPackageProbabilityProfile,
+    "scenarioPackageProbabilityManifest.v1": ScenarioPackageProbabilityManifest,
+    "buildProbabilityBoundsFromScenarioPackageInput.v1": (
+        BuildProbabilityBoundsFromScenarioPackageInput
+    ),
+    "scenarioPackageProbabilityPointResult.v1": ScenarioPackageProbabilityPointResult,
+    "scenarioPackageProbabilitySummary.v1": ScenarioPackageProbabilitySummary,
     "parameterBoundInput.v1": ParameterBoundInput,
     "monotonicityCheck.v1": MonotonicityCheck,
     "buildParameterBoundsInput.v1": BuildParameterBoundsInput,
@@ -205,6 +220,15 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractToolEntry(
+                name="exposure_build_probability_bounds_from_scenario_package",
+                request_schema="buildProbabilityBoundsFromScenarioPackageInput.v1",
+                response_schema="scenarioPackageProbabilitySummary.v1",
+                description=(
+                    "Build a packaged coupled-driver probability-bounds summary from "
+                    "scenario packages."
+                ),
+            ),
+            ContractToolEntry(
                 name="exposure_build_aggregate_exposure_scenario",
                 request_schema="buildAggregateExposureScenarioInput.v1",
                 response_schema="aggregateExposureSummary.v1",
@@ -269,6 +293,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="probability-bounds://manifest",
                 description="Machine-readable packaged Tier C single-driver profile manifest.",
+            ),
+            ContractResourceEntry(
+                uri="scenario-probability://manifest",
+                description=(
+                    "Machine-readable packaged Tier C coupled-driver "
+                    "scenario package manifest."
+                ),
             ),
             ContractResourceEntry(
                 uri="docs://algorithm-notes",
@@ -468,6 +499,15 @@ def algorithm_notes() -> str:
 - Probability-bounds outputs remain screening summaries and must not be interpreted as validated
   population exposure distributions.
 
+## Scenario-Package Probability Bounds
+
+- Packaged Tier C scenario-package profiles publish cumulative probability bounds over coupled
+  driver states by referencing archetype-library templates.
+- `exposure_build_probability_bounds_from_scenario_package` materializes deterministic scenarios
+  for each packaged state and preserves dependence within those states.
+- Scenario-package outputs remain screening summaries and must not be interpreted as full joint
+  population exposure distributions.
+
 ## Comparison
 
 - Compare primary dose values directly.
@@ -486,6 +526,13 @@ def archetype_library_manifest() -> dict:
 
 def probability_bounds_profile_manifest() -> dict:
     return ProbabilityBoundsProfileRegistry.load().manifest().model_dump(
+        mode="json",
+        by_alias=True,
+    )
+
+
+def scenario_probability_package_manifest() -> dict:
+    return ScenarioProbabilityPackageRegistry.load().manifest().model_dump(
         mode="json",
         by_alias=True,
     )

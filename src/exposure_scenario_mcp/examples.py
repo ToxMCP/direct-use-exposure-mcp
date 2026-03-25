@@ -20,6 +20,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     BuildProbabilityBoundsFromProfileInput,
+    BuildProbabilityBoundsFromScenarioPackageInput,
     CompareExposureScenariosInput,
     EnvelopeArchetypeInput,
     ExportPbpkExternalImportBundleRequest,
@@ -36,9 +37,13 @@ from exposure_scenario_mcp.models import (
     ProductUseProfile,
     Route,
     ScenarioClass,
+    ScenarioPackageProbabilitySummary,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.probability_bounds import build_probability_bounds_from_profile
+from exposure_scenario_mcp.probability_bounds import (
+    build_probability_bounds_from_profile,
+    build_probability_bounds_from_scenario_package,
+)
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.result_meta import build_tool_result_meta
 from exposure_scenario_mcp.runtime import (
@@ -48,6 +53,7 @@ from exposure_scenario_mcp.runtime import (
     compare_scenarios,
     export_pbpk_input,
 )
+from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
     build_exposure_envelope_from_library,
@@ -72,6 +78,10 @@ EXAMPLE_IDS = {
     "bounds_min_scenario": "exp-example-bounds-min-001",
     "bounds_max_scenario": "exp-example-bounds-max-001",
     "probability_bounds_summary": "pbnd-example-dermal-001",
+    "scenario_package_probability_summary": "pspkg-example-dermal-001",
+    "scenario_package_probability_low_scenario": "exp-example-package-low-001",
+    "scenario_package_probability_typical_scenario": "exp-example-package-typical-001",
+    "scenario_package_probability_high_scenario": "exp-example-package-high-001",
 }
 
 
@@ -199,6 +209,43 @@ def _freeze_probability_bounds_summary(
     )
 
 
+def _freeze_scenario_package_probability_summary(
+    summary: ScenarioPackageProbabilitySummary,
+) -> ScenarioPackageProbabilitySummary:
+    label_ids = {
+        "adult_leave_on_hand_cream_low": EXAMPLE_IDS["scenario_package_probability_low_scenario"],
+        "adult_leave_on_hand_cream_typical": EXAMPLE_IDS[
+            "scenario_package_probability_typical_scenario"
+        ],
+        "adult_leave_on_hand_cream_high": EXAMPLE_IDS[
+            "scenario_package_probability_high_scenario"
+        ],
+    }
+    frozen_points = []
+    for item in summary.support_points:
+        scenario_id = label_ids.get(item.template_id, item.scenario.scenario_id)
+        frozen_points.append(
+            item.model_copy(
+                update={"scenario": _freeze_scenario(item.scenario, scenario_id)},
+                deep=True,
+            )
+        )
+    return summary.model_copy(
+        update={
+            "summary_id": EXAMPLE_IDS["scenario_package_probability_summary"],
+            "support_points": frozen_points,
+            "provenance": _freeze_provenance(summary.provenance),
+            "minimum_dose": min(
+                frozen_points, key=lambda item: item.scenario.external_dose.value
+            ).scenario.external_dose,
+            "maximum_dose": max(
+                frozen_points, key=lambda item: item.scenario.external_dose.value
+            ).scenario.external_dose,
+        },
+        deep=True,
+    )
+
+
 def _engine() -> ScenarioEngine:
     defaults_registry = DefaultsRegistry.load()
     registry = PluginRegistry()
@@ -212,6 +259,7 @@ def build_examples() -> dict[str, dict]:
     defaults_registry = DefaultsRegistry.load()
     archetype_library = ArchetypeLibraryRegistry.load()
     probability_profiles = ProbabilityBoundsProfileRegistry.load()
+    scenario_probability_packages = ScenarioProbabilityPackageRegistry.load()
 
     dermal_request = ExposureScenarioRequest(
         chemical_id="DTXSID7020182",
@@ -393,6 +441,22 @@ def build_examples() -> dict[str, dict]:
             generated_at=EXAMPLE_GENERATED_AT,
         )
     )
+    scenario_package_probability_request = BuildProbabilityBoundsFromScenarioPackageInput(
+        packageProfileId="adult_leave_on_hand_cream_use_intensity_package",
+        chemicalId="DTXSID7020182",
+        chemicalName="Example Solvent A",
+        label="Example dermal scenario-package probability bounds",
+    )
+    scenario_package_probability_summary = _freeze_scenario_package_probability_summary(
+        build_probability_bounds_from_scenario_package(
+            scenario_package_probability_request,
+            engine,
+            defaults_registry,
+            archetype_library,
+            scenario_probability_packages,
+            generated_at=EXAMPLE_GENERATED_AT,
+        )
+    )
 
     aggregate_input = BuildAggregateExposureScenarioInput(
         chemical_id="DTXSID7020182",
@@ -485,6 +549,12 @@ def build_examples() -> dict[str, dict]:
         ),
         "probability_bounds_profile_summary": probability_bounds_summary.model_dump(
             mode="json", by_alias=True
+        ),
+        "scenario_package_probability_request": scenario_package_probability_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "scenario_package_probability_summary": (
+            scenario_package_probability_summary.model_dump(mode="json", by_alias=True)
         ),
         "aggregate_summary": aggregate_summary.model_dump(mode="json", by_alias=True),
         "pbpk_input": pbpk_input.model_dump(mode="json", by_alias=True),

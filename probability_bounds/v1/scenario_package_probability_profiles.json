@@ -1,0 +1,82 @@
+{
+  "profile_version": "2026.03.25.v1",
+  "notes": [
+    "Scenario-package probability profiles preserve coupled drivers by referencing packaged archetype-library templates as coherent support points.",
+    "These profiles publish cumulative probability bounds over scenario packages, not over independent parameter marginals.",
+    "Tier C scenario-package outputs remain screening summaries and must not be interpreted as validated population exposure distributions."
+  ],
+  "profiles": [
+    {
+      "profileId": "adult_leave_on_hand_cream_use_intensity_package",
+      "label": "Adult leave-on hand cream use-intensity package",
+      "description": "Probability bounds over coupled hand-cream use intensity packages for adult screening.",
+      "route": "dermal",
+      "scenarioClass": "screening",
+      "archetypeLibrarySetId": "adult_leave_on_hand_cream",
+      "dependencyCluster": "use-intensity-cluster",
+      "supportPoints": [
+        {
+          "pointId": "lower_package",
+          "templateId": "adult_leave_on_hand_cream_low",
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.25,
+          "note": "Lower coupled-use package with reduced amount and frequency."
+        },
+        {
+          "pointId": "typical_package",
+          "templateId": "adult_leave_on_hand_cream_typical",
+          "cumulativeProbabilityLower": 0.25,
+          "cumulativeProbabilityUpper": 0.75,
+          "note": "Reference coupled-use package aligned to the baseline screening archetype."
+        },
+        {
+          "pointId": "upper_package",
+          "templateId": "adult_leave_on_hand_cream_high",
+          "cumulativeProbabilityLower": 0.75,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Upper coupled-use package with higher amount and frequency."
+        }
+      ],
+      "limitations": [
+        "This package varies multiple use-intensity drivers together but still represents only three packaged support points.",
+        "The profile is not a validated consumer frequency distribution."
+      ]
+    },
+    {
+      "profileId": "adult_trigger_spray_room_context_package",
+      "label": "Adult trigger spray room-context package",
+      "description": "Probability bounds over coupled room and use-context packages for trigger-spray inhalation screening.",
+      "route": "inhalation",
+      "scenarioClass": "inhalation",
+      "archetypeLibrarySetId": "adult_trigger_spray_room",
+      "dependencyCluster": "room-context-cluster",
+      "supportPoints": [
+        {
+          "pointId": "lower_package",
+          "templateId": "adult_trigger_spray_room_low",
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.2,
+          "note": "Larger-room and lower-release package for lower inhalation screening."
+        },
+        {
+          "pointId": "typical_package",
+          "templateId": "adult_trigger_spray_room_typical",
+          "cumulativeProbabilityLower": 0.2,
+          "cumulativeProbabilityUpper": 0.8,
+          "note": "Reference room-context package aligned to the baseline trigger-spray archetype."
+        },
+        {
+          "pointId": "upper_package",
+          "templateId": "adult_trigger_spray_room_high",
+          "cumulativeProbabilityLower": 0.8,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Smaller-room and higher-release package for upper inhalation screening."
+        }
+      ],
+      "limitations": [
+        "This package preserves coupled room-volume, ventilation, duration, and release settings but does not resolve breathing-zone peaks.",
+        "The profile is not a validated indoor-microenvironment distribution."
+      ]
+    }
+  ]
+}

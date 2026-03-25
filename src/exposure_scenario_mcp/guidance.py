@@ -10,6 +10,7 @@ from exposure_scenario_mcp.models import (
     SecurityProvenanceReviewReport,
 )
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
+from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.validation import validation_manifest
 
 
@@ -53,6 +54,21 @@ def _probability_profile_lines() -> list[str]:
     for item in manifest.profiles:
         lines.append(
             f"- `{item.profile_id}` [{item.route.value}/{item.parameter_name}] {item.label}"
+        )
+    return lines
+
+
+def _scenario_package_probability_lines() -> list[str]:
+    manifest = ScenarioProbabilityPackageRegistry.load().manifest()
+    lines = [
+        "## Packaged Scenario-Probability Profiles",
+        "",
+        f"- Package profile version: `{manifest.profile_version}`",
+        f"- Package profile count: `{manifest.profile_count}`",
+    ]
+    for item in manifest.profiles:
+        lines.append(
+            f"- `{item.profile_id}` [{item.route.value}/{item.dependency_cluster}] {item.label}"
         )
     return lines
 
@@ -159,15 +175,17 @@ def uncertainty_framework() -> str:
 ## Tier C
 
 - Packaged single-driver probability-bounds profiles for selected monotonic drivers.
+- Packaged scenario-package probability profiles for selected coupled-driver clusters.
 - Cumulative probability bounds apply to the selected driver support points only.
-- All other scenario inputs remain fixed at the base scenario.
+- Single-driver outputs keep all other scenario inputs fixed at the base scenario.
+- Scenario-package outputs preserve coupled drivers within packaged template states.
 - Tier C outputs are not joint exposure distributions or population simulations.
 
 ## Current Guardrail
 
 - `v0.1.0` supports Tier A on every scenario output, Tier B via deterministic envelopes
   and parameter-bounds propagation, and Tier C only for packaged single-driver
-  probability bounds.
+  or scenario-package probability bounds.
 - Probabilistic tiers remain blocked until validation evidence, dependency handling, and
   distribution governance mature.
 """
@@ -222,14 +240,19 @@ def probability_bounds_guide() -> str:
         "",
     ]
     lines.extend(_probability_profile_lines())
+    lines.extend([""])
+    lines.extend(_scenario_package_probability_lines())
     lines.extend(
         [
             "",
             "## Client Guidance",
             "",
             "- Discover packaged driver profiles through `probability-bounds://manifest`.",
+            "- Discover packaged coupled-driver profiles through `scenario-probability://manifest`.",
             "- Use `exposure_build_probability_bounds_from_profile` only when the base request",
             "  matches the published profile applicability.",
+            "- Use `exposure_build_probability_bounds_from_scenario_package` when preserving",
+            "  coupled drivers matters more than isolating a single parameter.",
             "- Preserve `driverProfileId`, `profileVersion`, and all profile limitations in",
             "  downstream summaries and reports.",
         ]
