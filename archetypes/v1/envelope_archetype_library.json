@@ -1,9 +1,10 @@
 {
-  "library_version": "2026.03.25.v1",
+  "library_version": "2026.03.25.v2",
   "notes": [
     "Packaged Tier B archetype sets are deterministic screening templates, not population distributions.",
     "Each set uses caller-supplied chemical identity and fixed route/scenario semantics.",
-    "Archetype differences should remain explicit and interpretable before any later probabilistic tier is introduced."
+    "Archetype differences should remain explicit and interpretable before any later probabilistic tier is introduced.",
+    "Some packaged inhalation archetypes instantiate Tier 1 near-field/far-field requests rather than Tier 0 room-average requests."
   ],
   "sets": [
     {
@@ -283,6 +284,127 @@
             "population_group": "child",
             "body_weight_kg": 16.0,
             "region": "EU"
+          }
+        }
+      ]
+    },
+    {
+      "setId": "adult_personal_care_pump_spray_tier1",
+      "label": "Adult personal-care pump spray Tier 1 envelope",
+      "description": "Tier B inhalation archetypes for adult personal-care pump sprays used near the face or upper torso with Tier 1 NF/FF semantics.",
+      "route": "inhalation",
+      "scenarioClass": "inhalation",
+      "chemicalScope": "caller_supplied",
+      "intendedUse": "Tier B inhalation envelope for personal-care pump spray use where Tier 1 near-field breathing-zone screening is preferable to Tier 0 room averages.",
+      "driverParameters": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+        "source_distance_m",
+        "spray_duration_seconds",
+        "near_field_volume_m3"
+      ],
+      "interpretationNotes": [
+        "These archetypes represent close-use facial or upper-torso personal-care spray contexts using the Tier 1 NF/FF screening model.",
+        "Archetype differences keep source distance, near-field volume, and spray duration explicit rather than burying them inside a single profile label."
+      ],
+      "limitations": [
+        "The set remains an external-dose screening envelope and does not model deposition, absorbed dose, or PBPK state variables.",
+        "The set is intended for hand-actuated personal-care pump sprays, not compressed aerosols or non-spray products."
+      ],
+      "archetypes": [
+        {
+          "templateId": "adult_personal_care_pump_spray_tier1_low",
+          "label": "Lower plausible near-face use",
+          "description": "Lower concentration and amount with a slightly larger near field and longer source distance.",
+          "productUseProfile": {
+            "product_category": "personal_care",
+            "physical_form": "spray",
+            "application_method": "pump_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.015,
+            "use_amount_per_event": 1.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 1,
+            "room_volume_m3": 22.0,
+            "air_exchange_rate_per_hour": 2.0,
+            "exposure_duration_hours": 0.2
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 68.0,
+            "inhalation_rate_m3_per_hour": 0.8,
+            "region": "EU"
+          },
+          "tier1InhalationParameters": {
+            "sourceDistanceM": 0.34,
+            "sprayDurationSeconds": 3.0,
+            "nearFieldVolumeM3": 2.0,
+            "airflowDirectionality": "source_to_breathing_zone",
+            "particleSizeRegime": "mixed_spray"
+          }
+        },
+        {
+          "templateId": "adult_personal_care_pump_spray_tier1_typical",
+          "label": "Typical near-face use",
+          "description": "Baseline adult personal-care pump spray archetype aligned to the packaged Tier 1 profile anchors.",
+          "productUseProfile": {
+            "product_name": "Example Personal-Care Pump Spray",
+            "product_category": "personal_care",
+            "physical_form": "spray",
+            "application_method": "pump_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.03,
+            "use_amount_per_event": 1.5,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 2,
+            "room_volume_m3": 18.0,
+            "air_exchange_rate_per_hour": 1.5,
+            "exposure_duration_hours": 0.25
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 68.0,
+            "inhalation_rate_m3_per_hour": 0.8,
+            "region": "EU"
+          },
+          "tier1InhalationParameters": {
+            "sourceDistanceM": 0.28,
+            "sprayDurationSeconds": 5.0,
+            "nearFieldVolumeM3": 1.7,
+            "airflowDirectionality": "source_to_breathing_zone",
+            "particleSizeRegime": "mixed_spray"
+          }
+        },
+        {
+          "templateId": "adult_personal_care_pump_spray_tier1_high",
+          "label": "Upper plausible near-face use",
+          "description": "Higher concentration and amount with a tighter near field and closer source distance.",
+          "productUseProfile": {
+            "product_category": "personal_care",
+            "physical_form": "spray",
+            "application_method": "pump_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.05,
+            "use_amount_per_event": 2.2,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 3,
+            "room_volume_m3": 16.0,
+            "air_exchange_rate_per_hour": 1.0,
+            "exposure_duration_hours": 0.3
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 68.0,
+            "inhalation_rate_m3_per_hour": 0.9,
+            "region": "EU"
+          },
+          "tier1InhalationParameters": {
+            "sourceDistanceM": 0.22,
+            "sprayDurationSeconds": 7.0,
+            "nearFieldVolumeM3": 1.4,
+            "airflowDirectionality": "source_to_breathing_zone",
+            "particleSizeRegime": "mixed_spray"
           }
         }
       ]

@@ -1,5 +1,16 @@
 {
   "$defs": {
+    "AirflowDirectionality": {
+      "enum": [
+        "quiescent",
+        "cross_draft",
+        "source_to_breathing_zone",
+        "breathing_zone_to_source",
+        "general_room_mixing"
+      ],
+      "title": "AirflowDirectionality",
+      "type": "string"
+    },
     "ExposureScenarioRequest": {
       "additionalProperties": false,
       "properties": {
@@ -77,6 +88,131 @@
       ],
       "title": "ExposureScenarioRequest",
       "type": "object"
+    },
+    "InhalationTier1ScenarioRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "inhalationTier1ScenarioRequest.v1",
+          "default": "inhalationTier1ScenarioRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Requested exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "default": "inhalation",
+          "description": "Requested scenario class for the future Tier 1 inhalation family."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Product and use-context profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Population profile for the exposed cohort."
+        },
+        "assumption_overrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Additional explicit overrides for auditability.",
+          "title": "Assumption Overrides",
+          "type": "object"
+        },
+        "requestedTier": {
+          "const": "tier_1",
+          "default": "tier_1",
+          "description": "Tier 1 inhalation request surface for a future near-field/far-field screening model family.",
+          "title": "Requestedtier",
+          "type": "string"
+        },
+        "source_distance_m": {
+          "description": "Distance from the breathing zone to the active spray source.",
+          "exclusiveMinimum": 0.0,
+          "title": "Source Distance M",
+          "type": "number"
+        },
+        "spray_duration_seconds": {
+          "description": "Active spray emission duration for each use event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Spray Duration Seconds",
+          "type": "number"
+        },
+        "near_field_volume_m3": {
+          "description": "Local near-field control volume around the user.",
+          "exclusiveMinimum": 0.0,
+          "title": "Near Field Volume M3",
+          "type": "number"
+        },
+        "airflow_directionality": {
+          "$ref": "#/$defs/AirflowDirectionality",
+          "description": "Directional airflow context near the source and breathing zone."
+        },
+        "particle_size_regime": {
+          "$ref": "#/$defs/ParticleSizeRegime",
+          "description": "Spray droplet or aerosol size regime used for screening semantics."
+        }
+      },
+      "required": [
+        "chemical_id",
+        "route",
+        "product_use_profile",
+        "population_profile",
+        "source_distance_m",
+        "spray_duration_seconds",
+        "near_field_volume_m3",
+        "airflow_directionality",
+        "particle_size_regime"
+      ],
+      "title": "InhalationTier1ScenarioRequest",
+      "type": "object"
+    },
+    "ParticleSizeRegime": {
+      "enum": [
+        "fine_aerosol",
+        "mixed_spray",
+        "coarse_spray"
+      ],
+      "title": "ParticleSizeRegime",
+      "type": "string"
     },
     "PopulationProfile": {
       "additionalProperties": false,
@@ -405,8 +541,16 @@
       "type": "string"
     },
     "request": {
-      "$ref": "#/$defs/ExposureScenarioRequest",
-      "description": "Full scenario request representing one deterministic archetype."
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExposureScenarioRequest"
+        },
+        {
+          "$ref": "#/$defs/InhalationTier1ScenarioRequest"
+        }
+      ],
+      "description": "Full scenario request representing one deterministic archetype.",
+      "title": "Request"
     }
   },
   "required": [

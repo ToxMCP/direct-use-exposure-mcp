@@ -231,6 +231,7 @@
     "tier1ParticleRegimeProfile.v1": "schemas/tier1ParticleRegimeProfile.v1.json",
     "tier1InhalationProductProfile.v1": "schemas/tier1InhalationProductProfile.v1.json",
     "tier1InhalationParameterManifest.v1": "schemas/tier1InhalationParameterManifest.v1.json",
+    "tier1InhalationTemplateParameters.v1": "schemas/tier1InhalationTemplateParameters.v1.json",
     "exposureScenario.v1": "schemas/exposureScenario.v1.json",
     "archetypeLibraryTemplate.v1": "schemas/archetypeLibraryTemplate.v1.json",
     "archetypeLibrarySet.v1": "schemas/archetypeLibrarySet.v1.json",

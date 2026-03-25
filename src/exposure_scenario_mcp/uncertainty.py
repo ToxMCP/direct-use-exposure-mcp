@@ -711,7 +711,18 @@ def build_exposure_envelope(
             "Every envelope archetype must share the same chemical_id.",
             suggestion="Normalize all archetypes to the same target chemical.",
         )
-        scenarios.append((archetype.label, archetype.description, engine.build(request)))
+        if isinstance(request, InhalationTier1ScenarioRequest):
+            from exposure_scenario_mcp.plugins.inhalation import (
+                build_inhalation_tier_1_screening_scenario,
+            )
+
+            scenario = enrich_scenario_uncertainty(
+                engine,
+                build_inhalation_tier_1_screening_scenario(request, registry),
+            )
+        else:
+            scenario = engine.build(request)
+        scenarios.append((archetype.label, archetype.description, scenario))
     routes = {item.route for _, _, item in scenarios}
     classes = {item.scenario_class for _, _, item in scenarios}
     units = {item.external_dose.unit for _, _, item in scenarios}

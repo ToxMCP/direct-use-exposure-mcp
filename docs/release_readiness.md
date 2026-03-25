@@ -19,6 +19,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - The Tier 1 parameter-pack documentation resource is published so source locators used in the
   Tier 1 manifest resolve to a live MCP guide.
 - Packaged Tier B archetype-library sets are versioned, hashed, and published as a machine-readable manifest.
+- The archetype library can publish governed Tier 1 inhalation templates when a packaged set is
+  explicitly defined around NF/FF screening semantics.
 - Packaged Tier C probability-bounds profiles are versioned, hashed, and published as a machine-readable manifest.
 - Probability-bounds profiles carry explicit driver-family taxonomy, product family, dependency cluster,
   fixed axes, and handling semantics.

@@ -304,6 +304,10 @@ def archetype_library_guide() -> str:
             "- Discover packaged sets through `archetypes://manifest` before building envelopes.",
             "- Use `exposure_build_exposure_envelope_from_library` when a",
             "  governed template is preferable to manual archetype construction.",
+            "- Some packaged inhalation sets instantiate Tier 1 NF/FF requests rather than",
+            "  Tier 0 room-average requests; preserve the resulting scenario tier semantics",
+            "  on each archetype output instead of collapsing them into a generic",
+            "  inhalation label.",
             "- Preserve `archetypeLibrarySetId`, `archetypeLibraryVersion`,",
             "  and any emitted library limitations in downstream reports.",
         ]

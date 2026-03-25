@@ -76,6 +76,7 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "tier1ParticleRegimeProfile.v1" in manifest["schemas"]
     assert "tier1InhalationProductProfile.v1" in manifest["schemas"]
     assert "tier1InhalationParameterManifest.v1" in manifest["schemas"]
+    assert "tier1InhalationTemplateParameters.v1" in manifest["schemas"]
     assert "archetypeLibraryManifest.v1" in manifest["schemas"]
     assert "archetypeLibrarySet.v1" in manifest["schemas"]
     assert "archetypeLibraryTemplate.v1" in manifest["schemas"]

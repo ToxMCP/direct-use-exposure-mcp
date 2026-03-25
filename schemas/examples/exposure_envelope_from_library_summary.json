@@ -6,7 +6,7 @@
   "scenarioClass": "screening",
   "label": "Example library-backed dermal envelope",
   "archetypeLibrarySetId": "adult_leave_on_hand_cream",
-  "archetypeLibraryVersion": "2026.03.25.v1",
+  "archetypeLibraryVersion": "2026.03.25.v2",
   "uncertaintyTier": "tier_b",
   "archetypes": [
     {
@@ -2046,7 +2046,7 @@
       "quantificationStatus": "bounded",
       "biasDirection": "bidirectional",
       "impactLevel": "medium",
-      "summary": "Envelope archetypes came from packaged set `adult_leave_on_hand_cream` in library version `2026.03.25.v1`.",
+      "summary": "Envelope archetypes came from packaged set `adult_leave_on_hand_cream` in library version `2026.03.25.v2`.",
       "recommendation": "Treat the packaged library as a governed screening starting point and replace it with scenario-specific evidence when higher-fidelity context exists."
     }
   ],
@@ -2093,7 +2093,7 @@
       "Deterministic-first v0.1 engine.",
       "All defaults are surfaced through exposureAssumptionRecord entries.",
       "Archetype library set: adult_leave_on_hand_cream",
-      "Archetype library version: 2026.03.25.v1"
+      "Archetype library version: 2026.03.25.v2"
     ]
   },
   "interpretation_notes": [

@@ -19,6 +19,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeInput,
     EnvelopeArchetypeInput,
     ExposureScenarioRequest,
+    InhalationTier1ScenarioRequest,
 )
 
 ARCHETYPE_LIBRARY_REPO_RELATIVE_PATH = Path("archetypes/v1/envelope_archetype_library.json")
@@ -86,7 +87,22 @@ def instantiate_library_request(
     *,
     chemical_id: str,
     chemical_name: str | None,
-) -> ExposureScenarioRequest:
+) -> ExposureScenarioRequest | InhalationTier1ScenarioRequest:
+    if template.tier1_inhalation_parameters is not None:
+        return InhalationTier1ScenarioRequest(
+            chemical_id=chemical_id,
+            chemical_name=chemical_name,
+            route=template_set.route,
+            scenario_class=template_set.scenario_class,
+            product_use_profile=template.product_use_profile,
+            population_profile=template.population_profile,
+            source_distance_m=template.tier1_inhalation_parameters.source_distance_m,
+            spray_duration_seconds=template.tier1_inhalation_parameters.spray_duration_seconds,
+            near_field_volume_m3=template.tier1_inhalation_parameters.near_field_volume_m3,
+            airflow_directionality=template.tier1_inhalation_parameters.airflow_directionality,
+            particle_size_regime=template.tier1_inhalation_parameters.particle_size_regime,
+            assumption_overrides={},
+        )
     return ExposureScenarioRequest(
         chemical_id=chemical_id,
         chemical_name=chemical_name,

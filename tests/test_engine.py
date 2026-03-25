@@ -639,6 +639,41 @@ def test_packaged_archetype_library_builds_tier_b_envelope() -> None:
     )
 
 
+def test_packaged_archetype_library_builds_tier1_personal_care_envelope() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    archetype_library = ArchetypeLibraryRegistry.load()
+
+    summary = build_exposure_envelope_from_library(
+        BuildExposureEnvelopeFromLibraryInput(
+            librarySetId="adult_personal_care_pump_spray_tier1",
+            chemicalId="DTXSID123",
+            chemicalName="Example Chemical",
+            label="Packaged Tier 1 personal-care envelope",
+        ),
+        engine,
+        defaults_registry,
+        archetype_library,
+        generated_at="2026-03-24T00:00:00+00:00",
+    )
+
+    assert summary.uncertainty_tier == UncertaintyTier.TIER_B
+    assert summary.route == Route.INHALATION
+    assert summary.scenario_class == ScenarioClass.INHALATION
+    assert summary.archetype_library_set_id == "adult_personal_care_pump_spray_tier1"
+    assert len(summary.archetypes) == 3
+    assert all(
+        item.scenario.tier_semantics.tier_claimed == TierLevel.TIER_1 for item in summary.archetypes
+    )
+    assert all(
+        item.scenario.route_metrics["tier1_product_profile_id"] == "personal_care_pump_spray_tier1"
+        for item in summary.archetypes
+    )
+    assert any(
+        "adult_personal_care_pump_spray_tier1" in item for item in summary.interpretation_notes
+    )
+
+
 def test_parameter_bounds_summary_builds_bounded_range() -> None:
     engine = build_engine()
     defaults_registry = DefaultsRegistry.load()

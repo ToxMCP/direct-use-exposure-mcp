@@ -1,5 +1,16 @@
 {
   "$defs": {
+    "AirflowDirectionality": {
+      "enum": [
+        "quiescent",
+        "cross_draft",
+        "source_to_breathing_zone",
+        "breathing_zone_to_source",
+        "general_room_mixing"
+      ],
+      "title": "AirflowDirectionality",
+      "type": "string"
+    },
     "ArchetypeLibraryTemplate": {
       "additionalProperties": false,
       "properties": {
@@ -24,6 +35,18 @@
         "populationProfile": {
           "$ref": "#/$defs/PopulationProfile",
           "description": "Population template for this archetype."
+        },
+        "tier1InhalationParameters": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tier1InhalationTemplateParameters"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional Tier 1 inhalation request fields for packaged near-field/far-field archetype templates."
         }
       },
       "required": [
@@ -35,6 +58,15 @@
       ],
       "title": "ArchetypeLibraryTemplate",
       "type": "object"
+    },
+    "ParticleSizeRegime": {
+      "enum": [
+        "fine_aerosol",
+        "mixed_spray",
+        "coarse_spray"
+      ],
+      "title": "ParticleSizeRegime",
+      "type": "string"
     },
     "PopulationProfile": {
       "additionalProperties": false,
@@ -335,6 +367,52 @@
       ],
       "title": "ScenarioClass",
       "type": "string"
+    },
+    "Tier1InhalationTemplateParameters": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "tier1InhalationTemplateParameters.v1",
+          "default": "tier1InhalationTemplateParameters.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sourceDistanceM": {
+          "description": "Distance from the breathing zone to the active spray source.",
+          "exclusiveMinimum": 0.0,
+          "title": "Sourcedistancem",
+          "type": "number"
+        },
+        "sprayDurationSeconds": {
+          "description": "Active spray emission duration for each use event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Spraydurationseconds",
+          "type": "number"
+        },
+        "nearFieldVolumeM3": {
+          "description": "Local near-field control volume around the user.",
+          "exclusiveMinimum": 0.0,
+          "title": "Nearfieldvolumem3",
+          "type": "number"
+        },
+        "airflowDirectionality": {
+          "$ref": "#/$defs/AirflowDirectionality",
+          "description": "Directional airflow context near the source and breathing zone."
+        },
+        "particleSizeRegime": {
+          "$ref": "#/$defs/ParticleSizeRegime",
+          "description": "Spray droplet or aerosol size regime used for screening semantics."
+        }
+      },
+      "required": [
+        "sourceDistanceM",
+        "sprayDurationSeconds",
+        "nearFieldVolumeM3",
+        "airflowDirectionality",
+        "particleSizeRegime"
+      ],
+      "title": "Tier1InhalationTemplateParameters",
+      "type": "object"
     }
   },
   "additionalProperties": false,

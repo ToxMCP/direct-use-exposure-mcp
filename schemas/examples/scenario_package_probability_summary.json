@@ -19,7 +19,7 @@
   "handlingStrategy": "scenario_packaged",
   "profileVersion": "2026.03.25.v2",
   "archetypeLibrarySetId": "adult_leave_on_hand_cream",
-  "archetypeLibraryVersion": "2026.03.25.v1",
+  "archetypeLibraryVersion": "2026.03.25.v2",
   "supportPoints": [
     {
       "pointId": "lower_package",

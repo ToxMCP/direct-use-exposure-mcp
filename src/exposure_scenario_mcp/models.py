@@ -1024,6 +1024,40 @@ class BuildAggregateExposureScenarioInput(StrictModel):
     )
 
 
+class Tier1InhalationTemplateParameters(StrictModel):
+    schema_version: Literal["tier1InhalationTemplateParameters.v1"] = (
+        "tier1InhalationTemplateParameters.v1"
+    )
+    source_distance_m: float = Field(
+        ...,
+        alias="sourceDistanceM",
+        gt=0.0,
+        description="Distance from the breathing zone to the active spray source.",
+    )
+    spray_duration_seconds: float = Field(
+        ...,
+        alias="sprayDurationSeconds",
+        gt=0.0,
+        description="Active spray emission duration for each use event.",
+    )
+    near_field_volume_m3: float = Field(
+        ...,
+        alias="nearFieldVolumeM3",
+        gt=0.0,
+        description="Local near-field control volume around the user.",
+    )
+    airflow_directionality: AirflowDirectionality = Field(
+        ...,
+        alias="airflowDirectionality",
+        description="Directional airflow context near the source and breathing zone.",
+    )
+    particle_size_regime: ParticleSizeRegime = Field(
+        ...,
+        alias="particleSizeRegime",
+        description="Spray droplet or aerosol size regime used for screening semantics.",
+    )
+
+
 class EnvelopeArchetypeInput(StrictModel):
     template_id: str | None = Field(
         default=None,
@@ -1032,7 +1066,7 @@ class EnvelopeArchetypeInput(StrictModel):
     )
     label: str = Field(..., description="Human-readable archetype label.")
     description: str = Field(..., description="Why this archetype belongs in the envelope.")
-    request: ExposureScenarioRequest = Field(
+    request: ExposureScenarioRequest | InhalationTier1ScenarioRequest = Field(
         ..., description="Full scenario request representing one deterministic archetype."
     )
 
@@ -1046,6 +1080,14 @@ class ArchetypeLibraryTemplate(StrictModel):
     )
     population_profile: PopulationProfile = Field(
         ..., alias="populationProfile", description="Population template for this archetype."
+    )
+    tier1_inhalation_parameters: Tier1InhalationTemplateParameters | None = Field(
+        default=None,
+        alias="tier1InhalationParameters",
+        description=(
+            "Optional Tier 1 inhalation request fields for packaged near-field/far-field "
+            "archetype templates."
+        ),
     )
 
 
@@ -1069,6 +1111,24 @@ class ArchetypeLibrarySet(StrictModel):
     archetypes: list[ArchetypeLibraryTemplate] = Field(
         ..., min_length=2, description="Packaged archetype templates for this set."
     )
+
+    @model_validator(mode="after")
+    def validate_archetype_tier_scope(self) -> ArchetypeLibrarySet:
+        has_tier1 = any(
+            item.tier1_inhalation_parameters is not None for item in self.archetypes
+        )
+        if has_tier1:
+            if self.route != Route.INHALATION:
+                raise ValueError(
+                    "Archetype library sets with tier1InhalationParameters require "
+                    "route='inhalation'."
+                )
+            if self.scenario_class != ScenarioClass.INHALATION:
+                raise ValueError(
+                    "Archetype library sets with tier1InhalationParameters require "
+                    "scenarioClass='inhalation'."
+                )
+        return self
 
 
 class ArchetypeLibraryManifest(StrictModel):
