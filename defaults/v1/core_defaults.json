@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.03.25.v10",
+  "defaults_version": "2026.03.25.v11",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -74,10 +74,16 @@
       "version": "RIVM report 2016-0179 / 2018"
     },
     {
+      "source_id": "rivm_cosmetics_sprays_airborne_fraction_defaults_2025",
+      "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
+      "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
+      "version": "RIVM report 2025-0099 / 2025"
+    },
+    {
       "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
       "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
       "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
-      "version": "2026.03.25.v6"
+      "version": "2026.03.25.v7"
     },
     {
       "source_id": "rivm_general_fact_sheet_unspecified_room_defaults_2014",
@@ -233,11 +239,21 @@
         "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1"
       }
     },
-      "product_category_overrides": {
-        "household_cleaner": {
-          "pump_spray": {
+    "product_category_overrides": {
+      "household_cleaner": {
+        "pump_spray": {
           "value": 0.2,
           "source_id": "rivm_cleaning_sprays_airborne_fraction_2018"
+        }
+      },
+      "personal_care": {
+        "pump_spray": {
+          "value": 0.2,
+          "source_id": "rivm_cosmetics_sprays_airborne_fraction_defaults_2025"
+        },
+        "aerosol_spray": {
+          "value": 0.9,
+          "source_id": "rivm_cosmetics_sprays_airborne_fraction_defaults_2025"
         }
       }
     }

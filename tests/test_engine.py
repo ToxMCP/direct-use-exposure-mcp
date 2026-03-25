@@ -686,6 +686,102 @@ def test_household_cleaner_pump_spray_uses_product_category_aerosol_override() -
     assert scenario.external_dose.value == pytest.approx(0.09030294, rel=1e-6)
 
 
+def test_personal_care_pump_spray_uses_curated_rivm_cosmetics_override() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="spray",
+            application_method="pump_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.1,
+            use_amount_per_event=10,
+            use_amount_unit="g",
+            use_events_per_day=1,
+            room_volume_m3=20,
+            air_exchange_rate_per_hour=1.0,
+            exposure_duration_hours=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            inhalation_rate_m3_per_hour=1.0,
+        ),
+    )
+
+    scenario = engine.build(request)
+    aerosolized_fraction = next(
+        item for item in scenario.assumptions if item.name == "aerosolized_fraction"
+    )
+
+    assert aerosolized_fraction.value == pytest.approx(0.2, rel=1e-6)
+    assert (
+        aerosolized_fraction.source.source_id
+        == "rivm_cosmetics_sprays_airborne_fraction_defaults_2025"
+    )
+    assert aerosolized_fraction.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
+    assert aerosolized_fraction.governance.evidence_grade == EvidenceGrade.GRADE_3
+    assert scenario.validation_summary.heuristic_assumption_names == []
+    assert "heuristic_defaults_active" not in scenario.validation_summary.validation_gap_ids
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        6.32120559, rel=1e-6
+    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
+        6.32120559, rel=1e-6
+    )
+    assert scenario.external_dose.value == pytest.approx(0.09030294, rel=1e-6)
+
+
+def test_personal_care_aerosol_spray_uses_curated_rivm_cosmetics_override() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.1,
+            use_amount_per_event=10,
+            use_amount_unit="g",
+            use_events_per_day=1,
+            room_volume_m3=20,
+            air_exchange_rate_per_hour=1.0,
+            exposure_duration_hours=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            inhalation_rate_m3_per_hour=1.0,
+        ),
+    )
+
+    scenario = engine.build(request)
+    aerosolized_fraction = next(
+        item for item in scenario.assumptions if item.name == "aerosolized_fraction"
+    )
+
+    assert aerosolized_fraction.value == pytest.approx(0.9, rel=1e-6)
+    assert (
+        aerosolized_fraction.source.source_id
+        == "rivm_cosmetics_sprays_airborne_fraction_defaults_2025"
+    )
+    assert aerosolized_fraction.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
+    assert aerosolized_fraction.governance.evidence_grade == EvidenceGrade.GRADE_3
+    assert scenario.validation_summary.heuristic_assumption_names == []
+    assert "heuristic_defaults_active" not in scenario.validation_summary.validation_gap_ids
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        28.44542515, rel=1e-6
+    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
+        28.44542515, rel=1e-6
+    )
+    assert scenario.external_dose.value == pytest.approx(0.40636322, rel=1e-6)
+
+
 def test_aggregate_and_compare_flows() -> None:
     engine = build_engine()
     defaults_registry = DefaultsRegistry.load()

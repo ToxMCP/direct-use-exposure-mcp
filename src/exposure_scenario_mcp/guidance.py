@@ -550,7 +550,11 @@ def defaults_curation_report_markdown() -> str:
     for entry in report.entries:
         if entry.curation_status.value != "curated":
             continue
-        if entry.parameter_name not in {"retention_factor", "transfer_efficiency"}:
+        if entry.parameter_name not in {
+            "retention_factor",
+            "transfer_efficiency",
+            "aerosolized_fraction",
+        }:
             continue
         selectors = ", ".join(
             f"{key}={value}" for key, value in sorted(entry.applicability.items())

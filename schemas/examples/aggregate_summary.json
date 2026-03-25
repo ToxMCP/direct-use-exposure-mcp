@@ -122,8 +122,8 @@
     "algorithm_id": "aggregate.simple_additive.v1",
     "plugin_id": "aggregate_summary_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v10",
-    "defaults_hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3",
+    "defaults_version": "2026.03.25.v11",
+    "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

@@ -36,8 +36,9 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - Executable validation reference bands are versioned, hashed, and published through
   `validation://reference-bands` so narrow realism checks do not rely on hardcoded thresholds.
 - Curated dermal contact defaults are published for personal-care hand application and
-  household-cleaner wipe contact instead of relying only on generic transfer and
-  surface-contact-retention heuristics.
+  household-cleaner wipe contact, and curated spray airborne-fraction defaults are
+  published for household-cleaner and personal-care spray contexts instead of relying
+  only on generic transfer, retention, and spray heuristics.
 - Scenario, aggregate, comparison, and PBPK export outputs carry provenance.
 - Scenario outputs publish Tier A uncertainty diagnostics, and Tier B support is limited to
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.

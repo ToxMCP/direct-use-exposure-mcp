@@ -240,6 +240,18 @@ def test_defaults_curation_report_matches_schema_and_surface() -> None:
         for item in report["entries"]
     )
     assert any(
+        item["pathId"]
+        == "aerosolized_fraction:application_method=pump_spray,product_category=personal_care"
+        and item["curationStatus"] == "curated"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"]
+        == "aerosolized_fraction:application_method=aerosol_spray,product_category=personal_care"
+        and item["curationStatus"] == "curated"
+        for item in report["entries"]
+    )
+    assert any(
         item["pathId"] == "transfer_efficiency:application_method=trigger_spray"
         and item["curationStatus"] == "route_semantic"
         for item in report["entries"]

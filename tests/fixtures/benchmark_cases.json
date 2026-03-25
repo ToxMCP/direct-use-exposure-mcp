@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.03.25.v10",
+  "defaults_version": "2026.03.25.v11",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -479,8 +479,8 @@
         "scenario_class": "inhalation",
         "package_profile_id": "adult_personal_care_pump_spray_tier1_near_field_context_package",
         "archetype_library_set_id": "adult_personal_care_pump_spray_tier1",
-        "minimum_dose_value": 0.00297317,
-        "maximum_dose_value": 0.15221719,
+        "minimum_dose_value": 0.00237854,
+        "maximum_dose_value": 0.12177375,
         "support_point_template_ids": [
           "adult_personal_care_pump_spray_tier1_low",
           "adult_personal_care_pump_spray_tier1_typical",

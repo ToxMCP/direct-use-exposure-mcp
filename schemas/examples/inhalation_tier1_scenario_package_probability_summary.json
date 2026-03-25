@@ -41,7 +41,7 @@
         "scenario_class": "inhalation",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.00297317,
+          "value": 0.00237854,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
@@ -75,13 +75,13 @@
         },
         "route_metrics": {
           "chemical_mass_mg_per_event": 14.7,
-          "released_mass_mg_per_event": 3.675,
-          "far_field_average_air_concentration_mg_per_m3": 0.13767884,
-          "near_field_active_spray_concentration_mg_per_m3": 270.35826708,
-          "average_air_concentration_mg_per_m3": 1.26359796,
-          "breathing_zone_time_weighted_average_mg_per_m3": 1.26359796,
+          "released_mass_mg_per_event": 2.94,
+          "far_field_average_air_concentration_mg_per_m3": 0.11014308,
+          "near_field_active_spray_concentration_mg_per_m3": 216.28661366,
+          "average_air_concentration_mg_per_m3": 1.01087837,
+          "breathing_zone_time_weighted_average_mg_per_m3": 1.01087837,
           "interzonal_mixing_rate_m3_per_hour": 36.0,
-          "inhaled_mass_mg_per_day": 0.20217567,
+          "inhaled_mass_mg_per_day": 0.16174054,
           "tier1_product_profile_id": "personal_care_pump_spray_tier1",
           "tier1_profile_alignment_status": "aligned",
           "tier1_profile_divergence_count": 0
@@ -130,7 +130,7 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3"
+              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -287,24 +287,24 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "aerosolized_fraction",
-            "value": 0.25,
+            "value": 0.2,
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
-              "version": "2026.03.25.v6",
-              "hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3"
+              "source_id": "rivm_cosmetics_sprays_airborne_fraction_defaults_2025",
+              "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
+              "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
+              "version": "RIVM report 2025-0099 / 2025",
+              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
             },
             "confidence": "registry_default",
             "default_applied": true,
             "rationale": "Aerosolized fraction defaulted from application_method='pump_spray' and product_category='personal_care'.",
             "governance": {
-              "evidence_grade": "grade_1",
-              "evidence_basis": "heuristic_default",
-              "default_visibility": "warn",
-              "applicability_status": "screening_extrapolation",
+              "evidence_grade": "grade_3",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "model_uncertainty"
@@ -631,7 +631,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "released_mass_mg_per_event",
-            "value": 3.675,
+            "value": 2.94,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -836,7 +836,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "far_field_average_air_concentration_mg_per_m3",
-            "value": 0.1376788444112529,
+            "value": 0.11014307552900232,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -873,7 +873,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "near_field_active_spray_concentration_mg_per_m3",
-            "value": 270.3582670797053,
+            "value": 216.28661366376426,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -910,7 +910,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "breathing_zone_time_weighted_average_mg_per_m3",
-            "value": 1.2635979620583113,
+            "value": 1.0108783696466492,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -947,7 +947,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_event",
-            "value": 0.20217567392932984,
+            "value": 0.1617405391434639,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -981,7 +981,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_day",
-            "value": 0.20217567392932984,
+            "value": 0.1617405391434639,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -1018,7 +1018,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 0.0029731716754313213,
+            "value": 0.0023785373403450573,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -1058,8 +1058,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v10",
-          "defaults_hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3",
+          "defaults_version": "2026.03.25.v11",
+          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1093,11 +1093,6 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'aerosolized_fraction'."
-          },
-          {
-            "code": "heuristic_default_source",
-            "severity": "warning",
-            "message": "Default value for 'aerosolized_fraction' comes from a heuristic screening source rather than a curated factor pack."
           },
           {
             "code": "default_applied",
@@ -1174,22 +1169,6 @@
             "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
           },
           {
-            "entryId": "assumption-aerosolized_fraction",
-            "title": "Resolved assumption `aerosolized_fraction` carries default uncertainty",
-            "uncertaintyTypes": [
-              "parameter_uncertainty",
-              "model_uncertainty"
-            ],
-            "relatedAssumptions": [
-              "aerosolized_fraction"
-            ],
-            "quantificationStatus": "qualitative_only",
-            "biasDirection": "unknown",
-            "impactLevel": "high",
-            "summary": "`aerosolized_fraction` resolved as `heuristic_default` with `screening_extrapolation` status.",
-            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
-          },
-          {
             "entryId": "limitation-near_field_exchange_screening",
             "title": "Limitation `near_field_exchange_screening` remains unquantified",
             "uncertaintyTypes": [
@@ -1257,9 +1236,9 @@
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00029732,
-            "percentDelta": 10.000101,
-            "elasticity": 1.00001,
+            "absoluteDelta": 0.00023785,
+            "percentDelta": 9.999832,
+            "elasticity": 0.999983,
             "direction": "positive"
           },
           {
@@ -1270,9 +1249,9 @@
             "unit": "mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00029732,
-            "percentDelta": 10.000101,
-            "elasticity": 1.00001,
+            "absoluteDelta": 0.00023785,
+            "percentDelta": 9.999832,
+            "elasticity": 0.999983,
             "direction": "positive"
           },
           {
@@ -1283,9 +1262,9 @@
             "unit": "m3/h",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00029732,
-            "percentDelta": 10.000101,
-            "elasticity": 1.00001,
+            "absoluteDelta": 0.00023785,
+            "percentDelta": 9.999832,
+            "elasticity": 0.999983,
             "direction": "positive"
           },
           {
@@ -1296,9 +1275,9 @@
             "unit": "g/mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00029732,
-            "percentDelta": 10.000101,
-            "elasticity": 1.00001,
+            "absoluteDelta": 0.00023785,
+            "percentDelta": 9.999832,
+            "elasticity": 0.999983,
             "direction": "positive"
           },
           {
@@ -1309,22 +1288,22 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00029732,
-            "percentDelta": 10.000101,
-            "elasticity": 1.00001,
+            "absoluteDelta": 0.00023785,
+            "percentDelta": 9.999832,
+            "elasticity": 0.999983,
             "direction": "positive"
           },
           {
             "parameterName": "aerosolized_fraction",
             "sourceKind": "default_registry",
-            "baselineValue": 0.25,
-            "perturbedValue": 0.275,
+            "baselineValue": 0.2,
+            "perturbedValue": 0.22,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00029732,
-            "percentDelta": 10.000101,
-            "elasticity": 1.00001,
+            "absoluteDelta": 0.00023785,
+            "percentDelta": 9.999832,
+            "elasticity": 0.999983,
             "direction": "positive"
           },
           {
@@ -1335,9 +1314,9 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.00027029,
-            "percentDelta": -9.09097,
-            "elasticity": -0.909097,
+            "absoluteDelta": -0.00021623,
+            "percentDelta": -9.090871,
+            "elasticity": -0.909087,
             "direction": "negative"
           },
           {
@@ -1348,9 +1327,9 @@
             "unit": "m",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.00024084,
-            "percentDelta": -8.100445,
-            "elasticity": -0.810044,
+            "absoluteDelta": -0.00019267,
+            "percentDelta": -8.100347,
+            "elasticity": -0.810035,
             "direction": "negative"
           }
         ],
@@ -1428,7 +1407,6 @@
           ],
           "evidenceReadiness": "external_partial",
           "heuristicAssumptionNames": [
-            "aerosolized_fraction",
             "density_g_per_ml"
           ],
           "validationGapIds": [
@@ -1468,7 +1446,7 @@
         "scenario_class": "inhalation",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.02636088,
+          "value": 0.0210887,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
@@ -1502,13 +1480,13 @@
         },
         "route_metrics": {
           "chemical_mass_mg_per_event": 44.1,
-          "released_mass_mg_per_event": 11.025,
-          "far_field_average_air_concentration_mg_per_m3": 0.51076084,
-          "near_field_active_spray_concentration_mg_per_m3": 715.2166432,
-          "average_air_concentration_mg_per_m3": 4.48134908,
-          "breathing_zone_time_weighted_average_mg_per_m3": 4.48134908,
+          "released_mass_mg_per_event": 8.82,
+          "far_field_average_air_concentration_mg_per_m3": 0.40860868,
+          "near_field_active_spray_concentration_mg_per_m3": 572.17331456,
+          "average_air_concentration_mg_per_m3": 3.58507926,
+          "breathing_zone_time_weighted_average_mg_per_m3": 3.58507926,
           "interzonal_mixing_rate_m3_per_hour": 29.75,
-          "inhaled_mass_mg_per_day": 1.79253963,
+          "inhaled_mass_mg_per_day": 1.43403171,
           "tier1_product_profile_id": "personal_care_pump_spray_tier1",
           "tier1_profile_alignment_status": "aligned",
           "tier1_profile_divergence_count": 0
@@ -1557,7 +1535,7 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3"
+              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1714,24 +1692,24 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "aerosolized_fraction",
-            "value": 0.25,
+            "value": 0.2,
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
-              "version": "2026.03.25.v6",
-              "hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3"
+              "source_id": "rivm_cosmetics_sprays_airborne_fraction_defaults_2025",
+              "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
+              "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
+              "version": "RIVM report 2025-0099 / 2025",
+              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
             },
             "confidence": "registry_default",
             "default_applied": true,
             "rationale": "Aerosolized fraction defaulted from application_method='pump_spray' and product_category='personal_care'.",
             "governance": {
-              "evidence_grade": "grade_1",
-              "evidence_basis": "heuristic_default",
-              "default_visibility": "warn",
-              "applicability_status": "screening_extrapolation",
+              "evidence_grade": "grade_3",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "model_uncertainty"
@@ -2058,7 +2036,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "released_mass_mg_per_event",
-            "value": 11.025,
+            "value": 8.82,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -2263,7 +2241,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "far_field_average_air_concentration_mg_per_m3",
-            "value": 0.510760844641412,
+            "value": 0.4086086757131296,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -2300,7 +2278,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "near_field_active_spray_concentration_mg_per_m3",
-            "value": 715.2166431975825,
+            "value": 572.173314558066,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -2337,7 +2315,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "breathing_zone_time_weighted_average_mg_per_m3",
-            "value": 4.481349079935529,
+            "value": 3.5850792639484235,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -2374,7 +2352,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_event",
-            "value": 0.8962698159871059,
+            "value": 0.7170158527896847,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -2408,7 +2386,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_day",
-            "value": 1.7925396319742117,
+            "value": 1.4340317055793694,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -2445,7 +2423,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 0.02636087694079723,
+            "value": 0.021088701552637784,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -2485,8 +2463,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v10",
-          "defaults_hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3",
+          "defaults_version": "2026.03.25.v11",
+          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -2520,11 +2498,6 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'aerosolized_fraction'."
-          },
-          {
-            "code": "heuristic_default_source",
-            "severity": "warning",
-            "message": "Default value for 'aerosolized_fraction' comes from a heuristic screening source rather than a curated factor pack."
           },
           {
             "code": "default_applied",
@@ -2601,22 +2574,6 @@
             "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
           },
           {
-            "entryId": "assumption-aerosolized_fraction",
-            "title": "Resolved assumption `aerosolized_fraction` carries default uncertainty",
-            "uncertaintyTypes": [
-              "parameter_uncertainty",
-              "model_uncertainty"
-            ],
-            "relatedAssumptions": [
-              "aerosolized_fraction"
-            ],
-            "quantificationStatus": "qualitative_only",
-            "biasDirection": "unknown",
-            "impactLevel": "high",
-            "summary": "`aerosolized_fraction` resolved as `heuristic_default` with `screening_extrapolation` status.",
-            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
-          },
-          {
             "entryId": "limitation-near_field_exchange_screening",
             "title": "Limitation `near_field_exchange_screening` remains unquantified",
             "uncertaintyTypes": [
@@ -2684,9 +2641,9 @@
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00263608,
-            "percentDelta": 9.99997,
-            "elasticity": 0.999997,
+            "absoluteDelta": 0.00210887,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
             "direction": "positive"
           },
           {
@@ -2697,9 +2654,9 @@
             "unit": "mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00263608,
-            "percentDelta": 9.99997,
-            "elasticity": 0.999997,
+            "absoluteDelta": 0.00210887,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
             "direction": "positive"
           },
           {
@@ -2710,9 +2667,9 @@
             "unit": "m3/h",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00263608,
-            "percentDelta": 9.99997,
-            "elasticity": 0.999997,
+            "absoluteDelta": 0.00210887,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
             "direction": "positive"
           },
           {
@@ -2723,9 +2680,9 @@
             "unit": "g/mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00263608,
-            "percentDelta": 9.99997,
-            "elasticity": 0.999997,
+            "absoluteDelta": 0.00210887,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
             "direction": "positive"
           },
           {
@@ -2736,22 +2693,22 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00263608,
-            "percentDelta": 9.99997,
-            "elasticity": 0.999997,
+            "absoluteDelta": 0.00210887,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
             "direction": "positive"
           },
           {
             "parameterName": "aerosolized_fraction",
             "sourceKind": "default_registry",
-            "baselineValue": 0.25,
-            "perturbedValue": 0.275,
+            "baselineValue": 0.2,
+            "perturbedValue": 0.22,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00263608,
-            "percentDelta": 9.99997,
-            "elasticity": 0.999997,
+            "absoluteDelta": 0.00210887,
+            "percentDelta": 10.0,
+            "elasticity": 1.0,
             "direction": "positive"
           },
           {
@@ -2762,9 +2719,9 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.00239645,
-            "percentDelta": -9.090933,
-            "elasticity": -0.909093,
+            "absoluteDelta": -0.00191715,
+            "percentDelta": -9.090888,
+            "elasticity": -0.909089,
             "direction": "negative"
           },
           {
@@ -2775,9 +2732,9 @@
             "unit": "m",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.00212331,
-            "percentDelta": -8.054777,
-            "elasticity": -0.805478,
+            "absoluteDelta": -0.00169865,
+            "percentDelta": -8.054788,
+            "elasticity": -0.805479,
             "direction": "negative"
           }
         ],
@@ -2855,7 +2812,6 @@
           ],
           "evidenceReadiness": "external_partial",
           "heuristicAssumptionNames": [
-            "aerosolized_fraction",
             "density_g_per_ml"
           ],
           "validationGapIds": [
@@ -2895,7 +2851,7 @@
         "scenario_class": "inhalation",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.15221719,
+          "value": 0.12177375,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
@@ -2929,13 +2885,13 @@
         },
         "route_metrics": {
           "chemical_mass_mg_per_event": 107.8,
-          "released_mass_mg_per_event": 26.95,
-          "far_field_average_air_concentration_mg_per_m3": 1.4551977,
-          "near_field_active_spray_concentration_mg_per_m3": 1748.51402123,
-          "average_air_concentration_mg_per_m3": 12.77872711,
-          "breathing_zone_time_weighted_average_mg_per_m3": 12.77872711,
+          "released_mass_mg_per_event": 21.56,
+          "far_field_average_air_concentration_mg_per_m3": 1.16415816,
+          "near_field_active_spray_concentration_mg_per_m3": 1398.81121698,
+          "average_air_concentration_mg_per_m3": 10.22298169,
+          "breathing_zone_time_weighted_average_mg_per_m3": 10.22298169,
           "interzonal_mixing_rate_m3_per_hour": 23.8,
-          "inhaled_mass_mg_per_day": 10.35076896,
+          "inhaled_mass_mg_per_day": 8.28061517,
           "tier1_product_profile_id": "personal_care_pump_spray_tier1",
           "tier1_profile_alignment_status": "aligned",
           "tier1_profile_divergence_count": 0
@@ -2984,7 +2940,7 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3"
+              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3141,24 +3097,24 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "aerosolized_fraction",
-            "value": 0.25,
+            "value": 0.2,
             "unit": "fraction",
             "source_kind": "default_registry",
             "source": {
-              "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
-              "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
-              "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
-              "version": "2026.03.25.v6",
-              "hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3"
+              "source_id": "rivm_cosmetics_sprays_airborne_fraction_defaults_2025",
+              "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
+              "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
+              "version": "RIVM report 2025-0099 / 2025",
+              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
             },
             "confidence": "registry_default",
             "default_applied": true,
             "rationale": "Aerosolized fraction defaulted from application_method='pump_spray' and product_category='personal_care'.",
             "governance": {
-              "evidence_grade": "grade_1",
-              "evidence_basis": "heuristic_default",
-              "default_visibility": "warn",
-              "applicability_status": "screening_extrapolation",
+              "evidence_grade": "grade_3",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "model_uncertainty"
@@ -3485,7 +3441,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "released_mass_mg_per_event",
-            "value": 26.950000000000003,
+            "value": 21.560000000000002,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -3690,7 +3646,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "far_field_average_air_concentration_mg_per_m3",
-            "value": 1.455197698464105,
+            "value": 1.1641581587712841,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -3727,7 +3683,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "near_field_active_spray_concentration_mg_per_m3",
-            "value": 1748.5140212278764,
+            "value": 1398.811216982301,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -3764,7 +3720,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "breathing_zone_time_weighted_average_mg_per_m3",
-            "value": 12.778727110228811,
+            "value": 10.222981688183049,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -3801,7 +3757,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_event",
-            "value": 3.4502563197617793,
+            "value": 2.7602050558094233,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -3835,7 +3791,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_day",
-            "value": 10.350768959285338,
+            "value": 8.28061516742827,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -3872,7 +3828,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 0.15221719057772556,
+            "value": 0.12177375246218043,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -3912,8 +3868,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v10",
-          "defaults_hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3",
+          "defaults_version": "2026.03.25.v11",
+          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -3947,11 +3903,6 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'aerosolized_fraction'."
-          },
-          {
-            "code": "heuristic_default_source",
-            "severity": "warning",
-            "message": "Default value for 'aerosolized_fraction' comes from a heuristic screening source rather than a curated factor pack."
           },
           {
             "code": "default_applied",
@@ -4028,22 +3979,6 @@
             "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
           },
           {
-            "entryId": "assumption-aerosolized_fraction",
-            "title": "Resolved assumption `aerosolized_fraction` carries default uncertainty",
-            "uncertaintyTypes": [
-              "parameter_uncertainty",
-              "model_uncertainty"
-            ],
-            "relatedAssumptions": [
-              "aerosolized_fraction"
-            ],
-            "quantificationStatus": "qualitative_only",
-            "biasDirection": "unknown",
-            "impactLevel": "high",
-            "summary": "`aerosolized_fraction` resolved as `heuristic_default` with `screening_extrapolation` status.",
-            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
-          },
-          {
             "entryId": "limitation-near_field_exchange_screening",
             "title": "Limitation `near_field_exchange_screening` remains unquantified",
             "uncertaintyTypes": [
@@ -4111,8 +4046,8 @@
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01522172,
-            "percentDelta": 10.000001,
+            "absoluteDelta": 0.01217738,
+            "percentDelta": 10.000004,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4124,8 +4059,8 @@
             "unit": "mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01522172,
-            "percentDelta": 10.000001,
+            "absoluteDelta": 0.01217738,
+            "percentDelta": 10.000004,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4137,8 +4072,8 @@
             "unit": "m3/h",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01522172,
-            "percentDelta": 10.000001,
+            "absoluteDelta": 0.01217738,
+            "percentDelta": 10.000004,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4150,8 +4085,8 @@
             "unit": "g/mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01522172,
-            "percentDelta": 10.000001,
+            "absoluteDelta": 0.01217738,
+            "percentDelta": 10.000004,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4163,21 +4098,21 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01522172,
-            "percentDelta": 10.000001,
+            "absoluteDelta": 0.01217738,
+            "percentDelta": 10.000004,
             "elasticity": 1.0,
             "direction": "positive"
           },
           {
             "parameterName": "aerosolized_fraction",
             "sourceKind": "default_registry",
-            "baselineValue": 0.25,
-            "perturbedValue": 0.275,
+            "baselineValue": 0.2,
+            "perturbedValue": 0.22,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01522172,
-            "percentDelta": 10.000001,
+            "absoluteDelta": 0.01217738,
+            "percentDelta": 10.000004,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4189,8 +4124,8 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.01383793,
-            "percentDelta": -9.090911,
+            "absoluteDelta": -0.01107034,
+            "percentDelta": -9.090908,
             "elasticity": -0.909091,
             "direction": "negative"
           },
@@ -4202,8 +4137,8 @@
             "unit": "m3",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.01226211,
-            "percentDelta": -8.055667,
+            "absoluteDelta": -0.00980969,
+            "percentDelta": -8.055669,
             "elasticity": -0.805567,
             "direction": "negative"
           }
@@ -4282,7 +4217,6 @@
           ],
           "evidenceReadiness": "external_partial",
           "heuristicAssumptionNames": [
-            "aerosolized_fraction",
             "density_g_per_ml"
           ],
           "validationGapIds": [
@@ -4310,12 +4244,12 @@
   ],
   "minimumDose": {
     "metric": "normalized_external_dose",
-    "value": 0.00297317,
+    "value": 0.00237854,
     "unit": "mg/kg-day"
   },
   "maximumDose": {
     "metric": "normalized_external_dose",
-    "value": 0.15221719,
+    "value": 0.12177375,
     "unit": "mg/kg-day"
   },
   "uncertaintyRegister": [
@@ -4456,7 +4390,6 @@
     ],
     "evidenceReadiness": "external_partial",
     "heuristicAssumptionNames": [
-      "aerosolized_fraction",
       "density_g_per_ml"
     ],
     "validationGapIds": [
@@ -4479,8 +4412,8 @@
     "algorithm_id": "uncertainty.scenario_package_probability.v1",
     "plugin_id": "scenario_package_probability_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v10",
-    "defaults_hash_sha256": "c217fc1ef7b03d1fa4a65ac8dab01cc07ccfac80132a6b628ff494e9c02798d3",
+    "defaults_version": "2026.03.25.v11",
+    "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

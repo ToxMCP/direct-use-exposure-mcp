@@ -228,13 +228,16 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             relatedSourceIds=[
                 "peer_reviewed_cleaning_trigger_spray_airborne_fraction_2019",
                 "rivm_cleaning_sprays_airborne_fraction_2018",
+                "rivm_cosmetics_sprays_airborne_fraction_defaults_2025",
                 "heuristic_residual_spray_airborne_fraction_defaults_v1",
             ],
             note=(
                 "Tier 0 spray screening is benchmark-regressed and now tied to a real "
                 "cleaning-spray study for trigger sprays plus an RIVM fact-sheet default for "
-                "household-cleaner surface sprays, but non-cleaner pump-spray and aerosol-"
-                "spray defaults remain heuristic and no executable chamber validation is wired in."
+                "household-cleaner surface sprays and RIVM cosmetics defaults for personal-care "
+                "pump and aerosol sprays, but residual spray product families still rely on "
+                "heuristic airborne-fraction defaults and no executable chamber validation is "
+                "wired in."
             ),
             recommendation=(
                 "Add raw chamber or room-concentration datasets before promoting spray "

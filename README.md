@@ -82,7 +82,7 @@ The design is intentionally narrow:
 - Packaged Tier C coupled-driver scenario-package probability profiles with curated package taxonomy
 - Machine-actionable Tier 1 inhalation upgrade advisories for spray scenarios
 - Packaged Tier 1 inhalation airflow, particle, and product-family screening profiles
-- Curated RIVM-backed dermal contact defaults for personal-care hand application and household-cleaner wipe contact
+- Curated RIVM-backed dermal contact defaults plus product-family spray airborne-fraction defaults for personal-care and household-cleaner contexts
 - Simple additive aggregate exposure summaries
 - Scenario comparison and refinement deltas
 - ToxClaw evidence export and refinement-bundle export

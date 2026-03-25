@@ -103,8 +103,16 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     cleaner_surface_contact = (
         "`retention_factor:product_category=household_cleaner,retention_type=surface_contact`"
     )
+    personal_care_pump_spray = (
+        "`aerosolized_fraction:application_method=pump_spray,product_category=personal_care`"
+    )
+    personal_care_aerosol_spray = (
+        "`aerosolized_fraction:application_method=aerosol_spray,product_category=personal_care`"
+    )
     assert cleaner_wipe_transfer in defaults_curation
     assert cleaner_surface_contact in defaults_curation
+    assert personal_care_pump_spray in defaults_curation
+    assert personal_care_aerosol_spray in defaults_curation
     assert "Route-Semantic Highlights" in defaults_curation
     assert "`transfer_efficiency:application_method=trigger_spray`" in defaults_curation
     assert "`transfer_efficiency:application_method=hand_application`" in defaults_curation
