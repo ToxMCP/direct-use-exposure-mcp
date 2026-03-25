@@ -81,6 +81,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "sensitivityRankingEntry.v1" in manifest["schemas"]
     assert "dependencyDescriptor.v1" in manifest["schemas"]
     assert "validationSummary.v1" in manifest["schemas"]
+    assert "tierUpgradeInputRequirement.v1" in manifest["schemas"]
+    assert "tierUpgradeAdvisory.v1" in manifest["schemas"]
     assert "buildExposureEnvelopeFromLibraryInput.v1" in manifest["schemas"]
     assert "buildProbabilityBoundsFromProfileInput.v1" in manifest["schemas"]
     assert "buildProbabilityBoundsFromScenarioPackageInput.v1" in manifest["schemas"]
@@ -114,6 +116,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://archetype-library-guide",
         "docs://probability-bounds-guide",
         "docs://uncertainty-framework",
+        "docs://inhalation-tier-upgrade-guide",
         "docs://validation-framework",
         "docs://troubleshooting",
         "archetypes://manifest",

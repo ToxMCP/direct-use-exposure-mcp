@@ -26,6 +26,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.
 - Tier C support is limited to packaged single-driver or scenario-package probability bounds
   without Monte Carlo sampling or joint-distribution claims.
+- Inhalation requests expose `requestedTier` and `tierUpgradeAdvisories` as forward-compatible
+  Tier 1 hooks, but the Tier 1 model family itself remains unimplemented.
 - ToxClaw evidence and refinement bundles emit deterministic content hashes and stable IDs.
 - Security and provenance findings are published through `release://security-provenance-review-report`.
 - Release metadata is published through `release://metadata-report`.

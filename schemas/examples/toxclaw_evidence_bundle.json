@@ -8,9 +8,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "0a212ba75bfb6aee26191cbedb7b58fe41057a3c18b8044dbd9f7c75c1e67603",
+    "contentHash": "58a442105b9c2f13de4086c6a4e78e245cf739733033f762585d96f8d1d0320d",
     "dataClassification": "internal",
-    "evidenceId": "evidence-653a6267b2625a43",
+    "evidenceId": "evidence-20a4996765d52639",
     "qualityFlag": "default_applied",
     "rawPointer": null,
     "redactionStatus": null,
@@ -31,8 +31,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "0a212ba75bfb6aee26191cbedb7b58fe41057a3c18b8044dbd9f7c75c1e67603",
-    "evidenceId": "evidence-653a6267b2625a43",
+    "contentHash": "58a442105b9c2f13de4086c6a4e78e245cf739733033f762585d96f8d1d0320d",
+    "evidenceId": "evidence-20a4996765d52639",
     "qualityFlag": "default_applied",
     "rawPointer": null,
     "redactionStatus": null,
@@ -59,7 +59,7 @@
         "claimId": "claim-d28354efdd0faa0e",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-653a6267b2625a43"
+          "evidence-20a4996765d52639"
         ],
         "text": "The dermal screening scenario estimates 0.95625 mg/kg-day external dose."
       },
@@ -68,7 +68,7 @@
         "claimId": "claim-7705a199bf3cd2d5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-653a6267b2625a43"
+          "evidence-20a4996765d52639"
         ],
         "text": "The scenario represents adult use of personal_care with 3 event(s) per day."
       },
@@ -77,13 +77,13 @@
         "claimId": "claim-78430fd5a8303de5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-653a6267b2625a43"
+          "evidence-20a4996765d52639"
         ],
         "text": "The scenario is labeled deterministic_screening for external-dose screening use."
       }
     ],
     "evidenceIds": [
-      "evidence-653a6267b2625a43"
+      "evidence-20a4996765d52639"
     ],
     "sectionKey": "exposure-scenario",
     "title": "Exposure Scenario"

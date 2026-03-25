@@ -958,6 +958,109 @@
       "title": "TierSemantics",
       "type": "object"
     },
+    "TierUpgradeAdvisory": {
+      "additionalProperties": false,
+      "properties": {
+        "advisoryId": {
+          "title": "Advisoryid",
+          "type": "string"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Route for which the tier upgrade applies."
+        },
+        "currentTier": {
+          "$ref": "#/$defs/TierLevel"
+        },
+        "targetTier": {
+          "$ref": "#/$defs/TierLevel"
+        },
+        "status": {
+          "$ref": "#/$defs/TierUpgradeStatus",
+          "description": "Current upgrade availability status."
+        },
+        "recommendedModelFamily": {
+          "title": "Recommendedmodelfamily",
+          "type": "string"
+        },
+        "triggerCodes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Triggercodes",
+          "type": "array"
+        },
+        "requiredInputs": {
+          "items": {
+            "$ref": "#/$defs/TierUpgradeInputRequirement"
+          },
+          "title": "Requiredinputs",
+          "type": "array"
+        },
+        "blockingGaps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Blockinggaps",
+          "type": "array"
+        },
+        "guidanceResource": {
+          "title": "Guidanceresource",
+          "type": "string"
+        },
+        "rationale": {
+          "description": "Why the upgrade is recommended or blocked.",
+          "title": "Rationale",
+          "type": "string"
+        }
+      },
+      "required": [
+        "advisoryId",
+        "route",
+        "currentTier",
+        "targetTier",
+        "status",
+        "recommendedModelFamily",
+        "guidanceResource",
+        "rationale"
+      ],
+      "title": "TierUpgradeAdvisory",
+      "type": "object"
+    },
+    "TierUpgradeInputRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "fieldName": {
+          "title": "Fieldname",
+          "type": "string"
+        },
+        "description": {
+          "description": "What the future field is expected to capture.",
+          "title": "Description",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Why the field matters for the requested tier.",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fieldName",
+        "description",
+        "reason"
+      ],
+      "title": "TierUpgradeInputRequirement",
+      "type": "object"
+    },
+    "TierUpgradeStatus": {
+      "enum": [
+        "recommended_not_implemented",
+        "requested_not_implemented"
+      ],
+      "title": "TierUpgradeStatus",
+      "type": "string"
+    },
     "UncertaintyQuantificationStatus": {
       "enum": [
         "qualitative_only",
@@ -1279,6 +1382,14 @@
         "type": "string"
       },
       "title": "Interpretation Notes",
+      "type": "array"
+    },
+    "tierUpgradeAdvisories": {
+      "description": "Machine-readable upgrade hooks for later tier implementations.",
+      "items": {
+        "$ref": "#/$defs/TierUpgradeAdvisory"
+      },
+      "title": "Tierupgradeadvisories",
       "type": "array"
     }
   },

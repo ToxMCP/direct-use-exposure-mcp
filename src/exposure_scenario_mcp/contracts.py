@@ -86,6 +86,8 @@ from exposure_scenario_mcp.models import (
     SecurityProvenanceReviewReport,
     SensitivityRankingEntry,
     TierSemantics,
+    TierUpgradeAdvisory,
+    TierUpgradeInputRequirement,
     ToolResultMeta,
     UncertaintyRegisterEntry,
     ValidationSummary,
@@ -108,6 +110,8 @@ SCHEMA_MODELS = {
     "sensitivityRankingEntry.v1": SensitivityRankingEntry,
     "dependencyDescriptor.v1": DependencyDescriptor,
     "validationSummary.v1": ValidationSummary,
+    "tierUpgradeInputRequirement.v1": TierUpgradeInputRequirement,
+    "tierUpgradeAdvisory.v1": TierUpgradeAdvisory,
     "buildExposureEnvelopeFromLibraryInput.v1": BuildExposureEnvelopeFromLibraryInput,
     "probabilityBoundSupportPointDefinition.v1": ProbabilityBoundSupportPointDefinition,
     "probabilityBoundsDriverProfile.v1": ProbabilityBoundsDriverProfile,
@@ -338,6 +342,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="docs://uncertainty-framework",
                 description="Tier A/B/C uncertainty guidance and interpretation boundaries.",
+            ),
+            ContractResourceEntry(
+                uri="docs://inhalation-tier-upgrade-guide",
+                description="Guide to Tier 1 inhalation upgrade hooks and current boundaries.",
             ),
             ContractResourceEntry(
                 uri="docs://validation-framework",

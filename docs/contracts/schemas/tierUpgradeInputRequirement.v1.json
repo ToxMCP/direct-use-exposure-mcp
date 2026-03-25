@@ -1,0 +1,26 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "fieldName": {
+      "title": "Fieldname",
+      "type": "string"
+    },
+    "description": {
+      "description": "What the future field is expected to capture.",
+      "title": "Description",
+      "type": "string"
+    },
+    "reason": {
+      "description": "Why the field matters for the requested tier.",
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "fieldName",
+    "description",
+    "reason"
+  ],
+  "title": "TierUpgradeInputRequirement",
+  "type": "object"
+}

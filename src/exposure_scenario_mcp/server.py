@@ -27,6 +27,7 @@ from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     conformance_report_markdown,
+    inhalation_tier_upgrade_guide,
     operator_guide,
     probability_bounds_guide,
     provenance_policy,
@@ -530,6 +531,12 @@ def create_mcp_server() -> FastMCP:
         """Tier A/B uncertainty design and interpretation guide."""
 
         return uncertainty_framework()
+
+    @mcp.resource("docs://inhalation-tier-upgrade-guide")
+    def docs_inhalation_tier_upgrade_guide() -> str:
+        """Guide to Tier 1 inhalation upgrade hooks and current boundaries."""
+
+        return inhalation_tier_upgrade_guide()
 
     @mcp.resource("docs://validation-framework")
     def docs_validation_framework() -> str:

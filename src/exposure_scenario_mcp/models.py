@@ -96,6 +96,11 @@ class TierLevel(StrEnum):
     TIER_3 = "tier_3"
 
 
+class TierUpgradeStatus(StrEnum):
+    RECOMMENDED_NOT_IMPLEMENTED = "recommended_not_implemented"
+    REQUESTED_NOT_IMPLEMENTED = "requested_not_implemented"
+
+
 class UncertaintyTier(StrEnum):
     TIER_A = "tier_a"
     TIER_B = "tier_b"
@@ -243,6 +248,28 @@ class TierSemantics(StrictModel):
         default_factory=list,
         description="Interpretations that the result must not support at the current tier.",
     )
+
+
+class TierUpgradeInputRequirement(StrictModel):
+    field_name: str = Field(..., alias="fieldName")
+    description: str = Field(..., description="What the future field is expected to capture.")
+    reason: str = Field(..., description="Why the field matters for the requested tier.")
+
+
+class TierUpgradeAdvisory(StrictModel):
+    advisory_id: str = Field(..., alias="advisoryId")
+    route: Route = Field(..., description="Route for which the tier upgrade applies.")
+    current_tier: TierLevel = Field(..., alias="currentTier")
+    target_tier: TierLevel = Field(..., alias="targetTier")
+    status: TierUpgradeStatus = Field(..., description="Current upgrade availability status.")
+    recommended_model_family: str = Field(..., alias="recommendedModelFamily")
+    trigger_codes: list[str] = Field(default_factory=list, alias="triggerCodes")
+    required_inputs: list[TierUpgradeInputRequirement] = Field(
+        default_factory=list, alias="requiredInputs"
+    )
+    blocking_gaps: list[str] = Field(default_factory=list, alias="blockingGaps")
+    guidance_resource: str = Field(..., alias="guidanceResource")
+    rationale: str = Field(..., description="Why the upgrade is recommended or blocked.")
 
 
 class UncertaintyRegisterEntry(StrictModel):
@@ -614,11 +641,21 @@ class InhalationScenarioRequest(ExposureScenarioRequest):
     scenario_class: ScenarioClass = Field(
         default=ScenarioClass.INHALATION, description="Requested scenario class."
     )
+    requested_tier: TierLevel = Field(
+        default=TierLevel.TIER_0,
+        alias="requestedTier",
+        description=(
+            "Requested inhalation modeling tier. Tier 1 is reserved as a future contract "
+            "hook and is not implemented in v0.1.0."
+        ),
+    )
 
     @model_validator(mode="after")
     def validate_inhalation_route(self) -> InhalationScenarioRequest:
         if self.route != Route.INHALATION:
             raise ValueError("InhalationScenarioRequest requires route='inhalation'.")
+        if self.requested_tier not in {TierLevel.TIER_0, TierLevel.TIER_1}:
+            raise ValueError("InhalationScenarioRequest supports requestedTier tier_0 or tier_1.")
         return self
 
 
@@ -684,6 +721,11 @@ class ExposureScenario(StrictModel):
     )
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable scenario notes."
+    )
+    tier_upgrade_advisories: list[TierUpgradeAdvisory] = Field(
+        default_factory=list,
+        alias="tierUpgradeAdvisories",
+        description="Machine-readable upgrade hooks for later tier implementations.",
     )
 
 

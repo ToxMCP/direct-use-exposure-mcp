@@ -924,5 +924,53 @@
   "interpretation_notes": [
     "Deterministic inhalation screening scenario using a well-mixed room assumption.",
     "Air exchange acts as a first-order removal term rather than a full CFD treatment."
+  ],
+  "tierUpgradeAdvisories": [
+    {
+      "advisoryId": "inh-tier1-upgrade-spray",
+      "route": "inhalation",
+      "currentTier": "tier_0",
+      "targetTier": "tier_1",
+      "status": "recommended_not_implemented",
+      "recommendedModelFamily": "inhalation_near_field_far_field_screening",
+      "triggerCodes": [
+        "spray_application",
+        "breathing_zone_peak_relevant",
+        "short_duration_event"
+      ],
+      "requiredInputs": [
+        {
+          "fieldName": "source_distance_m",
+          "description": "Distance from the breathing zone to the active spray source.",
+          "reason": "Near-field concentration depends on source-to-breathing-zone geometry."
+        },
+        {
+          "fieldName": "spray_duration_seconds",
+          "description": "Active spray emission duration for each event.",
+          "reason": "Short spray bursts can create transient peaks not captured by room averages."
+        },
+        {
+          "fieldName": "near_field_volume_m3",
+          "description": "Local near-field control volume around the user.",
+          "reason": "A Tier 1 split requires an explicit near-field compartment size."
+        },
+        {
+          "fieldName": "airflow_directionality",
+          "description": "Directional airflow or ventilation context near the source.",
+          "reason": "Local airflow governs coupling between near-field and far-field zones."
+        },
+        {
+          "fieldName": "particle_size_regime",
+          "description": "Spray droplet or aerosol size regime used for screening.",
+          "reason": "Spray behavior and local persistence depend on size-driven transport."
+        }
+      ],
+      "blockingGaps": [
+        "tier_1_model_not_implemented",
+        "tier_1_request_fields_not_published"
+      ],
+      "guidanceResource": "docs://inhalation-tier-upgrade-guide",
+      "rationale": "Spray events can produce short-duration breathing-zone peaks that are not resolved by the Tier-0 well-mixed room model."
+    }
   ]
 }

@@ -142,6 +142,14 @@ def test_inhalation_screening_defaults_and_dose() -> None:
     assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(1.9342443, rel=1e-6)
     assert any(item.code == "breathing_zone_not_modeled" for item in scenario.limitations)
     assert any(item.code == "tier_0_spray_screening" for item in scenario.quality_flags)
+    assert scenario.tier_upgrade_advisories[0].target_tier == TierLevel.TIER_1
+    assert scenario.tier_upgrade_advisories[0].status.value == "recommended_not_implemented"
+    assert scenario.tier_upgrade_advisories[0].guidance_resource == (
+        "docs://inhalation-tier-upgrade-guide"
+    )
+    assert "source_distance_m" in {
+        item.field_name for item in scenario.tier_upgrade_advisories[0].required_inputs
+    }
     assert "breathing-zone peak concentration" in " ".join(
         scenario.tier_semantics.forbidden_interpretations
     )

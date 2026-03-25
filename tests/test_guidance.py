@@ -9,6 +9,7 @@ from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     conformance_report_markdown,
+    inhalation_tier_upgrade_guide,
     probability_bounds_guide,
     release_notes_markdown,
     release_readiness_markdown,
@@ -39,6 +40,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     uncertainty = uncertainty_framework()
     validation = validation_framework()
     archetypes = archetype_library_guide()
+    inhalation_tier_guide = inhalation_tier_upgrade_guide()
     probability_bounds = probability_bounds_guide()
 
     assert "Tier A" in uncertainty
@@ -54,6 +56,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`child_direct_oral_liquid_regimen_package`" in probability_bounds
     assert "`driverFamily`" in probability_bounds
     assert "`packageFamily`" in probability_bounds
+    assert "requestedTier=tier_1" in inhalation_tier_guide
+    assert "source_distance_m" in inhalation_tier_guide
     assert "benchmarkDomains" not in validation
     assert "External Dataset Candidates" in validation
     assert "`air_chamber_spray_time_series_candidate`" in validation

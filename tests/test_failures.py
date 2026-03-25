@@ -13,6 +13,7 @@ from exposure_scenario_mcp.models import (
     ProductUseProfile,
     Route,
     ScenarioClass,
+    TierLevel,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine, aggregate_scenarios
@@ -91,6 +92,32 @@ def test_inhalation_defaults_fail_for_unknown_application_method() -> None:
         engine.build(request)
 
     assert exc_info.value.code == "aerosol_method_unsupported"
+
+
+def test_inhalation_requested_tier_1_fails_loudly() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        requestedTier=TierLevel.TIER_1,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(population_group="adult"),
+    )
+
+    with pytest.raises(ExposureScenarioError) as exc_info:
+        engine.build(request)
+
+    assert exc_info.value.code == "inhalation_tier_1_not_implemented"
+    assert exc_info.value.details["guidanceResource"] == "docs://inhalation-tier-upgrade-guide"
 
 
 def test_aggregate_rejects_duplicate_component_ids() -> None:

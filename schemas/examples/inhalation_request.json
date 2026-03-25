@@ -33,5 +33,6 @@
     "demographic_tags": [],
     "region": "EU"
   },
-  "assumption_overrides": {}
+  "assumption_overrides": {},
+  "requestedTier": "tier_0"
 }

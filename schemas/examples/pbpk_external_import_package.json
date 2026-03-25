@@ -685,7 +685,8 @@
         },
         "interpretation_notes": [
           "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-        ]
+        ],
+        "tierUpgradeAdvisories": []
       },
       "pbpkScenarioInput": {
         "schema_version": "pbpkScenarioInput.v1",
@@ -1667,7 +1668,8 @@
         },
         "interpretation_notes": [
           "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-        ]
+        ],
+        "tierUpgradeAdvisories": []
       },
       "pbpkScenarioInput": {
         "schema_version": "pbpkScenarioInput.v1",

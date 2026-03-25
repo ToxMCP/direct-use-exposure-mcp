@@ -53,11 +53,9 @@ def _probability_profile_lines() -> list[str]:
     ]
     for item in manifest.profiles:
         lines.append(
-            
-                f"- `{item.profile_id}` "
-                f"[{item.route.value}/{item.driver_family.value}/{item.product_family}] "
-                f"{item.label}"
-            
+            f"- `{item.profile_id}` "
+            f"[{item.route.value}/{item.driver_family.value}/{item.product_family}] "
+            f"{item.label}"
         )
     return lines
 
@@ -72,11 +70,9 @@ def _scenario_package_probability_lines() -> list[str]:
     ]
     for item in manifest.profiles:
         lines.append(
-            
-                f"- `{item.profile_id}` "
-                f"[{item.route.value}/{item.package_family.value}/{item.product_family}] "
-                f"{item.label}"
-            
+            f"- `{item.profile_id}` "
+            f"[{item.route.value}/{item.package_family.value}/{item.product_family}] "
+            f"{item.label}"
         )
     return lines
 
@@ -117,8 +113,8 @@ uv run check-exposure-release-artifacts
 
 - Treat every output as external-exposure context only.
 - Do not reinterpret screening outputs as internal dose, BER, PoD, or final risk conclusions.
-- Review `qualityFlags`, `limitations`, `uncertaintyRegister`, and `provenance` before using any
-  scenario downstream.
+- Review `qualityFlags`, `limitations`, `uncertaintyRegister`, `tierUpgradeAdvisories`, and
+  `provenance` before using any scenario downstream.
 - Treat `sensitivityRanking` as driver triage, not as a probabilistic uncertainty measure.
 
 ## Operational Checklist
@@ -179,6 +175,15 @@ def uncertainty_framework() -> str:
 - Envelope spans are bounded scenario sets, not confidence intervals.
 - Parameter-bounds summaries are screening ranges, not population intervals or probabilistic claims.
 - Driver attribution is based on explicit archetype differences, not Monte Carlo decomposition.
+
+## Tier 1 Hooks
+
+- Spray inhalation scenarios can emit `tierUpgradeAdvisories` that recommend a future Tier 1
+  near-field/far-field model without pretending it exists today.
+- `requestedTier=tier_1` is a forward-compatible contract hook for inhalation requests and
+  currently fails loudly with an actionable `not_implemented` error.
+- Tier 1 remains a contract placeholder until future request fields and a governed model family
+  are published.
 
 ## Tier C
 
@@ -274,6 +279,45 @@ def probability_bounds_guide() -> str:
         ]
     )
     return "\n".join(lines)
+
+
+def inhalation_tier_upgrade_guide() -> str:
+    return """# Inhalation Tier Upgrade Guide
+
+## Current State
+
+- `v0.1.0` implements Tier 0 inhalation only: a deterministic, well-mixed single-zone room model.
+- Spray scenarios can emit `tierUpgradeAdvisories` when the Tier 0 output is likely to miss
+  breathing-zone peaks or source-proximal behavior.
+- `requestedTier=tier_1` is accepted as a forward-compatible contract hook but currently returns
+  a typed `inhalation_tier_1_not_implemented` error.
+
+## When The Hook Triggers
+
+- Spray application methods such as `trigger_spray`, `pump_spray`, or `aerosol_spray`
+- Short event durations where transient peaks are plausible
+- Any screening context where a room-average concentration is not sufficient
+
+## Required Future Inputs
+
+- `source_distance_m`
+- `spray_duration_seconds`
+- `near_field_volume_m3`
+- `airflow_directionality`
+- `particle_size_regime`
+
+## Guardrails
+
+- Do not reinterpret Tier 0 spray outputs as near-field resolved.
+- Do not treat the advisory as proof that Tier 1 is already implemented.
+- Keep `tierUpgradeAdvisories`, `limitations`, and `tierSemantics` attached to downstream reports.
+
+## Planned Tier 1 Direction
+
+- Model family: `inhalation_near_field_far_field_screening`
+- Scope: still external-dose only
+- Non-goals: deposited dose, absorbed dose, PBPK state variables, or final risk conclusions
+"""
 
 
 def validation_framework() -> str:

@@ -137,6 +137,10 @@
       "description": "Tier A/B/C uncertainty guidance and interpretation boundaries."
     },
     {
+      "uri": "docs://inhalation-tier-upgrade-guide",
+      "description": "Guide to Tier 1 inhalation upgrade hooks and current boundaries."
+    },
+    {
       "uri": "docs://validation-framework",
       "description": "Validation and benchmark-domain posture for current route models."
     },
@@ -216,6 +220,8 @@
     "sensitivityRankingEntry.v1": "schemas/sensitivityRankingEntry.v1.json",
     "dependencyDescriptor.v1": "schemas/dependencyDescriptor.v1.json",
     "validationSummary.v1": "schemas/validationSummary.v1.json",
+    "tierUpgradeInputRequirement.v1": "schemas/tierUpgradeInputRequirement.v1.json",
+    "tierUpgradeAdvisory.v1": "schemas/tierUpgradeAdvisory.v1.json",
     "buildExposureEnvelopeFromLibraryInput.v1": "schemas/buildExposureEnvelopeFromLibraryInput.v1.json",
     "probabilityBoundSupportPointDefinition.v1": "schemas/probabilityBoundSupportPointDefinition.v1.json",
     "probabilityBoundsDriverProfile.v1": "schemas/probabilityBoundsDriverProfile.v1.json",

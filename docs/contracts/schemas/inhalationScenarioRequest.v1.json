@@ -299,6 +299,16 @@
       ],
       "title": "ScenarioClass",
       "type": "string"
+    },
+    "TierLevel": {
+      "enum": [
+        "tier_0",
+        "tier_1",
+        "tier_2",
+        "tier_3"
+      ],
+      "title": "TierLevel",
+      "type": "string"
     }
   },
   "additionalProperties": false,
@@ -367,6 +377,11 @@
       "description": "Additional explicit overrides for auditability.",
       "title": "Assumption Overrides",
       "type": "object"
+    },
+    "requestedTier": {
+      "$ref": "#/$defs/TierLevel",
+      "default": "tier_0",
+      "description": "Requested inhalation modeling tier. Tier 1 is reserved as a future contract hook and is not implemented in v0.1.0."
     }
   },
   "required": [

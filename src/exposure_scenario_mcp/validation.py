@@ -34,6 +34,16 @@ EXTERNAL_DATASET_CANDIDATES = [
         ),
     },
     {
+        "datasetId": "near_field_far_field_spray_candidate",
+        "domain": "inhalation_near_field_far_field",
+        "status": "candidate_only",
+        "observable": "near-field and far-field concentration time series",
+        "note": (
+            "Candidate family for future validation of Tier 1 near-field/far-field spray "
+            "screening models."
+        ),
+    },
+    {
         "datasetId": "dermal_surface_loading_candidate",
         "domain": "dermal_direct_application",
         "status": "candidate_only",
@@ -92,6 +102,10 @@ def validation_manifest() -> dict:
         "notes": [
             "Current v0.1 validation posture is benchmark regression plus verification.",
             "No external validation datasets are wired into executable scoring yet.",
+            (
+                "Tier 1 inhalation hooks are published for spray scenarios, but the Tier 1 "
+                "model family itself is still not implemented."
+            ),
             (
                 "Probabilistic tiers remain gated until dependency handling and "
                 "external validation mature."

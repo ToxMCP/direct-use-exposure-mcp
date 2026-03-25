@@ -658,7 +658,8 @@
         },
         "interpretation_notes": [
           "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-        ]
+        ],
+        "tierUpgradeAdvisories": []
       }
     },
     {
@@ -1298,7 +1299,8 @@
         },
         "interpretation_notes": [
           "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-        ]
+        ],
+        "tierUpgradeAdvisories": []
       }
     },
     {
@@ -1938,7 +1940,8 @@
         },
         "interpretation_notes": [
           "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-        ]
+        ],
+        "tierUpgradeAdvisories": []
       }
     }
   ],

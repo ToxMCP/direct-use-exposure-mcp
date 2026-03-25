@@ -697,6 +697,7 @@
     },
     "interpretation_notes": [
       "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-    ]
+    ],
+    "tier_upgrade_advisories": []
   }
 }

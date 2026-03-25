@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from uuid import uuid4
 
+from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import (
     DoseUnit,
     ExposureScenario,
@@ -13,6 +14,9 @@ from exposure_scenario_mcp.models import (
     ScenarioDose,
     Severity,
     TierLevel,
+    TierUpgradeAdvisory,
+    TierUpgradeInputRequirement,
+    TierUpgradeStatus,
 )
 from exposure_scenario_mcp.runtime import (
     ScenarioExecutionContext,
@@ -29,12 +33,102 @@ class InhalationScreeningPlugin(ScenarioPlugin):
     scenario_class = ScenarioClass.INHALATION
     supported_routes = (Route.INHALATION,)
 
+    def _tier_1_upgrade_advisories(
+        self,
+        *,
+        application_method: str,
+        exposure_duration_hours: float,
+    ) -> list[TierUpgradeAdvisory]:
+        spray_methods = {"trigger_spray", "pump_spray", "aerosol_spray"}
+        if application_method not in spray_methods:
+            return []
+        trigger_codes = ["spray_application", "breathing_zone_peak_relevant"]
+        if exposure_duration_hours <= 0.5:
+            trigger_codes.append("short_duration_event")
+        return [
+            TierUpgradeAdvisory(
+                advisoryId="inh-tier1-upgrade-spray",
+                route=Route.INHALATION,
+                currentTier=TierLevel.TIER_0,
+                targetTier=TierLevel.TIER_1,
+                status=TierUpgradeStatus.RECOMMENDED_NOT_IMPLEMENTED,
+                recommendedModelFamily="inhalation_near_field_far_field_screening",
+                triggerCodes=trigger_codes,
+                requiredInputs=[
+                    TierUpgradeInputRequirement(
+                        fieldName="source_distance_m",
+                        description="Distance from the breathing zone to the active spray source.",
+                        reason=(
+                            "Near-field concentration depends on source-to-breathing-zone "
+                            "geometry."
+                        ),
+                    ),
+                    TierUpgradeInputRequirement(
+                        fieldName="spray_duration_seconds",
+                        description="Active spray emission duration for each event.",
+                        reason=(
+                            "Short spray bursts can create transient peaks not captured "
+                            "by room averages."
+                        ),
+                    ),
+                    TierUpgradeInputRequirement(
+                        fieldName="near_field_volume_m3",
+                        description="Local near-field control volume around the user.",
+                        reason="A Tier 1 split requires an explicit near-field compartment size.",
+                    ),
+                    TierUpgradeInputRequirement(
+                        fieldName="airflow_directionality",
+                        description="Directional airflow or ventilation context near the source.",
+                        reason=(
+                            "Local airflow governs coupling between near-field and far-field "
+                            "zones."
+                        ),
+                    ),
+                    TierUpgradeInputRequirement(
+                        fieldName="particle_size_regime",
+                        description="Spray droplet or aerosol size regime used for screening.",
+                        reason=(
+                            "Spray behavior and local persistence depend on size-driven "
+                            "transport."
+                        ),
+                    ),
+                ],
+                blockingGaps=[
+                    "tier_1_model_not_implemented",
+                    "tier_1_request_fields_not_published",
+                ],
+                guidanceResource="docs://inhalation-tier-upgrade-guide",
+                rationale=(
+                    "Spray events can produce short-duration breathing-zone peaks that are not "
+                    "resolved by the Tier-0 well-mixed room model."
+                ),
+            )
+        ]
+
     def build(self, request, context: ScenarioExecutionContext) -> ExposureScenario:
         tracker = context.tracker
         profile = request.product_use_profile
         population = request.population_profile
         registry = context.registry
         spray_methods = {"trigger_spray", "pump_spray", "aerosol_spray"}
+
+        if request.requested_tier == TierLevel.TIER_1:
+            raise ExposureScenarioError(
+                code="inhalation_tier_1_not_implemented",
+                message=(
+                    "Tier 1 inhalation was requested, but v0.1.0 only implements the Tier-0 "
+                    "well-mixed room model."
+                ),
+                suggestion=(
+                    "Use requestedTier=`tier_0` for the current screening model and inspect "
+                    "`docs://inhalation-tier-upgrade-guide` plus any emitted "
+                    "`tierUpgradeAdvisories` to prepare future Tier 1 inputs."
+                ),
+                details={
+                    "requestedTier": request.requested_tier.value,
+                    "guidanceResource": "docs://inhalation-tier-upgrade-guide",
+                },
+            )
 
         product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
         chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
@@ -213,6 +307,10 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 ),
                 severity=Severity.WARNING,
             )
+        tier_upgrade_advisories = self._tier_1_upgrade_advisories(
+            application_method=profile.application_method,
+            exposure_duration_hours=exposure_duration_hours,
+        )
 
         return ExposureScenario(
             scenario_id=f"inh-{uuid4().hex[:12]}",
@@ -267,4 +365,5 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 "Deterministic inhalation screening scenario using a well-mixed room assumption.",
                 "Air exchange acts as a first-order removal term rather than a full CFD treatment.",
             ],
+            tierUpgradeAdvisories=tier_upgrade_advisories,
         )

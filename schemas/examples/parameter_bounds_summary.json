@@ -637,7 +637,8 @@
     },
     "interpretation_notes": [
       "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-    ]
+    ],
+    "tierUpgradeAdvisories": []
   },
   "minScenario": {
     "schema_version": "exposureScenario.v1",
@@ -1265,7 +1266,8 @@
     },
     "interpretation_notes": [
       "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-    ]
+    ],
+    "tierUpgradeAdvisories": []
   },
   "maxScenario": {
     "schema_version": "exposureScenario.v1",
@@ -1893,7 +1895,8 @@
     },
     "interpretation_notes": [
       "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-    ]
+    ],
+    "tierUpgradeAdvisories": []
   },
   "boundedParameters": [
     {
