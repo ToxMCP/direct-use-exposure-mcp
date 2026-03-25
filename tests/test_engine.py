@@ -189,6 +189,40 @@ def test_hand_scale_cream_application_executes_validation_check() -> None:
     assert checks[0].reference_dataset_id == "skin_protection_cream_dose_per_area_2012"
 
 
+def test_generic_hand_application_uses_route_semantic_transfer_default() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="generic_topical",
+            physical_form="gel",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.1,
+            use_amount_per_event=1.0,
+            use_amount_unit="g",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(population_group="adult"),
+    )
+
+    scenario = engine.build(request)
+    transfer = next(item for item in scenario.assumptions if item.name == "transfer_efficiency")
+
+    assert transfer.value == pytest.approx(1.0, rel=1e-6)
+    assert transfer.source.source_id == "screening_route_semantics_defaults_v1"
+    assert transfer.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
+    assert transfer.governance.evidence_grade == EvidenceGrade.GRADE_2
+    assert transfer.governance.default_visibility == DefaultVisibility.SILENT_TRACEABLE
+    assert transfer.governance.applicability_status == ApplicabilityStatus.IN_DOMAIN
+    assert scenario.validation_summary.heuristic_assumption_names == []
+    assert "heuristic_defaults_active" not in scenario.validation_summary.validation_gap_ids
+    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(100.0, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(1.25, rel=1e-6)
+
+
 def test_inhalation_screening_defaults_and_dose() -> None:
     engine = build_engine()
     request = InhalationScenarioRequest(

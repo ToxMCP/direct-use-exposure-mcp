@@ -5,7 +5,7 @@
   "packageVersion": "0.1.0",
   "serverName": "exposure_scenario_mcp",
   "serverVersion": "0.1.0",
-  "defaultsVersion": "2026.03.25.v9",
+  "defaultsVersion": "2026.03.25.v10",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
   "benchmarkCaseCount": 10,
@@ -29,16 +29,16 @@
       "filename": "exposure_scenario_mcp-0.1.0-py3-none-any.whl",
       "relativePath": "dist/exposure_scenario_mcp-0.1.0-py3-none-any.whl",
       "present": true,
-      "sha256": "b363cabc8e0bd22ad39c70fa46a1305795f06a253fa246ffb2ee51270813a3c9",
-      "sizeBytes": 133848
+      "sha256": "e06f5a862adeab1218e048d107fd84954907636541e31dc110a530ee901d34fa",
+      "sizeBytes": 133851
     },
     {
       "kind": "sdist",
       "filename": "exposure_scenario_mcp-0.1.0.tar.gz",
       "relativePath": "dist/exposure_scenario_mcp-0.1.0.tar.gz",
       "present": true,
-      "sha256": "c107ab49fc6b07c28d435cbe454feae1f6c28f50025196d7536133bdf4c393ad",
-      "sizeBytes": 691308
+      "sha256": "840c82575839b2cb8b054ed6ffcac0fd48614cb51246f207c8c1a0986d7339df",
+      "sizeBytes": 691392
     }
   ],
   "publishedDocs": [
