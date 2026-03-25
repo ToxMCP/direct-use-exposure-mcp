@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.03.25.v6",
+  "defaults_version": "2026.03.25.v7",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -32,11 +32,11 @@
         "assumption_overrides": {}
       },
       "expected": {
-        "external_dose_value": 0.95625,
+        "external_dose_value": 1.125,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
-          "external_mass_mg_per_day": 76.5,
-          "surface_loading_mg_per_cm2_day": 0.01342105
+          "external_mass_mg_per_day": 90.0,
+          "surface_loading_mg_per_cm2_day": 0.01578947
         }
       }
     },
@@ -213,15 +213,16 @@
         "assumption_overrides": {}
       },
       "expected": {
-        "external_dose_value": 2.01875,
+        "external_dose_value": 2.375,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "chemical_mass_mg_per_event": 190.0,
-          "surface_loading_mg_per_cm2_day": 0.02833333
+          "external_mass_mg_per_day": 190.0,
+          "surface_loading_mg_per_cm2_day": 0.03333333
         },
         "assumptions": {
           "density_g_per_ml": 0.95,
-          "transfer_efficiency": 0.85
+          "transfer_efficiency": 1.0
         }
       }
     },
@@ -287,14 +288,14 @@
         }
       ],
       "expected": {
-        "normalized_total_external_dose_value": 0.97632912,
+        "normalized_total_external_dose_value": 1.14507912,
         "route_totals": {
-          "dermal": 0.95625,
+          "dermal": 1.125,
           "inhalation": 0.02007912
         },
         "dominant_contributor_fractions": {
-          "dermal": 0.979434,
-          "inhalation": 0.020566
+          "dermal": 0.982465,
+          "inhalation": 0.017535
         },
         "limitation_codes": ["cross_route_aggregate"]
       }
@@ -356,7 +357,7 @@
         "assumption_overrides": {}
       },
       "expected": {
-        "absolute_delta": 0.425,
+        "absolute_delta": 0.5,
         "percent_delta": null,
         "changed_assumptions": [
           "chemical_mass_mg_per_event",
@@ -401,7 +402,7 @@
       },
       "regimen_name": "benchmark_daily_use",
       "expected": {
-        "dose_magnitude": 0.95625,
+        "dose_magnitude": 1.125,
         "dose_unit": "mg/kg-day",
         "timing_pattern": "benchmark_daily_use",
         "population_context": {

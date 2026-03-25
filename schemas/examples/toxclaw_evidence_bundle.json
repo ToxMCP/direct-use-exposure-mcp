@@ -4,13 +4,13 @@
   "reportId": "report-example-001",
   "contextOfUse": "screening-brief",
   "sourceModule": "exposure-scenario-mcp",
-  "summary": "dermal screening scenario with external dose 0.95625 mg/kg-day",
+  "summary": "dermal screening scenario with external dose 1.125 mg/kg-day",
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "60a8d27b9c295092c428a38a01137e58ab8fed0edb502dfe79be6a319839ecc6",
+    "contentHash": "c3459c298af9915040a172ad8259bdb5a071ddb3c4590082adae7c102855c1e6",
     "dataClassification": "internal",
-    "evidenceId": "evidence-dfc63d294fcf16ee",
+    "evidenceId": "evidence-05e09218e56da44c",
     "qualityFlag": "default_applied",
     "rawPointer": null,
     "redactionStatus": null,
@@ -18,7 +18,7 @@
     "runId": null,
     "source": "exposure-scenario-mcp",
     "sourceRef": "exp-example-dermal-001",
-    "summary": "dermal screening scenario with external dose 0.95625 mg/kg-day",
+    "summary": "dermal screening scenario with external dose 1.125 mg/kg-day",
     "tags": [
       "adult",
       "dermal",
@@ -31,15 +31,15 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "60a8d27b9c295092c428a38a01137e58ab8fed0edb502dfe79be6a319839ecc6",
-    "evidenceId": "evidence-dfc63d294fcf16ee",
+    "contentHash": "c3459c298af9915040a172ad8259bdb5a071ddb3c4590082adae7c102855c1e6",
+    "evidenceId": "evidence-05e09218e56da44c",
     "qualityFlag": "default_applied",
     "rawPointer": null,
     "redactionStatus": null,
     "retrievedAt": "2026-03-24T00:00:00+00:00",
     "source": "exposure-scenario-mcp",
     "sourceRef": "exp-example-dermal-001",
-    "summary": "dermal screening scenario with external dose 0.95625 mg/kg-day",
+    "summary": "dermal screening scenario with external dose 1.125 mg/kg-day",
     "tags": [
       "adult",
       "dermal",
@@ -52,23 +52,23 @@
   },
   "reportSection": {
     "schemaVersion": "toxclawReportSection.v1",
-    "body": "- The dermal screening scenario estimates 0.95625 mg/kg-day external dose.\n- The scenario represents adult use of personal_care with 3 event(s) per day.\n- The scenario is labeled deterministic_screening for external-dose screening use.",
+    "body": "- The dermal screening scenario estimates 1.125 mg/kg-day external dose.\n- The scenario represents adult use of personal_care with 3 event(s) per day.\n- The scenario is labeled deterministic_screening for external-dose screening use.",
     "claims": [
       {
         "schemaVersion": "toxclawReportClaim.v1",
-        "claimId": "claim-d28354efdd0faa0e",
+        "claimId": "claim-3f925e273e5fdfb0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-dfc63d294fcf16ee"
+          "evidence-05e09218e56da44c"
         ],
-        "text": "The dermal screening scenario estimates 0.95625 mg/kg-day external dose."
+        "text": "The dermal screening scenario estimates 1.125 mg/kg-day external dose."
       },
       {
         "schemaVersion": "toxclawReportClaim.v1",
         "claimId": "claim-7705a199bf3cd2d5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-dfc63d294fcf16ee"
+          "evidence-05e09218e56da44c"
         ],
         "text": "The scenario represents adult use of personal_care with 3 event(s) per day."
       },
@@ -77,13 +77,13 @@
         "claimId": "claim-78430fd5a8303de5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-dfc63d294fcf16ee"
+          "evidence-05e09218e56da44c"
         ],
         "text": "The scenario is labeled deterministic_screening for external-dose screening use."
       }
     ],
     "evidenceIds": [
-      "evidence-dfc63d294fcf16ee"
+      "evidence-05e09218e56da44c"
     ],
     "sectionKey": "exposure-scenario",
     "title": "Exposure Scenario"

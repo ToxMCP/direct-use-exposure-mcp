@@ -15,7 +15,7 @@
     "scenario_class": "screening",
     "external_dose": {
       "metric": "normalized_external_dose",
-      "value": 0.95625,
+      "value": 1.125,
       "unit": "mg/kg-day"
     },
     "product_use_profile": {
@@ -52,8 +52,8 @@
     },
     "route_metrics": {
       "chemical_mass_mg_per_event": 30.0,
-      "external_mass_mg_per_day": 76.5,
-      "surface_loading_mg_per_cm2_day": 0.01342105
+      "external_mass_mg_per_day": 90.0,
+      "surface_loading_mg_per_cm2_day": 0.01578947
     },
     "assumptions": [
       {
@@ -234,7 +234,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -264,7 +264,7 @@
           "title": "Exposure Scenario MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
           "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -289,24 +289,24 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "transfer_efficiency",
-        "value": 0.85,
+        "value": 1.0,
         "unit": "fraction",
         "source_kind": "default_registry",
         "source": {
-          "source_id": "heuristic_transfer_efficiency_defaults_v1",
-          "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
-          "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-          "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "source_id": "rivm_cosmetics_hand_cream_direct_application_defaults_2025",
+          "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
+          "version": "RIVM report 2025-0099 / 2025",
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
         "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
         "governance": {
-          "evidence_grade": "grade_1",
-          "evidence_basis": "heuristic_default",
-          "default_visibility": "warn",
-          "applicability_status": "screening_extrapolation",
+          "evidence_grade": "grade_3",
+          "evidence_basis": "curated_default",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "in_domain",
           "uncertainty_types": [
             "parameter_uncertainty",
             "model_uncertainty"
@@ -321,7 +321,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "external_mass_mg_per_day",
-        "value": 76.5,
+        "value": 90.0,
         "unit": "mg/day",
         "source_kind": "derived",
         "source": {
@@ -366,7 +366,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -389,7 +389,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "normalized_external_dose_mg_per_kg_day",
-        "value": 0.95625,
+        "value": 1.125,
         "unit": "mg/kg-day",
         "source_kind": "derived",
         "source": {
@@ -429,8 +429,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v6",
-      "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
+      "defaults_version": "2026.03.25.v7",
+      "defaults_hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -453,11 +453,6 @@
         "code": "default_applied",
         "severity": "info",
         "message": "Default value applied for 'transfer_efficiency'."
-      },
-      {
-        "code": "heuristic_default_source",
-        "severity": "warning",
-        "message": "Default value for 'transfer_efficiency' comes from a heuristic screening source rather than a curated factor pack."
       },
       {
         "code": "default_applied",
@@ -506,22 +501,6 @@
         "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
       },
       {
-        "entryId": "assumption-transfer_efficiency",
-        "title": "Resolved assumption `transfer_efficiency` carries default uncertainty",
-        "uncertaintyTypes": [
-          "parameter_uncertainty",
-          "model_uncertainty"
-        ],
-        "relatedAssumptions": [
-          "transfer_efficiency"
-        ],
-        "quantificationStatus": "qualitative_only",
-        "biasDirection": "unknown",
-        "impactLevel": "high",
-        "summary": "`transfer_efficiency` resolved as `heuristic_default` with `screening_extrapolation` status.",
-        "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
-      },
-      {
         "entryId": "dependency-handling-required",
         "title": "Known dependencies are preserved qualitatively, not numerically",
         "uncertaintyTypes": [
@@ -548,7 +527,7 @@
         "unit": "events/day",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.095625,
+        "absoluteDelta": 0.1125,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -561,7 +540,7 @@
         "unit": "g",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.095625,
+        "absoluteDelta": 0.1125,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -569,12 +548,12 @@
       {
         "parameterName": "transfer_efficiency",
         "sourceKind": "default_registry",
-        "baselineValue": 0.85,
-        "perturbedValue": 0.935,
+        "baselineValue": 1.0,
+        "perturbedValue": 1.1,
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.095625,
+        "absoluteDelta": 0.1125,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -587,7 +566,7 @@
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.095625,
+        "absoluteDelta": 0.1125,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -600,7 +579,7 @@
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.095625,
+        "absoluteDelta": 0.1125,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -613,7 +592,7 @@
         "unit": "kg",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": -0.08693182,
+        "absoluteDelta": -0.10227273,
         "percentDelta": -9.090909,
         "elasticity": -0.909091,
         "direction": "negative"
@@ -643,12 +622,9 @@
         "skin_protection_cream_dose_per_area_2012"
       ],
       "evidenceReadiness": "external_partial",
-      "heuristicAssumptionNames": [
-        "transfer_efficiency"
-      ],
+      "heuristicAssumptionNames": [],
       "validationGapIds": [
-        "dermal_validation_partial_only",
-        "heuristic_defaults_active"
+        "dermal_validation_partial_only"
       ],
       "executedValidationChecks": [],
       "highestSupportedUncertaintyTier": "tier_b",
@@ -674,7 +650,7 @@
     "scenario_class": "screening",
     "external_dose": {
       "metric": "normalized_external_dose",
-      "value": 0.425,
+      "value": 0.5,
       "unit": "mg/kg-day"
     },
     "product_use_profile": {
@@ -711,8 +687,8 @@
     },
     "route_metrics": {
       "chemical_mass_mg_per_event": 15.0,
-      "external_mass_mg_per_day": 38.25,
-      "surface_loading_mg_per_cm2_day": 0.00671053
+      "external_mass_mg_per_day": 45.0,
+      "surface_loading_mg_per_cm2_day": 0.00789474
     },
     "assumptions": [
       {
@@ -923,7 +899,7 @@
           "title": "Exposure Scenario MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
           "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -948,24 +924,24 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "transfer_efficiency",
-        "value": 0.85,
+        "value": 1.0,
         "unit": "fraction",
         "source_kind": "default_registry",
         "source": {
-          "source_id": "heuristic_transfer_efficiency_defaults_v1",
-          "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
-          "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-          "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "source_id": "rivm_cosmetics_hand_cream_direct_application_defaults_2025",
+          "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
+          "version": "RIVM report 2025-0099 / 2025",
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
         "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
         "governance": {
-          "evidence_grade": "grade_1",
-          "evidence_basis": "heuristic_default",
-          "default_visibility": "warn",
-          "applicability_status": "screening_extrapolation",
+          "evidence_grade": "grade_3",
+          "evidence_basis": "curated_default",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "in_domain",
           "uncertainty_types": [
             "parameter_uncertainty",
             "model_uncertainty"
@@ -980,7 +956,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "external_mass_mg_per_day",
-        "value": 38.25,
+        "value": 45.0,
         "unit": "mg/day",
         "source_kind": "derived",
         "source": {
@@ -1025,7 +1001,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1048,7 +1024,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "normalized_external_dose_mg_per_kg_day",
-        "value": 0.425,
+        "value": 0.5,
         "unit": "mg/kg-day",
         "source_kind": "derived",
         "source": {
@@ -1088,8 +1064,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v6",
-      "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
+      "defaults_version": "2026.03.25.v7",
+      "defaults_hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -1107,11 +1083,6 @@
         "code": "default_applied",
         "severity": "info",
         "message": "Default value applied for 'transfer_efficiency'."
-      },
-      {
-        "code": "heuristic_default_source",
-        "severity": "warning",
-        "message": "Default value for 'transfer_efficiency' comes from a heuristic screening source rather than a curated factor pack."
       },
       {
         "code": "default_applied",
@@ -1160,22 +1131,6 @@
         "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
       },
       {
-        "entryId": "assumption-transfer_efficiency",
-        "title": "Resolved assumption `transfer_efficiency` carries default uncertainty",
-        "uncertaintyTypes": [
-          "parameter_uncertainty",
-          "model_uncertainty"
-        ],
-        "relatedAssumptions": [
-          "transfer_efficiency"
-        ],
-        "quantificationStatus": "qualitative_only",
-        "biasDirection": "unknown",
-        "impactLevel": "high",
-        "summary": "`transfer_efficiency` resolved as `heuristic_default` with `screening_extrapolation` status.",
-        "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
-      },
-      {
         "entryId": "dependency-handling-required",
         "title": "Known dependencies are preserved qualitatively, not numerically",
         "uncertaintyTypes": [
@@ -1202,7 +1157,7 @@
         "unit": "events/day",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.0425,
+        "absoluteDelta": 0.05,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1215,7 +1170,7 @@
         "unit": "g",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.0425,
+        "absoluteDelta": 0.05,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1223,12 +1178,12 @@
       {
         "parameterName": "transfer_efficiency",
         "sourceKind": "default_registry",
-        "baselineValue": 0.85,
-        "perturbedValue": 0.935,
+        "baselineValue": 1.0,
+        "perturbedValue": 1.1,
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.0425,
+        "absoluteDelta": 0.05,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1241,7 +1196,7 @@
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.0425,
+        "absoluteDelta": 0.05,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1254,7 +1209,7 @@
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.0425,
+        "absoluteDelta": 0.05,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1267,8 +1222,8 @@
         "unit": "kg",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": -0.03863636,
-        "percentDelta": -9.090908,
+        "absoluteDelta": -0.04545455,
+        "percentDelta": -9.09091,
         "elasticity": -0.909091,
         "direction": "negative"
       }
@@ -1297,12 +1252,9 @@
         "skin_protection_cream_dose_per_area_2012"
       ],
       "evidenceReadiness": "external_partial",
-      "heuristicAssumptionNames": [
-        "transfer_efficiency"
-      ],
+      "heuristicAssumptionNames": [],
       "validationGapIds": [
-        "dermal_validation_partial_only",
-        "heuristic_defaults_active"
+        "dermal_validation_partial_only"
       ],
       "executedValidationChecks": [],
       "highestSupportedUncertaintyTier": "tier_b",
@@ -1328,7 +1280,7 @@
     "scenario_class": "screening",
     "external_dose": {
       "metric": "normalized_external_dose",
-      "value": 1.9125,
+      "value": 2.25,
       "unit": "mg/kg-day"
     },
     "product_use_profile": {
@@ -1365,8 +1317,8 @@
     },
     "route_metrics": {
       "chemical_mass_mg_per_event": 45.0,
-      "external_mass_mg_per_day": 114.75,
-      "surface_loading_mg_per_cm2_day": 0.02013158
+      "external_mass_mg_per_day": 135.0,
+      "surface_loading_mg_per_cm2_day": 0.02368421
     },
     "assumptions": [
       {
@@ -1577,7 +1529,7 @@
           "title": "Exposure Scenario MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
           "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1602,24 +1554,24 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "transfer_efficiency",
-        "value": 0.85,
+        "value": 1.0,
         "unit": "fraction",
         "source_kind": "default_registry",
         "source": {
-          "source_id": "heuristic_transfer_efficiency_defaults_v1",
-          "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
-          "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-          "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "source_id": "rivm_cosmetics_hand_cream_direct_application_defaults_2025",
+          "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
+          "version": "RIVM report 2025-0099 / 2025",
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
         "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
         "governance": {
-          "evidence_grade": "grade_1",
-          "evidence_basis": "heuristic_default",
-          "default_visibility": "warn",
-          "applicability_status": "screening_extrapolation",
+          "evidence_grade": "grade_3",
+          "evidence_basis": "curated_default",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "in_domain",
           "uncertainty_types": [
             "parameter_uncertainty",
             "model_uncertainty"
@@ -1634,7 +1586,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "external_mass_mg_per_day",
-        "value": 114.75,
+        "value": 135.0,
         "unit": "mg/day",
         "source_kind": "derived",
         "source": {
@@ -1679,7 +1631,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
+          "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1702,7 +1654,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "normalized_external_dose_mg_per_kg_day",
-        "value": 1.9125,
+        "value": 2.25,
         "unit": "mg/kg-day",
         "source_kind": "derived",
         "source": {
@@ -1742,8 +1694,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v6",
-      "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
+      "defaults_version": "2026.03.25.v7",
+      "defaults_hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -1761,11 +1713,6 @@
         "code": "default_applied",
         "severity": "info",
         "message": "Default value applied for 'transfer_efficiency'."
-      },
-      {
-        "code": "heuristic_default_source",
-        "severity": "warning",
-        "message": "Default value for 'transfer_efficiency' comes from a heuristic screening source rather than a curated factor pack."
       },
       {
         "code": "default_applied",
@@ -1814,22 +1761,6 @@
         "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
       },
       {
-        "entryId": "assumption-transfer_efficiency",
-        "title": "Resolved assumption `transfer_efficiency` carries default uncertainty",
-        "uncertaintyTypes": [
-          "parameter_uncertainty",
-          "model_uncertainty"
-        ],
-        "relatedAssumptions": [
-          "transfer_efficiency"
-        ],
-        "quantificationStatus": "qualitative_only",
-        "biasDirection": "unknown",
-        "impactLevel": "high",
-        "summary": "`transfer_efficiency` resolved as `heuristic_default` with `screening_extrapolation` status.",
-        "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
-      },
-      {
         "entryId": "dependency-handling-required",
         "title": "Known dependencies are preserved qualitatively, not numerically",
         "uncertaintyTypes": [
@@ -1856,7 +1787,7 @@
         "unit": "events/day",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.19125,
+        "absoluteDelta": 0.225,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1869,7 +1800,7 @@
         "unit": "g",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.19125,
+        "absoluteDelta": 0.225,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1877,12 +1808,12 @@
       {
         "parameterName": "transfer_efficiency",
         "sourceKind": "default_registry",
-        "baselineValue": 0.85,
-        "perturbedValue": 0.935,
+        "baselineValue": 1.0,
+        "perturbedValue": 1.1,
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.19125,
+        "absoluteDelta": 0.225,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1895,7 +1826,7 @@
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.19125,
+        "absoluteDelta": 0.225,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1908,7 +1839,7 @@
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.19125,
+        "absoluteDelta": 0.225,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1921,7 +1852,7 @@
         "unit": "kg",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": -0.17386364,
+        "absoluteDelta": -0.20454545,
         "percentDelta": -9.090909,
         "elasticity": -0.909091,
         "direction": "negative"
@@ -1951,12 +1882,9 @@
         "skin_protection_cream_dose_per_area_2012"
       ],
       "evidenceReadiness": "external_partial",
-      "heuristicAssumptionNames": [
-        "transfer_efficiency"
-      ],
+      "heuristicAssumptionNames": [],
       "validationGapIds": [
-        "dermal_validation_partial_only",
-        "heuristic_defaults_active"
+        "dermal_validation_partial_only"
       ],
       "executedValidationChecks": [],
       "highestSupportedUncertaintyTier": "tier_b",
@@ -1993,28 +1921,28 @@
     {
       "parameterName": "concentration_fraction",
       "expectedDirection": "increase_increases_dose",
-      "lowerDose": 0.478125,
-      "upperDose": 1.434375,
+      "lowerDose": 0.5625,
+      "upperDose": 1.6875,
       "status": "pass",
       "note": "Monotonicity check compares single-parameter lower and upper bounds against the deterministic base scenario."
     },
     {
       "parameterName": "body_weight_kg",
       "expectedDirection": "increase_decreases_dose",
-      "lowerDose": 1.275,
-      "upperDose": 0.85,
+      "lowerDose": 1.5,
+      "upperDose": 1.0,
       "status": "pass",
       "note": "Monotonicity check compares single-parameter lower and upper bounds against the deterministic base scenario."
     }
   ],
   "minDose": {
     "metric": "normalized_external_dose",
-    "value": 0.425,
+    "value": 0.5,
     "unit": "mg/kg-day"
   },
   "maxDose": {
     "metric": "normalized_external_dose",
-    "value": 1.9125,
+    "value": 2.25,
     "unit": "mg/kg-day"
   },
   "uncertaintyRegister": [
@@ -2092,12 +2020,9 @@
       "skin_protection_cream_dose_per_area_2012"
     ],
     "evidenceReadiness": "external_partial",
-    "heuristicAssumptionNames": [
-      "transfer_efficiency"
-    ],
+    "heuristicAssumptionNames": [],
     "validationGapIds": [
-      "dermal_validation_partial_only",
-      "heuristic_defaults_active"
+      "dermal_validation_partial_only"
     ],
     "executedValidationChecks": [],
     "highestSupportedUncertaintyTier": "tier_b",
@@ -2114,8 +2039,8 @@
     "algorithm_id": "uncertainty.bounds.v1",
     "plugin_id": "parameter_bounds_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v6",
-    "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
+    "defaults_version": "2026.03.25.v7",
+    "defaults_hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

@@ -32,6 +32,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - A typed validation dossier is published so benchmark domains, cited external validation
   datasets, heuristic source families, open evidence gaps, and executable validation checks are
   machine-readable rather than prose-only.
+- Curated transfer defaults are published for personal-care hand application and
+  household-cleaner wipe contact instead of relying only on generic transfer heuristics.
 - Scenario, aggregate, comparison, and PBPK export outputs carry provenance.
 - Scenario outputs publish Tier A uncertainty diagnostics, and Tier B support is limited to
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.
@@ -50,7 +52,7 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 
 ## Benchmark Matrix
 
-- `dermal_hand_cream_screening` [scenario] Adult leave-on hand cream screening case with default body weight, surface area, retention, and transfer efficiency.
+- `dermal_hand_cream_screening` [scenario] Adult leave-on hand cream screening case with default body weight, surface area, curated hand-application transfer, and route-semantics retention.
 - `inhalation_trigger_spray_screening` [scenario] Adult EU trigger spray inhalation case with explicit room volume and regional default ventilation/duration.
 - `inhalation_tier1_trigger_spray_nf_ff` [scenario] Adult EU trigger spray Tier 1 NF/FF case with explicit source distance, spray duration, near-field volume, and airflow class.
 - `oral_direct_oral_screening` [scenario] Child direct-oral liquid case covering oral screening semantics and volume-to-mass conversion defaults.

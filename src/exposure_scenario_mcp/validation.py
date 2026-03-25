@@ -251,20 +251,23 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             severity=ValidationGapSeverity.MEDIUM,
             appliesToDomains=["dermal_direct_application", "dermal_secondary_transfer"],
             relatedSourceIds=[
+                "rivm_cosmetics_hand_cream_direct_application_defaults_2025",
+                "rivm_cleaning_wet_cloth_transfer_defaults_2018",
                 "screening_route_semantics_defaults_v1",
                 "heuristic_retention_defaults_v1",
                 "heuristic_transfer_efficiency_defaults_v1",
             ],
             note=(
                 "Dermal direct-application amount realism is now linked to a real workplace "
-                "cream-application study, transfer efficiency and surface-contact retention "
-                "still rely on screening defaults, and only a narrow wet-cloth reference "
-                "check is executable for secondary transfer."
+                "cream-application study, personal-care hand-application and household-cleaner "
+                "wet-cloth transfer defaults now have curated RIVM anchors, surface-contact "
+                "retention still remains a screening default, and only narrow executable "
+                "reference checks are wired in for the current secondary-transfer path."
             ),
             recommendation=(
-                "Replace transfer and retention heuristics with curated packs tied to product "
-                "family and external recovery datasets, especially for wipe and surface-contact "
-                "contexts."
+                "Replace the remaining transfer and retention heuristics with curated packs "
+                "tied to product family and external recovery datasets, especially beyond "
+                "hand cream and household-cleaner wipe contexts."
             ),
         ),
         ValidationGap(
@@ -298,9 +301,10 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
                 "than curated, evidence-linked source packs."
             ),
             recommendation=(
-                "Prioritize curated replacements for transfer efficiency, retention, density, "
-                "residual non-cleaner spray airborne fractions, incidental oral defaults, and "
-                "time-limited release duration defaults."
+                "Prioritize curated replacements for residual transfer-efficiency fallbacks, "
+                "surface-contact retention, density, residual non-cleaner spray airborne "
+                "fractions, incidental oral defaults, and time-limited release duration "
+                "defaults."
             ),
         ),
     ]

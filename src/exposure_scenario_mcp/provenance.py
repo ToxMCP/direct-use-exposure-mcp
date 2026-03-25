@@ -40,6 +40,7 @@ DEFAULT_SOURCE_GRADE_HINTS = {
     "echa_": EvidenceGrade.GRADE_3,
     "fda_": EvidenceGrade.GRADE_4,
     "peer_reviewed_": EvidenceGrade.GRADE_3,
+    "rivm_": EvidenceGrade.GRADE_3,
     "screening_": EvidenceGrade.GRADE_2,
     "heuristic_": EvidenceGrade.GRADE_1,
 }

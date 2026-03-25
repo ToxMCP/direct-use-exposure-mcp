@@ -85,19 +85,26 @@ def test_dermal_screening_defaults_and_dose() -> None:
     scenario = engine.build(request)
 
     assert scenario.external_dose.unit.value == "mg/kg-day"
-    assert scenario.external_dose.value == pytest.approx(0.95625, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(1.125, rel=1e-6)
     assert scenario.route_metrics["surface_loading_mg_per_cm2_day"] == pytest.approx(
-        0.01342105, rel=1e-6
+        0.01578947, rel=1e-6
     )
     assumption_names = {item.name for item in scenario.assumptions}
     assert {"retention_factor", "transfer_efficiency", "body_weight_kg"} <= assumption_names
-    assert any(flag.code == "heuristic_default_source" for flag in scenario.quality_flags)
+    assert not any(flag.code == "heuristic_default_source" for flag in scenario.quality_flags)
     retention = next(item for item in scenario.assumptions if item.name == "retention_factor")
+    transfer = next(item for item in scenario.assumptions if item.name == "transfer_efficiency")
     assert retention.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
     assert retention.governance.evidence_grade == EvidenceGrade.GRADE_2
     assert retention.governance.default_visibility == DefaultVisibility.SILENT_TRACEABLE
     assert retention.governance.applicability_status == ApplicabilityStatus.IN_DOMAIN
     assert retention.governance.applicability_domain["retention_type"] == "leave_on"
+    assert transfer.value == pytest.approx(1.0, rel=1e-6)
+    assert transfer.source.source_id == "rivm_cosmetics_hand_cream_direct_application_defaults_2025"
+    assert transfer.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
+    assert transfer.governance.evidence_grade == EvidenceGrade.GRADE_3
+    assert transfer.governance.default_visibility == DefaultVisibility.SILENT_TRACEABLE
+    assert transfer.governance.applicability_status == ApplicabilityStatus.IN_DOMAIN
     assert scenario.tier_semantics.tier_claimed == TierLevel.TIER_0
     assert scenario.tier_semantics.tier_earned == TierLevel.TIER_0
     assert scenario.tier_semantics.assumption_checks_passed is True
@@ -105,10 +112,9 @@ def test_dermal_screening_defaults_and_dose() -> None:
     assert scenario.validation_summary is not None
     assert scenario.validation_summary.validation_status.value == "benchmark_regression"
     assert scenario.validation_summary.evidence_readiness.value == "external_partial"
-    assert "transfer_efficiency" in scenario.validation_summary.heuristic_assumption_names
-    assert "retention_factor" not in scenario.validation_summary.heuristic_assumption_names
+    assert scenario.validation_summary.heuristic_assumption_names == []
     assert "dermal_validation_partial_only" in scenario.validation_summary.validation_gap_ids
-    assert "heuristic_defaults_active" in scenario.validation_summary.validation_gap_ids
+    assert "heuristic_defaults_active" not in scenario.validation_summary.validation_gap_ids
     assert scenario.sensitivity_ranking[0].parameter_name in {
         "body_weight_kg",
         "concentration_fraction",
@@ -517,8 +523,8 @@ def test_volume_based_cream_uses_physical_form_density_override() -> None:
     assert density.value == pytest.approx(0.95, rel=1e-6)
     assert density.source.source_id == "heuristic_density_defaults_v1"
     assert density.governance.applicability_domain["physical_form"] == "cream"
-    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(161.5, rel=1e-6)
-    assert scenario.external_dose.value == pytest.approx(2.01875, rel=1e-6)
+    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(190.0, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(2.375, rel=1e-6)
 
 
 def test_household_cleaner_wipe_uses_product_category_transfer_override() -> None:
@@ -545,10 +551,10 @@ def test_household_cleaner_wipe_uses_product_category_transfer_override() -> Non
         item for item in scenario.assumptions if item.name == "transfer_efficiency"
     )
 
-    assert transfer_efficiency.value == pytest.approx(0.65, rel=1e-6)
-    assert transfer_efficiency.source.source_id == "heuristic_transfer_efficiency_defaults_v1"
-    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(65.0, rel=1e-6)
-    assert scenario.external_dose.value == pytest.approx(0.8125, rel=1e-6)
+    assert transfer_efficiency.value == pytest.approx(0.5, rel=1e-6)
+    assert transfer_efficiency.source.source_id == "rivm_cleaning_wet_cloth_transfer_defaults_2018"
+    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(50.0, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(0.625, rel=1e-6)
     assert scenario.validation_summary.route_mechanism == "dermal_secondary_transfer"
     assert scenario.validation_summary.evidence_readiness.value == "external_partial"
     assert "rivm_wet_cloth_dermal_contact_loading_2018" in (
@@ -557,8 +563,8 @@ def test_household_cleaner_wipe_uses_product_category_transfer_override() -> Non
     checks = scenario.validation_summary.executed_validation_checks
     assert len(checks) == 1
     assert checks[0].check_id == "wet_cloth_contact_mass_2018"
-    assert checks[0].status.value == "warning"
-    assert checks[0].observed_value == pytest.approx(0.65, rel=1e-6)
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(0.5, rel=1e-6)
 
 
 def test_household_cleaner_pump_spray_uses_product_category_aerosol_override() -> None:
@@ -668,12 +674,12 @@ def test_aggregate_and_compare_flows() -> None:
     )
 
     assert aggregate.normalized_total_external_dose is not None
-    assert aggregate.normalized_total_external_dose.value == pytest.approx(0.98369278, rel=1e-6)
+    assert aggregate.normalized_total_external_dose.value == pytest.approx(1.15244278, rel=1e-6)
     assert any(item.code == "cross_route_aggregate" for item in aggregate.limitations)
     assert aggregate.uncertainty_tier == UncertaintyTier.TIER_A
     assert aggregate.validation_summary is not None
-    assert delta.absolute_delta == pytest.approx(-0.37125, rel=1e-6)
-    assert delta.percent_delta == pytest.approx(-38.8235, rel=1e-6)
+    assert delta.absolute_delta == pytest.approx(-0.54, rel=1e-6)
+    assert delta.percent_delta == pytest.approx(-48.0, rel=1e-6)
     assert any(item.name == "retention_factor" for item in delta.changed_assumptions)
 
 

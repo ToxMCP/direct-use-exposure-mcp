@@ -31,7 +31,7 @@
         "scenarioId": "exp-example-dermal-001",
         "externalDose": {
           "metric": "normalized_external_dose",
-          "value": 0.95625,
+          "value": 1.125,
           "unit": "mg/kg-day"
         },
         "eventsPerDay": 3.0,
@@ -57,14 +57,14 @@
     "uncertainty": {
       "status": "declared",
       "source": "exposure-scenario-mcp",
-      "issueCount": 5,
+      "issueCount": 4,
       "hasResidualUncertainty": true,
       "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
       "sources": [
         "Benchmark population defaults mapped to EPA exposure-factor source families",
         "Exposure Scenario MCP curated screening route-semantics defaults",
-        "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
-        "Exposure Scenario MCP runtime"
+        "Exposure Scenario MCP runtime",
+        "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults"
       ],
       "residualUncertainty": "upstream-exposure-scenario-assumptions",
       "bundleMetadata": {
