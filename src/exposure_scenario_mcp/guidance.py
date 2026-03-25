@@ -517,6 +517,17 @@ def defaults_curation_report_markdown() -> str:
             f"{key}={value}" for key, value in sorted(entry.applicability.items())
         ) or "global"
         lines.append(f"- `{entry.path_id}` -> `{entry.source_id}` ({selectors})")
+    lines.extend(["", "## Route-Semantic Highlights", ""])
+    for entry in report.entries:
+        if entry.curation_status.value != "route_semantic":
+            continue
+        if entry.parameter_name not in {
+            "retention_factor",
+            "transfer_efficiency",
+            "ingestion_fraction",
+        }:
+            continue
+        lines.append(f"- `{entry.path_id}` -> `{entry.source_id}`")
     lines.extend(["", "## Residual Heuristic Branches", ""])
     for entry in report.entries:
         if entry.curation_status.value != "heuristic":

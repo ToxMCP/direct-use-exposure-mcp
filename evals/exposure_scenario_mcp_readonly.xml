@@ -9,7 +9,7 @@
   </qa_pair>
   <qa_pair>
     <question>Read the defaults manifest or any example provenance bundle. What defaults pack version is in force for this server? Answer exactly.</question>
-    <answer>2026.03.25.v8</answer>
+    <answer>2026.03.25.v9</answer>
   </qa_pair>
   <qa_pair>
     <question>From the example inhalation scenario, what is the average air concentration value? Respond with the numeric value only and keep all shown decimal places.</question>

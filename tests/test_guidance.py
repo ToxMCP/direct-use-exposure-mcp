@@ -98,4 +98,6 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     )
     assert cleaner_wipe_transfer in defaults_curation
     assert cleaner_surface_contact in defaults_curation
+    assert "Route-Semantic Highlights" in defaults_curation
+    assert "`transfer_efficiency:application_method=trigger_spray`" in defaults_curation
     assert "Residual Heuristic Branches" in defaults_curation

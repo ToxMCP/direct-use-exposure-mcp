@@ -217,6 +217,11 @@ def test_defaults_curation_report_matches_schema_and_surface() -> None:
         for item in report["entries"]
     )
     assert any(
+        item["pathId"] == "transfer_efficiency:application_method=trigger_spray"
+        and item["curationStatus"] == "route_semantic"
+        for item in report["entries"]
+    )
+    assert any(
         item["pathId"] == "transfer_efficiency:application_method=wipe"
         and item["curationStatus"] == "heuristic"
         for item in report["entries"]

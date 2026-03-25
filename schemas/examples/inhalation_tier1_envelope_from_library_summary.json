@@ -111,7 +111,7 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
+              "hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -276,7 +276,7 @@
               "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
               "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
+              "hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1039,8 +1039,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v8",
-          "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
+          "defaults_version": "2026.03.25.v9",
+          "defaults_hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1536,7 +1536,7 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
+              "hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1701,7 +1701,7 @@
               "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
               "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
+              "hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2464,8 +2464,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v8",
-          "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
+          "defaults_version": "2026.03.25.v9",
+          "defaults_hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -2961,7 +2961,7 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
+              "hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3126,7 +3126,7 @@
               "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
               "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
+              "hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3889,8 +3889,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v8",
-          "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
+          "defaults_version": "2026.03.25.v9",
+          "defaults_hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -4529,8 +4529,8 @@
     "algorithm_id": "uncertainty.envelope.v1",
     "plugin_id": "deterministic_envelope_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v8",
-    "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
+    "defaults_version": "2026.03.25.v9",
+    "defaults_hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

@@ -577,6 +577,40 @@ def test_household_cleaner_wipe_uses_product_category_transfer_override() -> Non
     assert checks[0].observed_value == pytest.approx(0.5, rel=1e-6)
 
 
+def test_dermal_trigger_spray_uses_route_semantic_transfer_default() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.1,
+            use_amount_per_event=5,
+            use_amount_unit="g",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(population_group="adult"),
+    )
+
+    scenario = engine.build(request)
+    transfer_efficiency = next(
+        item for item in scenario.assumptions if item.name == "transfer_efficiency"
+    )
+
+    assert transfer_efficiency.value == pytest.approx(1.0, rel=1e-6)
+    assert transfer_efficiency.source.source_id == "screening_route_semantics_defaults_v1"
+    assert transfer_efficiency.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
+    assert transfer_efficiency.governance.evidence_grade == EvidenceGrade.GRADE_2
+    assert scenario.validation_summary.heuristic_assumption_names == []
+    assert "heuristic_defaults_active" not in scenario.validation_summary.validation_gap_ids
+    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(100.0, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(1.25, rel=1e-6)
+
+
 def test_household_cleaner_pump_spray_uses_product_category_aerosol_override() -> None:
     engine = build_engine()
     request = InhalationScenarioRequest(

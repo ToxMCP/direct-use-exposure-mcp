@@ -1,6 +1,6 @@
 {
-  "defaults_version": "2026.03.25.v8",
-  "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
+  "defaults_version": "2026.03.25.v9",
+  "defaults_hash_sha256": "7dbd80e1e228d761c8f3f54add0b9f92363f0a198221ab95ad049ec706ab981b",
   "source_count": 17,
   "supported_regions": [
     "eu",
