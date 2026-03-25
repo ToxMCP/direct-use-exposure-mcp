@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import pytest
 
+from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
     ApplicabilityStatus,
     BuildAggregateExposureScenarioInput,
+    BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     CompareExposureScenariosInput,
@@ -32,6 +34,7 @@ from exposure_scenario_mcp.runtime import (
 )
 from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
+    build_exposure_envelope_from_library,
     build_parameter_bounds_summary,
 )
 
@@ -406,6 +409,37 @@ def test_deterministic_exposure_envelope_builds_tier_b_summary() -> None:
     assert summary.validation_summary.highest_supported_uncertainty_tier == UncertaintyTier.TIER_B
     assert summary.uncertainty_register[0].quantification_status.value == "bounded"
     assert summary.driver_attribution
+
+
+def test_packaged_archetype_library_builds_tier_b_envelope() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    archetype_library = ArchetypeLibraryRegistry.load()
+
+    summary = build_exposure_envelope_from_library(
+        BuildExposureEnvelopeFromLibraryInput(
+            librarySetId="adult_leave_on_hand_cream",
+            chemicalId="DTXSID123",
+            chemicalName="Example Chemical",
+            label="Packaged dermal envelope",
+        ),
+        engine,
+        defaults_registry,
+        archetype_library,
+        generated_at="2026-03-24T00:00:00+00:00",
+    )
+
+    assert summary.uncertainty_tier == UncertaintyTier.TIER_B
+    assert summary.archetype_library_set_id == "adult_leave_on_hand_cream"
+    assert summary.archetype_library_version == archetype_library.version
+    assert len(summary.archetypes) == 3
+    assert all(item.template_id is not None for item in summary.archetypes)
+    assert any(
+        item.entry_id == "library-governed-archetypes" for item in summary.uncertainty_register
+    )
+    assert any(
+        "packaged archetype-library set" in item for item in summary.interpretation_notes
+    )
 
 
 def test_parameter_bounds_summary_builds_bounded_range() -> None:

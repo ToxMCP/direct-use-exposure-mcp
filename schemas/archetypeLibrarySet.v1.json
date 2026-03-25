@@ -1,81 +1,39 @@
 {
   "$defs": {
-    "ExposureScenarioRequest": {
+    "ArchetypeLibraryTemplate": {
       "additionalProperties": false,
       "properties": {
-        "schema_version": {
-          "const": "exposureScenarioRequest.v1",
-          "default": "exposureScenarioRequest.v1",
-          "title": "Schema Version",
+        "templateId": {
+          "title": "Templateid",
           "type": "string"
         },
-        "chemical_id": {
-          "description": "Stable chemical identifier.",
-          "title": "Chemical Id",
+        "label": {
+          "description": "Human-readable archetype label.",
+          "title": "Label",
           "type": "string"
         },
-        "chemical_name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional chemical name.",
-          "title": "Chemical Name"
+        "description": {
+          "description": "Why this archetype belongs in the library set.",
+          "title": "Description",
+          "type": "string"
         },
-        "route": {
-          "$ref": "#/$defs/Route",
-          "description": "Requested exposure route."
-        },
-        "scenario_class": {
-          "$ref": "#/$defs/ScenarioClass",
-          "default": "screening",
-          "description": "Requested scenario class."
-        },
-        "product_use_profile": {
+        "productUseProfile": {
           "$ref": "#/$defs/ProductUseProfile",
-          "description": "Product and use-context profile."
+          "description": "Product-use template for this archetype."
         },
-        "population_profile": {
+        "populationProfile": {
           "$ref": "#/$defs/PopulationProfile",
-          "description": "Population profile for the exposed cohort."
-        },
-        "assumption_overrides": {
-          "additionalProperties": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "integer"
-              },
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "description": "Additional explicit overrides for auditability.",
-          "title": "Assumption Overrides",
-          "type": "object"
+          "description": "Population template for this archetype."
         }
       },
       "required": [
-        "chemical_id",
-        "route",
-        "product_use_profile",
-        "population_profile"
+        "templateId",
+        "label",
+        "description",
+        "productUseProfile",
+        "populationProfile"
       ],
-      "title": "ExposureScenarioRequest",
+      "title": "ArchetypeLibraryTemplate",
       "type": "object"
     },
     "PopulationProfile": {
@@ -381,39 +339,79 @@
   },
   "additionalProperties": false,
   "properties": {
-    "templateId": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Optional stable template ID when the archetype comes from a packaged library.",
-      "title": "Templateid"
+    "setId": {
+      "title": "Setid",
+      "type": "string"
     },
     "label": {
-      "description": "Human-readable archetype label.",
+      "description": "Human-readable library-set label.",
       "title": "Label",
       "type": "string"
     },
     "description": {
-      "description": "Why this archetype belongs in the envelope.",
+      "description": "What this set is intended to represent.",
       "title": "Description",
       "type": "string"
     },
-    "request": {
-      "$ref": "#/$defs/ExposureScenarioRequest",
-      "description": "Full scenario request representing one deterministic archetype."
+    "route": {
+      "$ref": "#/$defs/Route",
+      "description": "Common route across the archetypes in this set."
+    },
+    "scenarioClass": {
+      "$ref": "#/$defs/ScenarioClass"
+    },
+    "chemicalScope": {
+      "const": "caller_supplied",
+      "default": "caller_supplied",
+      "description": "Whether the caller must inject the target chemical identity.",
+      "title": "Chemicalscope",
+      "type": "string"
+    },
+    "intendedUse": {
+      "description": "Short fit-for-purpose statement for this set.",
+      "title": "Intendeduse",
+      "type": "string"
+    },
+    "driverParameters": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Driverparameters",
+      "type": "array"
+    },
+    "interpretationNotes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Interpretationnotes",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "archetypes": {
+      "description": "Packaged archetype templates for this set.",
+      "items": {
+        "$ref": "#/$defs/ArchetypeLibraryTemplate"
+      },
+      "minItems": 2,
+      "title": "Archetypes",
+      "type": "array"
     }
   },
   "required": [
+    "setId",
     "label",
     "description",
-    "request"
+    "route",
+    "scenarioClass",
+    "intendedUse",
+    "archetypes"
   ],
-  "title": "EnvelopeArchetypeInput",
+  "title": "ArchetypeLibrarySet",
   "type": "object"
 }

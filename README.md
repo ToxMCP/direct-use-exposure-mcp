@@ -76,6 +76,7 @@ The design is intentionally narrow:
 - Deterministic inhalation screening with room-volume and ventilation semantics
 - Tier A uncertainty registers, deterministic sensitivity ranking, and dependency metadata
 - Tier B deterministic scenario envelopes from named archetypes
+- Packaged Tier B archetype-library sets for governed envelope construction
 - Tier B deterministic parameter-bounds propagation without probabilistic overclaiming
 - Simple additive aggregate exposure summaries
 - Scenario comparison and refinement deltas
@@ -105,6 +106,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `Screening scenarios` | Builds route-specific external-dose scenarios for dermal, oral, and inhalation screening use cases. |
 | `Tier A uncertainty diagnostics` | Publishes qualitative uncertainty registers, one-at-a-time sensitivity ranking, dependency metadata, and validation posture on each scenario. |
 | `Tier B deterministic envelopes` | Builds named archetype envelopes with bounded min/median/max outputs and explicit driver attribution without probabilistic overclaiming. |
+| `Tier B archetype library` | Publishes governed packaged archetype sets and instantiates them into deterministic envelopes with set/version provenance. |
 | `Tier B parameter bounds` | Propagates explicit lower and upper parameter bounds through a deterministic scenario to produce min/max ranges, monotonicity checks, and bounded uncertainty records. |
 | `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
@@ -136,6 +138,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 
 - `exposure_build_screening_exposure_scenario`
 - `exposure_build_exposure_envelope`
+- `exposure_build_exposure_envelope_from_library`
 - `exposure_build_parameter_bounds_summary`
 - `exposure_build_inhalation_screening_scenario`
 - `exposure_build_aggregate_exposure_scenario`
@@ -156,12 +159,14 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `schemas://{schema_name}`
 - `examples://{example_name}`
 - `defaults://manifest`
+- `archetypes://manifest`
 - `benchmarks://manifest`
 - `validation://manifest`
 
 ### Operator and scientific documentation
 
 - `docs://algorithm-notes`
+- `docs://archetype-library-guide`
 - `docs://defaults-evidence-map`
 - `docs://operator-guide`
 - `docs://provenance-policy`

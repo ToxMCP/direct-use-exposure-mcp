@@ -5,6 +5,7 @@ from __future__ import annotations
 import tomllib
 from datetime import UTC, datetime
 
+from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.assets import repo_path
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.defaults import DefaultsRegistry
@@ -29,8 +30,12 @@ from exposure_scenario_mcp.integrations import (
 )
 from exposure_scenario_mcp.models import (
     AggregateExposureSummary,
+    ArchetypeLibraryManifest,
+    ArchetypeLibrarySet,
+    ArchetypeLibraryTemplate,
     AssumptionGovernance,
     BuildAggregateExposureScenarioInput,
+    BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     CompareExposureScenariosInput,
@@ -82,10 +87,14 @@ SCHEMA_MODELS = {
     "exposureScenarioRequest.v1": ExposureScenarioRequest,
     "inhalationScenarioRequest.v1": InhalationScenarioRequest,
     "exposureScenario.v1": ExposureScenario,
+    "archetypeLibraryTemplate.v1": ArchetypeLibraryTemplate,
+    "archetypeLibrarySet.v1": ArchetypeLibrarySet,
+    "archetypeLibraryManifest.v1": ArchetypeLibraryManifest,
     "uncertaintyRegisterEntry.v1": UncertaintyRegisterEntry,
     "sensitivityRankingEntry.v1": SensitivityRankingEntry,
     "dependencyDescriptor.v1": DependencyDescriptor,
     "validationSummary.v1": ValidationSummary,
+    "buildExposureEnvelopeFromLibraryInput.v1": BuildExposureEnvelopeFromLibraryInput,
     "parameterBoundInput.v1": ParameterBoundInput,
     "monotonicityCheck.v1": MonotonicityCheck,
     "buildParameterBoundsInput.v1": BuildParameterBoundsInput,
@@ -156,6 +165,15 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Build a deterministic Tier B envelope from named scenario archetypes.",
             ),
             ContractToolEntry(
+                name="exposure_build_exposure_envelope_from_library",
+                request_schema="buildExposureEnvelopeFromLibraryInput.v1",
+                response_schema="exposureEnvelopeSummary.v1",
+                description=(
+                    "Instantiate a packaged Tier B archetype-library set into a deterministic "
+                    "envelope."
+                ),
+            ),
+            ContractToolEntry(
                 name="exposure_build_parameter_bounds_summary",
                 request_schema="buildParameterBoundsInput.v1",
                 response_schema="parameterBoundsSummary.v1",
@@ -223,8 +241,16 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 uri="defaults://manifest", description="Versioned defaults manifest."
             ),
             ContractResourceEntry(
+                uri="archetypes://manifest",
+                description="Machine-readable packaged Tier B archetype-library manifest.",
+            ),
+            ContractResourceEntry(
                 uri="docs://algorithm-notes",
                 description="Algorithm notes for the deterministic engines.",
+            ),
+            ContractResourceEntry(
+                uri="docs://archetype-library-guide",
+                description="Guide to the packaged Tier B archetype library and its guardrails.",
             ),
             ContractResourceEntry(
                 uri="docs://defaults-evidence-map",
@@ -394,6 +420,15 @@ def algorithm_notes() -> str:
 - Attribute envelope span to explicit assumption differences between the low and high archetypes.
 - Label the result as Tier B bounded uncertainty, not as a confidence interval.
 
+## Packaged Archetype Library
+
+- The packaged archetype library publishes governed Tier B screening templates by route and use
+  context.
+- `exposure_build_exposure_envelope_from_library` injects caller-supplied chemical identity into
+  a packaged set and then resolves the same deterministic envelope algorithm.
+- Library-backed envelopes keep `archetypeLibrarySetId`, `archetypeLibraryVersion`, template IDs,
+  and library limitations visible in the result.
+
 ## Comparison
 
 - Compare primary dose values directly.
@@ -404,6 +439,10 @@ def algorithm_notes() -> str:
 
 def benchmark_manifest() -> dict:
     return load_benchmark_manifest()
+
+
+def archetype_library_manifest() -> dict:
+    return ArchetypeLibraryRegistry.load().manifest().model_dump(mode="json", by_alias=True)
 
 
 def _project_metadata() -> tuple[str, str]:

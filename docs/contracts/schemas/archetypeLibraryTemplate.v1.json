@@ -1,83 +1,5 @@
 {
   "$defs": {
-    "ExposureScenarioRequest": {
-      "additionalProperties": false,
-      "properties": {
-        "schema_version": {
-          "const": "exposureScenarioRequest.v1",
-          "default": "exposureScenarioRequest.v1",
-          "title": "Schema Version",
-          "type": "string"
-        },
-        "chemical_id": {
-          "description": "Stable chemical identifier.",
-          "title": "Chemical Id",
-          "type": "string"
-        },
-        "chemical_name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional chemical name.",
-          "title": "Chemical Name"
-        },
-        "route": {
-          "$ref": "#/$defs/Route",
-          "description": "Requested exposure route."
-        },
-        "scenario_class": {
-          "$ref": "#/$defs/ScenarioClass",
-          "default": "screening",
-          "description": "Requested scenario class."
-        },
-        "product_use_profile": {
-          "$ref": "#/$defs/ProductUseProfile",
-          "description": "Product and use-context profile."
-        },
-        "population_profile": {
-          "$ref": "#/$defs/PopulationProfile",
-          "description": "Population profile for the exposed cohort."
-        },
-        "assumption_overrides": {
-          "additionalProperties": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "integer"
-              },
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "description": "Additional explicit overrides for auditability.",
-          "title": "Assumption Overrides",
-          "type": "object"
-        }
-      },
-      "required": [
-        "chemical_id",
-        "route",
-        "product_use_profile",
-        "population_profile"
-      ],
-      "title": "ExposureScenarioRequest",
-      "type": "object"
-    },
     "PopulationProfile": {
       "additionalProperties": false,
       "properties": {
@@ -357,42 +279,13 @@
       ],
       "title": "ProductUseProfile",
       "type": "object"
-    },
-    "Route": {
-      "enum": [
-        "dermal",
-        "oral",
-        "inhalation"
-      ],
-      "title": "Route",
-      "type": "string"
-    },
-    "ScenarioClass": {
-      "enum": [
-        "screening",
-        "aggregate",
-        "inhalation",
-        "refined",
-        "population_distribution"
-      ],
-      "title": "ScenarioClass",
-      "type": "string"
     }
   },
   "additionalProperties": false,
   "properties": {
     "templateId": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Optional stable template ID when the archetype comes from a packaged library.",
-      "title": "Templateid"
+      "title": "Templateid",
+      "type": "string"
     },
     "label": {
       "description": "Human-readable archetype label.",
@@ -400,20 +293,26 @@
       "type": "string"
     },
     "description": {
-      "description": "Why this archetype belongs in the envelope.",
+      "description": "Why this archetype belongs in the library set.",
       "title": "Description",
       "type": "string"
     },
-    "request": {
-      "$ref": "#/$defs/ExposureScenarioRequest",
-      "description": "Full scenario request representing one deterministic archetype."
+    "productUseProfile": {
+      "$ref": "#/$defs/ProductUseProfile",
+      "description": "Product-use template for this archetype."
+    },
+    "populationProfile": {
+      "$ref": "#/$defs/PopulationProfile",
+      "description": "Population template for this archetype."
     }
   },
   "required": [
+    "templateId",
     "label",
     "description",
-    "request"
+    "productUseProfile",
+    "populationProfile"
   ],
-  "title": "EnvelopeArchetypeInput",
+  "title": "ArchetypeLibraryTemplate",
   "type": "object"
 }

@@ -216,6 +216,18 @@
     "EnvelopeArchetypeResult": {
       "additionalProperties": false,
       "properties": {
+        "templateId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Templateid"
+        },
         "label": {
           "description": "Archetype label.",
           "title": "Label",
@@ -1432,6 +1444,30 @@
       "description": "Human-readable envelope label.",
       "title": "Label",
       "type": "string"
+    },
+    "archetypeLibrarySetId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Archetypelibrarysetid"
+    },
+    "archetypeLibraryVersion": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Archetypelibraryversion"
     },
     "uncertaintyTier": {
       "$ref": "#/$defs/UncertaintyTier",

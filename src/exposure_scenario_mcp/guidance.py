@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.models import (
     ReleaseMetadataReport,
@@ -18,6 +19,25 @@ def _benchmark_matrix_lines() -> list[str]:
         lines.append(
             f"- `{case['id']}` [{case['kind']}] {case['description']}"
         )
+    return lines
+
+
+def _archetype_library_lines() -> list[str]:
+    manifest = ArchetypeLibraryRegistry.load().manifest()
+    lines = [
+        "## Packaged Archetype Sets",
+        "",
+        f"- Library version: `{manifest.library_version}`",
+        f"- Set count: `{manifest.set_count}`",
+    ]
+    for item in manifest.sets:
+        lines.append(
+            f"- `{item.set_id}` [{item.route.value}/{item.scenario_class.value}] {item.label}"
+        )
+        if item.driver_parameters:
+            lines.append(
+                f"  drivers: {', '.join(f'`{name}`' for name in item.driver_parameters)}"
+            )
     return lines
 
 
@@ -127,6 +147,39 @@ def uncertainty_framework() -> str:
 - Probabilistic tiers remain blocked until validation evidence, dependency handling, and
   distribution governance mature.
 """
+
+
+def archetype_library_guide() -> str:
+    lines = [
+        "# Archetype Library Guide",
+        "",
+        "Packaged archetype sets are governed Tier B screening templates that instantiate full",
+        "deterministic envelopes with caller-supplied chemical identity.",
+        "",
+        "## Guardrails",
+        "",
+        "- Packaged sets are starting points for transparent Tier B envelopes,",
+        "  not population distributions.",
+        "- Keep route, use-context, and microenvironment interpretation tied",
+        "  to the published set definition.",
+        "- Replace library templates with scenario-specific evidence when",
+        "  better product or use information exists.",
+        "",
+    ]
+    lines.extend(_archetype_library_lines())
+    lines.extend(
+        [
+            "",
+            "## Client Guidance",
+            "",
+            "- Discover packaged sets through `archetypes://manifest` before building envelopes.",
+            "- Use `exposure_build_exposure_envelope_from_library` when a",
+            "  governed template is preferable to manual archetype construction.",
+            "- Preserve `archetypeLibrarySetId`, `archetypeLibraryVersion`,",
+            "  and any emitted library limitations in downstream reports.",
+        ]
+    )
+    return "\n".join(lines)
 
 
 def validation_framework() -> str:

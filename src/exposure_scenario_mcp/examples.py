@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.integrations import (
@@ -15,6 +16,7 @@ from exposure_scenario_mcp.integrations import (
 )
 from exposure_scenario_mcp.models import (
     BuildAggregateExposureScenarioInput,
+    BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     CompareExposureScenariosInput,
@@ -44,6 +46,7 @@ from exposure_scenario_mcp.runtime import (
 )
 from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
+    build_exposure_envelope_from_library,
     build_parameter_bounds_summary,
 )
 
@@ -58,6 +61,10 @@ EXAMPLE_IDS = {
     "envelope_low_scenario": "exp-example-envelope-low-001",
     "envelope_typical_scenario": "exp-example-envelope-typical-001",
     "envelope_high_scenario": "exp-example-envelope-high-001",
+    "library_envelope_summary": "env-example-library-dermal-001",
+    "library_envelope_low_scenario": "exp-example-library-envelope-low-001",
+    "library_envelope_typical_scenario": "exp-example-library-envelope-typical-001",
+    "library_envelope_high_scenario": "exp-example-library-envelope-high-001",
     "bounds_min_scenario": "exp-example-bounds-min-001",
     "bounds_max_scenario": "exp-example-bounds-max-001",
 }
@@ -102,10 +109,25 @@ def _freeze_pbpk_input(pbpk_input):
 
 
 def _freeze_envelope(summary: ExposureEnvelopeSummary) -> ExposureEnvelopeSummary:
+    return _freeze_envelope_with_ids(
+        summary,
+        summary_id=EXAMPLE_IDS["envelope_summary"],
+        label_ids={
+            "Lower plausible use": EXAMPLE_IDS["envelope_low_scenario"],
+            "Typical use": EXAMPLE_IDS["envelope_typical_scenario"],
+            "Upper plausible use": EXAMPLE_IDS["envelope_high_scenario"],
+        },
+    )
+
+
+def _freeze_envelope_with_ids(
+    summary: ExposureEnvelopeSummary,
+    *,
+    summary_id: str,
+    label_ids: dict[str, str],
+) -> ExposureEnvelopeSummary:
     frozen_labels = {
-        "Lower plausible use": EXAMPLE_IDS["envelope_low_scenario"],
-        "Typical use": EXAMPLE_IDS["envelope_typical_scenario"],
-        "Upper plausible use": EXAMPLE_IDS["envelope_high_scenario"],
+        **label_ids,
     }
     frozen_archetypes = []
     for item in summary.archetypes:
@@ -124,7 +146,7 @@ def _freeze_envelope(summary: ExposureEnvelopeSummary) -> ExposureEnvelopeSummar
     ).scenario.external_dose
     return summary.model_copy(
         update={
-            "envelope_id": EXAMPLE_IDS["envelope_summary"],
+            "envelope_id": summary_id,
             "archetypes": frozen_archetypes,
             "min_dose": min_dose,
             "max_dose": max_dose,
@@ -167,6 +189,7 @@ def _engine() -> ScenarioEngine:
 def build_examples() -> dict[str, dict]:
     engine = _engine()
     defaults_registry = DefaultsRegistry.load()
+    archetype_library = ArchetypeLibraryRegistry.load()
 
     dermal_request = ExposureScenarioRequest(
         chemical_id="DTXSID7020182",
@@ -284,6 +307,27 @@ def build_examples() -> dict[str, dict]:
             generated_at=EXAMPLE_GENERATED_AT,
         )
     )
+    library_envelope_request = BuildExposureEnvelopeFromLibraryInput(
+        librarySetId="adult_leave_on_hand_cream",
+        chemicalId="DTXSID7020182",
+        chemicalName="Example Solvent A",
+        label="Example library-backed dermal envelope",
+    )
+    library_envelope_summary = _freeze_envelope_with_ids(
+        build_exposure_envelope_from_library(
+            library_envelope_request,
+            engine,
+            defaults_registry,
+            archetype_library,
+            generated_at=EXAMPLE_GENERATED_AT,
+        ),
+        summary_id=EXAMPLE_IDS["library_envelope_summary"],
+        label_ids={
+            "Lower plausible use": EXAMPLE_IDS["library_envelope_low_scenario"],
+            "Typical use": EXAMPLE_IDS["library_envelope_typical_scenario"],
+            "Upper plausible use": EXAMPLE_IDS["library_envelope_high_scenario"],
+        },
+    )
     parameter_bounds_summary = _freeze_bounds_summary(
         build_parameter_bounds_summary(
             BuildParameterBoundsInput(
@@ -391,6 +435,12 @@ def build_examples() -> dict[str, dict]:
         "inhalation_request": inhalation_request.model_dump(mode="json", by_alias=True),
         "inhalation_scenario": inhalation_scenario.model_dump(mode="json", by_alias=True),
         "exposure_envelope_summary": envelope_summary.model_dump(mode="json", by_alias=True),
+        "exposure_envelope_from_library_request": library_envelope_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "exposure_envelope_from_library_summary": library_envelope_summary.model_dump(
+            mode="json", by_alias=True
+        ),
         "parameter_bounds_summary": parameter_bounds_summary.model_dump(
             mode="json", by_alias=True
         ),

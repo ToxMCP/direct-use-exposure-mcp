@@ -14,9 +14,10 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 
 - The MCP surface is machine-readable through the contract manifest and schema resources.
 - Defaults are versioned and hashed.
+- Packaged Tier B archetype-library sets are versioned, hashed, and published as a machine-readable manifest.
 - Scenario, aggregate, comparison, and PBPK export outputs carry provenance.
 - Scenario outputs publish Tier A uncertainty diagnostics, and Tier B support is limited to
-  deterministic envelopes and explicit parameter-bounds propagation.
+  deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.
 - ToxClaw evidence and refinement bundles emit deterministic content hashes and stable IDs.
 - Security and provenance findings are published through `release://security-provenance-review-report`.
 - Release metadata is published through `release://metadata-report`.

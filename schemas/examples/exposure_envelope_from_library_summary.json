@@ -1,39 +1,39 @@
 {
   "schema_version": "exposureEnvelopeSummary.v1",
-  "envelopeId": "env-example-dermal-001",
+  "envelopeId": "env-example-library-dermal-001",
   "chemical_id": "DTXSID7020182",
   "route": "dermal",
   "scenarioClass": "screening",
-  "label": "Example dermal use envelope",
-  "archetypeLibrarySetId": null,
-  "archetypeLibraryVersion": null,
+  "label": "Example library-backed dermal envelope",
+  "archetypeLibrarySetId": "adult_leave_on_hand_cream",
+  "archetypeLibraryVersion": "2026.03.25.v1",
   "uncertaintyTier": "tier_b",
   "archetypes": [
     {
-      "templateId": null,
+      "templateId": "adult_leave_on_hand_cream_low",
       "label": "Lower plausible use",
-      "description": "Reduced amount and lower frequency archetype.",
+      "description": "Reduced concentration, amount, and frequency for lower-bound screening.",
       "scenario": {
         "schema_version": "exposureScenario.v1",
-        "scenario_id": "exp-example-envelope-low-001",
+        "scenario_id": "exp-example-library-envelope-low-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
         "scenario_class": "screening",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.425,
+          "value": 0.17,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
           "schema_version": "productUseProfile.v1",
-          "product_name": "Example Hand Cream",
+          "product_name": null,
           "product_category": "personal_care",
           "physical_form": "cream",
           "application_method": "hand_application",
           "retention_type": "leave_on",
-          "concentration_fraction": 0.02,
-          "use_amount_per_event": 1.0,
+          "concentration_fraction": 0.01,
+          "use_amount_per_event": 0.8,
           "use_amount_unit": "g",
           "use_events_per_day": 2.0,
           "density_g_per_ml": null,
@@ -58,15 +58,15 @@
           "region": "EU"
         },
         "route_metrics": {
-          "chemical_mass_mg_per_event": 20.0,
-          "external_mass_mg_per_day": 34.0,
-          "surface_loading_mg_per_cm2_day": 0.00596491
+          "chemical_mass_mg_per_event": 8.0,
+          "external_mass_mg_per_day": 13.6,
+          "surface_loading_mg_per_cm2_day": 0.00238596
         },
         "assumptions": [
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "use_amount_per_event",
-            "value": 1.0,
+            "value": 0.8,
             "unit": "g",
             "source_kind": "user_input",
             "source": {
@@ -98,7 +98,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "concentration_fraction",
-            "value": 0.02,
+            "value": 0.01,
             "unit": "fraction",
             "source_kind": "user_input",
             "source": {
@@ -129,7 +129,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "use_events_per_day",
-            "value": 2,
+            "value": 2.0,
             "unit": "events/day",
             "source_kind": "user_input",
             "source": {
@@ -160,7 +160,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "chemical_mass_mg_per_event",
-            "value": 20.0,
+            "value": 8.0,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -292,7 +292,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "external_mass_mg_per_day",
-            "value": 34.0,
+            "value": 13.6,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -360,7 +360,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 0.425,
+            "value": 0.16999999999999998,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -540,7 +540,7 @@
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.0425,
+            "absoluteDelta": 0.017,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -548,12 +548,12 @@
           {
             "parameterName": "use_amount_per_event",
             "sourceKind": "user_input",
-            "baselineValue": 1.0,
-            "perturbedValue": 1.1,
+            "baselineValue": 0.8,
+            "perturbedValue": 0.88,
             "unit": "g",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.0425,
+            "absoluteDelta": 0.017,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -566,7 +566,7 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.0425,
+            "absoluteDelta": 0.017,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -579,7 +579,7 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.0425,
+            "absoluteDelta": 0.017,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -587,12 +587,12 @@
           {
             "parameterName": "concentration_fraction",
             "sourceKind": "user_input",
-            "baselineValue": 0.02,
-            "perturbedValue": 0.022,
+            "baselineValue": 0.01,
+            "perturbedValue": 0.011,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.0425,
+            "absoluteDelta": 0.017,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -605,8 +605,8 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.03863636,
-            "percentDelta": -9.090908,
+            "absoluteDelta": -0.01545455,
+            "percentDelta": -9.090912,
             "elasticity": -0.909091,
             "direction": "negative"
           }
@@ -648,12 +648,12 @@
       }
     },
     {
-      "templateId": null,
+      "templateId": "adult_leave_on_hand_cream_typical",
       "label": "Typical use",
-      "description": "Baseline screening archetype.",
+      "description": "Baseline adult leave-on hand cream screening archetype.",
       "scenario": {
         "schema_version": "exposureScenario.v1",
-        "scenario_id": "exp-example-envelope-typical-001",
+        "scenario_id": "exp-example-library-envelope-typical-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
@@ -1286,35 +1286,35 @@
       }
     },
     {
-      "templateId": null,
+      "templateId": "adult_leave_on_hand_cream_high",
       "label": "Upper plausible use",
-      "description": "Higher amount and explicit refinement modifiers.",
+      "description": "Higher concentration, amount, and frequency for upper-bound screening.",
       "scenario": {
         "schema_version": "exposureScenario.v1",
-        "scenario_id": "exp-example-envelope-high-001",
+        "scenario_id": "exp-example-library-envelope-high-001",
         "chemical_id": "DTXSID7020182",
         "chemical_name": "Example Solvent A",
         "route": "dermal",
         "scenario_class": "screening",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 1.04,
+          "value": 4.08,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
           "schema_version": "productUseProfile.v1",
-          "product_name": "Example Hand Cream",
+          "product_name": null,
           "product_category": "personal_care",
           "physical_form": "cream",
           "application_method": "hand_application",
           "retention_type": "leave_on",
-          "concentration_fraction": 0.02,
-          "use_amount_per_event": 2.0,
+          "concentration_fraction": 0.04,
+          "use_amount_per_event": 2.4,
           "use_amount_unit": "g",
           "use_events_per_day": 4.0,
           "density_g_per_ml": null,
-          "transfer_efficiency": 0.8,
-          "retention_factor": 0.65,
+          "transfer_efficiency": null,
+          "retention_factor": null,
           "ingestion_fraction": null,
           "aerosolized_fraction": null,
           "room_volume_m3": null,
@@ -1334,15 +1334,15 @@
           "region": "EU"
         },
         "route_metrics": {
-          "chemical_mass_mg_per_event": 40.0,
-          "external_mass_mg_per_day": 83.2,
-          "surface_loading_mg_per_cm2_day": 0.01459649
+          "chemical_mass_mg_per_event": 96.0,
+          "external_mass_mg_per_day": 326.4,
+          "surface_loading_mg_per_cm2_day": 0.05726316
         },
         "assumptions": [
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "use_amount_per_event",
-            "value": 2.0,
+            "value": 2.4,
             "unit": "g",
             "source_kind": "user_input",
             "source": {
@@ -1374,7 +1374,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "concentration_fraction",
-            "value": 0.02,
+            "value": 0.04,
             "unit": "fraction",
             "source_kind": "user_input",
             "source": {
@@ -1405,7 +1405,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "use_events_per_day",
-            "value": 4,
+            "value": 4.0,
             "unit": "events/day",
             "source_kind": "user_input",
             "source": {
@@ -1436,7 +1436,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "chemical_mass_mg_per_event",
-            "value": 40.0,
+            "value": 96.0,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -1503,24 +1503,24 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "retention_factor",
-            "value": 0.65,
+            "value": 1.0,
             "unit": "fraction",
-            "source_kind": "user_input",
+            "source_kind": "default_registry",
             "source": {
-              "source_id": "exposure_scenario_mcp",
-              "title": "Exposure Scenario MCP runtime",
-              "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
-              "hash_sha256": null
+              "source_id": "heuristic_screening_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+              "version": "2026.03.24.v3",
+              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
             },
-            "confidence": "explicit_user_input",
-            "default_applied": false,
-            "rationale": "Dermal retention factor was supplied explicitly.",
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Retention factor defaulted from retention_type='leave_on'.",
             "governance": {
-              "evidence_grade": null,
-              "evidence_basis": "explicit_input",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "user_asserted",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "scenario_uncertainty"
@@ -1536,24 +1536,24 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "transfer_efficiency",
-            "value": 0.8,
+            "value": 0.85,
             "unit": "fraction",
-            "source_kind": "user_input",
+            "source_kind": "default_registry",
             "source": {
-              "source_id": "exposure_scenario_mcp",
-              "title": "Exposure Scenario MCP runtime",
-              "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
-              "hash_sha256": null
+              "source_id": "heuristic_screening_defaults_v1",
+              "title": "Exposure Scenario MCP heuristic screening defaults",
+              "locator": "docs://defaults-evidence-map#heuristic-screening-defaults",
+              "version": "2026.03.24.v3",
+              "hash_sha256": "a432b225f3a551bee729fcd3aa7eae39af5136b7d6af6cc235653c22eb77cbcf"
             },
-            "confidence": "explicit_user_input",
-            "default_applied": false,
-            "rationale": "Transfer efficiency was supplied explicitly.",
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
             "governance": {
-              "evidence_grade": null,
-              "evidence_basis": "explicit_input",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "user_asserted",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [
                 "parameter_uncertainty",
                 "model_uncertainty"
@@ -1568,7 +1568,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "external_mass_mg_per_day",
-            "value": 83.2,
+            "value": 326.4,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -1636,7 +1636,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 1.04,
+            "value": 4.08,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -1694,6 +1694,26 @@
           {
             "code": "default_applied",
             "severity": "info",
+            "message": "Default value applied for 'retention_factor'."
+          },
+          {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'retention_factor' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
+            "code": "default_applied",
+            "severity": "info",
+            "message": "Default value applied for 'transfer_efficiency'."
+          },
+          {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'transfer_efficiency' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
+            "code": "default_applied",
+            "severity": "info",
             "message": "Default value applied for 'exposed_surface_area_cm2'."
           }
         ],
@@ -1738,6 +1758,38 @@
             "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
           },
           {
+            "entryId": "assumption-retention_factor",
+            "title": "Resolved assumption `retention_factor` carries default uncertainty",
+            "uncertaintyTypes": [
+              "parameter_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "relatedAssumptions": [
+              "retention_factor"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "high",
+            "summary": "`retention_factor` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "assumption-transfer_efficiency",
+            "title": "Resolved assumption `transfer_efficiency` carries default uncertainty",
+            "uncertaintyTypes": [
+              "parameter_uncertainty",
+              "model_uncertainty"
+            ],
+            "relatedAssumptions": [
+              "transfer_efficiency"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "high",
+            "summary": "`transfer_efficiency` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
             "entryId": "dependency-handling-required",
             "title": "Known dependencies are preserved qualitatively, not numerically",
             "uncertaintyTypes": [
@@ -1764,7 +1816,7 @@
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.104,
+            "absoluteDelta": 0.408,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -1772,38 +1824,38 @@
           {
             "parameterName": "use_amount_per_event",
             "sourceKind": "user_input",
-            "baselineValue": 2.0,
-            "perturbedValue": 2.2,
+            "baselineValue": 2.4,
+            "perturbedValue": 2.64,
             "unit": "g",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.104,
+            "absoluteDelta": 0.408,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
           },
           {
             "parameterName": "transfer_efficiency",
-            "sourceKind": "user_input",
-            "baselineValue": 0.8,
-            "perturbedValue": 0.88,
+            "sourceKind": "default_registry",
+            "baselineValue": 0.85,
+            "perturbedValue": 0.935,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.104,
+            "absoluteDelta": 0.408,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
           },
           {
             "parameterName": "retention_factor",
-            "sourceKind": "user_input",
-            "baselineValue": 0.65,
-            "perturbedValue": 0.715,
+            "sourceKind": "default_registry",
+            "baselineValue": 1.0,
+            "perturbedValue": 1.1,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.104,
+            "absoluteDelta": 0.408,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -1811,12 +1863,12 @@
           {
             "parameterName": "concentration_fraction",
             "sourceKind": "user_input",
-            "baselineValue": 0.02,
-            "perturbedValue": 0.022,
+            "baselineValue": 0.04,
+            "perturbedValue": 0.044,
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.104,
+            "absoluteDelta": 0.408,
             "percentDelta": 10.0,
             "elasticity": 1.0,
             "direction": "positive"
@@ -1829,7 +1881,7 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.09454545,
+            "absoluteDelta": -0.37090909,
             "percentDelta": -9.090909,
             "elasticity": -0.909091,
             "direction": "negative"
@@ -1874,7 +1926,7 @@
   ],
   "minDose": {
     "metric": "normalized_external_dose",
-    "value": 0.425,
+    "value": 0.17,
     "unit": "mg/kg-day"
   },
   "medianDose": {
@@ -1884,16 +1936,27 @@
   },
   "maxDose": {
     "metric": "normalized_external_dose",
-    "value": 1.04,
+    "value": 4.08,
     "unit": "mg/kg-day"
   },
-  "spanRatio": 2.44705882,
+  "spanRatio": 24.0,
   "driverAttribution": [
     {
       "parameterName": "chemical_mass_mg_per_event",
       "unit": "mg/event",
-      "minValue": 20.0,
-      "maxValue": 40.0,
+      "minValue": 8.0,
+      "maxValue": 96.0,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Upper plausible use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    },
+    {
+      "parameterName": "concentration_fraction",
+      "unit": "fraction",
+      "minValue": 0.01,
+      "maxValue": 0.04,
       "scenarioLabels": [
         "Lower plausible use",
         "Upper plausible use"
@@ -1903,8 +1966,8 @@
     {
       "parameterName": "external_mass_mg_per_day",
       "unit": "mg/day",
-      "minValue": 34.0,
-      "maxValue": 83.2,
+      "minValue": 13.6,
+      "maxValue": 326.4,
       "scenarioLabels": [
         "Lower plausible use",
         "Upper plausible use"
@@ -1914,30 +1977,8 @@
     {
       "parameterName": "normalized_external_dose_mg_per_kg_day",
       "unit": "mg/kg-day",
-      "minValue": 0.425,
-      "maxValue": 1.04,
-      "scenarioLabels": [
-        "Lower plausible use",
-        "Upper plausible use"
-      ],
-      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
-    },
-    {
-      "parameterName": "retention_factor",
-      "unit": "fraction",
-      "minValue": 1.0,
-      "maxValue": 0.65,
-      "scenarioLabels": [
-        "Lower plausible use",
-        "Upper plausible use"
-      ],
-      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
-    },
-    {
-      "parameterName": "transfer_efficiency",
-      "unit": "fraction",
-      "minValue": 0.85,
-      "maxValue": 0.8,
+      "minValue": 0.16999999999999998,
+      "maxValue": 4.08,
       "scenarioLabels": [
         "Lower plausible use",
         "Upper plausible use"
@@ -1947,8 +1988,8 @@
     {
       "parameterName": "use_amount_per_event",
       "unit": "g",
-      "minValue": 1.0,
-      "maxValue": 2.0,
+      "minValue": 0.8,
+      "maxValue": 2.4,
       "scenarioLabels": [
         "Lower plausible use",
         "Upper plausible use"
@@ -1958,8 +1999,8 @@
     {
       "parameterName": "use_events_per_day",
       "unit": "events/day",
-      "minValue": 2,
-      "maxValue": 4,
+      "minValue": 2.0,
+      "maxValue": 4.0,
       "scenarioLabels": [
         "Lower plausible use",
         "Upper plausible use"
@@ -1977,16 +2018,33 @@
       ],
       "relatedAssumptions": [
         "chemical_mass_mg_per_event",
+        "concentration_fraction",
         "external_mass_mg_per_day",
         "normalized_external_dose_mg_per_kg_day",
-        "retention_factor",
-        "transfer_efficiency"
+        "use_amount_per_event"
       ],
       "quantificationStatus": "bounded",
       "biasDirection": "bidirectional",
       "impactLevel": "high",
       "summary": "Envelope outputs represent named deterministic archetypes and should not be interpreted as confidence intervals or population probabilities.",
       "recommendation": "Keep archetype definitions explicit and add probability bounds or probabilistic methods only when evidence and dependencies justify them."
+    },
+    {
+      "entryId": "library-governed-archetypes",
+      "title": "Envelope archetypes were instantiated from the packaged library",
+      "uncertaintyTypes": [
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "quantificationStatus": "bounded",
+      "biasDirection": "bidirectional",
+      "impactLevel": "medium",
+      "summary": "Envelope archetypes came from packaged set `adult_leave_on_hand_cream` in library version `2026.03.25.v1`.",
+      "recommendation": "Treat the packaged library as a governed screening starting point and replace it with scenario-specific evidence when higher-fidelity context exists."
     }
   ],
   "dependencyMetadata": [
@@ -2030,11 +2088,18 @@
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
-      "All defaults are surfaced through exposureAssumptionRecord entries."
+      "All defaults are surfaced through exposureAssumptionRecord entries.",
+      "Archetype library set: adult_leave_on_hand_cream",
+      "Archetype library version: 2026.03.25.v1"
     ]
   },
   "interpretation_notes": [
+    "Envelope instantiated from packaged archetype-library set `adult_leave_on_hand_cream`.",
+    "These archetypes bracket plausible adult consumer hand-cream use without claiming frequency in a real population.",
+    "Retention and transfer remain screening assumptions unless explicit scenario evidence replaces them.",
     "This envelope is a deterministic Tier B scenario set, not a probabilistic interval.",
-    "Archetype definitions remain the primary explanation for the resulting span."
+    "Archetype definitions remain the primary explanation for the resulting span.",
+    "Library limitation: Dermal absorption and internal dose remain outside this archetype set.",
+    "Library limitation: The set is intended for leave-on hand application only."
   ]
 }

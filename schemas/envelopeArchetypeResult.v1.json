@@ -1300,6 +1300,18 @@
   },
   "additionalProperties": false,
   "properties": {
+    "templateId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Templateid"
+    },
     "label": {
       "description": "Archetype label.",
       "title": "Label",

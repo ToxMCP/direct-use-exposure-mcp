@@ -8,9 +8,11 @@ from typing import Annotated
 from mcp.server.fastmcp import FastMCP
 from mcp.types import CallToolResult, TextContent
 
+from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.contracts import (
     algorithm_notes,
+    archetype_library_manifest,
     build_contract_manifest,
     build_examples,
     build_release_metadata_report,
@@ -21,6 +23,7 @@ from exposure_scenario_mcp.contracts import (
 from exposure_scenario_mcp.defaults import DefaultsRegistry, defaults_evidence_map
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.guidance import (
+    archetype_library_guide,
     conformance_report_markdown,
     operator_guide,
     provenance_policy,
@@ -44,6 +47,7 @@ from exposure_scenario_mcp.integrations import (
 from exposure_scenario_mcp.models import (
     AggregateExposureSummary,
     BuildAggregateExposureScenarioInput,
+    BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     CompareExposureScenariosInput,
@@ -70,6 +74,7 @@ from exposure_scenario_mcp.runtime import (
 )
 from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
+    build_exposure_envelope_from_library,
     build_parameter_bounds_summary,
 )
 from exposure_scenario_mcp.validation import validation_manifest
@@ -93,6 +98,7 @@ def _error_result(error: ExposureScenarioError) -> CallToolResult:
 
 def create_mcp_server() -> FastMCP:
     defaults_registry = DefaultsRegistry.load()
+    archetype_library = ArchetypeLibraryRegistry.load()
     plugin_registry = PluginRegistry()
     plugin_registry.register(ScreeningScenarioPlugin())
     plugin_registry.register(InhalationScreeningPlugin())
@@ -167,6 +173,35 @@ def create_mcp_server() -> FastMCP:
             envelope = build_exposure_envelope(params, engine, defaults_registry)
             return _success_result(
                 f"Built deterministic envelope {envelope.envelope_id}.",
+                envelope,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_exposure_envelope_from_library",
+        annotations={
+            "title": "Build Exposure Envelope From Library",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_build_exposure_envelope_from_library(
+        params: BuildExposureEnvelopeFromLibraryInput,
+    ) -> Annotated[CallToolResult, ExposureEnvelopeSummary]:
+        """Build a deterministic Tier B envelope from a packaged archetype-library set."""
+
+        try:
+            envelope = build_exposure_envelope_from_library(
+                params,
+                engine,
+                defaults_registry,
+                archetype_library,
+            )
+            return _success_result(
+                f"Built library-backed envelope {envelope.envelope_id}.",
                 envelope,
             )
         except ExposureScenarioError as error:
@@ -356,11 +391,23 @@ def create_mcp_server() -> FastMCP:
 
         return json.dumps(defaults_registry.manifest(), indent=2)
 
+    @mcp.resource("archetypes://manifest")
+    def packaged_archetypes_manifest() -> str:
+        """Machine-readable packaged archetype-library manifest."""
+
+        return json.dumps(archetype_library_manifest(), indent=2)
+
     @mcp.resource("docs://algorithm-notes")
     def docs_algorithm_notes() -> str:
         """Deterministic algorithm notes for the public engines."""
 
         return algorithm_notes()
+
+    @mcp.resource("docs://archetype-library-guide")
+    def docs_archetype_library_guide() -> str:
+        """Guide to the packaged Tier B archetype library and its guardrails."""
+
+        return archetype_library_guide()
 
     @mcp.resource("docs://defaults-evidence-map")
     def docs_defaults_evidence_map() -> str:

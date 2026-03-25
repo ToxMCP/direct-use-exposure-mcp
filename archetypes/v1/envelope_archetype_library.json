@@ -1,0 +1,291 @@
+{
+  "library_version": "2026.03.25.v1",
+  "notes": [
+    "Packaged Tier B archetype sets are deterministic screening templates, not population distributions.",
+    "Each set uses caller-supplied chemical identity and fixed route/scenario semantics.",
+    "Archetype differences should remain explicit and interpretable before any later probabilistic tier is introduced."
+  ],
+  "sets": [
+    {
+      "setId": "adult_leave_on_hand_cream",
+      "label": "Adult leave-on hand cream envelope",
+      "description": "Tier B dermal screening archetypes for adult leave-on hand cream use.",
+      "route": "dermal",
+      "scenarioClass": "screening",
+      "chemicalScope": "caller_supplied",
+      "intendedUse": "Tier B dermal screening envelope for personal-care hand cream use patterns.",
+      "driverParameters": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "interpretationNotes": [
+        "These archetypes bracket plausible adult consumer hand-cream use without claiming frequency in a real population.",
+        "Retention and transfer remain screening assumptions unless explicit scenario evidence replaces them."
+      ],
+      "limitations": [
+        "Dermal absorption and internal dose remain outside this archetype set.",
+        "The set is intended for leave-on hand application only."
+      ],
+      "archetypes": [
+        {
+          "templateId": "adult_leave_on_hand_cream_low",
+          "label": "Lower plausible use",
+          "description": "Reduced concentration, amount, and frequency for lower-bound screening.",
+          "productUseProfile": {
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.01,
+            "use_amount_per_event": 0.8,
+            "use_amount_unit": "g",
+            "use_events_per_day": 2
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "demographic_tags": [
+              "consumer",
+              "general_population"
+            ],
+            "region": "EU"
+          }
+        },
+        {
+          "templateId": "adult_leave_on_hand_cream_typical",
+          "label": "Typical use",
+          "description": "Baseline adult leave-on hand cream screening archetype.",
+          "productUseProfile": {
+            "product_name": "Example Hand Cream",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 1.5,
+            "use_amount_unit": "g",
+            "use_events_per_day": 3
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "demographic_tags": [
+              "consumer",
+              "general_population"
+            ],
+            "region": "EU"
+          }
+        },
+        {
+          "templateId": "adult_leave_on_hand_cream_high",
+          "label": "Upper plausible use",
+          "description": "Higher concentration, amount, and frequency for upper-bound screening.",
+          "productUseProfile": {
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.04,
+            "use_amount_per_event": 2.4,
+            "use_amount_unit": "g",
+            "use_events_per_day": 4
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "demographic_tags": [
+              "consumer",
+              "general_population"
+            ],
+            "region": "EU"
+          }
+        }
+      ]
+    },
+    {
+      "setId": "adult_trigger_spray_room",
+      "label": "Adult trigger spray room envelope",
+      "description": "Tier B inhalation screening archetypes for adult trigger-spray room use.",
+      "route": "inhalation",
+      "scenarioClass": "inhalation",
+      "chemicalScope": "caller_supplied",
+      "intendedUse": "Tier B inhalation screening envelope for room-scale trigger-spray use.",
+      "driverParameters": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "room_volume_m3",
+        "air_exchange_rate_per_hour"
+      ],
+      "interpretationNotes": [
+        "The set stays within Tier 0 well-mixed room semantics and does not claim breathing-zone peak behavior.",
+        "Microenvironment parameters are intentionally packaged together rather than sampled independently."
+      ],
+      "limitations": [
+        "Directed jet, near-field plume, and transient breathing-zone peaks are not resolved.",
+        "The set is intended for trigger-spray room use, not aerosols or compressed sprays."
+      ],
+      "archetypes": [
+        {
+          "templateId": "adult_trigger_spray_room_low",
+          "label": "Lower plausible use",
+          "description": "Lower concentration and amount in a larger, better-ventilated room.",
+          "productUseProfile": {
+            "product_category": "household_cleaner",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 8.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 1,
+            "room_volume_m3": 35.0,
+            "air_exchange_rate_per_hour": 3.0,
+            "exposure_duration_hours": 0.25
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 68.0,
+            "inhalation_rate_m3_per_hour": 0.9,
+            "region": "EU"
+          }
+        },
+        {
+          "templateId": "adult_trigger_spray_room_typical",
+          "label": "Typical use",
+          "description": "Baseline adult trigger-spray room archetype.",
+          "productUseProfile": {
+            "product_name": "Example Trigger Spray",
+            "product_category": "household_cleaner",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.05,
+            "use_amount_per_event": 12.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 1,
+            "room_volume_m3": 25.0
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 68.0,
+            "inhalation_rate_m3_per_hour": 0.9,
+            "region": "EU"
+          }
+        },
+        {
+          "templateId": "adult_trigger_spray_room_high",
+          "label": "Upper plausible use",
+          "description": "Higher concentration and amount in a smaller, less-ventilated room.",
+          "productUseProfile": {
+            "product_category": "household_cleaner",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.08,
+            "use_amount_per_event": 18.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 2,
+            "room_volume_m3": 18.0,
+            "air_exchange_rate_per_hour": 1.0,
+            "exposure_duration_hours": 0.4
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 68.0,
+            "inhalation_rate_m3_per_hour": 1.0,
+            "region": "EU"
+          }
+        }
+      ]
+    },
+    {
+      "setId": "child_direct_oral_liquid",
+      "label": "Child direct-oral liquid envelope",
+      "description": "Tier B oral screening archetypes for child direct-oral liquid use.",
+      "route": "oral",
+      "scenarioClass": "screening",
+      "chemicalScope": "caller_supplied",
+      "intendedUse": "Tier B oral screening envelope for direct-oral liquid or syrup-like use.",
+      "driverParameters": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+        "ingestion_fraction"
+      ],
+      "interpretationNotes": [
+        "The set is meant for direct-oral or near-complete ingestion screening scenarios.",
+        "Child body weight is kept explicit to preserve denominator transparency."
+      ],
+      "limitations": [
+        "The set is not intended for incidental mouthing or hand-to-mouth transfer.",
+        "No variability or age-stratified distribution is implied by the archetype set."
+      ],
+      "archetypes": [
+        {
+          "templateId": "child_direct_oral_liquid_low",
+          "label": "Lower plausible use",
+          "description": "Reduced concentration and amount for lower-bound oral screening.",
+          "productUseProfile": {
+            "product_category": "medicinal_liquid",
+            "physical_form": "liquid",
+            "application_method": "direct_oral",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.01,
+            "use_amount_per_event": 1.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 1,
+            "density_g_per_ml": 1.0,
+            "ingestion_fraction": 1.0
+          },
+          "populationProfile": {
+            "population_group": "child",
+            "body_weight_kg": 16.0,
+            "region": "EU"
+          }
+        },
+        {
+          "templateId": "child_direct_oral_liquid_typical",
+          "label": "Typical use",
+          "description": "Baseline child direct-oral liquid screening archetype.",
+          "productUseProfile": {
+            "product_category": "medicinal_liquid",
+            "physical_form": "liquid",
+            "application_method": "direct_oral",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 2.5,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 2,
+            "density_g_per_ml": 1.0,
+            "ingestion_fraction": 1.0
+          },
+          "populationProfile": {
+            "population_group": "child",
+            "body_weight_kg": 16.0,
+            "region": "EU"
+          }
+        },
+        {
+          "templateId": "child_direct_oral_liquid_high",
+          "label": "Upper plausible use",
+          "description": "Higher concentration and amount for upper-bound oral screening.",
+          "productUseProfile": {
+            "product_category": "medicinal_liquid",
+            "physical_form": "liquid",
+            "application_method": "direct_oral",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.05,
+            "use_amount_per_event": 5.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 3,
+            "density_g_per_ml": 1.0,
+            "ingestion_fraction": 1.0
+          },
+          "populationProfile": {
+            "population_group": "child",
+            "body_weight_kg": 16.0,
+            "region": "EU"
+          }
+        }
+      ]
+    }
+  ]
+}

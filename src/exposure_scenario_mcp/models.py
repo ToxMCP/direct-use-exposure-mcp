@@ -647,11 +647,60 @@ class BuildAggregateExposureScenarioInput(StrictModel):
 
 
 class EnvelopeArchetypeInput(StrictModel):
+    template_id: str | None = Field(
+        default=None,
+        alias="templateId",
+        description="Optional stable template ID when the archetype comes from a packaged library.",
+    )
     label: str = Field(..., description="Human-readable archetype label.")
     description: str = Field(..., description="Why this archetype belongs in the envelope.")
     request: ExposureScenarioRequest = Field(
         ..., description="Full scenario request representing one deterministic archetype."
     )
+
+
+class ArchetypeLibraryTemplate(StrictModel):
+    template_id: str = Field(..., alias="templateId")
+    label: str = Field(..., description="Human-readable archetype label.")
+    description: str = Field(..., description="Why this archetype belongs in the library set.")
+    product_use_profile: ProductUseProfile = Field(
+        ..., alias="productUseProfile", description="Product-use template for this archetype."
+    )
+    population_profile: PopulationProfile = Field(
+        ..., alias="populationProfile", description="Population template for this archetype."
+    )
+
+
+class ArchetypeLibrarySet(StrictModel):
+    set_id: str = Field(..., alias="setId")
+    label: str = Field(..., description="Human-readable library-set label.")
+    description: str = Field(..., description="What this set is intended to represent.")
+    route: Route = Field(..., description="Common route across the archetypes in this set.")
+    scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
+    chemical_scope: Literal["caller_supplied"] = Field(
+        default="caller_supplied",
+        alias="chemicalScope",
+        description="Whether the caller must inject the target chemical identity.",
+    )
+    intended_use: str = Field(
+        ..., alias="intendedUse", description="Short fit-for-purpose statement for this set."
+    )
+    driver_parameters: list[str] = Field(default_factory=list, alias="driverParameters")
+    interpretation_notes: list[str] = Field(default_factory=list, alias="interpretationNotes")
+    limitations: list[str] = Field(default_factory=list)
+    archetypes: list[ArchetypeLibraryTemplate] = Field(
+        ..., min_length=2, description="Packaged archetype templates for this set."
+    )
+
+
+class ArchetypeLibraryManifest(StrictModel):
+    schema_version: Literal["archetypeLibraryManifest.v1"] = "archetypeLibraryManifest.v1"
+    library_version: str = Field(..., alias="libraryVersion")
+    library_hash_sha256: str = Field(..., alias="libraryHashSha256")
+    path: str = Field(..., description="Package or repository path for the archetype library.")
+    set_count: int = Field(..., alias="setCount", ge=0)
+    notes: list[str] = Field(default_factory=list)
+    sets: list[ArchetypeLibrarySet] = Field(default_factory=list)
 
 
 class BuildExposureEnvelopeInput(StrictModel):
@@ -660,6 +709,25 @@ class BuildExposureEnvelopeInput(StrictModel):
     label: str = Field(..., description="Human-readable envelope label.")
     archetypes: list[EnvelopeArchetypeInput] = Field(
         ..., min_length=2, description="Named deterministic archetypes to evaluate."
+    )
+
+
+class BuildExposureEnvelopeFromLibraryInput(StrictModel):
+    schema_version: Literal["buildExposureEnvelopeFromLibraryInput.v1"] = (
+        "buildExposureEnvelopeFromLibraryInput.v1"
+    )
+    library_set_id: str = Field(
+        ..., alias="librarySetId", description="Packaged archetype-library set identifier."
+    )
+    chemical_id: str = Field(..., alias="chemicalId", description="Target chemical identifier.")
+    chemical_name: str | None = Field(
+        default=None,
+        alias="chemicalName",
+        description="Optional human-readable chemical name injected into every archetype request.",
+    )
+    label: str | None = Field(
+        default=None,
+        description="Optional override for the resulting envelope label.",
     )
 
 
@@ -675,6 +743,7 @@ class BuildParameterBoundsInput(StrictModel):
 
 
 class EnvelopeArchetypeResult(StrictModel):
+    template_id: str | None = Field(default=None, alias="templateId")
     label: str = Field(..., description="Archetype label.")
     description: str = Field(..., description="Archetype description.")
     scenario: ExposureScenario = Field(..., description="Resolved scenario for this archetype.")
@@ -696,6 +765,8 @@ class ExposureEnvelopeSummary(StrictModel):
     route: Route = Field(..., description="Common route across the archetypes.")
     scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
     label: str = Field(..., description="Human-readable envelope label.")
+    archetype_library_set_id: str | None = Field(default=None, alias="archetypeLibrarySetId")
+    archetype_library_version: str | None = Field(default=None, alias="archetypeLibraryVersion")
     uncertainty_tier: UncertaintyTier = Field(
         default=UncertaintyTier.TIER_B, alias="uncertaintyTier"
     )

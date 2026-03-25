@@ -1,0 +1,7 @@
+{
+  "schema_version": "buildExposureEnvelopeFromLibraryInput.v1",
+  "librarySetId": "adult_leave_on_hand_cream",
+  "chemicalId": "DTXSID7020182",
+  "chemicalName": "Example Solvent A",
+  "label": "Example library-backed dermal envelope"
+}

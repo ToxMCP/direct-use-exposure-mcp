@@ -17,6 +17,12 @@
       "description": "Build a deterministic Tier B envelope from named scenario archetypes."
     },
     {
+      "name": "exposure_build_exposure_envelope_from_library",
+      "request_schema": "buildExposureEnvelopeFromLibraryInput.v1",
+      "response_schema": "exposureEnvelopeSummary.v1",
+      "description": "Instantiate a packaged Tier B archetype-library set into a deterministic envelope."
+    },
+    {
       "name": "exposure_build_parameter_bounds_summary",
       "request_schema": "buildParameterBoundsInput.v1",
       "response_schema": "parameterBoundsSummary.v1",
@@ -75,8 +81,16 @@
       "description": "Versioned defaults manifest."
     },
     {
+      "uri": "archetypes://manifest",
+      "description": "Machine-readable packaged Tier B archetype-library manifest."
+    },
+    {
       "uri": "docs://algorithm-notes",
       "description": "Algorithm notes for the deterministic engines."
+    },
+    {
+      "uri": "docs://archetype-library-guide",
+      "description": "Guide to the packaged Tier B archetype library and its guardrails."
     },
     {
       "uri": "docs://defaults-evidence-map",
@@ -171,10 +185,14 @@
     "exposureScenarioRequest.v1": "schemas/exposureScenarioRequest.v1.json",
     "inhalationScenarioRequest.v1": "schemas/inhalationScenarioRequest.v1.json",
     "exposureScenario.v1": "schemas/exposureScenario.v1.json",
+    "archetypeLibraryTemplate.v1": "schemas/archetypeLibraryTemplate.v1.json",
+    "archetypeLibrarySet.v1": "schemas/archetypeLibrarySet.v1.json",
+    "archetypeLibraryManifest.v1": "schemas/archetypeLibraryManifest.v1.json",
     "uncertaintyRegisterEntry.v1": "schemas/uncertaintyRegisterEntry.v1.json",
     "sensitivityRankingEntry.v1": "schemas/sensitivityRankingEntry.v1.json",
     "dependencyDescriptor.v1": "schemas/dependencyDescriptor.v1.json",
     "validationSummary.v1": "schemas/validationSummary.v1.json",
+    "buildExposureEnvelopeFromLibraryInput.v1": "schemas/buildExposureEnvelopeFromLibraryInput.v1.json",
     "parameterBoundInput.v1": "schemas/parameterBoundInput.v1.json",
     "monotonicityCheck.v1": "schemas/monotonicityCheck.v1.json",
     "buildParameterBoundsInput.v1": "schemas/buildParameterBoundsInput.v1.json",
@@ -224,6 +242,8 @@
     "inhalation_request": "schemas/examples/inhalation_request.json",
     "inhalation_scenario": "schemas/examples/inhalation_scenario.json",
     "exposure_envelope_summary": "schemas/examples/exposure_envelope_summary.json",
+    "exposure_envelope_from_library_request": "schemas/examples/exposure_envelope_from_library_request.json",
+    "exposure_envelope_from_library_summary": "schemas/examples/exposure_envelope_from_library_summary.json",
     "parameter_bounds_summary": "schemas/examples/parameter_bounds_summary.json",
     "aggregate_summary": "schemas/examples/aggregate_summary.json",
     "pbpk_input": "schemas/examples/pbpk_input.json",

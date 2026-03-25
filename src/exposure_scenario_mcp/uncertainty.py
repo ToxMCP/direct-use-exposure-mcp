@@ -7,10 +7,16 @@ from statistics import median
 from typing import Literal
 from uuid import uuid4
 
+from exposure_scenario_mcp.archetypes import (
+    ArchetypeLibraryRegistry,
+    build_envelope_input_from_library,
+)
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError, ensure
 from exposure_scenario_mcp.models import (
+    ArchetypeLibrarySet,
     BiasDirection,
+    BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
     DependencyDescriptor,
@@ -714,6 +720,9 @@ def build_exposure_envelope(
         None,
         "Tier B envelope count derived from the supplied archetypes.",
     )
+    template_ids = {
+        (item.label, item.description): item.template_id for item in params.archetypes
+    }
     return ExposureEnvelopeSummary(
         envelope_id=f"env-{uuid4().hex[:12]}",
         chemical_id=params.chemical_id,
@@ -721,7 +730,12 @@ def build_exposure_envelope(
         scenario_class=next(iter(classes)),
         label=params.label,
         archetypes=[
-            EnvelopeArchetypeResult(label=label, description=description, scenario=scenario)
+            EnvelopeArchetypeResult(
+                template_id=template_ids.get((label, description)),
+                label=label,
+                description=description,
+                scenario=scenario,
+            )
             for label, description, scenario in sorted_scenarios
         ],
         min_dose=min_item[2].external_dose,
@@ -753,6 +767,79 @@ def build_exposure_envelope(
             "Archetype definitions remain the primary explanation for the resulting span.",
         ],
     )
+
+
+def _library_backed_envelope(
+    envelope: ExposureEnvelopeSummary,
+    template_set: ArchetypeLibrarySet,
+    library: ArchetypeLibraryRegistry,
+) -> ExposureEnvelopeSummary:
+    uncertainty_register = list(envelope.uncertainty_register)
+    uncertainty_register.append(
+        UncertaintyRegisterEntry(
+            entry_id="library-governed-archetypes",
+            title="Envelope archetypes were instantiated from the packaged library",
+            uncertainty_types=[UncertaintyType.SCENARIO_UNCERTAINTY],
+            related_assumptions=template_set.driver_parameters,
+            quantification_status=UncertaintyQuantificationStatus.BOUNDED,
+            bias_direction=BiasDirection.BIDIRECTIONAL,
+            impact_level="medium",
+            summary=(
+                f"Envelope archetypes came from packaged set `{template_set.set_id}` in "
+                f"library version `{library.version}`."
+            ),
+            recommendation=(
+                "Treat the packaged library as a governed screening starting point and "
+                "replace it with scenario-specific evidence when higher-fidelity context exists."
+            ),
+        )
+    )
+    provenance = envelope.provenance.model_copy(
+        update={
+            "notes": [
+                *envelope.provenance.notes,
+                f"Archetype library set: {template_set.set_id}",
+                f"Archetype library version: {library.version}",
+            ]
+        },
+        deep=True,
+    )
+    return envelope.model_copy(
+        update={
+            "archetype_library_set_id": template_set.set_id,
+            "archetype_library_version": library.version,
+            "uncertainty_register": uncertainty_register,
+            "provenance": provenance,
+            "interpretation_notes": [
+                (
+                    f"Envelope instantiated from packaged archetype-library set "
+                    f"`{template_set.set_id}`."
+                ),
+                *template_set.interpretation_notes,
+                *envelope.interpretation_notes,
+                *[f"Library limitation: {item}" for item in template_set.limitations],
+            ],
+        },
+        deep=True,
+    )
+
+
+def build_exposure_envelope_from_library(
+    params: BuildExposureEnvelopeFromLibraryInput,
+    engine,
+    registry: DefaultsRegistry,
+    library: ArchetypeLibraryRegistry,
+    *,
+    generated_at: str | None = None,
+) -> ExposureEnvelopeSummary:
+    envelope_input, template_set = build_envelope_input_from_library(params, library)
+    envelope = build_exposure_envelope(
+        envelope_input,
+        engine,
+        registry,
+        generated_at=generated_at,
+    )
+    return _library_backed_envelope(envelope, template_set, library)
 
 
 def build_parameter_bounds_summary(

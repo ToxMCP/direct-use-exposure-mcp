@@ -31,12 +31,15 @@ jobs:
           python -m exposure_scenario_mcp --help >/dev/null
           python - <<'PY'
           from exposure_scenario_mcp import __version__
+          from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
           from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
           from exposure_scenario_mcp.contracts import build_release_metadata_report
           from exposure_scenario_mcp.defaults import DefaultsRegistry
 
           registry = DefaultsRegistry.load()
+          archetypes = ArchetypeLibraryRegistry.load()
           assert registry.version == "2026.03.24.v3"
+          assert archetypes.version == "2026.03.25.v1"
           assert len(load_benchmark_manifest()["cases"]) >= 2
           assert build_release_metadata_report(registry).package_version == __version__
           PY
