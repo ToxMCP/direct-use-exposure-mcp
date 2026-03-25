@@ -88,8 +88,8 @@
         "source_id": "heuristic_density_defaults_v1",
         "title": "Exposure Scenario MCP heuristic density screening defaults",
         "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
-        "version": "2026.03.25.v4",
-        "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+        "version": "2026.03.25.v5",
+        "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -254,7 +254,7 @@
         "title": "Characterization of airborne particles from cleaning sprays and their corresponding respiratory deposition fractions",
         "locator": "https://pubmed.ncbi.nlm.nih.gov/31361572/",
         "version": "J Aerosol Sci. 2019",
-        "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+        "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -318,7 +318,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+        "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -350,7 +350,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+        "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -584,8 +584,8 @@
     "algorithm_id": "inhalation.room_well_mixed.v1",
     "plugin_id": "inhalation_screening_plugin",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v4",
-    "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
+    "defaults_version": "2026.03.25.v5",
+    "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

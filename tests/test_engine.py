@@ -147,11 +147,13 @@ def test_inhalation_screening_defaults_and_dose() -> None:
 
     scenario = engine.build(request)
 
-    assert scenario.external_dose.value == pytest.approx(0.02844477, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(0.02744278, rel=1e-6)
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
-        4.29832067, rel=1e-6
+        4.14690847, rel=1e-6
     )
-    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(1.9342443, rel=1e-6)
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
+        1.86610881, rel=1e-6
+    )
     assert any(item.code == "breathing_zone_not_modeled" for item in scenario.limitations)
     assert any(item.code == "tier_0_spray_screening" for item in scenario.quality_flags)
     assert scenario.tier_upgrade_advisories[0].target_tier == TierLevel.TIER_1
@@ -385,6 +387,50 @@ def test_eu_inhalation_room_defaults_use_regional_source() -> None:
     assert air_exchange.source.source_id == "echa_consumer_inhalation_room_defaults"
 
 
+def test_global_inhalation_room_defaults_split_room_and_duration_sources() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="global",
+        ),
+    )
+
+    scenario = engine.build(request)
+    assumptions = {item.name: item for item in scenario.assumptions}
+
+    assert assumptions["room_volume_m3"].value == pytest.approx(20.0, rel=1e-6)
+    assert assumptions["room_volume_m3"].source.source_id == (
+        "rivm_general_fact_sheet_unspecified_room_defaults_2014"
+    )
+    assert assumptions["air_exchange_rate_per_hour"].value == pytest.approx(0.6, rel=1e-6)
+    assert assumptions["air_exchange_rate_per_hour"].source.source_id == (
+        "rivm_general_fact_sheet_unspecified_room_defaults_2014"
+    )
+    assert assumptions["exposure_duration_hours"].value == pytest.approx(0.5, rel=1e-6)
+    assert assumptions["exposure_duration_hours"].source.source_id == (
+        "heuristic_time_limited_release_duration_defaults_v1"
+    )
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        5.18363559, rel=1e-6
+    )
+    assert scenario.external_dose.value == pytest.approx(0.03430347, rel=1e-6)
+
+
 def test_volume_based_cream_uses_physical_form_density_override() -> None:
     engine = build_engine()
     request = ExposureScenarioRequest(
@@ -474,18 +520,15 @@ def test_household_cleaner_pump_spray_uses_product_category_aerosol_override() -
         item for item in scenario.assumptions if item.name == "aerosolized_fraction"
     )
 
-    assert aerosolized_fraction.value == pytest.approx(0.3, rel=1e-6)
-    assert (
-        aerosolized_fraction.source.source_id
-        == "heuristic_residual_spray_airborne_fraction_defaults_v1"
-    )
+    assert aerosolized_fraction.value == pytest.approx(0.2, rel=1e-6)
+    assert aerosolized_fraction.source.source_id == "rivm_cleaning_sprays_airborne_fraction_2018"
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
-        9.48180838, rel=1e-6
+        6.32120559, rel=1e-6
     )
     assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
-        9.48180838, rel=1e-6
+        6.32120559, rel=1e-6
     )
-    assert scenario.external_dose.value == pytest.approx(0.13545441, rel=1e-6)
+    assert scenario.external_dose.value == pytest.approx(0.09030294, rel=1e-6)
 
 
 def test_aggregate_and_compare_flows() -> None:
@@ -554,7 +597,7 @@ def test_aggregate_and_compare_flows() -> None:
     )
 
     assert aggregate.normalized_total_external_dose is not None
-    assert aggregate.normalized_total_external_dose.value == pytest.approx(0.98469477, rel=1e-6)
+    assert aggregate.normalized_total_external_dose.value == pytest.approx(0.98369278, rel=1e-6)
     assert any(item.code == "cross_route_aggregate" for item in aggregate.limitations)
     assert aggregate.uncertainty_tier == UncertaintyTier.TIER_A
     assert aggregate.validation_summary is not None

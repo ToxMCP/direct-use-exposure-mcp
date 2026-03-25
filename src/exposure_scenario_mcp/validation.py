@@ -206,13 +206,14 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             appliesToDomains=["inhalation_well_mixed_spray"],
             relatedSourceIds=[
                 "peer_reviewed_cleaning_trigger_spray_airborne_fraction_2019",
+                "rivm_cleaning_sprays_airborne_fraction_2018",
                 "heuristic_residual_spray_airborne_fraction_defaults_v1",
             ],
             note=(
                 "Tier 0 spray screening is benchmark-regressed and now tied to a real "
-                "cleaning-spray study for trigger-spray airborne fractions, but pump-spray "
-                "and aerosol-spray defaults remain heuristic and no executable chamber "
-                "validation is wired in."
+                "cleaning-spray study for trigger sprays plus an RIVM fact-sheet default for "
+                "household-cleaner surface sprays, but non-cleaner pump-spray and aerosol-"
+                "spray defaults remain heuristic and no executable chamber validation is wired in."
             ),
             recommendation=(
                 "Add raw chamber or room-concentration datasets before promoting spray "
@@ -272,8 +273,8 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             ),
             recommendation=(
                 "Prioritize curated replacements for transfer efficiency, retention, density, "
-                "residual spray airborne fractions, incidental oral defaults, and global room "
-                "microenvironment defaults."
+                "residual non-cleaner spray airborne fractions, incidental oral defaults, and "
+                "time-limited release duration defaults."
             ),
         ),
     ]

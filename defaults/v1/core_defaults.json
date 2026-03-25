@@ -1,41 +1,41 @@
 {
-  "defaults_version": "2026.03.25.v4",
+  "defaults_version": "2026.03.25.v5",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
       "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
       "locator": "docs://defaults-evidence-map#population-defaults",
-      "version": "2026.03.25.v4"
+      "version": "2026.03.25.v5"
     },
     {
       "source_id": "screening_route_semantics_defaults_v1",
       "title": "Exposure Scenario MCP curated screening route-semantics defaults",
       "locator": "docs://defaults-evidence-map#screening-route-semantics",
-      "version": "2026.03.25.v4"
+      "version": "2026.03.25.v5"
     },
     {
       "source_id": "heuristic_density_defaults_v1",
       "title": "Exposure Scenario MCP heuristic density screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
-      "version": "2026.03.25.v4"
+      "version": "2026.03.25.v5"
     },
     {
       "source_id": "heuristic_retention_defaults_v1",
       "title": "Exposure Scenario MCP heuristic retention screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-retention-defaults",
-      "version": "2026.03.25.v4"
+      "version": "2026.03.25.v5"
     },
     {
       "source_id": "heuristic_transfer_efficiency_defaults_v1",
       "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-      "version": "2026.03.25.v4"
+      "version": "2026.03.25.v5"
     },
     {
       "source_id": "heuristic_incidental_oral_defaults_v1",
       "title": "Exposure Scenario MCP heuristic incidental-oral screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-incidental-oral-defaults",
-      "version": "2026.03.25.v4"
+      "version": "2026.03.25.v5"
     },
     {
       "source_id": "peer_reviewed_cleaning_trigger_spray_airborne_fraction_2019",
@@ -44,16 +44,28 @@
       "version": "J Aerosol Sci. 2019"
     },
     {
+      "source_id": "rivm_cleaning_sprays_airborne_fraction_2018",
+      "title": "RIVM Cleaning Products Fact Sheet airborne fraction default for cleaning sprays",
+      "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
+      "version": "RIVM report 2016-0179 / 2018"
+    },
+    {
       "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
       "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
       "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
-      "version": "2026.03.25.v4"
+      "version": "2026.03.25.v5"
     },
     {
-      "source_id": "heuristic_global_room_defaults_v1",
-      "title": "Exposure Scenario MCP heuristic global room screening defaults",
-      "locator": "docs://defaults-evidence-map#heuristic-global-room-defaults",
-      "version": "2026.03.25.v4"
+      "source_id": "rivm_general_fact_sheet_unspecified_room_defaults_2014",
+      "title": "RIVM General Fact Sheet unspecified-room defaults for consumer exposure",
+      "locator": "https://www.rivm.nl/bibliotheek/rapporten/090013003.pdf",
+      "version": "RIVM report 090013003 / 2014"
+    },
+    {
+      "source_id": "heuristic_time_limited_release_duration_defaults_v1",
+      "title": "Exposure Scenario MCP heuristic time-limited release duration defaults",
+      "locator": "docs://defaults-evidence-map#heuristic-time-limited-release-duration-defaults",
+      "version": "2026.03.25.v5"
     },
     {
       "source_id": "epa_exposure_factors_handbook_2011",
@@ -181,11 +193,11 @@
         "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1"
       }
     },
-    "product_category_overrides": {
-      "household_cleaner": {
-        "pump_spray": {
-          "value": 0.3,
-          "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1"
+      "product_category_overrides": {
+        "household_cleaner": {
+          "pump_spray": {
+          "value": 0.2,
+          "source_id": "rivm_cleaning_sprays_airborne_fraction_2018"
         }
       }
     }
@@ -193,9 +205,11 @@
   "room_defaults": {
     "global": {
       "room_volume_m3": 20.0,
-      "air_exchange_rate_per_hour": 0.45,
+      "room_volume_source_id": "rivm_general_fact_sheet_unspecified_room_defaults_2014",
+      "air_exchange_rate_per_hour": 0.6,
+      "air_exchange_rate_source_id": "rivm_general_fact_sheet_unspecified_room_defaults_2014",
       "exposure_duration_hours": 0.5,
-      "source_id": "heuristic_global_room_defaults_v1"
+      "exposure_duration_source_id": "heuristic_time_limited_release_duration_defaults_v1"
     },
     "regional_overrides": {
       "eu": {

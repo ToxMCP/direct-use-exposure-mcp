@@ -208,7 +208,7 @@ def build_inhalation_tier_1_screening_scenario(
             ),
         )
 
-    room_defaults, room_source = registry.room_defaults(population.region)
+    room_defaults, room_sources = registry.room_defaults(population.region)
     room_volume_m3 = profile.room_volume_m3
     if room_volume_m3 is None:
         room_volume_m3 = room_defaults["room_volume_m3"]
@@ -216,7 +216,7 @@ def build_inhalation_tier_1_screening_scenario(
             "room_volume_m3",
             room_volume_m3,
             "m3",
-            room_source,
+            room_sources["room_volume_m3"],
             "Room volume defaulted from the shared inhalation defaults pack.",
         )
     else:
@@ -231,7 +231,7 @@ def build_inhalation_tier_1_screening_scenario(
             "air_exchange_rate_per_hour",
             air_exchange,
             "1/h",
-            room_source,
+            room_sources["air_exchange_rate_per_hour"],
             "Air exchange rate defaulted from the shared inhalation defaults pack.",
         )
     else:
@@ -249,7 +249,7 @@ def build_inhalation_tier_1_screening_scenario(
             "exposure_duration_hours",
             exposure_duration_hours,
             "h",
-            room_source,
+            room_sources["exposure_duration_hours"],
             "Exposure duration defaulted from the shared inhalation defaults pack.",
         )
     else:
@@ -713,7 +713,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 ),
             )
 
-        room_defaults, room_source = registry.room_defaults(population.region)
+        room_defaults, room_sources = registry.room_defaults(population.region)
         room_volume_m3 = profile.room_volume_m3
         if room_volume_m3 is None:
             room_volume_m3 = room_defaults["room_volume_m3"]
@@ -721,7 +721,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 "room_volume_m3",
                 room_volume_m3,
                 "m3",
-                room_source,
+                room_sources["room_volume_m3"],
                 "Room volume defaulted from the shared inhalation defaults pack.",
             )
         else:
@@ -736,7 +736,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 "air_exchange_rate_per_hour",
                 air_exchange,
                 "1/h",
-                room_source,
+                room_sources["air_exchange_rate_per_hour"],
                 "Air exchange rate defaulted from the shared inhalation defaults pack.",
             )
         else:
@@ -754,7 +754,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 "exposure_duration_hours",
                 exposure_duration_hours,
                 "h",
-                room_source,
+                room_sources["exposure_duration_hours"],
                 "Exposure duration defaulted from the shared inhalation defaults pack.",
             )
         else:

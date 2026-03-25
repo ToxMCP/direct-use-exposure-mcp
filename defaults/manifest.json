@@ -1,7 +1,7 @@
 {
-  "defaults_version": "2026.03.25.v4",
-  "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
-  "source_count": 11,
+  "defaults_version": "2026.03.25.v5",
+  "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
+  "source_count": 13,
   "supported_regions": [
     "eu",
     "global"

@@ -201,19 +201,51 @@ class DefaultsRegistry:
 
     def room_defaults(
         self, region: str = "global"
-    ) -> tuple[dict[str, float], AssumptionSourceReference]:
+    ) -> tuple[dict[str, float], dict[str, AssumptionSourceReference]]:
         entry = self.payload["room_defaults"]
-        if "global" in entry:
-            base = dict(entry["global"])
-            override = entry.get("regional_overrides", {}).get(region.lower())
-            if override:
-                base.update(override)
-            entry = base
-        return {
-            "room_volume_m3": float(entry["room_volume_m3"]),
-            "air_exchange_rate_per_hour": float(entry["air_exchange_rate_per_hour"]),
-            "exposure_duration_hours": float(entry["exposure_duration_hours"]),
-        }, self._source(entry["source_id"])
+        if "global" not in entry:
+            source = self._source(entry["source_id"])
+            values = {
+                "room_volume_m3": float(entry["room_volume_m3"]),
+                "air_exchange_rate_per_hour": float(entry["air_exchange_rate_per_hour"]),
+                "exposure_duration_hours": float(entry["exposure_duration_hours"]),
+            }
+            return values, {name: source for name in values}
+
+        global_entry = entry["global"]
+        override = entry.get("regional_overrides", {}).get(region.lower(), {})
+
+        def resolve_value(name: str) -> float:
+            if name in override:
+                return float(override[name])
+            return float(global_entry[name])
+
+        def resolve_source(name: str, source_field: str) -> AssumptionSourceReference:
+            if source_field in override:
+                return self._source(override[source_field])
+            if name in override and "source_id" in override:
+                return self._source(override["source_id"])
+            if source_field in global_entry:
+                return self._source(global_entry[source_field])
+            return self._source(global_entry["source_id"])
+
+        values = {
+            "room_volume_m3": resolve_value("room_volume_m3"),
+            "air_exchange_rate_per_hour": resolve_value("air_exchange_rate_per_hour"),
+            "exposure_duration_hours": resolve_value("exposure_duration_hours"),
+        }
+        sources = {
+            "room_volume_m3": resolve_source("room_volume_m3", "room_volume_source_id"),
+            "air_exchange_rate_per_hour": resolve_source(
+                "air_exchange_rate_per_hour",
+                "air_exchange_rate_source_id",
+            ),
+            "exposure_duration_hours": resolve_source(
+                "exposure_duration_hours",
+                "exposure_duration_source_id",
+            ),
+        }
+        return values, sources
 
 
 def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
@@ -281,17 +313,30 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  generic heuristic pack. It is still only a partial validation anchor, not a full",
             "  scenario-calibration dataset.",
             "",
+            "### RIVM Cleaning Sprays Airborne Fraction 2018",
+            "",
+            "- `rivm_cleaning_sprays_airborne_fraction_2018` anchors the household-cleaner",
+            "  surface-spray airborne fraction to the updated RIVM Cleaning Products Fact Sheet,",
+            "  which sets a default airborne fraction of `0.2` for cleaning sprays used toward",
+            "  surfaces.",
+            "",
             "### Heuristic Spray Airborne Fraction Defaults",
             "",
             "- `heuristic_residual_spray_airborne_fraction_defaults_v1` covers the remaining",
-            "  pump-spray, aerosol-spray, and household-cleaner pump-spray airborne fractions that",
-            "  still need curated product-family evidence packs.",
+            "  non-cleaner pump-spray and aerosol-spray airborne fractions that still need curated",
+            "  product-family evidence packs.",
             "",
-            "### Heuristic Global Room Defaults",
+            "### RIVM General Fact Sheet Unspecified Room Defaults 2014",
             "",
-            "- `heuristic_global_room_defaults_v1` covers the generic global room volume, air",
-            "  exchange, and post-use duration fallback when no better regional or use-specific",
-            "  microenvironment pack is available.",
+            "- `rivm_general_fact_sheet_unspecified_room_defaults_2014` anchors the generic",
+            "  unspecified-room volume (`20 m3`) and air exchange rate (`0.6 1/h`) to the RIVM",
+            "  General Fact Sheet rather than a purely internal heuristic pack.",
+            "",
+            "### Heuristic Time-Limited Release Duration Defaults",
+            "",
+            "- `heuristic_time_limited_release_duration_defaults_v1` covers the post-use exposure",
+            "  duration fallback for short room-release scenarios. This remains heuristic because",
+            "  duration is strongly use-context dependent even when the room geometry is known.",
             "",
             "### ECHA Consumer Inhalation Room Defaults",
             "",

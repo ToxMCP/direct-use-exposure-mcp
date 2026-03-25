@@ -197,8 +197,8 @@
           "source_id": "benchmark_population_defaults_v1",
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v4",
-          "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+          "version": "2026.03.25.v5",
+          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -227,8 +227,8 @@
           "source_id": "screening_route_semantics_defaults_v1",
           "title": "Exposure Scenario MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
-          "version": "2026.03.25.v4",
-          "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+          "version": "2026.03.25.v5",
+          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -260,8 +260,8 @@
           "source_id": "heuristic_transfer_efficiency_defaults_v1",
           "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
           "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-          "version": "2026.03.25.v4",
-          "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+          "version": "2026.03.25.v5",
+          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -329,8 +329,8 @@
           "source_id": "benchmark_population_defaults_v1",
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v4",
-          "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+          "version": "2026.03.25.v5",
+          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -393,8 +393,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v4",
-      "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
+      "defaults_version": "2026.03.25.v5",
+      "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -819,8 +819,8 @@
           "source_id": "benchmark_population_defaults_v1",
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v4",
-          "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+          "version": "2026.03.25.v5",
+          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -951,8 +951,8 @@
           "source_id": "benchmark_population_defaults_v1",
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v4",
-          "hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6"
+          "version": "2026.03.25.v5",
+          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1015,8 +1015,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v4",
-      "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
+      "defaults_version": "2026.03.25.v5",
+      "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -1267,8 +1267,8 @@
       "algorithm_id": "scenario.compare.v1",
       "plugin_id": "scenario_comparison_service",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v4",
-      "defaults_hash_sha256": "45e8bdd046ed15c38f3114f103a38b73a9b181b5bc036a76c32a4ede8cc623c6",
+      "defaults_version": "2026.03.25.v5",
+      "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -1279,9 +1279,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "7c6347b2c8baf380e12e8f1ba258bd9b37d67c078e568587bcb3fd439f4fa3dc",
+    "contentHash": "8a8718641bb0fa3df42e78ecb24a2420ae36155c05fb96d94d53d62065e8b689",
     "dataClassification": "internal",
-    "evidenceId": "evidence-bec58e56cd3e1ac9",
+    "evidenceId": "evidence-4321fc2643205061",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1303,8 +1303,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "7c6347b2c8baf380e12e8f1ba258bd9b37d67c078e568587bcb3fd439f4fa3dc",
-    "evidenceId": "evidence-bec58e56cd3e1ac9",
+    "contentHash": "8a8718641bb0fa3df42e78ecb24a2420ae36155c05fb96d94d53d62065e8b689",
+    "evidenceId": "evidence-4321fc2643205061",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1332,7 +1332,7 @@
         "claimId": "claim-ccedda32d15779e5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-bec58e56cd3e1ac9"
+          "evidence-4321fc2643205061"
         ],
         "text": "Baseline scenario exp-example-dermal-001 estimates 0.95625 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day."
       },
@@ -1341,7 +1341,7 @@
         "claimId": "claim-9265919b6d39ec15",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-bec58e56cd3e1ac9"
+          "evidence-4321fc2643205061"
         ],
         "text": "Comparison dose decreased by 38.82% relative to baseline."
       },
@@ -1350,7 +1350,7 @@
         "claimId": "claim-98be2d7dd8221ca2",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-bec58e56cd3e1ac9"
+          "evidence-4321fc2643205061"
         ],
         "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
       },
@@ -1359,13 +1359,13 @@
         "claimId": "claim-0409d2d114518ff0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-bec58e56cd3e1ac9"
+          "evidence-4321fc2643205061"
         ],
         "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
       }
     ],
     "evidenceIds": [
-      "evidence-bec58e56cd3e1ac9"
+      "evidence-4321fc2643205061"
     ],
     "sectionKey": "exposure-refinement",
     "title": "Exposure Refinement Delta"
