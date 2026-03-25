@@ -14,6 +14,7 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 
 - The MCP surface is machine-readable through the contract manifest and schema resources.
 - Defaults are versioned and hashed.
+- Defaults curation status is published branch-by-branch through `defaults://curation-report`.
 - Packaged Tier 1 inhalation airflow, particle, and product-family screening profiles are
   versioned, hashed, and published as a machine-readable manifest.
 - The Tier 1 parameter-pack documentation resource is published so source locators used in the

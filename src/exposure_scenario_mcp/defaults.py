@@ -11,10 +11,28 @@ from typing import Any
 
 from exposure_scenario_mcp.assets import read_text_asset
 from exposure_scenario_mcp.errors import ExposureScenarioError, ensure
-from exposure_scenario_mcp.models import AssumptionSourceReference
+from exposure_scenario_mcp.models import (
+    AssumptionSourceReference,
+    DefaultsCurationEntry,
+    DefaultsCurationReport,
+    DefaultsCurationStatus,
+)
 
 DEFAULTS_REPO_RELATIVE_PATH = Path("defaults/v1/core_defaults.json")
 DEFAULTS_PACKAGE_RELATIVE_PATH = "data/defaults/v1/core_defaults.json"
+DEFAULT_PARAMETER_UNITS = {
+    "body_weight_kg": "kg",
+    "inhalation_rate_m3_per_hour": "m3/h",
+    "exposed_surface_area_cm2": "cm2",
+    "density_g_per_ml": "g/mL",
+    "retention_factor": "fraction",
+    "transfer_efficiency": "fraction",
+    "ingestion_fraction": "fraction",
+    "aerosolized_fraction": "fraction",
+    "room_volume_m3": "m3",
+    "air_exchange_rate_per_hour": "1/h",
+    "exposure_duration_hours": "h",
+}
 
 
 @dataclass(slots=True)
@@ -401,3 +419,230 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
         ]
     )
     return "\n".join(lines)
+
+
+def _curation_status(source_id: str) -> DefaultsCurationStatus:
+    if source_id.startswith("heuristic_"):
+        return DefaultsCurationStatus.HEURISTIC
+    if source_id.startswith("screening_"):
+        return DefaultsCurationStatus.ROUTE_SEMANTIC
+    return DefaultsCurationStatus.CURATED
+
+
+def _path_id(parameter_name: str, applicability: dict[str, object]) -> str:
+    if not applicability:
+        return f"{parameter_name}:global"
+    selectors = ",".join(f"{key}={applicability[key]}" for key in sorted(applicability))
+    return f"{parameter_name}:{selectors}"
+
+
+def _entry_note(
+    parameter_name: str,
+    source_id: str,
+    applicability: dict[str, object],
+) -> str | None:
+    if source_id.startswith("heuristic_"):
+        return (
+            f"`{parameter_name}` still resolves from a heuristic screening family for this "
+            "applicability branch."
+        )
+    if source_id.startswith("screening_"):
+        return (
+            f"`{parameter_name}` is treated as a route-semantic boundary condition for this "
+            "branch rather than an empirical fitted factor."
+        )
+    if applicability:
+        selectors = ", ".join(f"{key}={value}" for key, value in sorted(applicability.items()))
+        return f"Curated default branch resolved for {selectors}."
+    return "Curated default branch resolved for the global fallback."
+
+
+def _append_entry(
+    entries: list[DefaultsCurationEntry],
+    registry: DefaultsRegistry,
+    *,
+    parameter_name: str,
+    value: object,
+    source_id: str,
+    applicability: dict[str, object] | None = None,
+) -> None:
+    applicability = applicability or {}
+    source = registry.source_reference(source_id)
+    entries.append(
+        DefaultsCurationEntry(
+            pathId=_path_id(parameter_name, applicability),
+            parameterName=parameter_name,
+            applicability=applicability,
+            value=value,
+            unit=DEFAULT_PARAMETER_UNITS.get(parameter_name),
+            sourceId=source.source_id,
+            sourceLocator=source.locator,
+            curationStatus=_curation_status(source.source_id),
+            note=_entry_note(parameter_name, source.source_id, applicability),
+        )
+    )
+
+
+def build_defaults_curation_report(
+    registry: DefaultsRegistry | None = None,
+) -> DefaultsCurationReport:
+    active_registry = registry or DefaultsRegistry.load()
+    payload = active_registry.payload
+    entries: list[DefaultsCurationEntry] = []
+
+    for population_group, entry in payload.get("population_defaults", {}).items():
+        for parameter_name in (
+            "body_weight_kg",
+            "inhalation_rate_m3_per_hour",
+            "exposed_surface_area_cm2",
+        ):
+            _append_entry(
+                entries,
+                active_registry,
+                parameter_name=parameter_name,
+                value=entry[parameter_name],
+                source_id=entry["source_id"],
+                applicability={"population_group": population_group},
+            )
+
+    conversion_defaults = payload.get("conversion_defaults", {})
+    global_density = conversion_defaults.get("global")
+    if global_density:
+        _append_entry(
+            entries,
+            active_registry,
+            parameter_name="density_g_per_ml",
+            value=global_density["density_g_per_ml"],
+            source_id=global_density["source_id"],
+        )
+    for product_category, entry in (
+        conversion_defaults.get("product_category_overrides", {}).items()
+    ):
+        _append_entry(
+            entries,
+            active_registry,
+            parameter_name="density_g_per_ml",
+            value=entry["density_g_per_ml"],
+            source_id=entry["source_id"],
+            applicability={"product_category": product_category},
+        )
+    for physical_form, entry in conversion_defaults.get("physical_form_overrides", {}).items():
+        _append_entry(
+            entries,
+            active_registry,
+            parameter_name="density_g_per_ml",
+            value=entry["density_g_per_ml"],
+            source_id=entry["source_id"],
+            applicability={"physical_form": physical_form},
+        )
+
+    def append_method_family(
+        section_name: str,
+        parameter_name: str,
+        selector_key: str,
+    ) -> None:
+        section = payload.get(section_name, {})
+        global_entries = section.get("global", section if "global" not in section else {})
+        for selector_value, entry in global_entries.items():
+            if not isinstance(entry, dict) or "value" not in entry:
+                continue
+            _append_entry(
+                entries,
+                active_registry,
+                parameter_name=parameter_name,
+                value=entry["value"],
+                source_id=entry["source_id"],
+                applicability={selector_key: selector_value},
+            )
+        for category, category_entries in section.get("product_category_overrides", {}).items():
+            for selector_value, entry in category_entries.items():
+                _append_entry(
+                    entries,
+                    active_registry,
+                    parameter_name=parameter_name,
+                    value=entry["value"],
+                    source_id=entry["source_id"],
+                    applicability={"product_category": category, selector_key: selector_value},
+                )
+
+    append_method_family("retention_factor_defaults", "retention_factor", "retention_type")
+    append_method_family(
+        "transfer_efficiency_defaults",
+        "transfer_efficiency",
+        "application_method",
+    )
+
+    for application_method, entry in payload.get("ingestion_fraction_defaults", {}).items():
+        _append_entry(
+            entries,
+            active_registry,
+            parameter_name="ingestion_fraction",
+            value=entry["value"],
+            source_id=entry["source_id"],
+            applicability={"application_method": application_method},
+        )
+
+    append_method_family(
+        "aerosolized_fraction_defaults",
+        "aerosolized_fraction",
+        "application_method",
+    )
+
+    room_defaults = payload.get("room_defaults", {})
+    room_global = room_defaults.get("global", {})
+    for parameter_name, source_field in (
+        ("room_volume_m3", "room_volume_source_id"),
+        ("air_exchange_rate_per_hour", "air_exchange_rate_source_id"),
+        ("exposure_duration_hours", "exposure_duration_source_id"),
+    ):
+        if parameter_name in room_global:
+            _append_entry(
+                entries,
+                active_registry,
+                parameter_name=parameter_name,
+                value=room_global[parameter_name],
+                source_id=room_global[source_field],
+            )
+    for region, entry in room_defaults.get("regional_overrides", {}).items():
+        for parameter_name, source_field in (
+            ("room_volume_m3", "room_volume_source_id"),
+            ("air_exchange_rate_per_hour", "air_exchange_rate_source_id"),
+            ("exposure_duration_hours", "exposure_duration_source_id"),
+        ):
+            if parameter_name not in entry:
+                continue
+            source_id = entry.get(source_field, entry.get("source_id"))
+            _append_entry(
+                entries,
+                active_registry,
+                parameter_name=parameter_name,
+                value=entry[parameter_name],
+                source_id=source_id,
+                applicability={"region": region},
+            )
+
+    curated_count = sum(
+        1 for item in entries if item.curation_status == DefaultsCurationStatus.CURATED
+    )
+    heuristic_count = sum(
+        1 for item in entries if item.curation_status == DefaultsCurationStatus.HEURISTIC
+    )
+    route_semantic_count = sum(
+        1 for item in entries if item.curation_status == DefaultsCurationStatus.ROUTE_SEMANTIC
+    )
+    return DefaultsCurationReport(
+        defaultsVersion=active_registry.version,
+        defaultsHashSha256=active_registry.sha256,
+        entryCount=len(entries),
+        curatedEntryCount=curated_count,
+        heuristicEntryCount=heuristic_count,
+        routeSemanticEntryCount=route_semantic_count,
+        entries=entries,
+        notes=[
+            "This report resolves the published defaults pack into parameter-level branches with "
+            "explicit applicability selectors.",
+            "Curated means the branch resolves from a non-heuristic evidence-linked source family.",
+            "Route-semantic means the branch is a deterministic screening boundary condition "
+            "rather than an empirical exposure-factor fit.",
+        ],
+    )

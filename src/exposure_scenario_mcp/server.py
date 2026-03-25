@@ -23,11 +23,16 @@ from exposure_scenario_mcp.contracts import (
     schema_payloads,
     tier1_inhalation_parameter_manifest,
 )
-from exposure_scenario_mcp.defaults import DefaultsRegistry, defaults_evidence_map
+from exposure_scenario_mcp.defaults import (
+    DefaultsRegistry,
+    build_defaults_curation_report,
+    defaults_evidence_map,
+)
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     conformance_report_markdown,
+    defaults_curation_report_markdown,
     inhalation_tier_upgrade_guide,
     operator_guide,
     probability_bounds_guide,
@@ -503,6 +508,15 @@ def create_mcp_server() -> FastMCP:
 
         return json.dumps(defaults_registry.manifest(), indent=2)
 
+    @mcp.resource("defaults://curation-report")
+    def defaults_curation_report_resource() -> str:
+        """Machine-readable parameter-branch curation report for defaults."""
+
+        payload = build_defaults_curation_report(defaults_registry).model_dump(
+            mode="json", by_alias=True
+        )
+        return json.dumps(payload, indent=2)
+
     @mcp.resource("tier1-inhalation://manifest")
     def tier1_inhalation_manifest() -> str:
         """Machine-readable Tier 1 inhalation parameter and product-profile manifest."""
@@ -556,6 +570,12 @@ def create_mcp_server() -> FastMCP:
         """Source register and interpretation notes for defaults and benchmarks."""
 
         return defaults_evidence_map(defaults_registry)
+
+    @mcp.resource("docs://defaults-curation-report")
+    def docs_defaults_curation_report() -> str:
+        """Human-readable summary of curated and heuristic defaults branches."""
+
+        return defaults_curation_report_markdown()
 
     @mcp.resource("docs://operator-guide")
     def docs_operator_guide() -> str:

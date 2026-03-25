@@ -99,6 +99,10 @@
       "description": "Versioned defaults manifest."
     },
     {
+      "uri": "defaults://curation-report",
+      "description": "Machine-readable parameter-branch curation report for defaults."
+    },
+    {
       "uri": "tier1-inhalation://manifest",
       "description": "Machine-readable packaged Tier 1 inhalation parameter and product-profile manifest."
     },
@@ -133,6 +137,10 @@
     {
       "uri": "docs://defaults-evidence-map",
       "description": "Source register and interpretation notes for defaults and heuristics."
+    },
+    {
+      "uri": "docs://defaults-curation-report",
+      "description": "Human-readable summary of curated and heuristic defaults branches."
     },
     {
       "uri": "docs://operator-guide",
@@ -251,6 +259,8 @@
     "externalValidationDataset.v1": "schemas/externalValidationDataset.v1.json",
     "validationGap.v1": "schemas/validationGap.v1.json",
     "executedValidationCheck.v1": "schemas/executedValidationCheck.v1.json",
+    "defaultsCurationEntry.v1": "schemas/defaultsCurationEntry.v1.json",
+    "defaultsCurationReport.v1": "schemas/defaultsCurationReport.v1.json",
     "validationDossierReport.v1": "schemas/validationDossierReport.v1.json",
     "validationSummary.v1": "schemas/validationSummary.v1.json",
     "tierUpgradeInputRequirement.v1": "schemas/tierUpgradeInputRequirement.v1.json",

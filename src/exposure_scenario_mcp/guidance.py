@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
+from exposure_scenario_mcp.defaults import build_defaults_curation_report
 from exposure_scenario_mcp.models import (
     ReleaseMetadataReport,
     ReleaseReadinessReport,
@@ -488,6 +489,39 @@ def validation_framework() -> str:
     lines.extend(["", "## Open Validation Gaps", ""])
     for item in report.open_gaps:
         lines.append(f"- `{item.gap_id}` [{item.severity.value}] {item.title}")
+    lines.extend(["", "## Notes", ""])
+    lines.extend(f"- {item}" for item in report.notes)
+    return "\n".join(lines)
+
+
+def defaults_curation_report_markdown() -> str:
+    report = build_defaults_curation_report()
+    lines = [
+        "# Defaults Curation Report",
+        "",
+        f"- Defaults version: `{report.defaults_version}`",
+        f"- Total branches: `{report.entry_count}`",
+        f"- Curated branches: `{report.curated_entry_count}`",
+        f"- Route-semantic branches: `{report.route_semantic_entry_count}`",
+        f"- Heuristic branches: `{report.heuristic_entry_count}`",
+        "",
+        "## Curated Highlights",
+        "",
+    ]
+    for entry in report.entries:
+        if entry.curation_status.value != "curated":
+            continue
+        if entry.parameter_name not in {"retention_factor", "transfer_efficiency"}:
+            continue
+        selectors = ", ".join(
+            f"{key}={value}" for key, value in sorted(entry.applicability.items())
+        ) or "global"
+        lines.append(f"- `{entry.path_id}` -> `{entry.source_id}` ({selectors})")
+    lines.extend(["", "## Residual Heuristic Branches", ""])
+    for entry in report.entries:
+        if entry.curation_status.value != "heuristic":
+            continue
+        lines.append(f"- `{entry.path_id}` -> `{entry.source_id}`")
     lines.extend(["", "## Notes", ""])
     lines.extend(f"- {item}" for item in report.notes)
     return "\n".join(lines)

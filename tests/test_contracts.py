@@ -11,7 +11,7 @@ from exposure_scenario_mcp.contracts import (
     build_release_readiness_report,
     build_security_provenance_review_report,
 )
-from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.defaults import DefaultsRegistry, build_defaults_curation_report
 from exposure_scenario_mcp.server import create_mcp_server
 from exposure_scenario_mcp.validation import build_validation_dossier_report
 from scripts.generate_contract_assets import main as generate_contract_assets
@@ -101,6 +101,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "externalValidationDataset.v1" in manifest["schemas"]
     assert "validationGap.v1" in manifest["schemas"]
     assert "executedValidationCheck.v1" in manifest["schemas"]
+    assert "defaultsCurationEntry.v1" in manifest["schemas"]
+    assert "defaultsCurationReport.v1" in manifest["schemas"]
     assert "validationDossierReport.v1" in manifest["schemas"]
     assert "validationSummary.v1" in manifest["schemas"]
     assert "tierUpgradeInputRequirement.v1" in manifest["schemas"]
@@ -146,9 +148,11 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://tier1-inhalation-parameter-guide",
         "docs://uncertainty-framework",
         "docs://inhalation-tier-upgrade-guide",
+        "docs://defaults-curation-report",
         "docs://validation-framework",
         "docs://validation-dossier",
         "docs://troubleshooting",
+        "defaults://curation-report",
         "tier1-inhalation://manifest",
         "archetypes://manifest",
         "probability-bounds://manifest",
@@ -186,6 +190,37 @@ def test_validation_dossier_report_matches_schema_and_surface() -> None:
     assert "rivm_wet_cloth_dermal_contact_loading_2018" in {
         item["datasetId"] for item in report["externalDatasets"]
     }
+
+
+def test_defaults_curation_report_matches_schema_and_surface() -> None:
+    generate_contract_assets()
+    schema = json.loads((SCHEMA_DIR / "defaultsCurationReport.v1.json").read_text(encoding="utf-8"))
+    report = build_defaults_curation_report(DefaultsRegistry.load()).model_dump(
+        mode="json", by_alias=True
+    )
+
+    validate(instance=report, schema=schema)
+    assert report["defaultsVersion"] == DefaultsRegistry.load().version
+    assert report["heuristicEntryCount"] > 0
+    cleaner_wipe_transfer = (
+        "transfer_efficiency:application_method=wipe,product_category=household_cleaner"
+    )
+    cleaner_surface_contact = (
+        "retention_factor:product_category=household_cleaner,retention_type=surface_contact"
+    )
+    assert any(
+        item["pathId"] == cleaner_wipe_transfer and item["curationStatus"] == "curated"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"] == cleaner_surface_contact and item["curationStatus"] == "curated"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"] == "transfer_efficiency:application_method=wipe"
+        and item["curationStatus"] == "heuristic"
+        for item in report["entries"]
+    )
 
 
 def test_release_readiness_report_matches_schema_and_manifest_counts() -> None:

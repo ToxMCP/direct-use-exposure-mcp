@@ -9,6 +9,7 @@ from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     conformance_report_markdown,
+    defaults_curation_report_markdown,
     inhalation_tier_upgrade_guide,
     probability_bounds_guide,
     release_notes_markdown,
@@ -42,6 +43,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     uncertainty = uncertainty_framework()
     validation = validation_framework()
     dossier = validation_dossier_markdown()
+    defaults_curation = defaults_curation_report_markdown()
     archetypes = archetype_library_guide()
     inhalation_tier_guide = inhalation_tier_upgrade_guide()
     tier1_parameter_guide = tier1_inhalation_parameter_guide()
@@ -87,3 +89,13 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Validation Dossier" in dossier
     assert "`heuristic_defaults_active`" in dossier
     assert "`tier1_nf_ff_external_validation_partial_only`" in dossier
+    assert "Defaults Curation Report" in defaults_curation
+    cleaner_wipe_transfer = (
+        "`transfer_efficiency:application_method=wipe,product_category=household_cleaner`"
+    )
+    cleaner_surface_contact = (
+        "`retention_factor:product_category=household_cleaner,retention_type=surface_contact`"
+    )
+    assert cleaner_wipe_transfer in defaults_curation
+    assert cleaner_surface_contact in defaults_curation
+    assert "Residual Heuristic Branches" in defaults_curation

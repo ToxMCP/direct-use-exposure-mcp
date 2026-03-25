@@ -45,6 +45,8 @@ from exposure_scenario_mcp.models import (
     ContractPromptEntry,
     ContractResourceEntry,
     ContractToolEntry,
+    DefaultsCurationEntry,
+    DefaultsCurationReport,
     DependencyDescriptor,
     EnvelopeArchetypeInput,
     EnvelopeArchetypeResult,
@@ -131,6 +133,8 @@ SCHEMA_MODELS = {
     "externalValidationDataset.v1": ExternalValidationDataset,
     "validationGap.v1": ValidationGap,
     "executedValidationCheck.v1": ExecutedValidationCheck,
+    "defaultsCurationEntry.v1": DefaultsCurationEntry,
+    "defaultsCurationReport.v1": DefaultsCurationReport,
     "validationDossierReport.v1": ValidationDossierReport,
     "validationSummary.v1": ValidationSummary,
     "tierUpgradeInputRequirement.v1": TierUpgradeInputRequirement,
@@ -323,6 +327,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 uri="defaults://manifest", description="Versioned defaults manifest."
             ),
             ContractResourceEntry(
+                uri="defaults://curation-report",
+                description="Machine-readable parameter-branch curation report for defaults.",
+            ),
+            ContractResourceEntry(
                 uri="tier1-inhalation://manifest",
                 description=(
                     "Machine-readable packaged Tier 1 inhalation parameter and "
@@ -366,6 +374,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="docs://defaults-evidence-map",
                 description="Source register and interpretation notes for defaults and heuristics.",
+            ),
+            ContractResourceEntry(
+                uri="docs://defaults-curation-report",
+                description="Human-readable summary of curated and heuristic defaults branches.",
             ),
             ContractResourceEntry(
                 uri="docs://operator-guide",

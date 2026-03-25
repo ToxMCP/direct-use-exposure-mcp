@@ -122,6 +122,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `Refinement workflow support` | Emits comparison/refinement bundles with explicit `refine_exposure` semantics and workflow hooks. |
 | `Validation dossier` | Publishes a typed validation dossier with benchmark domains, cited external validation datasets, heuristic-source families, and open evidence gaps, and threads evidence-readiness, executed validation checks, and gap IDs into every scenario-level `validationSummary`. |
 | `Curated dermal contact packs` | Replaces the highest-volume transfer and surface-contact-retention heuristics with RIVM-backed screening defaults for `personal_care` hand application and `household_cleaner` wipe contact while preserving explicit applicability domains and remaining evidence gaps. |
+| `Defaults curation report` | Publishes a typed branch-level report showing which defaults paths are curated, route-semantic, or still heuristic, so downstream clients can target the strongest scenario branches deliberately. |
 | `Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
 | `Scientific guardrails` | Keeps BER, PoD derivation, PBPK execution, and final risk conclusions outside this server while publishing assumption governance and tier semantics on every scenario. |
 
@@ -172,6 +173,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `schemas://{schema_name}`
 - `examples://{example_name}`
 - `defaults://manifest`
+- `defaults://curation-report`
 - `tier1-inhalation://manifest`
 - `archetypes://manifest`
 - `probability-bounds://manifest`
@@ -188,6 +190,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `docs://tier1-inhalation-parameter-guide`
 - `docs://inhalation-tier-upgrade-guide`
 - `docs://defaults-evidence-map`
+- `docs://defaults-curation-report`
 - `docs://operator-guide`
 - `docs://provenance-policy`
 - `docs://result-status-semantics`

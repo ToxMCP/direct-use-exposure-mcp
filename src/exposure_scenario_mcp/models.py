@@ -205,6 +205,12 @@ class ValidationCheckStatus(StrEnum):
     OUT_OF_DOMAIN = "out_of_domain"
 
 
+class DefaultsCurationStatus(StrEnum):
+    CURATED = "curated"
+    HEURISTIC = "heuristic"
+    ROUTE_SEMANTIC = "route_semantic"
+
+
 class AssumptionSourceReference(StrictModel):
     source_id: str = Field(..., description="Stable identifier for the source.")
     title: str = Field(..., description="Human-readable source title.")
@@ -429,6 +435,32 @@ class ValidationDossierReport(StrictModel):
     )
     heuristic_source_ids: list[str] = Field(default_factory=list, alias="heuristicSourceIds")
     open_gaps: list[ValidationGap] = Field(default_factory=list, alias="openGaps")
+    notes: list[str] = Field(default_factory=list)
+
+
+class DefaultsCurationEntry(StrictModel):
+    path_id: str = Field(..., alias="pathId")
+    parameter_name: str = Field(..., alias="parameterName")
+    applicability: dict[str, ScalarValue] = Field(default_factory=dict)
+    value: ScalarValue = None
+    unit: str | None = None
+    source_id: str = Field(..., alias="sourceId")
+    source_locator: str = Field(..., alias="sourceLocator")
+    curation_status: DefaultsCurationStatus = Field(..., alias="curationStatus")
+    note: str | None = None
+
+
+class DefaultsCurationReport(StrictModel):
+    schema_version: Literal["defaultsCurationReport.v1"] = Field(
+        default="defaultsCurationReport.v1", alias="schemaVersion"
+    )
+    defaults_version: str = Field(..., alias="defaultsVersion")
+    defaults_hash_sha256: str = Field(..., alias="defaultsHashSha256")
+    entry_count: int = Field(..., alias="entryCount", ge=0)
+    curated_entry_count: int = Field(..., alias="curatedEntryCount", ge=0)
+    heuristic_entry_count: int = Field(..., alias="heuristicEntryCount", ge=0)
+    route_semantic_entry_count: int = Field(..., alias="routeSemanticEntryCount", ge=0)
+    entries: list[DefaultsCurationEntry] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
 
 

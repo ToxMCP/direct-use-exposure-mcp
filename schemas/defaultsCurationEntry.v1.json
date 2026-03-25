@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "DefaultsCurationStatus": {
+      "enum": [
+        "curated",
+        "heuristic",
+        "route_semantic"
+      ],
+      "title": "DefaultsCurationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "pathId": {
+      "title": "Pathid",
+      "type": "string"
+    },
+    "parameterName": {
+      "title": "Parametername",
+      "type": "string"
+    },
+    "applicability": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Applicability",
+      "type": "object"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "sourceId": {
+      "title": "Sourceid",
+      "type": "string"
+    },
+    "sourceLocator": {
+      "title": "Sourcelocator",
+      "type": "string"
+    },
+    "curationStatus": {
+      "$ref": "#/$defs/DefaultsCurationStatus"
+    },
+    "note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Note"
+    }
+  },
+  "required": [
+    "pathId",
+    "parameterName",
+    "sourceId",
+    "sourceLocator",
+    "curationStatus"
+  ],
+  "title": "DefaultsCurationEntry",
+  "type": "object"
+}

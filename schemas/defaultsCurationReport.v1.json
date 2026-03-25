@@ -1,0 +1,175 @@
+{
+  "$defs": {
+    "DefaultsCurationEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "pathId": {
+          "title": "Pathid",
+          "type": "string"
+        },
+        "parameterName": {
+          "title": "Parametername",
+          "type": "string"
+        },
+        "applicability": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Applicability",
+          "type": "object"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "sourceId": {
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "sourceLocator": {
+          "title": "Sourcelocator",
+          "type": "string"
+        },
+        "curationStatus": {
+          "$ref": "#/$defs/DefaultsCurationStatus"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "pathId",
+        "parameterName",
+        "sourceId",
+        "sourceLocator",
+        "curationStatus"
+      ],
+      "title": "DefaultsCurationEntry",
+      "type": "object"
+    },
+    "DefaultsCurationStatus": {
+      "enum": [
+        "curated",
+        "heuristic",
+        "route_semantic"
+      ],
+      "title": "DefaultsCurationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "defaultsCurationReport.v1",
+      "default": "defaultsCurationReport.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "defaultsVersion": {
+      "title": "Defaultsversion",
+      "type": "string"
+    },
+    "defaultsHashSha256": {
+      "title": "Defaultshashsha256",
+      "type": "string"
+    },
+    "entryCount": {
+      "minimum": 0,
+      "title": "Entrycount",
+      "type": "integer"
+    },
+    "curatedEntryCount": {
+      "minimum": 0,
+      "title": "Curatedentrycount",
+      "type": "integer"
+    },
+    "heuristicEntryCount": {
+      "minimum": 0,
+      "title": "Heuristicentrycount",
+      "type": "integer"
+    },
+    "routeSemanticEntryCount": {
+      "minimum": 0,
+      "title": "Routesemanticentrycount",
+      "type": "integer"
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/DefaultsCurationEntry"
+      },
+      "title": "Entries",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "defaultsVersion",
+    "defaultsHashSha256",
+    "entryCount",
+    "curatedEntryCount",
+    "heuristicEntryCount",
+    "routeSemanticEntryCount"
+  ],
+  "title": "DefaultsCurationReport",
+  "type": "object"
+}
