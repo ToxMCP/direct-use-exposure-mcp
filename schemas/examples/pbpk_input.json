@@ -18,6 +18,7 @@
   },
   "supporting_assumption_names": [
     "use_amount_per_event",
+    "product_mass_g_per_event",
     "concentration_fraction",
     "use_events_per_day",
     "chemical_mass_mg_per_event",
@@ -33,8 +34,8 @@
     "algorithm_id": "pbpk.export.v1",
     "plugin_id": "pbpk_export_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v5",
-    "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
+    "defaults_version": "2026.03.25.v6",
+    "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

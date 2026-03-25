@@ -100,6 +100,7 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "validationBenchmarkDomain.v1" in manifest["schemas"]
     assert "externalValidationDataset.v1" in manifest["schemas"]
     assert "validationGap.v1" in manifest["schemas"]
+    assert "executedValidationCheck.v1" in manifest["schemas"]
     assert "validationDossierReport.v1" in manifest["schemas"]
     assert "validationSummary.v1" in manifest["schemas"]
     assert "tierUpgradeInputRequirement.v1" in manifest["schemas"]
@@ -177,9 +178,12 @@ def test_validation_dossier_report_matches_schema_and_surface() -> None:
     )
 
     validate(instance=report, schema=schema)
-    assert report["policyVersion"] == "2026.03.25.v3"
+    assert report["policyVersion"] == "2026.03.25.v4"
     assert "heuristic_defaults_active" in {item["gapId"] for item in report["openGaps"]}
     assert "consumer_spray_inhalation_exposure_2015" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
+    assert "rivm_wet_cloth_dermal_contact_loading_2018" in {
         item["datasetId"] for item in report["externalDatasets"]
     }
 

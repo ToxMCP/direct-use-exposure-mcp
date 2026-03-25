@@ -470,6 +470,18 @@ def validation_framework() -> str:
         if item.reference_title and item.reference_locator:
             prefix += f" Reference: {item.reference_title} ({item.reference_locator})."
         lines.append(prefix)
+    lines.extend(
+        [
+            "",
+            "## Executable Validation Checks",
+            "",
+            "- `validationSummary.executedValidationChecks` is populated only when a scenario",
+            "  matches a supported reference pattern with directly comparable metrics.",
+            "- Current executable checks cover hand-cream loading realism for hand-scale",
+            "  dermal scenarios and wet-cloth contact mass realism for household-cleaner",
+            "  wipe scenarios.",
+        ]
+    )
     lines.extend(["", "## Heuristic Source Families", ""])
     for source_id in report.heuristic_source_ids:
         lines.append(f"- `{source_id}`")

@@ -1,5 +1,63 @@
 {
   "$defs": {
+    "ExecutedValidationCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "checkId": {
+          "title": "Checkid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "referenceDatasetId": {
+          "title": "Referencedatasetid",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ValidationCheckStatus"
+        },
+        "comparedMetric": {
+          "title": "Comparedmetric",
+          "type": "string"
+        },
+        "observedValue": {
+          "title": "Observedvalue",
+          "type": "number"
+        },
+        "referenceLower": {
+          "title": "Referencelower",
+          "type": "number"
+        },
+        "referenceUpper": {
+          "title": "Referenceupper",
+          "type": "number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "checkId",
+        "title",
+        "referenceDatasetId",
+        "status",
+        "comparedMetric",
+        "observedValue",
+        "referenceLower",
+        "referenceUpper",
+        "unit",
+        "note"
+      ],
+      "title": "ExecutedValidationCheck",
+      "type": "object"
+    },
     "UncertaintyTier": {
       "enum": [
         "tier_a",
@@ -9,6 +67,15 @@
         "tier_e"
       ],
       "title": "UncertaintyTier",
+      "type": "string"
+    },
+    "ValidationCheckStatus": {
+      "enum": [
+        "pass",
+        "warning",
+        "out_of_domain"
+      ],
+      "title": "ValidationCheckStatus",
       "type": "string"
     },
     "ValidationEvidenceReadiness": {
@@ -70,6 +137,13 @@
         "type": "string"
       },
       "title": "Validationgapids",
+      "type": "array"
+    },
+    "executedValidationChecks": {
+      "items": {
+        "$ref": "#/$defs/ExecutedValidationCheck"
+      },
+      "title": "Executedvalidationchecks",
       "type": "array"
     },
     "highestSupportedUncertaintyTier": {

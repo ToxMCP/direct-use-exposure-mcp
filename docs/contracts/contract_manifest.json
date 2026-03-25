@@ -2,7 +2,7 @@
   "schema_version": "contractManifest.v1",
   "server_name": "exposure_scenario_mcp",
   "server_version": "0.1.0",
-  "defaults_version": "2026.03.25.v5",
+  "defaults_version": "2026.03.25.v6",
   "tools": [
     {
       "name": "exposure_build_screening_exposure_scenario",
@@ -250,6 +250,7 @@
     "validationBenchmarkDomain.v1": "schemas/validationBenchmarkDomain.v1.json",
     "externalValidationDataset.v1": "schemas/externalValidationDataset.v1.json",
     "validationGap.v1": "schemas/validationGap.v1.json",
+    "executedValidationCheck.v1": "schemas/executedValidationCheck.v1.json",
     "validationDossierReport.v1": "schemas/validationDossierReport.v1.json",
     "validationSummary.v1": "schemas/validationSummary.v1.json",
     "tierUpgradeInputRequirement.v1": "schemas/tierUpgradeInputRequirement.v1.json",

@@ -30,7 +30,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - Scenario-package probability profiles can evaluate packaged Tier 1 inhalation archetype states
   when a governed near-field/far-field set is published for the target use context.
 - A typed validation dossier is published so benchmark domains, cited external validation
-  datasets, heuristic source families, and open evidence gaps are machine-readable rather than prose-only.
+  datasets, heuristic source families, open evidence gaps, and executable validation checks are
+  machine-readable rather than prose-only.
 - Scenario, aggregate, comparison, and PBPK export outputs carry provenance.
 - Scenario outputs publish Tier A uncertainty diagnostics, and Tier B support is limited to
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.

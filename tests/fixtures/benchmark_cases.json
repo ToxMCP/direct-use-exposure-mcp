@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.03.25.v5",
+  "defaults_version": "2026.03.25.v6",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -409,7 +409,7 @@
           "body_weight_kg": 80.0,
           "region": "EU"
         },
-        "supporting_assumption_count": 10
+        "supporting_assumption_count": 11
       }
     },
     {

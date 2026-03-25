@@ -5,7 +5,7 @@
   "packageVersion": "0.1.0",
   "serverName": "exposure_scenario_mcp",
   "serverVersion": "0.1.0",
-  "defaultsVersion": "2026.03.25.v5",
+  "defaultsVersion": "2026.03.25.v6",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
   "benchmarkCaseCount": 10,
@@ -21,7 +21,7 @@
     "dermal_pbpk_external_import_package",
     "inhalation_tier1_scenario_package_probability"
   ],
-  "contractSchemaCount": 79,
+  "contractSchemaCount": 80,
   "contractExampleCount": 33,
   "distributionArtifacts": [
     {
@@ -29,16 +29,16 @@
       "filename": "exposure_scenario_mcp-0.1.0-py3-none-any.whl",
       "relativePath": "dist/exposure_scenario_mcp-0.1.0-py3-none-any.whl",
       "present": true,
-      "sha256": "b4b66ccfff43ddb892ad47d2c04d6c1682e2a7e3a89649680862b5848a0ab6b5",
-      "sizeBytes": 128594
+      "sha256": "2371a0a97dd4c45ea3e78c97dd2606f55e1f53b3bcc441d2e813d98bfe7435ca",
+      "sizeBytes": 130498
     },
     {
       "kind": "sdist",
       "filename": "exposure_scenario_mcp-0.1.0.tar.gz",
       "relativePath": "dist/exposure_scenario_mcp-0.1.0.tar.gz",
       "present": true,
-      "sha256": "5228bf6d8cbca3f0cc865b82fed701a1f49dd7c17cf6d9e5ccb73b3b26a9a968",
-      "sizeBytes": 674139
+      "sha256": "0a28330cce71088f5e3b5fafb4f9c7ba42961fe8c2c6285258adab6ebbbfb016",
+      "sizeBytes": 688297
     }
   ],
   "publishedDocs": [

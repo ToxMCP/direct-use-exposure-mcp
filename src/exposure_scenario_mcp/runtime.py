@@ -90,6 +90,12 @@ def resolve_product_mass_g(
             "g",
             "Product amount per event was supplied directly in grams.",
         )
+        tracker.add_derived(
+            "product_mass_g_per_event",
+            profile.use_amount_per_event,
+            "g",
+            "Mass-based use amount already represents product mass per event.",
+        )
         return profile.use_amount_per_event
 
     tracker.add_user(

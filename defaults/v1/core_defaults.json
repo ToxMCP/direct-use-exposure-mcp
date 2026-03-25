@@ -1,41 +1,47 @@
 {
-  "defaults_version": "2026.03.25.v5",
+  "defaults_version": "2026.03.25.v6",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
       "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
       "locator": "docs://defaults-evidence-map#population-defaults",
-      "version": "2026.03.25.v5"
+      "version": "2026.03.25.v6"
     },
     {
       "source_id": "screening_route_semantics_defaults_v1",
       "title": "Exposure Scenario MCP curated screening route-semantics defaults",
       "locator": "docs://defaults-evidence-map#screening-route-semantics",
-      "version": "2026.03.25.v5"
+      "version": "2026.03.25.v6"
     },
     {
       "source_id": "heuristic_density_defaults_v1",
       "title": "Exposure Scenario MCP heuristic density screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
-      "version": "2026.03.25.v5"
+      "version": "2026.03.25.v6"
+    },
+    {
+      "source_id": "fda_sccs_retention_factor_defaults_2024",
+      "title": "FDA PFAS cosmetics report using SCCS retention-factor conventions",
+      "locator": "https://www.fda.gov/media/190319/download",
+      "version": "FDA report 2024 with SCCS 2023 retention-factor conventions"
     },
     {
       "source_id": "heuristic_retention_defaults_v1",
       "title": "Exposure Scenario MCP heuristic retention screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-retention-defaults",
-      "version": "2026.03.25.v5"
+      "version": "2026.03.25.v6"
     },
     {
       "source_id": "heuristic_transfer_efficiency_defaults_v1",
       "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-      "version": "2026.03.25.v5"
+      "version": "2026.03.25.v6"
     },
     {
       "source_id": "heuristic_incidental_oral_defaults_v1",
       "title": "Exposure Scenario MCP heuristic incidental-oral screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-incidental-oral-defaults",
-      "version": "2026.03.25.v5"
+      "version": "2026.03.25.v6"
     },
     {
       "source_id": "peer_reviewed_cleaning_trigger_spray_airborne_fraction_2019",
@@ -53,7 +59,7 @@
       "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
       "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
       "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
-      "version": "2026.03.25.v5"
+      "version": "2026.03.25.v6"
     },
     {
       "source_id": "rivm_general_fact_sheet_unspecified_room_defaults_2014",
@@ -65,7 +71,7 @@
       "source_id": "heuristic_time_limited_release_duration_defaults_v1",
       "title": "Exposure Scenario MCP heuristic time-limited release duration defaults",
       "locator": "docs://defaults-evidence-map#heuristic-time-limited-release-duration-defaults",
-      "version": "2026.03.25.v5"
+      "version": "2026.03.25.v6"
     },
     {
       "source_id": "epa_exposure_factors_handbook_2011",
@@ -129,7 +135,7 @@
     },
     "rinse_off": {
       "value": 0.01,
-      "source_id": "heuristic_retention_defaults_v1"
+      "source_id": "fda_sccs_retention_factor_defaults_2024"
     },
     "surface_contact": {
       "value": 0.2,

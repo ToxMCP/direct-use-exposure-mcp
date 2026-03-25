@@ -5,6 +5,7 @@ from __future__ import annotations
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
+    ExecutedValidationCheck,
     ExposureScenario,
     ExternalValidationDataset,
     ExternalValidationDatasetStatus,
@@ -12,6 +13,7 @@ from exposure_scenario_mcp.models import (
     TierLevel,
     UncertaintyTier,
     ValidationBenchmarkDomain,
+    ValidationCheckStatus,
     ValidationDossierReport,
     ValidationEvidenceReadiness,
     ValidationGap,
@@ -72,6 +74,11 @@ BENCHMARK_DOMAIN_NOTES = {
     ],
 }
 
+HAND_CREAM_LOADING_REFERENCE_LOWER = 0.37
+HAND_CREAM_LOADING_REFERENCE_UPPER = 1.57
+WET_CLOTH_CONTACT_REFERENCE_LOWER = 0.31
+WET_CLOTH_CONTACT_REFERENCE_UPPER = 0.62
+
 EXTERNAL_VALIDATION_DATASETS = [
     ExternalValidationDataset(
         datasetId="cleaning_trigger_spray_airborne_mass_fraction_2019",
@@ -131,8 +138,26 @@ EXTERNAL_VALIDATION_DATASETS = [
         referenceLocator="https://pubmed.ncbi.nlm.nih.gov/22709142/",
         note=(
             "Observed mean skin-protection-cream dose was 0.97 ± 0.6 mg/cm² across 31 nurses "
-            "over five workdays. This is useful for direct-application amount realism, but "
-            "it does not validate the MCP transfer or retention factors."
+            "over five workdays. This is useful for direct-application amount realism and "
+            "supports a narrow executable loading check when a hand-scale exposed area is "
+            "supplied, but it does not validate the MCP transfer or retention factors."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="rivm_wet_cloth_dermal_contact_loading_2018",
+        domain="dermal_secondary_transfer",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable="product mass subject to dermal exposure from touching a wet cloth",
+        targetMetrics=["product_contact_mass_g_per_event"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["household_cleaner"],
+        referenceTitle="Cleaning Products Fact Sheet",
+        referenceLocator="https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
+        note=(
+            "RIVM cleaning-product scenarios derive wet-cloth dermal contact amounts of "
+            "0.31 g for an all-purpose cleaner spray rinsing case and 0.62 g for a floor "
+            "cleaner liquid case. These support an executable secondary-contact realism "
+            "check for household-cleaner wipe scenarios, but not a calibrated transfer model."
         ),
     ),
     ExternalValidationDataset(
@@ -232,8 +257,9 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             ],
             note=(
                 "Dermal direct-application amount realism is now linked to a real workplace "
-                "cream-application study, but transfer efficiency and retention factors "
-                "remain screening defaults and secondary-transfer validation is still thin."
+                "cream-application study, transfer efficiency and surface-contact retention "
+                "still rely on screening defaults, and only a narrow wet-cloth reference "
+                "check is executable for secondary transfer."
             ),
             recommendation=(
                 "Replace transfer and retention heuristics with curated packs tied to product "
@@ -322,7 +348,7 @@ def build_validation_dossier_report(
         for domain, case_ids in sorted(benchmark_domains.items())
     ]
     return ValidationDossierReport(
-        policyVersion="2026.03.25.v3",
+        policyVersion="2026.03.25.v4",
         benchmarkDomains=domains,
         externalDatasets=EXTERNAL_VALIDATION_DATASETS,
         heuristicSourceIds=_heuristic_source_ids(active_registry),
@@ -335,7 +361,12 @@ def build_validation_dossier_report(
             ),
             (
                 "Reference-linked validation targets are published for inhalation, dermal, "
-                "and direct-oral screening, but none are wired into executable scoring yet."
+                "and direct-oral screening, and selected dermal scenarios now support narrow "
+                "executable reference checks."
+            ),
+            (
+                "Selected dermal scenarios now support narrow executable reference checks "
+                "through validationSummary.executedValidationChecks."
             ),
             (
                 "Tier 1 inhalation NF/FF screening is implemented for spray scenarios, but "
@@ -383,6 +414,98 @@ def _scenario_validation_gap_ids(
     return gap_ids
 
 
+def _assumption_value(scenario: ExposureScenario, name: str) -> float | None:
+    for item in scenario.assumptions:
+        if item.name == name and isinstance(item.value, int | float):
+            return float(item.value)
+    return None
+
+
+def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedValidationCheck]:
+    profile = scenario.product_use_profile
+    checks: list[ExecutedValidationCheck] = []
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.product_category == "personal_care"
+        and profile.physical_form == "cream"
+        and profile.application_method == "hand_application"
+        and profile.retention_type == "leave_on"
+    ):
+        exposed_area = _assumption_value(scenario, "exposed_surface_area_cm2")
+        product_mass_g_event = _assumption_value(scenario, "product_mass_g_per_event")
+        if (
+            exposed_area is not None
+            and product_mass_g_event is not None
+            and 0.0 < exposed_area <= 1200.0
+        ):
+            observed = (product_mass_g_event * 1000.0) / exposed_area
+            status = (
+                ValidationCheckStatus.PASS
+                if HAND_CREAM_LOADING_REFERENCE_LOWER
+                <= observed
+                <= HAND_CREAM_LOADING_REFERENCE_UPPER
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="hand_cream_application_loading_2012",
+                    title="Hand cream application loading vs nurse workplace study",
+                    referenceDatasetId="skin_protection_cream_dose_per_area_2012",
+                    status=status,
+                    comparedMetric="product_loading_mg_per_cm2_per_event",
+                    observedValue=round(observed, 8),
+                    referenceLower=HAND_CREAM_LOADING_REFERENCE_LOWER,
+                    referenceUpper=HAND_CREAM_LOADING_REFERENCE_UPPER,
+                    unit="mg/cm2/event",
+                    note=(
+                        "Observed hand-cream application loading is compared against the "
+                        "reported mean ± SD band from Schliemann et al. when the supplied "
+                        "exposed area is hand-scale."
+                    ),
+                )
+            )
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.product_category == "household_cleaner"
+        and profile.application_method == "wipe"
+        and profile.retention_type == "surface_contact"
+        and profile.concentration_fraction > 0.0
+        and profile.use_events_per_day > 0.0
+    ):
+        external_mass_mg_day = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
+        observed = external_mass_mg_day / (
+            1000.0 * profile.concentration_fraction * profile.use_events_per_day
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if WET_CLOTH_CONTACT_REFERENCE_LOWER
+            <= observed
+            <= WET_CLOTH_CONTACT_REFERENCE_UPPER
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="wet_cloth_contact_mass_2018",
+                title="Wet-cloth cleaner contact mass vs RIVM cleaning-product scenarios",
+                referenceDatasetId="rivm_wet_cloth_dermal_contact_loading_2018",
+                status=status,
+                comparedMetric="product_contact_mass_g_per_event",
+                observedValue=round(observed, 8),
+                referenceLower=WET_CLOTH_CONTACT_REFERENCE_LOWER,
+                referenceUpper=WET_CLOTH_CONTACT_REFERENCE_UPPER,
+                unit="g/event",
+                note=(
+                    "Observed product mass at the skin boundary is compared against RIVM "
+                    "wet-cloth contact amounts derived for household cleaning scenarios."
+                ),
+            )
+        )
+
+    return checks
+
+
 def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
     route_mechanism = infer_route_mechanism(scenario)
     dossier = build_validation_dossier_report()
@@ -402,6 +525,7 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
         for item in scenario.assumptions
         if item.source.source_id.startswith("heuristic_")
     )
+    executed_validation_checks = _executed_validation_checks(scenario)
     validation_status = (
         ValidationStatus.BENCHMARK_REGRESSION
         if benchmark_case_ids
@@ -419,6 +543,7 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
             heuristic_assumption_names=heuristic_assumption_names,
             dossier=dossier,
         ),
+        executed_validation_checks=executed_validation_checks,
         highest_supported_uncertainty_tier=highest_supported_tier,
         probabilistic_enablement="blocked",
         notes=[
@@ -435,5 +560,15 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
                 "Probabilistic outputs stay disabled until dependencies and validation "
                 "evidence mature."
             ),
-        ],
+        ]
+        + (
+            [
+                (
+                    "Executable validation checks were run because the scenario matched one "
+                    "or more published reference patterns."
+                )
+            ]
+            if executed_validation_checks
+            else []
+        ),
     )

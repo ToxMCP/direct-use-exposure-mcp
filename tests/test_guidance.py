@@ -81,6 +81,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "External Validation Datasets" in validation
     assert "`cleaning_trigger_spray_airborne_mass_fraction_2019`" in validation
     assert "pubmed.ncbi.nlm.nih.gov/31361572" in validation
+    assert "Executable Validation Checks" in validation
+    assert "executedValidationChecks" in validation
+    assert "wet-cloth contact mass realism" in validation
     assert "Validation Dossier" in dossier
     assert "`heuristic_defaults_active`" in dossier
     assert "`tier1_nf_ff_external_validation_partial_only`" in dossier

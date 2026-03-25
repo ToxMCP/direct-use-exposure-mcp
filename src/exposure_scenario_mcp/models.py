@@ -199,6 +199,12 @@ class ValidationGapSeverity(StrEnum):
     HIGH = "high"
 
 
+class ValidationCheckStatus(StrEnum):
+    PASS = "pass"
+    WARNING = "warning"
+    OUT_OF_DOMAIN = "out_of_domain"
+
+
 class AssumptionSourceReference(StrictModel):
     source_id: str = Field(..., description="Stable identifier for the source.")
     title: str = Field(..., description="Human-readable source title.")
@@ -399,6 +405,19 @@ class ValidationGap(StrictModel):
     recommendation: str
 
 
+class ExecutedValidationCheck(StrictModel):
+    check_id: str = Field(..., alias="checkId")
+    title: str
+    reference_dataset_id: str = Field(..., alias="referenceDatasetId")
+    status: ValidationCheckStatus
+    compared_metric: str = Field(..., alias="comparedMetric")
+    observed_value: float = Field(..., alias="observedValue")
+    reference_lower: float = Field(..., alias="referenceLower")
+    reference_upper: float = Field(..., alias="referenceUpper")
+    unit: str
+    note: str
+
+
 class ValidationDossierReport(StrictModel):
     schema_version: Literal["validationDossierReport.v1"] = "validationDossierReport.v1"
     policy_version: str = Field(..., alias="policyVersion")
@@ -425,6 +444,10 @@ class ValidationSummary(StrictModel):
         default_factory=list, alias="heuristicAssumptionNames"
     )
     validation_gap_ids: list[str] = Field(default_factory=list, alias="validationGapIds")
+    executed_validation_checks: list[ExecutedValidationCheck] = Field(
+        default_factory=list,
+        alias="executedValidationChecks",
+    )
     highest_supported_uncertainty_tier: UncertaintyTier = Field(
         ..., alias="highestSupportedUncertaintyTier"
     )

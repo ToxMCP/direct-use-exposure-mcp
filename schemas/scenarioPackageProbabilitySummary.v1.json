@@ -233,6 +233,64 @@
       "title": "EvidenceGrade",
       "type": "string"
     },
+    "ExecutedValidationCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "checkId": {
+          "title": "Checkid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "referenceDatasetId": {
+          "title": "Referencedatasetid",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ValidationCheckStatus"
+        },
+        "comparedMetric": {
+          "title": "Comparedmetric",
+          "type": "string"
+        },
+        "observedValue": {
+          "title": "Observedvalue",
+          "type": "number"
+        },
+        "referenceLower": {
+          "title": "Referencelower",
+          "type": "number"
+        },
+        "referenceUpper": {
+          "title": "Referenceupper",
+          "type": "number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "checkId",
+        "title",
+        "referenceDatasetId",
+        "status",
+        "comparedMetric",
+        "observedValue",
+        "referenceLower",
+        "referenceUpper",
+        "unit",
+        "note"
+      ],
+      "title": "ExecutedValidationCheck",
+      "type": "object"
+    },
     "ExposureAssumptionRecord": {
       "additionalProperties": false,
       "properties": {
@@ -1399,6 +1457,15 @@
       "title": "UncertaintyType",
       "type": "string"
     },
+    "ValidationCheckStatus": {
+      "enum": [
+        "pass",
+        "warning",
+        "out_of_domain"
+      ],
+      "title": "ValidationCheckStatus",
+      "type": "string"
+    },
     "ValidationEvidenceReadiness": {
       "enum": [
         "benchmark_only",
@@ -1458,6 +1525,13 @@
             "type": "string"
           },
           "title": "Validationgapids",
+          "type": "array"
+        },
+        "executedValidationChecks": {
+          "items": {
+            "$ref": "#/$defs/ExecutedValidationCheck"
+          },
+          "title": "Executedvalidationchecks",
           "type": "array"
         },
         "highestSupportedUncertaintyTier": {

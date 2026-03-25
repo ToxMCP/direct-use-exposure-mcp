@@ -120,6 +120,67 @@ def test_dermal_screening_defaults_and_dose() -> None:
     assert any(
         item.entry_id == "dependency-handling-required" for item in scenario.uncertainty_register
     )
+    assert scenario.validation_summary.executed_validation_checks == []
+
+
+def test_rinse_off_retention_uses_fda_sccs_source() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="gel",
+            application_method="hand_application",
+            retention_type="rinse_off",
+            concentration_fraction=0.02,
+            use_amount_per_event=2.0,
+            use_amount_unit="g",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(population_group="adult"),
+    )
+
+    scenario = engine.build(request)
+    retention = next(item for item in scenario.assumptions if item.name == "retention_factor")
+
+    assert retention.value == pytest.approx(0.01, rel=1e-6)
+    assert retention.source.source_id == "fda_sccs_retention_factor_defaults_2024"
+    assert retention.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
+    assert retention.governance.evidence_grade == EvidenceGrade.GRADE_4
+
+
+def test_hand_scale_cream_application_executes_validation_check() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.05,
+            use_amount_per_event=0.85,
+            use_amount_unit="g",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            exposed_surface_area_cm2=860.0,
+        ),
+    )
+
+    scenario = engine.build(request)
+    checks = scenario.validation_summary.executed_validation_checks
+
+    assert len(checks) == 1
+    assert checks[0].check_id == "hand_cream_application_loading_2012"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(0.98837209, rel=1e-6)
+    assert checks[0].reference_dataset_id == "skin_protection_cream_dose_per_area_2012"
 
 
 def test_inhalation_screening_defaults_and_dose() -> None:
@@ -488,6 +549,16 @@ def test_household_cleaner_wipe_uses_product_category_transfer_override() -> Non
     assert transfer_efficiency.source.source_id == "heuristic_transfer_efficiency_defaults_v1"
     assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(65.0, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(0.8125, rel=1e-6)
+    assert scenario.validation_summary.route_mechanism == "dermal_secondary_transfer"
+    assert scenario.validation_summary.evidence_readiness.value == "external_partial"
+    assert "rivm_wet_cloth_dermal_contact_loading_2018" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "wet_cloth_contact_mass_2018"
+    assert checks[0].status.value == "warning"
+    assert checks[0].observed_value == pytest.approx(0.65, rel=1e-6)
 
 
 def test_household_cleaner_pump_spray_uses_product_category_aerosol_override() -> None:

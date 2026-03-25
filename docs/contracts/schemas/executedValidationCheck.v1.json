@@ -1,0 +1,69 @@
+{
+  "$defs": {
+    "ValidationCheckStatus": {
+      "enum": [
+        "pass",
+        "warning",
+        "out_of_domain"
+      ],
+      "title": "ValidationCheckStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "checkId": {
+      "title": "Checkid",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "referenceDatasetId": {
+      "title": "Referencedatasetid",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ValidationCheckStatus"
+    },
+    "comparedMetric": {
+      "title": "Comparedmetric",
+      "type": "string"
+    },
+    "observedValue": {
+      "title": "Observedvalue",
+      "type": "number"
+    },
+    "referenceLower": {
+      "title": "Referencelower",
+      "type": "number"
+    },
+    "referenceUpper": {
+      "title": "Referenceupper",
+      "type": "number"
+    },
+    "unit": {
+      "title": "Unit",
+      "type": "string"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "checkId",
+    "title",
+    "referenceDatasetId",
+    "status",
+    "comparedMetric",
+    "observedValue",
+    "referenceLower",
+    "referenceUpper",
+    "unit",
+    "note"
+  ],
+  "title": "ExecutedValidationCheck",
+  "type": "object"
+}

@@ -90,6 +90,42 @@
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
+        "name": "product_mass_g_per_event",
+        "value": 1.5,
+        "unit": "g",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Mass-based use amount already represents product mass per event.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "parameter_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
+          }
+        }
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
         "name": "concentration_fraction",
         "value": 0.02,
         "unit": "fraction",
@@ -197,8 +233,8 @@
           "source_id": "benchmark_population_defaults_v1",
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -227,8 +263,8 @@
           "source_id": "screening_route_semantics_defaults_v1",
           "title": "Exposure Scenario MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -260,8 +296,8 @@
           "source_id": "heuristic_transfer_efficiency_defaults_v1",
           "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
           "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -329,8 +365,8 @@
           "source_id": "benchmark_population_defaults_v1",
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -393,8 +429,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v5",
-      "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
+      "defaults_version": "2026.03.25.v6",
+      "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -614,6 +650,7 @@
         "dermal_validation_partial_only",
         "heuristic_defaults_active"
       ],
+      "executedValidationChecks": [],
       "highestSupportedUncertaintyTier": "tier_b",
       "probabilisticEnablement": "blocked",
       "notes": [
@@ -707,6 +744,42 @@
             "product_category": "personal_care",
             "physical_form": "cream",
             "application_method": "hand_application"
+          }
+        }
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "product_mass_g_per_event",
+        "value": 1.5,
+        "unit": "g",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Mass-based use amount already represents product mass per event.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "parameter_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
           }
         }
       },
@@ -849,8 +922,8 @@
           "source_id": "screening_route_semantics_defaults_v1",
           "title": "Exposure Scenario MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -882,8 +955,8 @@
           "source_id": "heuristic_transfer_efficiency_defaults_v1",
           "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
           "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -951,8 +1024,8 @@
           "source_id": "benchmark_population_defaults_v1",
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1015,8 +1088,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v5",
-      "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
+      "defaults_version": "2026.03.25.v6",
+      "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -1231,6 +1304,7 @@
         "dermal_validation_partial_only",
         "heuristic_defaults_active"
       ],
+      "executedValidationChecks": [],
       "highestSupportedUncertaintyTier": "tier_b",
       "probabilisticEnablement": "blocked",
       "notes": [
@@ -1324,6 +1398,42 @@
             "product_category": "personal_care",
             "physical_form": "cream",
             "application_method": "hand_application"
+          }
+        }
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "product_mass_g_per_event",
+        "value": 1.5,
+        "unit": "g",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Exposure Scenario MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Mass-based use amount already represents product mass per event.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [
+            "parameter_uncertainty"
+          ],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "region": "EU"
           }
         }
       },
@@ -1466,8 +1576,8 @@
           "source_id": "screening_route_semantics_defaults_v1",
           "title": "Exposure Scenario MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1499,8 +1609,8 @@
           "source_id": "heuristic_transfer_efficiency_defaults_v1",
           "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
           "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1568,8 +1678,8 @@
           "source_id": "benchmark_population_defaults_v1",
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v5",
-          "hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff"
+          "version": "2026.03.25.v6",
+          "hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1632,8 +1742,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.03.25.v5",
-      "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
+      "defaults_version": "2026.03.25.v6",
+      "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -1848,6 +1958,7 @@
         "dermal_validation_partial_only",
         "heuristic_defaults_active"
       ],
+      "executedValidationChecks": [],
       "highestSupportedUncertaintyTier": "tier_b",
       "probabilisticEnablement": "blocked",
       "notes": [
@@ -1988,6 +2099,7 @@
       "dermal_validation_partial_only",
       "heuristic_defaults_active"
     ],
+    "executedValidationChecks": [],
     "highestSupportedUncertaintyTier": "tier_b",
     "probabilisticEnablement": "blocked",
     "notes": [
@@ -2002,8 +2114,8 @@
     "algorithm_id": "uncertainty.bounds.v1",
     "plugin_id": "parameter_bounds_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v5",
-    "defaults_hash_sha256": "5400185265364e0a7e6d9afd0b4d3e457f4c9fd155e0b656b043229b7a9f8cff",
+    "defaults_version": "2026.03.25.v6",
+    "defaults_hash_sha256": "fe6cdf1c7033df69e7df160f07c61519b2cbd79948a372d488e17718165bdf40",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
