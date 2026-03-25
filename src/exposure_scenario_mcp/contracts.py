@@ -345,6 +345,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Guide to the packaged Tier C probability-bounds profiles.",
             ),
             ContractResourceEntry(
+                uri="docs://tier1-inhalation-parameter-guide",
+                description=(
+                    "Guide to the packaged Tier 1 inhalation airflow, particle, and "
+                    "product-family screening profiles."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="docs://defaults-evidence-map",
                 description="Source register and interpretation notes for defaults and heuristics.",
             ),

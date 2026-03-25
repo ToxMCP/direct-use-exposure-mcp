@@ -181,6 +181,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `docs://algorithm-notes`
 - `docs://archetype-library-guide`
 - `docs://probability-bounds-guide`
+- `docs://tier1-inhalation-parameter-guide`
 - `docs://inhalation-tier-upgrade-guide`
 - `docs://defaults-evidence-map`
 - `docs://operator-guide`

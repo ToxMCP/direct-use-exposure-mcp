@@ -249,6 +249,42 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
     assert any(item.parameter_name == "source_distance_m" for item in enriched.sensitivity_ranking)
 
 
+def test_inhalation_tier_1_matches_personal_care_pump_profile() -> None:
+    request = InhalationTier1ScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="spray",
+            application_method="pump_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.03,
+            use_amount_per_event=1.5,
+            use_amount_unit="mL",
+            use_events_per_day=2,
+            room_volume_m3=18,
+            exposure_duration_hours=0.25,
+            air_exchange_rate_per_hour=1.5,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.8,
+            region="EU",
+        ),
+        source_distance_m=0.28,
+        spray_duration_seconds=5.0,
+        near_field_volume_m3=1.7,
+        airflow_directionality=AirflowDirectionality.SOURCE_TO_BREATHING_ZONE,
+        particle_size_regime=ParticleSizeRegime.MIXED_SPRAY,
+    )
+
+    scenario = build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load())
+
+    assert scenario.route_metrics["tier1_product_profile_id"] == "personal_care_pump_spray_tier1"
+    assert any("personal_care_pump_spray_tier1" in note for note in scenario.interpretation_notes)
+
+
 def test_eu_inhalation_room_defaults_use_regional_source() -> None:
     engine = build_engine()
     request = InhalationScenarioRequest(

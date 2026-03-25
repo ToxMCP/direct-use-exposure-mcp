@@ -124,6 +124,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://result-status-semantics",
         "docs://archetype-library-guide",
         "docs://probability-bounds-guide",
+        "docs://tier1-inhalation-parameter-guide",
         "docs://uncertainty-framework",
         "docs://inhalation-tier-upgrade-guide",
         "docs://validation-framework",

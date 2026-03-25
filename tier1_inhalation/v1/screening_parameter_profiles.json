@@ -1,9 +1,10 @@
 {
-  "profile_version": "2026.03.25.v1",
+  "profile_version": "2026.03.25.v2",
   "notes": [
     "This pack publishes governed screening parameters for the Tier 1 near-field/far-field inhalation model.",
     "The airflow and particle mappings remain deterministic screening heuristics and are not a calibrated aerosol transport model.",
-    "Product-family profiles are recommendation packs for common spray contexts and are not substitutes for scenario-specific evidence."
+    "Product-family profiles are recommendation packs for common spray contexts and are not substitutes for scenario-specific evidence.",
+    "Product-family profile provenance is split between household-cleaner and personal-care screening packs so downstream review can keep those recommendations distinct."
   ],
   "sources": [
     {
@@ -13,9 +14,15 @@
       "version": "2026.03.25.v1"
     },
     {
-      "source_id": "benchmark_tier1_nf_ff_product_profiles_v1",
-      "title": "Exposure Scenario MCP Tier 1 NF/FF product-family profile pack",
-      "locator": "docs://tier1-inhalation-parameter-guide#product-family-profiles",
+      "source_id": "benchmark_tier1_nf_ff_household_cleaner_profiles_v1",
+      "title": "Exposure Scenario MCP Tier 1 NF/FF household-cleaner screening profile pack",
+      "locator": "docs://tier1-inhalation-parameter-guide#household-cleaner-profiles",
+      "version": "2026.03.25.v1"
+    },
+    {
+      "source_id": "benchmark_tier1_nf_ff_personal_care_profiles_v1",
+      "title": "Exposure Scenario MCP Tier 1 NF/FF personal-care screening profile pack",
+      "locator": "docs://tier1-inhalation-parameter-guide#personal-care-profiles",
       "version": "2026.03.25.v1"
     }
   ],
@@ -82,7 +89,7 @@
       "recommendedNearFieldVolumeM3": 2.0,
       "defaultSourceDistanceM": 0.35,
       "defaultSprayDurationSeconds": 8.0,
-      "sourceId": "benchmark_tier1_nf_ff_product_profiles_v1",
+      "sourceId": "benchmark_tier1_nf_ff_household_cleaner_profiles_v1",
       "note": "Benchmark Tier 1 profile for household cleaner trigger sprays in consumer room contexts."
     },
     {
@@ -95,7 +102,7 @@
       "recommendedNearFieldVolumeM3": 2.2,
       "defaultSourceDistanceM": 0.4,
       "defaultSprayDurationSeconds": 10.0,
-      "sourceId": "benchmark_tier1_nf_ff_product_profiles_v1",
+      "sourceId": "benchmark_tier1_nf_ff_household_cleaner_profiles_v1",
       "note": "Benchmark Tier 1 profile for manual pump sprays where local room mixing dominates over a strong draft."
     },
     {
@@ -108,8 +115,21 @@
       "recommendedNearFieldVolumeM3": 1.5,
       "defaultSourceDistanceM": 0.3,
       "defaultSprayDurationSeconds": 6.0,
-      "sourceId": "benchmark_tier1_nf_ff_product_profiles_v1",
+      "sourceId": "benchmark_tier1_nf_ff_personal_care_profiles_v1",
       "note": "Benchmark Tier 1 profile for directed personal-care aerosols with finer particle persistence near the user."
+    },
+    {
+      "profileId": "personal_care_pump_spray_tier1",
+      "label": "Personal care pump spray Tier 1 profile",
+      "productFamily": "personal_care",
+      "applicationMethod": "pump_spray",
+      "recommendedAirflowDirectionality": "source_to_breathing_zone",
+      "recommendedParticleSizeRegime": "mixed_spray",
+      "recommendedNearFieldVolumeM3": 1.7,
+      "defaultSourceDistanceM": 0.28,
+      "defaultSprayDurationSeconds": 5.0,
+      "sourceId": "benchmark_tier1_nf_ff_personal_care_profiles_v1",
+      "note": "Benchmark Tier 1 profile for hand-actuated personal-care pump sprays used close to the face or upper torso."
     }
   ]
 }

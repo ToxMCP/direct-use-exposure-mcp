@@ -95,6 +95,54 @@ def _tier1_inhalation_profile_lines() -> list[str]:
     return lines
 
 
+def tier1_inhalation_parameter_guide() -> str:
+    manifest = Tier1InhalationProfileRegistry.load().manifest()
+    lines = [
+        "# Tier 1 Inhalation Parameter Guide",
+        "",
+        "This guide publishes the packaged Tier 1 NF/FF screening parameter pack used by the",
+        "dedicated Tier 1 inhalation tool and referenced by Tier 1 source locators.",
+        "",
+        "## Parameter Pack",
+        "",
+        f"- Profile version: `{manifest.profile_version}`",
+        f"- Manifest hash: `{manifest.profile_hash_sha256}`",
+        f"- Resource path: `{manifest.path}`",
+        "",
+        "## Registered Sources",
+        "",
+    ]
+    for item in manifest.sources:
+        lines.append(f"- `{item.source_id}` [{item.version}] {item.title}")
+    lines.extend(["", "## Airflow Classes", ""])
+    for item in manifest.directionality_profiles:
+        lines.append(
+            f"- `{item.directionality.value}` -> `{item.exchange_turnover_per_hour}` 1/h: "
+            f"{item.note}"
+        )
+    lines.extend(["", "## Particle Regimes", ""])
+    for item in manifest.particle_profiles:
+        lines.append(
+            f"- `{item.particle_size_regime.value}` -> `{item.persistence_factor}`: {item.note}"
+        )
+    lines.extend([""])
+    lines.extend(_tier1_inhalation_profile_lines())
+    lines.extend(
+        [
+            "",
+            "## Usage Notes",
+            "",
+            "- Use these profiles as governed screening anchors, not as substitutes for measured",
+            "  room, plume, or droplet data.",
+            "- Household-cleaner and personal-care profile packs are kept separate so downstream",
+            "  provenance can distinguish those recommendation families.",
+            "- Caller-supplied Tier 1 geometry and timing inputs remain authoritative even when a",
+            "  matching packaged profile exists.",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def operator_guide() -> str:
     return """# Operator Guide
 
@@ -350,6 +398,8 @@ def inhalation_tier_upgrade_guide() -> str:
         "- Discover governed airflow classes, particle regimes, and",
         "  product-family profiles through",
         "  `tier1-inhalation://manifest`.",
+        "- Read the human-facing parameter notes in",
+        "  `docs://tier1-inhalation-parameter-guide`.",
         "- The packaged manifest publishes explicit screening parameter",
         "  sources rather than burying",
         "  Tier 1 heuristics in code constants.",

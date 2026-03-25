@@ -708,7 +708,7 @@
         "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
         "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
         "version": "2026.03.25.v1",
-        "hash_sha256": "471ab01c0f73f393f517332c3ba0591bbbe0e07bd9c897c69399e192ce10b37a"
+        "hash_sha256": "24b97b77b4561f92446d976786e464677c3d8c0d221660f2816e905804832743"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -740,7 +740,7 @@
         "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
         "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
         "version": "2026.03.25.v1",
-        "hash_sha256": "471ab01c0f73f393f517332c3ba0591bbbe0e07bd9c897c69399e192ce10b37a"
+        "hash_sha256": "24b97b77b4561f92446d976786e464677c3d8c0d221660f2816e905804832743"
       },
       "confidence": "registry_default",
       "default_applied": true,

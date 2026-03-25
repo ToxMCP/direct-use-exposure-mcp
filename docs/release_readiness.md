@@ -16,6 +16,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - Defaults are versioned and hashed.
 - Packaged Tier 1 inhalation airflow, particle, and product-family screening profiles are
   versioned, hashed, and published as a machine-readable manifest.
+- The Tier 1 parameter-pack documentation resource is published so source locators used in the
+  Tier 1 manifest resolve to a live MCP guide.
 - Packaged Tier B archetype-library sets are versioned, hashed, and published as a machine-readable manifest.
 - Packaged Tier C probability-bounds profiles are versioned, hashed, and published as a machine-readable manifest.
 - Probability-bounds profiles carry explicit driver-family taxonomy, product family, dependency cluster,

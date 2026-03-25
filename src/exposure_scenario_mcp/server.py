@@ -36,6 +36,7 @@ from exposure_scenario_mcp.guidance import (
     release_readiness_markdown,
     result_status_semantics,
     security_provenance_review_markdown,
+    tier1_inhalation_parameter_guide,
     troubleshooting_guide,
     uncertainty_framework,
     validation_framework,
@@ -542,6 +543,12 @@ def create_mcp_server() -> FastMCP:
         """Guide to the packaged Tier C probability-bounds profiles."""
 
         return probability_bounds_guide()
+
+    @mcp.resource("docs://tier1-inhalation-parameter-guide")
+    def docs_tier1_inhalation_parameter_guide() -> str:
+        """Guide to the packaged Tier 1 inhalation parameter and profile packs."""
+
+        return tier1_inhalation_parameter_guide()
 
     @mcp.resource("docs://defaults-evidence-map")
     def docs_defaults_evidence_map() -> str:

@@ -10,13 +10,14 @@ def test_tier1_inhalation_profile_manifest_and_matching() -> None:
     registry = Tier1InhalationProfileRegistry.load()
     manifest = registry.manifest()
 
-    assert manifest.profile_version == "2026.03.25.v1"
+    assert manifest.profile_version == "2026.03.25.v2"
     assert manifest.directionality_profile_count == 5
     assert manifest.particle_profile_count == 3
-    assert manifest.profile_count == 3
+    assert manifest.profile_count == 4
     assert {item.source_id for item in manifest.sources} == {
         "benchmark_tier1_nf_ff_parameter_pack_v1",
-        "benchmark_tier1_nf_ff_product_profiles_v1",
+        "benchmark_tier1_nf_ff_household_cleaner_profiles_v1",
+        "benchmark_tier1_nf_ff_personal_care_profiles_v1",
     }
 
     airflow = registry.airflow_profile(AirflowDirectionality.CROSS_DRAFT)
@@ -32,3 +33,11 @@ def test_tier1_inhalation_profile_manifest_and_matching() -> None:
         application_method="trigger_spray",
     )
     assert [item.profile_id for item in matches] == ["household_cleaner_trigger_spray_tier1"]
+
+    personal_care_matches = registry.matching_profiles(
+        product_family="personal_care",
+        application_method="pump_spray",
+    )
+    assert [item.profile_id for item in personal_care_matches] == [
+        "personal_care_pump_spray_tier1"
+    ]
