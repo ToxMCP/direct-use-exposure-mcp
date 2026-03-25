@@ -461,6 +461,33 @@
         "compatibility_ready": true,
         "missing_external_bundle_fields": []
       }
+    },
+    {
+      "id": "inhalation_tier1_scenario_package_probability",
+      "kind": "scenario_package_probability",
+      "description": "Adult personal-care pump spray Tier 1 scenario-package probability case covering governed NF/FF support points.",
+      "request": {
+        "schema_version": "buildProbabilityBoundsFromScenarioPackageInput.v1",
+        "packageProfileId": "adult_personal_care_pump_spray_tier1_near_field_context_package",
+        "chemicalId": "DTXSID126",
+        "chemicalName": "Benchmark Solvent E",
+        "label": "Benchmark Tier 1 scenario-package probability bounds"
+      },
+      "expected": {
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "package_profile_id": "adult_personal_care_pump_spray_tier1_near_field_context_package",
+        "archetype_library_set_id": "adult_personal_care_pump_spray_tier1",
+        "minimum_dose_value": 0.00297317,
+        "maximum_dose_value": 0.15221719,
+        "support_point_template_ids": [
+          "adult_personal_care_pump_spray_tier1_low",
+          "adult_personal_care_pump_spray_tier1_typical",
+          "adult_personal_care_pump_spray_tier1_high"
+        ],
+        "support_point_tier_claimed": "tier_1",
+        "support_point_profile_id": "personal_care_pump_spray_tier1"
+      }
     }
   ]
 }

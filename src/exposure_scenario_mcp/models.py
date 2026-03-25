@@ -162,6 +162,7 @@ class ScenarioPackageFamily(StrEnum):
     USE_INTENSITY = "use_intensity"
     COMPOSITION_USE_BURDEN = "composition_use_burden"
     MICROENVIRONMENT_CONTEXT = "microenvironment_context"
+    NEAR_FIELD_CONTEXT = "near_field_context"
     INGESTION_REGIMEN = "ingestion_regimen"
 
 

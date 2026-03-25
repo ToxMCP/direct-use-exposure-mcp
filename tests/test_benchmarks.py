@@ -5,10 +5,12 @@ from pathlib import Path
 
 import pytest
 
+from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.integrations import build_pbpk_external_import_package
 from exposure_scenario_mcp.models import (
     BuildAggregateExposureScenarioInput,
+    BuildProbabilityBoundsFromScenarioPackageInput,
     CompareExposureScenariosInput,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
@@ -18,6 +20,7 @@ from exposure_scenario_mcp.models import (
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
+from exposure_scenario_mcp.probability_bounds import build_probability_bounds_from_scenario_package
 from exposure_scenario_mcp.runtime import (
     PluginRegistry,
     ScenarioEngine,
@@ -25,6 +28,7 @@ from exposure_scenario_mcp.runtime import (
     compare_scenarios,
     export_pbpk_input,
 )
+from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.uncertainty import enrich_scenario_uncertainty
 
 FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "benchmark_cases.json"
@@ -227,6 +231,42 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
             assert payload["compatibilityReport"]["missing_external_bundle_fields"] == expected[
                 "missing_external_bundle_fields"
             ], case["id"]
+            continue
+
+        if case["kind"] == "scenario_package_probability":
+            summary = build_probability_bounds_from_scenario_package(
+                BuildProbabilityBoundsFromScenarioPackageInput(**case["request"]),
+                engine,
+                DefaultsRegistry.load(),
+                ArchetypeLibraryRegistry.load(),
+                ScenarioProbabilityPackageRegistry.load(),
+            )
+            assert summary.route.value == expected["route"], case["id"]
+            assert summary.scenario_class.value == expected["scenario_class"], case["id"]
+            assert summary.package_profile_id == expected["package_profile_id"], case["id"]
+            assert summary.archetype_library_set_id == expected["archetype_library_set_id"], (
+                case["id"]
+            )
+            assert summary.minimum_dose.value == pytest.approx(
+                expected["minimum_dose_value"], rel=1e-6
+            ), case["id"]
+            assert summary.maximum_dose.value == pytest.approx(
+                expected["maximum_dose_value"], rel=1e-6
+            ), case["id"]
+            assert [item.template_id for item in summary.support_points] == expected[
+                "support_point_template_ids"
+            ], case["id"]
+            assert all(
+                item.scenario.tier_semantics.tier_claimed.value
+                == expected["support_point_tier_claimed"]
+                for item in summary.support_points
+            ), case["id"]
+            assert all(
+                item.scenario.route_metrics["tier1_product_profile_id"]
+                == expected["support_point_profile_id"]
+                for item in summary.support_points
+            ), case["id"]
+            assert summary.provenance.defaults_version == fixture["defaults_version"], case["id"]
             continue
 
         raise AssertionError(f"Unsupported benchmark kind: {case['kind']}")

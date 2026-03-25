@@ -19,6 +19,7 @@ The deterministic benchmark corpus for `v0.1.0` is stored in `tests/fixtures/ben
 - Zero-baseline scenario comparison with undefined percentage-delta handling
 - PBPK export packaging from the canonical dermal screening scenario
 - Full PBPK external-import package semantics for the canonical dermal screening scenario
+- Tier 1 personal-care pump spray scenario-package probability bounds over governed NF/FF support points
 
 ## Tolerances
 

@@ -39,6 +39,12 @@ EXAMPLE_SCHEMA_MAP = {
     "probability_bounds_profile_summary": "probabilityBoundsProfileSummary.v1",
     "scenario_package_probability_request": "buildProbabilityBoundsFromScenarioPackageInput.v1",
     "scenario_package_probability_summary": "scenarioPackageProbabilitySummary.v1",
+    "inhalation_tier1_scenario_package_probability_request": (
+        "buildProbabilityBoundsFromScenarioPackageInput.v1"
+    ),
+    "inhalation_tier1_scenario_package_probability_summary": (
+        "scenarioPackageProbabilitySummary.v1"
+    ),
     "aggregate_summary": "aggregateExposureSummary.v1",
     "pbpk_input": "pbpkScenarioInput.v1",
     "pbpk_external_import_request": "pbpkExternalImportRequest.v1",
@@ -121,6 +127,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "probability_bounds_profile_summary" in manifest["examples"]
     assert "scenario_package_probability_request" in manifest["examples"]
     assert "scenario_package_probability_summary" in manifest["examples"]
+    assert "inhalation_tier1_scenario_package_probability_request" in manifest["examples"]
+    assert "inhalation_tier1_scenario_package_probability_summary" in manifest["examples"]
     assert "toxclaw_evidence_bundle" in manifest["examples"]
     assert "toxclaw_refinement_bundle" in manifest["examples"]
     assert {

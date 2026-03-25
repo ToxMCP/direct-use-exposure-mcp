@@ -1,10 +1,11 @@
 {
-  "profile_version": "2026.03.25.v2",
+  "profile_version": "2026.03.25.v3",
   "notes": [
     "Scenario-package probability profiles preserve coupled drivers by referencing packaged archetype-library templates as coherent support points.",
     "These profiles publish cumulative probability bounds over scenario packages, not over independent parameter marginals.",
     "Each packaged profile carries a curated package family, product family, and dependency axes so coupled-driver handling remains explicit.",
-    "Tier C scenario-package outputs remain screening summaries and must not be interpreted as validated population exposure distributions."
+    "Tier C scenario-package outputs remain screening summaries and must not be interpreted as validated population exposure distributions.",
+    "Some packaged profiles evaluate governed Tier 1 archetype-library states rather than Tier 0 room-average screening requests."
   ],
   "profiles": [
     {
@@ -189,6 +190,56 @@
       "limitations": [
         "This package keeps concentration, amount, frequency, and ingestion completeness bundled together for direct-oral screening.",
         "The profile is not a validated pediatric dosing distribution."
+      ]
+    },
+    {
+      "profileId": "adult_personal_care_pump_spray_tier1_near_field_context_package",
+      "label": "Adult personal-care pump spray Tier 1 near-field context package",
+      "description": "Probability bounds over coupled near-face personal-care pump-spray contexts using governed Tier 1 NF/FF archetype states.",
+      "route": "inhalation",
+      "scenarioClass": "inhalation",
+      "archetypeLibrarySetId": "adult_personal_care_pump_spray_tier1",
+      "productFamily": "personal_care",
+      "packageFamily": "near_field_context",
+      "dependencyCluster": "tier1-near-field-context-cluster",
+      "dependencyAxes": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+        "source_distance_m",
+        "spray_duration_seconds",
+        "near_field_volume_m3",
+        "airflow_directionality",
+        "particle_size_regime"
+      ],
+      "relationshipType": "scenario_package",
+      "handlingStrategy": "scenario_packaged",
+      "supportPoints": [
+        {
+          "pointId": "lower_package",
+          "templateId": "adult_personal_care_pump_spray_tier1_low",
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.2,
+          "note": "Lower near-face Tier 1 package with greater source distance, a larger near field, and reduced spray burden."
+        },
+        {
+          "pointId": "typical_package",
+          "templateId": "adult_personal_care_pump_spray_tier1_typical",
+          "cumulativeProbabilityLower": 0.2,
+          "cumulativeProbabilityUpper": 0.8,
+          "note": "Reference Tier 1 near-field package aligned to the packaged personal-care pump-spray NF/FF profile."
+        },
+        {
+          "pointId": "upper_package",
+          "templateId": "adult_personal_care_pump_spray_tier1_high",
+          "cumulativeProbabilityLower": 0.8,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Upper near-face Tier 1 package with shorter source distance, smaller near field, and higher spray burden."
+        }
+      ],
+      "limitations": [
+        "This package preserves Tier 1 spray geometry, timing, and release settings together and should not be decomposed into independent marginals.",
+        "The profile remains a deterministic screening package and is not a validated breathing-zone exposure distribution."
       ]
     }
   ]

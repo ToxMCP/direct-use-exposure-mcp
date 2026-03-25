@@ -90,6 +90,12 @@ EXAMPLE_IDS = {
     "scenario_package_probability_low_scenario": "exp-example-package-low-001",
     "scenario_package_probability_typical_scenario": "exp-example-package-typical-001",
     "scenario_package_probability_high_scenario": "exp-example-package-high-001",
+    "tier1_scenario_package_probability_summary": "pspkg-example-tier1-001",
+    "tier1_scenario_package_probability_low_scenario": "inh-tier1-example-package-low-001",
+    "tier1_scenario_package_probability_typical_scenario": (
+        "inh-tier1-example-package-typical-001"
+    ),
+    "tier1_scenario_package_probability_high_scenario": "inh-tier1-example-package-high-001",
 }
 
 
@@ -220,18 +226,32 @@ def _freeze_probability_bounds_summary(
 def _freeze_scenario_package_probability_summary(
     summary: ScenarioPackageProbabilitySummary,
 ) -> ScenarioPackageProbabilitySummary:
-    label_ids = {
-        "adult_leave_on_hand_cream_low": EXAMPLE_IDS["scenario_package_probability_low_scenario"],
-        "adult_leave_on_hand_cream_typical": EXAMPLE_IDS[
-            "scenario_package_probability_typical_scenario"
-        ],
-        "adult_leave_on_hand_cream_high": EXAMPLE_IDS[
-            "scenario_package_probability_high_scenario"
-        ],
-    }
+    return _freeze_scenario_package_probability_summary_with_ids(
+        summary,
+        summary_id=EXAMPLE_IDS["scenario_package_probability_summary"],
+        template_ids={
+            "adult_leave_on_hand_cream_low": EXAMPLE_IDS[
+                "scenario_package_probability_low_scenario"
+            ],
+            "adult_leave_on_hand_cream_typical": EXAMPLE_IDS[
+                "scenario_package_probability_typical_scenario"
+            ],
+            "adult_leave_on_hand_cream_high": EXAMPLE_IDS[
+                "scenario_package_probability_high_scenario"
+            ],
+        },
+    )
+
+
+def _freeze_scenario_package_probability_summary_with_ids(
+    summary: ScenarioPackageProbabilitySummary,
+    *,
+    summary_id: str,
+    template_ids: dict[str, str],
+) -> ScenarioPackageProbabilitySummary:
     frozen_points = []
     for item in summary.support_points:
-        scenario_id = label_ids.get(item.template_id, item.scenario.scenario_id)
+        scenario_id = template_ids.get(item.template_id, item.scenario.scenario_id)
         frozen_points.append(
             item.model_copy(
                 update={"scenario": _freeze_scenario(item.scenario, scenario_id)},
@@ -240,7 +260,7 @@ def _freeze_scenario_package_probability_summary(
         )
     return summary.model_copy(
         update={
-            "summary_id": EXAMPLE_IDS["scenario_package_probability_summary"],
+            "summary_id": summary_id,
             "support_points": frozen_points,
             "provenance": _freeze_provenance(summary.provenance),
             "minimum_dose": min(
@@ -531,6 +551,36 @@ def build_examples() -> dict[str, dict]:
             generated_at=EXAMPLE_GENERATED_AT,
         )
     )
+    tier1_scenario_package_probability_request = BuildProbabilityBoundsFromScenarioPackageInput(
+        packageProfileId="adult_personal_care_pump_spray_tier1_near_field_context_package",
+        chemicalId="DTXSID7020182",
+        chemicalName="Example Solvent A",
+        label="Example Tier 1 scenario-package probability bounds",
+    )
+    tier1_scenario_package_probability_summary = (
+        _freeze_scenario_package_probability_summary_with_ids(
+            build_probability_bounds_from_scenario_package(
+                tier1_scenario_package_probability_request,
+                engine,
+                defaults_registry,
+                archetype_library,
+                scenario_probability_packages,
+                generated_at=EXAMPLE_GENERATED_AT,
+            ),
+            summary_id=EXAMPLE_IDS["tier1_scenario_package_probability_summary"],
+            template_ids={
+                "adult_personal_care_pump_spray_tier1_low": EXAMPLE_IDS[
+                    "tier1_scenario_package_probability_low_scenario"
+                ],
+                "adult_personal_care_pump_spray_tier1_typical": EXAMPLE_IDS[
+                    "tier1_scenario_package_probability_typical_scenario"
+                ],
+                "adult_personal_care_pump_spray_tier1_high": EXAMPLE_IDS[
+                    "tier1_scenario_package_probability_high_scenario"
+                ],
+            },
+        )
+    )
 
     aggregate_input = BuildAggregateExposureScenarioInput(
         chemical_id="DTXSID7020182",
@@ -641,6 +691,12 @@ def build_examples() -> dict[str, dict]:
         ),
         "scenario_package_probability_summary": (
             scenario_package_probability_summary.model_dump(mode="json", by_alias=True)
+        ),
+        "inhalation_tier1_scenario_package_probability_request": (
+            tier1_scenario_package_probability_request.model_dump(mode="json", by_alias=True)
+        ),
+        "inhalation_tier1_scenario_package_probability_summary": (
+            tier1_scenario_package_probability_summary.model_dump(mode="json", by_alias=True)
         ),
         "aggregate_summary": aggregate_summary.model_dump(mode="json", by_alias=True),
         "pbpk_input": pbpk_input.model_dump(mode="json", by_alias=True),

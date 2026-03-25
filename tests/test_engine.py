@@ -906,3 +906,52 @@ def test_oral_scenario_package_probability_builds_tier_c_summary() -> None:
     assert len(summary.support_points) == 3
     assert all(item.scenario.route == Route.ORAL for item in summary.support_points)
     assert summary.minimum_dose.value < summary.maximum_dose.value
+
+
+def test_tier1_scenario_package_probability_builds_tier_c_summary() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    archetype_library = ArchetypeLibraryRegistry.load()
+    packages = ScenarioProbabilityPackageRegistry.load()
+
+    summary = build_probability_bounds_from_scenario_package(
+        BuildProbabilityBoundsFromScenarioPackageInput(
+            packageProfileId="adult_personal_care_pump_spray_tier1_near_field_context_package",
+            chemicalId="DTXSID126",
+            chemicalName="Example Tier 1 Chemical",
+            label="Tier 1 inhalation scenario-package probability bounds",
+        ),
+        engine,
+        defaults_registry,
+        archetype_library,
+        packages,
+        generated_at="2026-03-25T00:00:00+00:00",
+    )
+
+    assert summary.route == Route.INHALATION
+    assert summary.scenario_class == ScenarioClass.INHALATION
+    assert summary.product_family == "personal_care"
+    assert summary.package_family.value == "near_field_context"
+    assert summary.archetype_library_set_id == "adult_personal_care_pump_spray_tier1"
+    assert summary.dependency_cluster == "tier1-near-field-context-cluster"
+    assert summary.dependency_axes == [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+        "source_distance_m",
+        "spray_duration_seconds",
+        "near_field_volume_m3",
+        "airflow_directionality",
+        "particle_size_regime",
+    ]
+    assert len(summary.support_points) == 3
+    assert all(item.scenario.route == Route.INHALATION for item in summary.support_points)
+    assert all(
+        item.scenario.tier_semantics.tier_claimed == TierLevel.TIER_1
+        for item in summary.support_points
+    )
+    assert all(
+        item.scenario.route_metrics["tier1_product_profile_id"] == "personal_care_pump_spray_tier1"
+        for item in summary.support_points
+    )
+    assert summary.minimum_dose.value < summary.maximum_dose.value

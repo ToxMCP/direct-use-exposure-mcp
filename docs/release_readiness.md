@@ -27,6 +27,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - Packaged Tier C coupled-driver scenario-package profiles are versioned, hashed, and published as a machine-readable manifest.
 - Scenario-package probability profiles carry explicit package-family taxonomy, product family,
   dependency axes, and packaged handling semantics.
+- Scenario-package probability profiles can evaluate packaged Tier 1 inhalation archetype states
+  when a governed near-field/far-field set is published for the target use context.
 - Scenario, aggregate, comparison, and PBPK export outputs carry provenance.
 - Scenario outputs publish Tier A uncertainty diagnostics, and Tier B support is limited to
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.

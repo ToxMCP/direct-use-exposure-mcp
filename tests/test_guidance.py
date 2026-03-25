@@ -57,6 +57,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Packaged Scenario-Probability Profiles" in probability_bounds
     assert "`adult_leave_on_hand_cream_use_intensity_package`" in probability_bounds
     assert "`child_direct_oral_liquid_regimen_package`" in probability_bounds
+    assert "`adult_personal_care_pump_spray_tier1_near_field_context_package`" in probability_bounds
     assert "`driverFamily`" in probability_bounds
     assert "`packageFamily`" in probability_bounds
     assert "requestedTier=tier_1" in inhalation_tier_guide

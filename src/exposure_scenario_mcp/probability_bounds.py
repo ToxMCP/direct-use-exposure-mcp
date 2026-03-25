@@ -12,6 +12,7 @@ from exposure_scenario_mcp.models import (
     BuildProbabilityBoundsFromProfileInput,
     BuildProbabilityBoundsFromScenarioPackageInput,
     DependencyDescriptor,
+    InhalationTier1ScenarioRequest,
     ProbabilityBoundDosePoint,
     ProbabilityBoundsDriverProfile,
     ProbabilityBoundsProfileSummary,
@@ -23,10 +24,15 @@ from exposure_scenario_mcp.models import (
     UncertaintyTier,
     UncertaintyType,
 )
+from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.provenance import AssumptionTracker
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
-from exposure_scenario_mcp.uncertainty import BOUNDS_PARAMETER_CONFIG, _with_override
+from exposure_scenario_mcp.uncertainty import (
+    BOUNDS_PARAMETER_CONFIG,
+    _with_override,
+    enrich_scenario_uncertainty,
+)
 
 APPLICABILITY_MAP = {
     "product_category": ("product_use_profile", "product_category"),
@@ -125,6 +131,15 @@ def _single_driver_dependency_descriptor(
             "their dependence is not quantified here."
         ),
     )
+
+
+def _build_probability_request_scenario(request, engine, registry: DefaultsRegistry):
+    if isinstance(request, InhalationTier1ScenarioRequest):
+        return enrich_scenario_uncertainty(
+            engine,
+            build_inhalation_tier_1_screening_scenario(request, registry),
+        )
+    return engine.build(request)
 
 
 def build_probability_bounds_from_profile(
@@ -362,7 +377,7 @@ def build_probability_bounds_from_scenario_package(
             chemical_id=params.chemical_id,
             chemical_name=params.chemical_name,
         )
-        scenarios.append((point, engine.build(request)))
+        scenarios.append((point, _build_probability_request_scenario(request, engine, registry)))
     minimum_dose = min(scenarios, key=lambda entry: entry[1].external_dose.value)[1].external_dose
     maximum_dose = max(scenarios, key=lambda entry: entry[1].external_dose.value)[1].external_dose
     support_points = [

@@ -46,6 +46,7 @@
         "use_intensity",
         "composition_use_burden",
         "microenvironment_context",
+        "near_field_context",
         "ingestion_regimen"
       ],
       "title": "ScenarioPackageFamily",

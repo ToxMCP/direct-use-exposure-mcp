@@ -1,0 +1,7 @@
+{
+  "schema_version": "buildProbabilityBoundsFromScenarioPackageInput.v1",
+  "packageProfileId": "adult_personal_care_pump_spray_tier1_near_field_context_package",
+  "chemicalId": "DTXSID7020182",
+  "chemicalName": "Example Solvent A",
+  "label": "Example Tier 1 scenario-package probability bounds"
+}
