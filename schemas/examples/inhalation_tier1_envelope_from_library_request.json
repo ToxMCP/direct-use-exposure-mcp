@@ -1,0 +1,7 @@
+{
+  "schema_version": "buildExposureEnvelopeFromLibraryInput.v1",
+  "librarySetId": "adult_personal_care_pump_spray_tier1",
+  "chemicalId": "DTXSID7020182",
+  "chemicalName": "Example Solvent A",
+  "label": "Example Tier 1 library-backed inhalation envelope"
+}

@@ -79,6 +79,10 @@ EXAMPLE_IDS = {
     "library_envelope_low_scenario": "exp-example-library-envelope-low-001",
     "library_envelope_typical_scenario": "exp-example-library-envelope-typical-001",
     "library_envelope_high_scenario": "exp-example-library-envelope-high-001",
+    "tier1_library_envelope_summary": "env-example-library-tier1-001",
+    "tier1_library_envelope_low_scenario": "inh-tier1-example-library-low-001",
+    "tier1_library_envelope_typical_scenario": "inh-tier1-example-library-typical-001",
+    "tier1_library_envelope_high_scenario": "inh-tier1-example-library-high-001",
     "bounds_min_scenario": "exp-example-bounds-min-001",
     "bounds_max_scenario": "exp-example-bounds-max-001",
     "probability_bounds_summary": "pbnd-example-dermal-001",
@@ -441,6 +445,33 @@ def build_examples() -> dict[str, dict]:
             "Upper plausible use": EXAMPLE_IDS["library_envelope_high_scenario"],
         },
     )
+    tier1_library_envelope_request = BuildExposureEnvelopeFromLibraryInput(
+        librarySetId="adult_personal_care_pump_spray_tier1",
+        chemicalId="DTXSID7020182",
+        chemicalName="Example Solvent A",
+        label="Example Tier 1 library-backed inhalation envelope",
+    )
+    tier1_library_envelope_summary = _freeze_envelope_with_ids(
+        build_exposure_envelope_from_library(
+            tier1_library_envelope_request,
+            engine,
+            defaults_registry,
+            archetype_library,
+            generated_at=EXAMPLE_GENERATED_AT,
+        ),
+        summary_id=EXAMPLE_IDS["tier1_library_envelope_summary"],
+        label_ids={
+            "Lower plausible near-face use": EXAMPLE_IDS[
+                "tier1_library_envelope_low_scenario"
+            ],
+            "Typical near-face use": EXAMPLE_IDS[
+                "tier1_library_envelope_typical_scenario"
+            ],
+            "Upper plausible near-face use": EXAMPLE_IDS[
+                "tier1_library_envelope_high_scenario"
+            ],
+        },
+    )
     parameter_bounds_summary = _freeze_bounds_summary(
         build_parameter_bounds_summary(
             BuildParameterBoundsInput(
@@ -589,6 +620,12 @@ def build_examples() -> dict[str, dict]:
         ),
         "exposure_envelope_from_library_summary": library_envelope_summary.model_dump(
             mode="json", by_alias=True
+        ),
+        "inhalation_tier1_envelope_from_library_request": (
+            tier1_library_envelope_request.model_dump(mode="json", by_alias=True)
+        ),
+        "inhalation_tier1_envelope_from_library_summary": (
+            tier1_library_envelope_summary.model_dump(mode="json", by_alias=True)
         ),
         "parameter_bounds_summary": parameter_bounds_summary.model_dump(
             mode="json", by_alias=True

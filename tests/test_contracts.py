@@ -32,6 +32,8 @@ EXAMPLE_SCHEMA_MAP = {
     "exposure_envelope_summary": "exposureEnvelopeSummary.v1",
     "exposure_envelope_from_library_request": "buildExposureEnvelopeFromLibraryInput.v1",
     "exposure_envelope_from_library_summary": "exposureEnvelopeSummary.v1",
+    "inhalation_tier1_envelope_from_library_request": "buildExposureEnvelopeFromLibraryInput.v1",
+    "inhalation_tier1_envelope_from_library_summary": "exposureEnvelopeSummary.v1",
     "parameter_bounds_summary": "parameterBoundsSummary.v1",
     "probability_bounds_from_profile_request": "buildProbabilityBoundsFromProfileInput.v1",
     "probability_bounds_profile_summary": "probabilityBoundsProfileSummary.v1",
@@ -112,6 +114,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "inhalation_tier1_scenario" in manifest["examples"]
     assert "exposure_envelope_from_library_request" in manifest["examples"]
     assert "exposure_envelope_from_library_summary" in manifest["examples"]
+    assert "inhalation_tier1_envelope_from_library_request" in manifest["examples"]
+    assert "inhalation_tier1_envelope_from_library_summary" in manifest["examples"]
     assert "parameter_bounds_summary" in manifest["examples"]
     assert "probability_bounds_from_profile_request" in manifest["examples"]
     assert "probability_bounds_profile_summary" in manifest["examples"]

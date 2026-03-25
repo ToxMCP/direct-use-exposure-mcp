@@ -308,6 +308,8 @@
     "exposure_envelope_summary": "schemas/examples/exposure_envelope_summary.json",
     "exposure_envelope_from_library_request": "schemas/examples/exposure_envelope_from_library_request.json",
     "exposure_envelope_from_library_summary": "schemas/examples/exposure_envelope_from_library_summary.json",
+    "inhalation_tier1_envelope_from_library_request": "schemas/examples/inhalation_tier1_envelope_from_library_request.json",
+    "inhalation_tier1_envelope_from_library_summary": "schemas/examples/inhalation_tier1_envelope_from_library_summary.json",
     "parameter_bounds_summary": "schemas/examples/parameter_bounds_summary.json",
     "probability_bounds_from_profile_request": "schemas/examples/probability_bounds_from_profile_request.json",
     "probability_bounds_profile_summary": "schemas/examples/probability_bounds_profile_summary.json",
