@@ -47,7 +47,8 @@
     "average_air_concentration_mg_per_m3": 9.46275011,
     "breathing_zone_time_weighted_average_mg_per_m3": 9.46275011,
     "interzonal_mixing_rate_m3_per_hour": 68.0,
-    "inhaled_mass_mg_per_day": 4.25823755
+    "inhaled_mass_mg_per_day": 4.25823755,
+    "tier1_product_profile_id": "household_cleaner_trigger_spray_tier1"
   },
   "assumptions": [
     {
@@ -701,35 +702,61 @@
       "name": "near_field_exchange_turnover_per_hour",
       "value": 32.0,
       "unit": "1/h",
-      "source_kind": "derived",
+      "source_kind": "default_registry",
       "source": {
-        "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
-        "locator": "docs://algorithm-notes",
-        "version": "0.1.0",
-        "hash_sha256": null
+        "source_id": "benchmark_tier1_nf_ff_parameter_pack_v1",
+        "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
+        "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
+        "version": "2026.03.25.v1",
+        "hash_sha256": "471ab01c0f73f393f517332c3ba0591bbbe0e07bd9c897c69399e192ce10b37a"
       },
-      "confidence": "deterministic_derived",
-      "default_applied": false,
-      "rationale": "Tier 1 screening turnover selected from airflow_directionality.",
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Tier 1 screening turnover resolved from the packaged airflow-directionality profile.",
       "governance": {
-        "evidence_grade": null,
-        "evidence_basis": "derived",
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
         "default_visibility": "silent_traceable",
-        "applicability_status": "derived",
+        "applicability_status": "in_domain",
         "uncertainty_types": [
           "model_uncertainty",
           "scenario_uncertainty"
         ],
         "applicability_domain": {
-          "route": "inhalation",
-          "scenario_class": "inhalation",
-          "product_category": "household_cleaner",
           "physical_form": "spray",
           "application_method": "trigger_spray",
-          "retention_type": "surface_contact",
-          "population_group": "adult",
           "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "particle_persistence_factor",
+      "value": 0.85,
+      "unit": null,
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "benchmark_tier1_nf_ff_parameter_pack_v1",
+        "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
+        "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
+        "version": "2026.03.25.v1",
+        "hash_sha256": "471ab01c0f73f393f517332c3ba0591bbbe0e07bd9c897c69399e192ce10b37a"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Tier 1 persistence factor resolved from the packaged particle-regime profile.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
         }
       }
     },
@@ -1045,6 +1072,16 @@
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'exposure_duration_hours'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'near_field_exchange_turnover_per_hour'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'particle_persistence_factor'."
     },
     {
       "code": "tier_1_nf_ff_screening",
@@ -1372,7 +1409,8 @@
   },
   "interpretation_notes": [
     "Deterministic Tier 1 inhalation scenario with a screening near-field/far-field split.",
-    "The near-field increment is active during spray duration only and reverts to the far-field room average for the remainder of the event."
+    "The near-field increment is active during spray duration only and reverts to the far-field room average for the remainder of the event.",
+    "Matched packaged Tier 1 screening profile `household_cleaner_trigger_spray_tier1`; caller-supplied Tier 1 geometry and regime inputs remain authoritative."
   ],
   "tierUpgradeAdvisories": []
 }

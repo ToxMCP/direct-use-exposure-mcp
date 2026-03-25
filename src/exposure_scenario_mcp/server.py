@@ -21,6 +21,7 @@ from exposure_scenario_mcp.contracts import (
     probability_bounds_profile_manifest,
     scenario_probability_package_manifest,
     schema_payloads,
+    tier1_inhalation_parameter_manifest,
 )
 from exposure_scenario_mcp.defaults import DefaultsRegistry, defaults_evidence_map
 from exposure_scenario_mcp.errors import ExposureScenarioError
@@ -88,6 +89,7 @@ from exposure_scenario_mcp.runtime import (
     export_pbpk_input,
 )
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
+from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
     build_exposure_envelope_from_library,
@@ -118,6 +120,7 @@ def create_mcp_server() -> FastMCP:
     archetype_library = ArchetypeLibraryRegistry.load()
     probability_profiles = ProbabilityBoundsProfileRegistry.load()
     scenario_probability_packages = ScenarioProbabilityPackageRegistry.load()
+    tier1_inhalation_profiles = Tier1InhalationProfileRegistry.load()
     plugin_registry = PluginRegistry()
     plugin_registry.register(ScreeningScenarioPlugin())
     plugin_registry.register(InhalationScreeningPlugin())
@@ -189,7 +192,11 @@ def create_mcp_server() -> FastMCP:
         """Build one deterministic Tier 1 inhalation scenario using NF/FF screening semantics."""
 
         try:
-            scenario = build_inhalation_tier_1_screening_scenario(params, defaults_registry)
+            scenario = build_inhalation_tier_1_screening_scenario(
+                params,
+                defaults_registry,
+                profile_registry=tier1_inhalation_profiles,
+            )
             scenario = enrich_scenario_uncertainty(engine, scenario)
             return _success_result(
                 f"Built Tier 1 inhalation screening scenario {scenario.scenario_id}.",
@@ -493,6 +500,12 @@ def create_mcp_server() -> FastMCP:
         """Versioned defaults manifest including hashes and source counts."""
 
         return json.dumps(defaults_registry.manifest(), indent=2)
+
+    @mcp.resource("tier1-inhalation://manifest")
+    def tier1_inhalation_manifest() -> str:
+        """Machine-readable Tier 1 inhalation parameter and product-profile manifest."""
+
+        return json.dumps(tier1_inhalation_parameter_manifest(), indent=2)
 
     @mcp.resource("archetypes://manifest")
     def packaged_archetypes_manifest() -> str:

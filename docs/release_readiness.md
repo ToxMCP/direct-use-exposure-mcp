@@ -14,6 +14,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 
 - The MCP surface is machine-readable through the contract manifest and schema resources.
 - Defaults are versioned and hashed.
+- Packaged Tier 1 inhalation airflow, particle, and product-family screening profiles are
+  versioned, hashed, and published as a machine-readable manifest.
 - Packaged Tier B archetype-library sets are versioned, hashed, and published as a machine-readable manifest.
 - Packaged Tier C probability-bounds profiles are versioned, hashed, and published as a machine-readable manifest.
 - Probability-bounds profiles carry explicit driver-family taxonomy, product family, dependency cluster,
@@ -26,9 +28,10 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.
 - Tier C support is limited to packaged single-driver or scenario-package probability bounds
   without Monte Carlo sampling or joint-distribution claims.
-- Inhalation requests expose `requestedTier` and `tierUpgradeAdvisories` as forward-compatible
-  Tier 1 hooks, and a dedicated Tier 1 NF/FF tool builds deterministic spray scenarios with
-  explicit geometry, timing, and airflow-class inputs.
+- Inhalation requests expose `requestedTier` and `tierUpgradeAdvisories` as explicit Tier 1
+  routing hooks, a dedicated Tier 1 NF/FF tool builds deterministic spray scenarios with
+  explicit geometry, timing, airflow-class, and particle-regime inputs, and the packaged
+  Tier 1 manifest publishes the governing screening profiles behind those classes.
 - ToxClaw evidence and refinement bundles emit deterministic content hashes and stable IDs.
 - Security and provenance findings are published through `release://security-provenance-review-report`.
 - Release metadata is published through `release://metadata-report`.

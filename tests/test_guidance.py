@@ -60,6 +60,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "exposure_build_inhalation_tier1_screening_scenario" in inhalation_tier_guide
     assert "inhalationTier1ScenarioRequest.v1" in inhalation_tier_guide
     assert "exposureScenario.v1" in inhalation_tier_guide
+    assert "tier1-inhalation://manifest" in inhalation_tier_guide
+    assert "`household_cleaner_trigger_spray_tier1`" in inhalation_tier_guide
+    assert "`personal_care_aerosol_spray_tier1`" in inhalation_tier_guide
     assert "source_distance_m" in inhalation_tier_guide
     assert "benchmarkDomains" not in validation
     assert "External Dataset Candidates" in validation

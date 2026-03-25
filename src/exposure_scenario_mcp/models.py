@@ -729,6 +729,101 @@ class InhalationTier1ScenarioRequest(ExposureScenarioRequest):
         return self
 
 
+class Tier1AirflowClassProfile(StrictModel):
+    directionality: AirflowDirectionality = Field(
+        ..., description="Governed airflow-directionality class for Tier 1 NF/FF screening."
+    )
+    exchange_turnover_per_hour: float = Field(
+        ...,
+        alias="exchangeTurnoverPerHour",
+        gt=0.0,
+        description="Screening exchange-turnover mapping used for the near-field zone.",
+    )
+    source_id: str = Field(..., alias="sourceId", description="Source backing this class.")
+    note: str = Field(..., description="Interpretation note for the directionality class.")
+
+
+class Tier1ParticleRegimeProfile(StrictModel):
+    particle_size_regime: ParticleSizeRegime = Field(
+        ...,
+        alias="particleSizeRegime",
+        description="Governed particle-size regime for Tier 1 NF/FF screening.",
+    )
+    persistence_factor: float = Field(
+        ...,
+        alias="persistenceFactor",
+        gt=0.0,
+        description="Screening persistence multiplier applied to the near-field increment.",
+    )
+    source_id: str = Field(..., alias="sourceId", description="Source backing this regime.")
+    note: str = Field(..., description="Interpretation note for the particle-size regime.")
+
+
+class Tier1InhalationProductProfile(StrictModel):
+    profile_id: str = Field(..., alias="profileId")
+    label: str = Field(..., description="Human-readable product-family profile label.")
+    product_family: str = Field(
+        ..., alias="productFamily", description="Named product-family/use-family context."
+    )
+    application_method: str = Field(
+        ..., alias="applicationMethod", description="Application method supported by the profile."
+    )
+    recommended_airflow_directionality: AirflowDirectionality = Field(
+        ...,
+        alias="recommendedAirflowDirectionality",
+        description="Recommended Tier 1 airflow class for this product-family profile.",
+    )
+    recommended_particle_size_regime: ParticleSizeRegime = Field(
+        ...,
+        alias="recommendedParticleSizeRegime",
+        description="Recommended particle-size regime for this product-family profile.",
+    )
+    recommended_near_field_volume_m3: float = Field(
+        ...,
+        alias="recommendedNearFieldVolumeM3",
+        gt=0.0,
+        description="Recommended near-field volume for the product-family profile.",
+    )
+    default_source_distance_m: float = Field(
+        ...,
+        alias="defaultSourceDistanceM",
+        gt=0.0,
+        description="Typical source-distance anchor for the product-family profile.",
+    )
+    default_spray_duration_seconds: float = Field(
+        ...,
+        alias="defaultSprayDurationSeconds",
+        gt=0.0,
+        description="Typical active spray duration anchor for the product-family profile.",
+    )
+    source_id: str = Field(..., alias="sourceId", description="Source backing this profile.")
+    note: str = Field(..., description="Interpretation note for the profile.")
+
+
+class Tier1InhalationParameterManifest(StrictModel):
+    schema_version: Literal["tier1InhalationParameterManifest.v1"] = (
+        "tier1InhalationParameterManifest.v1"
+    )
+    profile_version: str = Field(..., alias="profileVersion")
+    profile_hash_sha256: str = Field(..., alias="profileHashSha256")
+    path: str = Field(..., description="Package or repository path for the parameter manifest.")
+    source_count: int = Field(..., alias="sourceCount", ge=0)
+    directionality_profile_count: int = Field(..., alias="directionalityProfileCount", ge=0)
+    particle_profile_count: int = Field(..., alias="particleProfileCount", ge=0)
+    profile_count: int = Field(..., alias="profileCount", ge=0)
+    notes: list[str] = Field(default_factory=list)
+    sources: list[AssumptionSourceReference] = Field(default_factory=list)
+    directionality_profiles: list[Tier1AirflowClassProfile] = Field(
+        default_factory=list,
+        alias="directionalityProfiles",
+    )
+    particle_profiles: list[Tier1ParticleRegimeProfile] = Field(
+        default_factory=list,
+        alias="particleProfiles",
+    )
+    profiles: list[Tier1InhalationProductProfile] = Field(default_factory=list)
+
+
 class ScenarioDose(StrictModel):
     metric: str = Field(..., description="Dose metric label.")
     value: float = Field(..., description="Numeric value for the dose metric.")

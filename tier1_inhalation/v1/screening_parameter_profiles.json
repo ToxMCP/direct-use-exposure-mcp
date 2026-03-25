@@ -1,0 +1,115 @@
+{
+  "profile_version": "2026.03.25.v1",
+  "notes": [
+    "This pack publishes governed screening parameters for the Tier 1 near-field/far-field inhalation model.",
+    "The airflow and particle mappings remain deterministic screening heuristics and are not a calibrated aerosol transport model.",
+    "Product-family profiles are recommendation packs for common spray contexts and are not substitutes for scenario-specific evidence."
+  ],
+  "sources": [
+    {
+      "source_id": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
+      "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
+      "version": "2026.03.25.v1"
+    },
+    {
+      "source_id": "benchmark_tier1_nf_ff_product_profiles_v1",
+      "title": "Exposure Scenario MCP Tier 1 NF/FF product-family profile pack",
+      "locator": "docs://tier1-inhalation-parameter-guide#product-family-profiles",
+      "version": "2026.03.25.v1"
+    }
+  ],
+  "directionality_profiles": [
+    {
+      "directionality": "quiescent",
+      "exchangeTurnoverPerHour": 20.0,
+      "sourceId": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "note": "Low local exchange class for weak directional forcing around the breathing zone."
+    },
+    {
+      "directionality": "cross_draft",
+      "exchangeTurnoverPerHour": 32.0,
+      "sourceId": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "note": "Moderate local exchange class for lateral air movement that dilutes but does not collapse the near-field zone."
+    },
+    {
+      "directionality": "source_to_breathing_zone",
+      "exchangeTurnoverPerHour": 16.0,
+      "sourceId": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "note": "Conservative low-exchange class when the source plume is oriented toward the user."
+    },
+    {
+      "directionality": "breathing_zone_to_source",
+      "exchangeTurnoverPerHour": 48.0,
+      "sourceId": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "note": "High local exchange class when air movement pulls the plume away from the breathing zone."
+    },
+    {
+      "directionality": "general_room_mixing",
+      "exchangeTurnoverPerHour": 26.0,
+      "sourceId": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "note": "Intermediate class for room-driven mixing without a strong directional draft."
+    }
+  ],
+  "particle_profiles": [
+    {
+      "particleSizeRegime": "fine_aerosol",
+      "persistenceFactor": 1.2,
+      "sourceId": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "note": "Fine aerosol screening class that preserves a stronger near-field increment."
+    },
+    {
+      "particleSizeRegime": "mixed_spray",
+      "persistenceFactor": 1.0,
+      "sourceId": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "note": "Mixed spray baseline screening class."
+    },
+    {
+      "particleSizeRegime": "coarse_spray",
+      "persistenceFactor": 0.85,
+      "sourceId": "benchmark_tier1_nf_ff_parameter_pack_v1",
+      "note": "Coarse spray screening class with faster local loss than the mixed baseline."
+    }
+  ],
+  "profiles": [
+    {
+      "profileId": "household_cleaner_trigger_spray_tier1",
+      "label": "Household cleaner trigger spray Tier 1 profile",
+      "productFamily": "household_cleaner",
+      "applicationMethod": "trigger_spray",
+      "recommendedAirflowDirectionality": "cross_draft",
+      "recommendedParticleSizeRegime": "coarse_spray",
+      "recommendedNearFieldVolumeM3": 2.0,
+      "defaultSourceDistanceM": 0.35,
+      "defaultSprayDurationSeconds": 8.0,
+      "sourceId": "benchmark_tier1_nf_ff_product_profiles_v1",
+      "note": "Benchmark Tier 1 profile for household cleaner trigger sprays in consumer room contexts."
+    },
+    {
+      "profileId": "household_cleaner_pump_spray_tier1",
+      "label": "Household cleaner pump spray Tier 1 profile",
+      "productFamily": "household_cleaner",
+      "applicationMethod": "pump_spray",
+      "recommendedAirflowDirectionality": "general_room_mixing",
+      "recommendedParticleSizeRegime": "mixed_spray",
+      "recommendedNearFieldVolumeM3": 2.2,
+      "defaultSourceDistanceM": 0.4,
+      "defaultSprayDurationSeconds": 10.0,
+      "sourceId": "benchmark_tier1_nf_ff_product_profiles_v1",
+      "note": "Benchmark Tier 1 profile for manual pump sprays where local room mixing dominates over a strong draft."
+    },
+    {
+      "profileId": "personal_care_aerosol_spray_tier1",
+      "label": "Personal care aerosol spray Tier 1 profile",
+      "productFamily": "personal_care",
+      "applicationMethod": "aerosol_spray",
+      "recommendedAirflowDirectionality": "source_to_breathing_zone",
+      "recommendedParticleSizeRegime": "fine_aerosol",
+      "recommendedNearFieldVolumeM3": 1.5,
+      "defaultSourceDistanceM": 0.3,
+      "defaultSprayDurationSeconds": 6.0,
+      "sourceId": "benchmark_tier1_nf_ff_product_profiles_v1",
+      "note": "Benchmark Tier 1 profile for directed personal-care aerosols with finer particle persistence near the user."
+    }
+  ]
+}

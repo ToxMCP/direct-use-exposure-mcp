@@ -99,6 +99,10 @@
       "description": "Versioned defaults manifest."
     },
     {
+      "uri": "tier1-inhalation://manifest",
+      "description": "Machine-readable packaged Tier 1 inhalation parameter and product-profile manifest."
+    },
+    {
       "uri": "archetypes://manifest",
       "description": "Machine-readable packaged Tier B archetype-library manifest."
     },
@@ -219,6 +223,10 @@
     "exposureScenarioRequest.v1": "schemas/exposureScenarioRequest.v1.json",
     "inhalationScenarioRequest.v1": "schemas/inhalationScenarioRequest.v1.json",
     "inhalationTier1ScenarioRequest.v1": "schemas/inhalationTier1ScenarioRequest.v1.json",
+    "tier1AirflowClassProfile.v1": "schemas/tier1AirflowClassProfile.v1.json",
+    "tier1ParticleRegimeProfile.v1": "schemas/tier1ParticleRegimeProfile.v1.json",
+    "tier1InhalationProductProfile.v1": "schemas/tier1InhalationProductProfile.v1.json",
+    "tier1InhalationParameterManifest.v1": "schemas/tier1InhalationParameterManifest.v1.json",
     "exposureScenario.v1": "schemas/exposureScenario.v1.json",
     "archetypeLibraryTemplate.v1": "schemas/archetypeLibraryTemplate.v1.json",
     "archetypeLibrarySet.v1": "schemas/archetypeLibrarySet.v1.json",

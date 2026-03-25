@@ -86,6 +86,10 @@ from exposure_scenario_mcp.models import (
     SecurityProvenanceReviewFinding,
     SecurityProvenanceReviewReport,
     SensitivityRankingEntry,
+    Tier1AirflowClassProfile,
+    Tier1InhalationParameterManifest,
+    Tier1InhalationProductProfile,
+    Tier1ParticleRegimeProfile,
     TierSemantics,
     TierUpgradeAdvisory,
     TierUpgradeInputRequirement,
@@ -97,6 +101,7 @@ from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
+from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 
 SCHEMA_MODELS = {
     "productUseProfile.v1": ProductUseProfile,
@@ -104,6 +109,10 @@ SCHEMA_MODELS = {
     "exposureScenarioRequest.v1": ExposureScenarioRequest,
     "inhalationScenarioRequest.v1": InhalationScenarioRequest,
     "inhalationTier1ScenarioRequest.v1": InhalationTier1ScenarioRequest,
+    "tier1AirflowClassProfile.v1": Tier1AirflowClassProfile,
+    "tier1ParticleRegimeProfile.v1": Tier1ParticleRegimeProfile,
+    "tier1InhalationProductProfile.v1": Tier1InhalationProductProfile,
+    "tier1InhalationParameterManifest.v1": Tier1InhalationParameterManifest,
     "exposureScenario.v1": ExposureScenario,
     "archetypeLibraryTemplate.v1": ArchetypeLibraryTemplate,
     "archetypeLibrarySet.v1": ArchetypeLibrarySet,
@@ -302,6 +311,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 uri="defaults://manifest", description="Versioned defaults manifest."
             ),
             ContractResourceEntry(
+                uri="tier1-inhalation://manifest",
+                description=(
+                    "Machine-readable packaged Tier 1 inhalation parameter and "
+                    "product-profile manifest."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="archetypes://manifest",
                 description="Machine-readable packaged Tier B archetype-library manifest.",
             ),
@@ -486,6 +502,15 @@ def algorithm_notes() -> str:
 - Preserve inhalation-specific uncertainty entries when spray assumptions
   exceed well-mixed validity.
 
+## Tier 1 Inhalation Screening
+
+- Tier 1 NF/FF screening resolves airflow-directionality and particle-regime heuristics from the
+  packaged manifest at `tier1-inhalation://manifest`.
+- Product-family screening profiles are published alongside those parameter packs so callers can
+  anchor Tier 1 geometry and spray inputs to governed use-context templates.
+- Tier 1 remains a deterministic screening model and must not be interpreted as CFD,
+  deposition, or absorbed-dose simulation.
+
 ## Aggregate Summary
 
 - Sum compatible normalized doses across components.
@@ -541,6 +566,13 @@ def benchmark_manifest() -> dict:
 
 def archetype_library_manifest() -> dict:
     return ArchetypeLibraryRegistry.load().manifest().model_dump(mode="json", by_alias=True)
+
+
+def tier1_inhalation_parameter_manifest() -> dict:
+    return Tier1InhalationProfileRegistry.load().manifest().model_dump(
+        mode="json",
+        by_alias=True,
+    )
 
 
 def probability_bounds_profile_manifest() -> dict:

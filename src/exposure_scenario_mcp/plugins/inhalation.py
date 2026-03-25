@@ -8,11 +8,9 @@ from uuid import uuid4
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import (
-    AirflowDirectionality,
     DoseUnit,
     ExposureScenario,
     InhalationTier1ScenarioRequest,
-    ParticleSizeRegime,
     Route,
     ScenarioClass,
     ScenarioDose,
@@ -30,22 +28,11 @@ from exposure_scenario_mcp.runtime import (
     resolve_population_value,
     resolve_product_mass_g,
 )
+from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 
 TIER_1_SPRAY_METHODS = {"trigger_spray", "pump_spray", "aerosol_spray"}
 TIER_1_MODEL_FAMILY = "inhalation_near_field_far_field_screening"
 TIER_1_GUIDANCE_RESOURCE = "docs://inhalation-tier-upgrade-guide"
-TIER_1_DIRECTIONALITY_TURNOVERS_PER_HOUR = {
-    AirflowDirectionality.QUIESCENT: 20.0,
-    AirflowDirectionality.CROSS_DRAFT: 32.0,
-    AirflowDirectionality.SOURCE_TO_BREATHING_ZONE: 16.0,
-    AirflowDirectionality.BREATHING_ZONE_TO_SOURCE: 48.0,
-    AirflowDirectionality.GENERAL_ROOM_MIXING: 26.0,
-}
-TIER_1_PARTICLE_PERSISTENCE_FACTORS = {
-    ParticleSizeRegime.FINE_AEROSOL: 1.2,
-    ParticleSizeRegime.MIXED_SPRAY: 1.0,
-    ParticleSizeRegime.COARSE_SPRAY: 0.85,
-}
 
 
 def tier_1_input_requirements() -> list[TierUpgradeInputRequirement]:
@@ -82,6 +69,7 @@ def build_inhalation_tier_1_screening_scenario(
     request: InhalationTier1ScenarioRequest,
     registry: DefaultsRegistry,
     *,
+    profile_registry: Tier1InhalationProfileRegistry | None = None,
     generated_at: str | None = None,
 ) -> ExposureScenario:
     tracker = AssumptionTracker(registry=registry)
@@ -97,6 +85,14 @@ def build_inhalation_tier_1_screening_scenario(
     )
     profile = request.product_use_profile
     population = request.population_profile
+    tier_1_registry = profile_registry or Tier1InhalationProfileRegistry.load()
+    airflow_profile = tier_1_registry.airflow_profile(request.airflow_directionality)
+    particle_profile = tier_1_registry.particle_profile(request.particle_size_regime)
+    matched_profiles = tier_1_registry.matching_profiles(
+        product_family=profile.product_category,
+        application_method=profile.application_method,
+    )
+    matched_profile = matched_profiles[0] if matched_profiles else None
 
     product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
     chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
@@ -289,16 +285,12 @@ def build_inhalation_tier_1_screening_scenario(
             (1.0 - math.exp(-k * exposure_duration_hours)) / (k * exposure_duration_hours)
         )
 
-    near_field_exchange_turnover = TIER_1_DIRECTIONALITY_TURNOVERS_PER_HOUR[
-        request.airflow_directionality
-    ]
+    near_field_exchange_turnover = airflow_profile.exchange_turnover_per_hour
     interzonal_mixing_rate = request.near_field_volume_m3 * (
         near_field_exchange_turnover + max(air_exchange, 0.0)
     )
     distance_factor = max(0.75, min(3.0, 0.75 / request.source_distance_m))
-    particle_persistence_factor = TIER_1_PARTICLE_PERSISTENCE_FACTORS[
-        request.particle_size_regime
-    ]
+    particle_persistence_factor = particle_profile.persistence_factor
     emission_rate_mg_per_hour = released_mass_mg_event / spray_duration_hours
     near_field_increment = (
         emission_rate_mg_per_hour
@@ -338,11 +330,19 @@ def build_inhalation_tier_1_screening_scenario(
         "m3",
         "Far-field volume = room volume minus near-field volume.",
     )
-    tracker.add_derived(
+    tracker.add_default(
         "near_field_exchange_turnover_per_hour",
         near_field_exchange_turnover,
         "1/h",
-        "Tier 1 screening turnover selected from airflow_directionality.",
+        tier_1_registry.source_reference(airflow_profile.source_id),
+        "Tier 1 screening turnover resolved from the packaged airflow-directionality profile.",
+    )
+    tracker.add_default(
+        "particle_persistence_factor",
+        particle_persistence_factor,
+        None,
+        tier_1_registry.source_reference(particle_profile.source_id),
+        "Tier 1 persistence factor resolved from the packaged particle-regime profile.",
     )
     tracker.add_derived(
         "interzonal_mixing_rate_m3_per_hour",
@@ -450,6 +450,7 @@ def build_inhalation_tier_1_screening_scenario(
             ),
             "interzonal_mixing_rate_m3_per_hour": round(interzonal_mixing_rate, 8),
             "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
+            "tier1_product_profile_id": matched_profile.profile_id if matched_profile else None,
         },
         assumptions=tracker.assumptions,
         provenance=tracker.provenance(
@@ -483,6 +484,15 @@ def build_inhalation_tier_1_screening_scenario(
             "Deterministic Tier 1 inhalation scenario with a screening near-field/far-field split.",
             "The near-field increment is active during spray duration only and reverts to the "
             "far-field room average for the remainder of the event.",
+            *(
+                [
+                    "Matched packaged Tier 1 screening profile "
+                    f"`{matched_profile.profile_id}`; caller-supplied Tier 1 geometry and "
+                    "regime inputs remain authoritative."
+                ]
+                if matched_profile is not None
+                else []
+            ),
         ],
         tierUpgradeAdvisories=[],
     )

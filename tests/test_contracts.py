@@ -72,6 +72,10 @@ def test_contract_manifest_and_server_boot() -> None:
     assert len(manifest["tools"]) == 14
     assert "exposureScenario.v1" in manifest["schemas"]
     assert "inhalationTier1ScenarioRequest.v1" in manifest["schemas"]
+    assert "tier1AirflowClassProfile.v1" in manifest["schemas"]
+    assert "tier1ParticleRegimeProfile.v1" in manifest["schemas"]
+    assert "tier1InhalationProductProfile.v1" in manifest["schemas"]
+    assert "tier1InhalationParameterManifest.v1" in manifest["schemas"]
     assert "archetypeLibraryManifest.v1" in manifest["schemas"]
     assert "archetypeLibrarySet.v1" in manifest["schemas"]
     assert "archetypeLibraryTemplate.v1" in manifest["schemas"]
@@ -124,6 +128,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://inhalation-tier-upgrade-guide",
         "docs://validation-framework",
         "docs://troubleshooting",
+        "tier1-inhalation://manifest",
         "archetypes://manifest",
         "probability-bounds://manifest",
         "scenario-probability://manifest",

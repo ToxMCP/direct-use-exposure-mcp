@@ -1,0 +1,46 @@
+{
+  "$defs": {
+    "AirflowDirectionality": {
+      "enum": [
+        "quiescent",
+        "cross_draft",
+        "source_to_breathing_zone",
+        "breathing_zone_to_source",
+        "general_room_mixing"
+      ],
+      "title": "AirflowDirectionality",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "directionality": {
+      "$ref": "#/$defs/AirflowDirectionality",
+      "description": "Governed airflow-directionality class for Tier 1 NF/FF screening."
+    },
+    "exchangeTurnoverPerHour": {
+      "description": "Screening exchange-turnover mapping used for the near-field zone.",
+      "exclusiveMinimum": 0.0,
+      "title": "Exchangeturnoverperhour",
+      "type": "number"
+    },
+    "sourceId": {
+      "description": "Source backing this class.",
+      "title": "Sourceid",
+      "type": "string"
+    },
+    "note": {
+      "description": "Interpretation note for the directionality class.",
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "directionality",
+    "exchangeTurnoverPerHour",
+    "sourceId",
+    "note"
+  ],
+  "title": "Tier1AirflowClassProfile",
+  "type": "object"
+}

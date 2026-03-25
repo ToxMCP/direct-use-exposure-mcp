@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "AirflowDirectionality": {
+      "enum": [
+        "quiescent",
+        "cross_draft",
+        "source_to_breathing_zone",
+        "breathing_zone_to_source",
+        "general_room_mixing"
+      ],
+      "title": "AirflowDirectionality",
+      "type": "string"
+    },
+    "ParticleSizeRegime": {
+      "enum": [
+        "fine_aerosol",
+        "mixed_spray",
+        "coarse_spray"
+      ],
+      "title": "ParticleSizeRegime",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "profileId": {
+      "title": "Profileid",
+      "type": "string"
+    },
+    "label": {
+      "description": "Human-readable product-family profile label.",
+      "title": "Label",
+      "type": "string"
+    },
+    "productFamily": {
+      "description": "Named product-family/use-family context.",
+      "title": "Productfamily",
+      "type": "string"
+    },
+    "applicationMethod": {
+      "description": "Application method supported by the profile.",
+      "title": "Applicationmethod",
+      "type": "string"
+    },
+    "recommendedAirflowDirectionality": {
+      "$ref": "#/$defs/AirflowDirectionality",
+      "description": "Recommended Tier 1 airflow class for this product-family profile."
+    },
+    "recommendedParticleSizeRegime": {
+      "$ref": "#/$defs/ParticleSizeRegime",
+      "description": "Recommended particle-size regime for this product-family profile."
+    },
+    "recommendedNearFieldVolumeM3": {
+      "description": "Recommended near-field volume for the product-family profile.",
+      "exclusiveMinimum": 0.0,
+      "title": "Recommendednearfieldvolumem3",
+      "type": "number"
+    },
+    "defaultSourceDistanceM": {
+      "description": "Typical source-distance anchor for the product-family profile.",
+      "exclusiveMinimum": 0.0,
+      "title": "Defaultsourcedistancem",
+      "type": "number"
+    },
+    "defaultSprayDurationSeconds": {
+      "description": "Typical active spray duration anchor for the product-family profile.",
+      "exclusiveMinimum": 0.0,
+      "title": "Defaultspraydurationseconds",
+      "type": "number"
+    },
+    "sourceId": {
+      "description": "Source backing this profile.",
+      "title": "Sourceid",
+      "type": "string"
+    },
+    "note": {
+      "description": "Interpretation note for the profile.",
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "profileId",
+    "label",
+    "productFamily",
+    "applicationMethod",
+    "recommendedAirflowDirectionality",
+    "recommendedParticleSizeRegime",
+    "recommendedNearFieldVolumeM3",
+    "defaultSourceDistanceM",
+    "defaultSprayDurationSeconds",
+    "sourceId",
+    "note"
+  ],
+  "title": "Tier1InhalationProductProfile",
+  "type": "object"
+}

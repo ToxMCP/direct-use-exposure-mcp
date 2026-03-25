@@ -11,6 +11,7 @@ from exposure_scenario_mcp.models import (
 )
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
+from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 from exposure_scenario_mcp.validation import validation_manifest
 
 
@@ -73,6 +74,23 @@ def _scenario_package_probability_lines() -> list[str]:
             f"- `{item.profile_id}` "
             f"[{item.route.value}/{item.package_family.value}/{item.product_family}] "
             f"{item.label}"
+        )
+    return lines
+
+
+def _tier1_inhalation_profile_lines() -> list[str]:
+    manifest = Tier1InhalationProfileRegistry.load().manifest()
+    lines = [
+        "## Packaged Tier 1 Inhalation Profiles",
+        "",
+        f"- Profile version: `{manifest.profile_version}`",
+        f"- Airflow classes: `{manifest.directionality_profile_count}`",
+        f"- Particle regimes: `{manifest.particle_profile_count}`",
+        f"- Product-family profiles: `{manifest.profile_count}`",
+    ]
+    for item in manifest.profiles:
+        lines.append(
+            f"- `{item.profile_id}` [{item.product_family}/{item.application_method}] {item.label}"
         )
     return lines
 
@@ -180,13 +198,14 @@ def uncertainty_framework() -> str:
 
 - Spray inhalation scenarios can emit `tierUpgradeAdvisories` that recommend Tier 1
   near-field/far-field modeling whenever Tier 0 room averages are too coarse.
-- `requestedTier=tier_1` is a forward-compatible contract hook for inhalation requests and
-  currently fails loudly with an actionable `not_implemented` error.
+- `requestedTier=tier_1` on the base inhalation request remains an explicit routing hook;
+  callers should use the dedicated Tier 1 tool rather than expecting the Tier 0 room model
+  to upgrade itself implicitly.
 - `exposure_build_inhalation_tier1_screening_scenario` accepts the governed
   `inhalationTier1ScenarioRequest.v1` contract and returns a deterministic Tier 1 external-dose
   scenario for spray contexts.
 - Tier 1 remains a screening model family with explicit airflow-class and particle-regime
-  heuristics; it is not a calibrated aerosol transport simulator.
+  heuristics sourced from a packaged manifest; it is not a calibrated aerosol transport simulator.
 
 ## Tier C
 
@@ -285,55 +304,83 @@ def probability_bounds_guide() -> str:
 
 
 def inhalation_tier_upgrade_guide() -> str:
-    return """# Inhalation Tier Upgrade Guide
-
-## Current State
-
-- `v0.1.0` implements Tier 0 inhalation and a spray-focused Tier 1 NF/FF screening path.
-- Spray scenarios can emit `tierUpgradeAdvisories` when the Tier 0 output is likely to miss
-  breathing-zone peaks or source-proximal behavior.
-- `requestedTier=tier_1` is accepted as a forward-compatible contract hook but currently returns
-  a typed `inhalation_tier_1_not_implemented` error.
-- `exposure_build_inhalation_tier1_screening_scenario` accepts the published
-  `inhalationTier1ScenarioRequest.v1` schema and returns an `exposureScenario.v1` result with
-  Tier 1 semantics.
-
-## When The Hook Triggers
-
-- Spray application methods such as `trigger_spray`, `pump_spray`, or `aerosol_spray`
-- Short event durations where transient peaks are plausible
-- Any screening context where a room-average concentration is not sufficient
-
-## Required Tier 1 Inputs
-
-- `source_distance_m`
-- `spray_duration_seconds`
-- `near_field_volume_m3`
-- `airflow_directionality`
-- `particle_size_regime`
-
-## Current Tier 1 Tool
-
-- Tool: `exposure_build_inhalation_tier1_screening_scenario`
-- Request schema: `inhalationTier1ScenarioRequest.v1`
-- Response schema: `exposureScenario.v1`
-- Current behavior: builds a deterministic near-field/far-field screening scenario for spray
-  events while preserving Tier 1 limitations, quality flags, and screening-only caveats.
-
-## Guardrails
-
-- Do not reinterpret Tier 0 spray outputs as near-field resolved.
-- Do not treat Tier 1 screening outputs as validated CFD, deposition, or absorbed-dose models.
-- Keep `tierUpgradeAdvisories`, `limitations`, and `tierSemantics` attached to downstream reports.
-
-## Tier 1 Screening Semantics
-
-- Model family: `inhalation_near_field_far_field_screening`
-- Scope: still external-dose only
-- Mechanism: room-average far-field background plus an active-spray near-field increment
-- Required inputs use governed airflow-directionality and particle-regime vocabularies
-- Non-goals: deposited dose, absorbed dose, PBPK state variables, or final risk conclusions
-"""
+    lines = [
+        "# Inhalation Tier Upgrade Guide",
+        "",
+        "## Current State",
+        "",
+        "- `v0.1.0` implements Tier 0 inhalation and a spray-focused Tier 1 NF/FF",
+        "  screening path.",
+        "- Spray scenarios can emit `tierUpgradeAdvisories` when the Tier 0 output",
+        "  is likely to miss",
+        "  breathing-zone peaks or source-proximal behavior.",
+        "- `requestedTier=tier_1` on `inhalationScenarioRequest.v1` remains an",
+        "  explicit routing hook and still fails loudly so callers do not silently",
+        "  reinterpret the Tier 0 solver as Tier 1.",
+        "- `exposure_build_inhalation_tier1_screening_scenario` accepts the published",
+        "  `inhalationTier1ScenarioRequest.v1` schema and returns an",
+        "  `exposureScenario.v1` result with",
+        "  Tier 1 semantics.",
+        "",
+        "## When The Hook Triggers",
+        "",
+        "- Spray application methods such as `trigger_spray`, `pump_spray`, or `aerosol_spray`",
+        "- Short event durations where transient peaks are plausible",
+        "- Any screening context where a room-average concentration is not sufficient",
+        "",
+        "## Required Tier 1 Inputs",
+        "",
+        "- `source_distance_m`",
+        "- `spray_duration_seconds`",
+        "- `near_field_volume_m3`",
+        "- `airflow_directionality`",
+        "- `particle_size_regime`",
+        "",
+        "## Current Tier 1 Tool",
+        "",
+        "- Tool: `exposure_build_inhalation_tier1_screening_scenario`",
+        "- Request schema: `inhalationTier1ScenarioRequest.v1`",
+        "- Response schema: `exposureScenario.v1`",
+        "- Current behavior: builds a deterministic near-field/far-field",
+        "  screening scenario for spray",
+        "  events while preserving Tier 1 limitations, quality flags, and screening-only caveats.",
+        "",
+        "## Packaged Tier 1 Screening Profiles",
+        "",
+        "- Discover governed airflow classes, particle regimes, and",
+        "  product-family profiles through",
+        "  `tier1-inhalation://manifest`.",
+        "- The packaged manifest publishes explicit screening parameter",
+        "  sources rather than burying",
+        "  Tier 1 heuristics in code constants.",
+        "",
+    ]
+    lines.extend(_tier1_inhalation_profile_lines())
+    lines.extend(
+        [
+            "",
+            "## Guardrails",
+            "",
+            "- Do not reinterpret Tier 0 spray outputs as near-field resolved.",
+            "- Do not treat Tier 1 screening outputs as validated CFD,",
+            "  deposition, or absorbed-dose",
+            "  models.",
+            "- Keep `tierUpgradeAdvisories`, `limitations`, `tierSemantics`, and any matched",
+            "  Tier 1 profile identifiers attached to downstream reports.",
+            "",
+            "## Tier 1 Screening Semantics",
+            "",
+            "- Model family: `inhalation_near_field_far_field_screening`",
+            "- Scope: still external-dose only",
+            "- Mechanism: room-average far-field background plus an",
+            "  active-spray near-field increment",
+            "- Required inputs use governed airflow-directionality and",
+            "  particle-regime vocabularies",
+            "- Non-goals: deposited dose, absorbed dose, PBPK state",
+            "  variables, or final risk conclusions",
+        ]
+    )
+    return "\n".join(lines)
 
 
 def validation_framework() -> str:

@@ -218,8 +218,26 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
     assert scenario.route_metrics["interzonal_mixing_rate_m3_per_hour"] == pytest.approx(
         68.0, rel=1e-6
     )
+    assert scenario.route_metrics["tier1_product_profile_id"] == (
+        "household_cleaner_trigger_spray_tier1"
+    )
     assert any(item.code == "near_field_exchange_screening" for item in scenario.limitations)
     assert any(item.code == "tier_1_nf_ff_screening" for item in scenario.quality_flags)
+    assumptions = {item.name: item for item in scenario.assumptions}
+    assert assumptions["near_field_exchange_turnover_per_hour"].value == pytest.approx(
+        32.0, rel=1e-6
+    )
+    assert assumptions["near_field_exchange_turnover_per_hour"].source.source_id == (
+        "benchmark_tier1_nf_ff_parameter_pack_v1"
+    )
+    assert assumptions["particle_persistence_factor"].value == pytest.approx(0.85, rel=1e-6)
+    assert assumptions["particle_persistence_factor"].source.source_id == (
+        "benchmark_tier1_nf_ff_parameter_pack_v1"
+    )
+    assert any(
+        "household_cleaner_trigger_spray_tier1" in note
+        for note in scenario.interpretation_notes
+    )
 
     enriched = enrich_scenario_uncertainty(engine, scenario)
     assert enriched.validation_summary is not None

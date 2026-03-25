@@ -1,0 +1,299 @@
+{
+  "$defs": {
+    "AirflowDirectionality": {
+      "enum": [
+        "quiescent",
+        "cross_draft",
+        "source_to_breathing_zone",
+        "breathing_zone_to_source",
+        "general_room_mixing"
+      ],
+      "title": "AirflowDirectionality",
+      "type": "string"
+    },
+    "AssumptionSourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "description": "Stable identifier for the source.",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "title": {
+          "description": "Human-readable source title.",
+          "title": "Title",
+          "type": "string"
+        },
+        "locator": {
+          "description": "URL, file path, or logical locator.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "version": {
+          "description": "Version or effective date for the source.",
+          "title": "Version",
+          "type": "string"
+        },
+        "hash_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Content hash when available.",
+          "title": "Hash Sha256"
+        }
+      },
+      "required": [
+        "source_id",
+        "title",
+        "locator",
+        "version"
+      ],
+      "title": "AssumptionSourceReference",
+      "type": "object"
+    },
+    "ParticleSizeRegime": {
+      "enum": [
+        "fine_aerosol",
+        "mixed_spray",
+        "coarse_spray"
+      ],
+      "title": "ParticleSizeRegime",
+      "type": "string"
+    },
+    "Tier1AirflowClassProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "directionality": {
+          "$ref": "#/$defs/AirflowDirectionality",
+          "description": "Governed airflow-directionality class for Tier 1 NF/FF screening."
+        },
+        "exchangeTurnoverPerHour": {
+          "description": "Screening exchange-turnover mapping used for the near-field zone.",
+          "exclusiveMinimum": 0.0,
+          "title": "Exchangeturnoverperhour",
+          "type": "number"
+        },
+        "sourceId": {
+          "description": "Source backing this class.",
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "note": {
+          "description": "Interpretation note for the directionality class.",
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "directionality",
+        "exchangeTurnoverPerHour",
+        "sourceId",
+        "note"
+      ],
+      "title": "Tier1AirflowClassProfile",
+      "type": "object"
+    },
+    "Tier1InhalationProductProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "profileId": {
+          "title": "Profileid",
+          "type": "string"
+        },
+        "label": {
+          "description": "Human-readable product-family profile label.",
+          "title": "Label",
+          "type": "string"
+        },
+        "productFamily": {
+          "description": "Named product-family/use-family context.",
+          "title": "Productfamily",
+          "type": "string"
+        },
+        "applicationMethod": {
+          "description": "Application method supported by the profile.",
+          "title": "Applicationmethod",
+          "type": "string"
+        },
+        "recommendedAirflowDirectionality": {
+          "$ref": "#/$defs/AirflowDirectionality",
+          "description": "Recommended Tier 1 airflow class for this product-family profile."
+        },
+        "recommendedParticleSizeRegime": {
+          "$ref": "#/$defs/ParticleSizeRegime",
+          "description": "Recommended particle-size regime for this product-family profile."
+        },
+        "recommendedNearFieldVolumeM3": {
+          "description": "Recommended near-field volume for the product-family profile.",
+          "exclusiveMinimum": 0.0,
+          "title": "Recommendednearfieldvolumem3",
+          "type": "number"
+        },
+        "defaultSourceDistanceM": {
+          "description": "Typical source-distance anchor for the product-family profile.",
+          "exclusiveMinimum": 0.0,
+          "title": "Defaultsourcedistancem",
+          "type": "number"
+        },
+        "defaultSprayDurationSeconds": {
+          "description": "Typical active spray duration anchor for the product-family profile.",
+          "exclusiveMinimum": 0.0,
+          "title": "Defaultspraydurationseconds",
+          "type": "number"
+        },
+        "sourceId": {
+          "description": "Source backing this profile.",
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "note": {
+          "description": "Interpretation note for the profile.",
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profileId",
+        "label",
+        "productFamily",
+        "applicationMethod",
+        "recommendedAirflowDirectionality",
+        "recommendedParticleSizeRegime",
+        "recommendedNearFieldVolumeM3",
+        "defaultSourceDistanceM",
+        "defaultSprayDurationSeconds",
+        "sourceId",
+        "note"
+      ],
+      "title": "Tier1InhalationProductProfile",
+      "type": "object"
+    },
+    "Tier1ParticleRegimeProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "particleSizeRegime": {
+          "$ref": "#/$defs/ParticleSizeRegime",
+          "description": "Governed particle-size regime for Tier 1 NF/FF screening."
+        },
+        "persistenceFactor": {
+          "description": "Screening persistence multiplier applied to the near-field increment.",
+          "exclusiveMinimum": 0.0,
+          "title": "Persistencefactor",
+          "type": "number"
+        },
+        "sourceId": {
+          "description": "Source backing this regime.",
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "note": {
+          "description": "Interpretation note for the particle-size regime.",
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "particleSizeRegime",
+        "persistenceFactor",
+        "sourceId",
+        "note"
+      ],
+      "title": "Tier1ParticleRegimeProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "tier1InhalationParameterManifest.v1",
+      "default": "tier1InhalationParameterManifest.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "profileVersion": {
+      "title": "Profileversion",
+      "type": "string"
+    },
+    "profileHashSha256": {
+      "title": "Profilehashsha256",
+      "type": "string"
+    },
+    "path": {
+      "description": "Package or repository path for the parameter manifest.",
+      "title": "Path",
+      "type": "string"
+    },
+    "sourceCount": {
+      "minimum": 0,
+      "title": "Sourcecount",
+      "type": "integer"
+    },
+    "directionalityProfileCount": {
+      "minimum": 0,
+      "title": "Directionalityprofilecount",
+      "type": "integer"
+    },
+    "particleProfileCount": {
+      "minimum": 0,
+      "title": "Particleprofilecount",
+      "type": "integer"
+    },
+    "profileCount": {
+      "minimum": 0,
+      "title": "Profilecount",
+      "type": "integer"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/AssumptionSourceReference"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "directionalityProfiles": {
+      "items": {
+        "$ref": "#/$defs/Tier1AirflowClassProfile"
+      },
+      "title": "Directionalityprofiles",
+      "type": "array"
+    },
+    "particleProfiles": {
+      "items": {
+        "$ref": "#/$defs/Tier1ParticleRegimeProfile"
+      },
+      "title": "Particleprofiles",
+      "type": "array"
+    },
+    "profiles": {
+      "items": {
+        "$ref": "#/$defs/Tier1InhalationProductProfile"
+      },
+      "title": "Profiles",
+      "type": "array"
+    }
+  },
+  "required": [
+    "profileVersion",
+    "profileHashSha256",
+    "path",
+    "sourceCount",
+    "directionalityProfileCount",
+    "particleProfileCount",
+    "profileCount"
+  ],
+  "title": "Tier1InhalationParameterManifest",
+  "type": "object"
+}

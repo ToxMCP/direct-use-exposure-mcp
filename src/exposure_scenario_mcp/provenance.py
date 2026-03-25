@@ -101,6 +101,10 @@ ASSUMPTION_UNCERTAINTY_TYPES: dict[str, tuple[UncertaintyType, ...]] = {
         UncertaintyType.MODEL_UNCERTAINTY,
         UncertaintyType.SCENARIO_UNCERTAINTY,
     ),
+    "particle_persistence_factor": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.MODEL_UNCERTAINTY,
+    ),
     "interzonal_mixing_rate_m3_per_hour": (
         UncertaintyType.MODEL_UNCERTAINTY,
         UncertaintyType.SCENARIO_UNCERTAINTY,
@@ -175,6 +179,12 @@ ASSUMPTION_DOMAIN_FIELDS: dict[str, tuple[str, ...]] = {
     "near_field_volume_m3": ("application_method", "physical_form", "region"),
     "airflow_directionality": ("application_method", "physical_form", "region"),
     "particle_size_regime": ("application_method", "physical_form"),
+    "near_field_exchange_turnover_per_hour": (
+        "application_method",
+        "physical_form",
+        "region",
+    ),
+    "particle_persistence_factor": ("application_method", "physical_form"),
     "use_events_per_day": ("population_group", "product_category", "application_method"),
     "use_amount_per_event": ("product_category", "physical_form", "application_method"),
     "concentration_fraction": ("product_category", "physical_form"),

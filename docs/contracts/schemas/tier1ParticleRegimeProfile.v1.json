@@ -1,0 +1,44 @@
+{
+  "$defs": {
+    "ParticleSizeRegime": {
+      "enum": [
+        "fine_aerosol",
+        "mixed_spray",
+        "coarse_spray"
+      ],
+      "title": "ParticleSizeRegime",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "particleSizeRegime": {
+      "$ref": "#/$defs/ParticleSizeRegime",
+      "description": "Governed particle-size regime for Tier 1 NF/FF screening."
+    },
+    "persistenceFactor": {
+      "description": "Screening persistence multiplier applied to the near-field increment.",
+      "exclusiveMinimum": 0.0,
+      "title": "Persistencefactor",
+      "type": "number"
+    },
+    "sourceId": {
+      "description": "Source backing this regime.",
+      "title": "Sourceid",
+      "type": "string"
+    },
+    "note": {
+      "description": "Interpretation note for the particle-size regime.",
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "particleSizeRegime",
+    "persistenceFactor",
+    "sourceId",
+    "note"
+  ],
+  "title": "Tier1ParticleRegimeProfile",
+  "type": "object"
+}
