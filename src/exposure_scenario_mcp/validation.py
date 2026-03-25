@@ -252,6 +252,7 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             appliesToDomains=["dermal_direct_application", "dermal_secondary_transfer"],
             relatedSourceIds=[
                 "rivm_cosmetics_hand_cream_direct_application_defaults_2025",
+                "rivm_cleaning_surface_contact_retention_defaults_2018",
                 "rivm_cleaning_wet_cloth_transfer_defaults_2018",
                 "screening_route_semantics_defaults_v1",
                 "heuristic_retention_defaults_v1",
@@ -260,9 +261,11 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             note=(
                 "Dermal direct-application amount realism is now linked to a real workplace "
                 "cream-application study, personal-care hand-application and household-cleaner "
-                "wet-cloth transfer defaults now have curated RIVM anchors, surface-contact "
-                "retention still remains a screening default, and only narrow executable "
-                "reference checks are wired in for the current secondary-transfer path."
+                "wet-cloth transfer defaults plus the common household-cleaner surface-contact "
+                "retention factor now have curated RIVM anchors, residual surface-contact "
+                "retention in other domains still remains a screening default, and only narrow "
+                "executable reference checks are wired in for the current secondary-transfer "
+                "path."
             ),
             recommendation=(
                 "Replace the remaining transfer and retention heuristics with curated packs "

@@ -547,16 +547,26 @@ def test_household_cleaner_wipe_uses_product_category_transfer_override() -> Non
     )
 
     scenario = engine.build(request)
+    retention_factor = next(
+        item for item in scenario.assumptions if item.name == "retention_factor"
+    )
     transfer_efficiency = next(
         item for item in scenario.assumptions if item.name == "transfer_efficiency"
     )
 
+    assert retention_factor.value == pytest.approx(0.2, rel=1e-6)
+    assert (
+        retention_factor.source.source_id
+        == "rivm_cleaning_surface_contact_retention_defaults_2018"
+    )
     assert transfer_efficiency.value == pytest.approx(0.5, rel=1e-6)
     assert transfer_efficiency.source.source_id == "rivm_cleaning_wet_cloth_transfer_defaults_2018"
     assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(50.0, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(0.625, rel=1e-6)
     assert scenario.validation_summary.route_mechanism == "dermal_secondary_transfer"
     assert scenario.validation_summary.evidence_readiness.value == "external_partial"
+    assert scenario.validation_summary.heuristic_assumption_names == []
+    assert "heuristic_defaults_active" not in scenario.validation_summary.validation_gap_ids
     assert "rivm_wet_cloth_dermal_contact_loading_2018" in (
         scenario.validation_summary.external_dataset_ids
     )

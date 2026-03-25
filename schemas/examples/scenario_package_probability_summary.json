@@ -255,7 +255,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -285,7 +285,7 @@
               "title": "Exposure Scenario MCP curated screening route-semantics defaults",
               "locator": "docs://defaults-evidence-map#screening-route-semantics",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -318,7 +318,7 @@
               "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -387,7 +387,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -450,8 +450,8 @@
           "algorithm_id": "screening.external_dose.v1",
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v7",
-          "defaults_hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54",
+          "defaults_version": "2026.03.25.v8",
+          "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -897,7 +897,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -927,7 +927,7 @@
               "title": "Exposure Scenario MCP curated screening route-semantics defaults",
               "locator": "docs://defaults-evidence-map#screening-route-semantics",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -960,7 +960,7 @@
               "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1029,7 +1029,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1092,8 +1092,8 @@
           "algorithm_id": "screening.external_dose.v1",
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v7",
-          "defaults_hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54",
+          "defaults_version": "2026.03.25.v8",
+          "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1539,7 +1539,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1569,7 +1569,7 @@
               "title": "Exposure Scenario MCP curated screening route-semantics defaults",
               "locator": "docs://defaults-evidence-map#screening-route-semantics",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1602,7 +1602,7 @@
               "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1671,7 +1671,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54"
+              "hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1734,8 +1734,8 @@
           "algorithm_id": "screening.external_dose.v1",
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v7",
-          "defaults_hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54",
+          "defaults_version": "2026.03.25.v8",
+          "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -2051,8 +2051,8 @@
     "algorithm_id": "uncertainty.scenario_package_probability.v1",
     "plugin_id": "scenario_package_probability_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v7",
-    "defaults_hash_sha256": "6a0775108c4ea37eeed74d0bdbcc734b5a7aa596936e8645ae81736c13485a54",
+    "defaults_version": "2026.03.25.v8",
+    "defaults_hash_sha256": "53b69149b146f85d146f61791904c9005698a72d299b0b3f12eb8bda13eeb844",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

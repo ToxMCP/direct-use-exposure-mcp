@@ -82,7 +82,7 @@ The design is intentionally narrow:
 - Packaged Tier C coupled-driver scenario-package probability profiles with curated package taxonomy
 - Machine-actionable Tier 1 inhalation upgrade advisories for spray scenarios
 - Packaged Tier 1 inhalation airflow, particle, and product-family screening profiles
-- Curated RIVM-backed transfer defaults for personal-care hand application and household-cleaner wipe contact
+- Curated RIVM-backed dermal contact defaults for personal-care hand application and household-cleaner wipe contact
 - Simple additive aggregate exposure summaries
 - Scenario comparison and refinement deltas
 - ToxClaw evidence export and refinement-bundle export
@@ -121,7 +121,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
 | `Refinement workflow support` | Emits comparison/refinement bundles with explicit `refine_exposure` semantics and workflow hooks. |
 | `Validation dossier` | Publishes a typed validation dossier with benchmark domains, cited external validation datasets, heuristic-source families, and open evidence gaps, and threads evidence-readiness, executed validation checks, and gap IDs into every scenario-level `validationSummary`. |
-| `Curated dermal transfer packs` | Replaces the highest-volume transfer heuristics with RIVM-backed screening defaults for `personal_care` hand application and `household_cleaner` wipe contact while preserving explicit applicability domains and remaining evidence gaps. |
+| `Curated dermal contact packs` | Replaces the highest-volume transfer and surface-contact-retention heuristics with RIVM-backed screening defaults for `personal_care` hand application and `household_cleaner` wipe contact while preserving explicit applicability domains and remaining evidence gaps. |
 | `Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
 | `Scientific guardrails` | Keeps BER, PoD derivation, PBPK execution, and final risk conclusions outside this server while publishing assumption governance and tier semantics on every scenario. |
 

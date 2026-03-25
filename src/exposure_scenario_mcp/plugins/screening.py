@@ -85,7 +85,10 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 )
                 retention_factor = profile.retention_factor
             else:
-                retention_factor, source = registry.retention_factor(profile.retention_type)
+                retention_factor, source = registry.retention_factor(
+                    profile.retention_type,
+                    profile.product_category,
+                )
                 tracker.add_default(
                     "retention_factor",
                     retention_factor,

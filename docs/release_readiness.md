@@ -32,8 +32,9 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - A typed validation dossier is published so benchmark domains, cited external validation
   datasets, heuristic source families, open evidence gaps, and executable validation checks are
   machine-readable rather than prose-only.
-- Curated transfer defaults are published for personal-care hand application and
-  household-cleaner wipe contact instead of relying only on generic transfer heuristics.
+- Curated dermal contact defaults are published for personal-care hand application and
+  household-cleaner wipe contact instead of relying only on generic transfer and
+  surface-contact-retention heuristics.
 - Scenario, aggregate, comparison, and PBPK export outputs carry provenance.
 - Scenario outputs publish Tier A uncertainty diagnostics, and Tier B support is limited to
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.

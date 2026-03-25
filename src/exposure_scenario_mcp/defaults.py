@@ -113,9 +113,24 @@ class DefaultsRegistry:
             "exposed_surface_area_cm2": float(entry["exposed_surface_area_cm2"]),
         }, self._source(entry["source_id"])
 
-    def retention_factor(self, retention_type: str) -> tuple[float, AssumptionSourceReference]:
+    def retention_factor(
+        self,
+        retention_type: str,
+        product_category: str | None = None,
+    ) -> tuple[float, AssumptionSourceReference]:
         key = retention_type.lower()
         values = self.payload["retention_factor_defaults"]
+        if "global" in values:
+            resolved = values["global"]
+            if product_category:
+                category_values = values.get("product_category_overrides", {}).get(
+                    product_category.lower(),
+                    {},
+                )
+                if key in category_values:
+                    entry = category_values[key]
+                    return float(entry["value"]), self._source(entry["source_id"])
+            values = resolved
         ensure(
             key in values,
             "retention_type_unsupported",
@@ -292,9 +307,17 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "",
             "### Heuristic Retention Defaults",
             "",
-            "- `heuristic_retention_defaults_v1` now covers only surface-contact retention",
-            "  factors that remain screening heuristics pending better route- and use-specific",
-            "  retention evidence.",
+            "- `heuristic_retention_defaults_v1` now covers only the residual surface-contact",
+            "  retention contexts that remain screening heuristics pending better route- and",
+            "  use-specific retention evidence.",
+            "",
+            "### RIVM Cleaning Surface-Contact Retention Defaults 2018",
+            "",
+            "- `rivm_cleaning_surface_contact_retention_defaults_2018` maps the RIVM Cleaning",
+            "  Products Fact Sheet wet-cloth contact defaults onto the MCP screening",
+            "  `surface_contact` retention abstraction for `household_cleaner` contexts. The",
+            "  current `0.2` value is an evidence-linked screening midpoint when paired with",
+            "  the curated wet-cloth transfer default and a nominal `5 g/event` cleaning task.",
             "",
             "### FDA/SCCS Retention Factor Defaults 2024",
             "",
@@ -323,8 +346,9 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  Products Fact Sheet wet-cloth dermal-contact defaults onto the MCP screening",
             "  transfer abstraction for `household_cleaner` + `wipe` contexts. The current",
             "  `0.5` transfer default is a curated screening bridge that centers the RIVM",
-            "  wet-cloth contact amounts when combined with the MCP `surface_contact`",
-            "  retention factor of `0.2` and a nominal `5 g/event` cleaner-loading task.",
+            "  wet-cloth contact amounts when combined with the curated household-cleaner",
+            "  `surface_contact` retention default and a nominal `5 g/event` cleaner-loading",
+            "  task.",
             "",
             "### Heuristic Incidental Oral Defaults",
             "",
