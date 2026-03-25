@@ -159,6 +159,10 @@
       "description": "Validation and benchmark-domain posture for current route models."
     },
     {
+      "uri": "docs://validation-dossier",
+      "description": "Validation dossier with external candidate coverage and open gaps."
+    },
+    {
       "uri": "docs://suite-integration-guide",
       "description": "Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP."
     },
@@ -189,6 +193,10 @@
     {
       "uri": "validation://manifest",
       "description": "Machine-readable validation and external-dataset candidate manifest."
+    },
+    {
+      "uri": "validation://dossier-report",
+      "description": "Machine-readable validation dossier with external candidates and open gaps."
     },
     {
       "uri": "release://readiness-report",
@@ -239,6 +247,10 @@
     "uncertaintyRegisterEntry.v1": "schemas/uncertaintyRegisterEntry.v1.json",
     "sensitivityRankingEntry.v1": "schemas/sensitivityRankingEntry.v1.json",
     "dependencyDescriptor.v1": "schemas/dependencyDescriptor.v1.json",
+    "validationBenchmarkDomain.v1": "schemas/validationBenchmarkDomain.v1.json",
+    "externalValidationDataset.v1": "schemas/externalValidationDataset.v1.json",
+    "validationGap.v1": "schemas/validationGap.v1.json",
+    "validationDossierReport.v1": "schemas/validationDossierReport.v1.json",
     "validationSummary.v1": "schemas/validationSummary.v1.json",
     "tierUpgradeInputRequirement.v1": "schemas/tierUpgradeInputRequirement.v1.json",
     "tierUpgradeAdvisory.v1": "schemas/tierUpgradeAdvisory.v1.json",

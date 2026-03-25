@@ -675,11 +675,21 @@
           "externalDatasetIds": [
             "dermal_surface_loading_candidate"
           ],
+          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "heuristicAssumptionNames": [
+            "retention_factor",
+            "transfer_efficiency"
+          ],
+          "validationGapIds": [
+            "dermal_transfer_external_validation_candidate_only",
+            "heuristic_defaults_active"
+          ],
           "highestSupportedUncertaintyTier": "tier_b",
           "probabilisticEnablement": "blocked",
           "notes": [
             "Deterministic verification and benchmark regression are available for this domain.",
             "External validation remains a documented future capability rather than an active gate.",
+            "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
             "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
           ]
         },
@@ -1658,11 +1668,21 @@
           "externalDatasetIds": [
             "dermal_surface_loading_candidate"
           ],
+          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "heuristicAssumptionNames": [
+            "retention_factor",
+            "transfer_efficiency"
+          ],
+          "validationGapIds": [
+            "dermal_transfer_external_validation_candidate_only",
+            "heuristic_defaults_active"
+          ],
           "highestSupportedUncertaintyTier": "tier_b",
           "probabilisticEnablement": "blocked",
           "notes": [
             "Deterministic verification and benchmark regression are available for this domain.",
             "External validation remains a documented future capability rather than an active gate.",
+            "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
             "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
           ]
         },

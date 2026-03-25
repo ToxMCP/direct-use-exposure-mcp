@@ -180,6 +180,25 @@ class ValidationStatus(StrEnum):
     CALIBRATED = "calibrated"
 
 
+class ValidationEvidenceReadiness(StrEnum):
+    BENCHMARK_ONLY = "benchmark_only"
+    BENCHMARK_PLUS_EXTERNAL_CANDIDATES = "benchmark_plus_external_candidates"
+    EXTERNAL_PARTIAL = "external_partial"
+    CALIBRATED = "calibrated"
+
+
+class ExternalValidationDatasetStatus(StrEnum):
+    CANDIDATE_ONLY = "candidate_only"
+    PARTIAL = "partial"
+    ACCEPTED_REFERENCE = "accepted_reference"
+
+
+class ValidationGapSeverity(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
 class AssumptionSourceReference(StrictModel):
     source_id: str = Field(..., description="Stable identifier for the source.")
     title: str = Field(..., description="Human-readable source title.")
@@ -326,11 +345,65 @@ class DependencyDescriptor(StrictModel):
     note: str
 
 
+class ValidationBenchmarkDomain(StrictModel):
+    domain: str = Field(..., description="Named validation domain or route mechanism.")
+    case_ids: list[str] = Field(default_factory=list, alias="caseIds")
+    validation_status: ValidationStatus = Field(..., alias="validationStatus")
+    highest_supported_uncertainty_tier: UncertaintyTier = Field(
+        ..., alias="highestSupportedUncertaintyTier"
+    )
+    notes: list[str] = Field(default_factory=list)
+
+
+class ExternalValidationDataset(StrictModel):
+    dataset_id: str = Field(..., alias="datasetId")
+    domain: str = Field(..., description="Target validation domain or route mechanism.")
+    status: ExternalValidationDatasetStatus
+    observable: str
+    target_metrics: list[str] = Field(default_factory=list, alias="targetMetrics")
+    applicable_tier_claims: list[TierLevel] = Field(
+        default_factory=list, alias="applicableTierClaims"
+    )
+    product_families: list[str] = Field(default_factory=list, alias="productFamilies")
+    note: str
+
+
+class ValidationGap(StrictModel):
+    gap_id: str = Field(..., alias="gapId")
+    title: str
+    severity: ValidationGapSeverity
+    applies_to_domains: list[str] = Field(default_factory=list, alias="appliesToDomains")
+    related_source_ids: list[str] = Field(default_factory=list, alias="relatedSourceIds")
+    note: str
+    recommendation: str
+
+
+class ValidationDossierReport(StrictModel):
+    schema_version: Literal["validationDossierReport.v1"] = "validationDossierReport.v1"
+    policy_version: str = Field(..., alias="policyVersion")
+    benchmark_domains: list[ValidationBenchmarkDomain] = Field(
+        default_factory=list, alias="benchmarkDomains"
+    )
+    external_datasets: list[ExternalValidationDataset] = Field(
+        default_factory=list, alias="externalDatasets"
+    )
+    heuristic_source_ids: list[str] = Field(default_factory=list, alias="heuristicSourceIds")
+    open_gaps: list[ValidationGap] = Field(default_factory=list, alias="openGaps")
+    notes: list[str] = Field(default_factory=list)
+
+
 class ValidationSummary(StrictModel):
     validation_status: ValidationStatus = Field(..., alias="validationStatus")
     route_mechanism: str = Field(..., alias="routeMechanism")
     benchmark_case_ids: list[str] = Field(default_factory=list, alias="benchmarkCaseIds")
     external_dataset_ids: list[str] = Field(default_factory=list, alias="externalDatasetIds")
+    evidence_readiness: ValidationEvidenceReadiness = Field(
+        ..., alias="evidenceReadiness"
+    )
+    heuristic_assumption_names: list[str] = Field(
+        default_factory=list, alias="heuristicAssumptionNames"
+    )
+    validation_gap_ids: list[str] = Field(default_factory=list, alias="validationGapIds")
     highest_supported_uncertainty_tier: UncertaintyTier = Field(
         ..., alias="highestSupportedUncertaintyTier"
     )

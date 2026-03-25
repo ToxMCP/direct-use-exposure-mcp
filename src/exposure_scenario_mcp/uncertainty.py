@@ -42,6 +42,7 @@ from exposure_scenario_mcp.models import (
     UncertaintyRegisterEntry,
     UncertaintyTier,
     UncertaintyType,
+    ValidationEvidenceReadiness,
     ValidationStatus,
     ValidationSummary,
 )
@@ -650,6 +651,9 @@ def build_aggregate_uncertainty(component_scenarios: list[ExposureScenario]):
         route_mechanism="aggregate_cross_route_screening",
         benchmark_case_ids=["cross_route_aggregate_summary"],
         external_dataset_ids=["aggregate_external_proxy_candidate"],
+        evidence_readiness=ValidationEvidenceReadiness.BENCHMARK_PLUS_EXTERNAL_CANDIDATES,
+        heuristic_assumption_names=[],
+        validation_gap_ids=[],
         highest_supported_uncertainty_tier=UncertaintyTier.TIER_B,
         probabilistic_enablement="blocked",
         notes=[

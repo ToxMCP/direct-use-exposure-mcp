@@ -627,11 +627,21 @@
       "externalDatasetIds": [
         "dermal_surface_loading_candidate"
       ],
+      "evidenceReadiness": "benchmark_plus_external_candidates",
+      "heuristicAssumptionNames": [
+        "retention_factor",
+        "transfer_efficiency"
+      ],
+      "validationGapIds": [
+        "dermal_transfer_external_validation_candidate_only",
+        "heuristic_defaults_active"
+      ],
       "highestSupportedUncertaintyTier": "tier_b",
       "probabilisticEnablement": "blocked",
       "notes": [
         "Deterministic verification and benchmark regression are available for this domain.",
         "External validation remains a documented future capability rather than an active gate.",
+        "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
         "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
       ]
     },
@@ -1209,11 +1219,17 @@
       "externalDatasetIds": [
         "dermal_surface_loading_candidate"
       ],
+      "evidenceReadiness": "benchmark_plus_external_candidates",
+      "heuristicAssumptionNames": [],
+      "validationGapIds": [
+        "dermal_transfer_external_validation_candidate_only"
+      ],
       "highestSupportedUncertaintyTier": "tier_b",
       "probabilisticEnablement": "blocked",
       "notes": [
         "Deterministic verification and benchmark regression are available for this domain.",
         "External validation remains a documented future capability rather than an active gate.",
+        "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
         "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
       ]
     },
@@ -1285,9 +1301,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "7ef26151317da84029a0bea61568b16dd9d62fb840f5f53a5656c92c1af63fa0",
+    "contentHash": "a057a935bf35bde32dc174b9431a838e15b09705cf076d8301825a162f4df1ef",
     "dataClassification": "internal",
-    "evidenceId": "evidence-eafc388246933af9",
+    "evidenceId": "evidence-54a428b445d44929",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1309,8 +1325,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "7ef26151317da84029a0bea61568b16dd9d62fb840f5f53a5656c92c1af63fa0",
-    "evidenceId": "evidence-eafc388246933af9",
+    "contentHash": "a057a935bf35bde32dc174b9431a838e15b09705cf076d8301825a162f4df1ef",
+    "evidenceId": "evidence-54a428b445d44929",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1338,7 +1354,7 @@
         "claimId": "claim-ccedda32d15779e5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-eafc388246933af9"
+          "evidence-54a428b445d44929"
         ],
         "text": "Baseline scenario exp-example-dermal-001 estimates 0.95625 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day."
       },
@@ -1347,7 +1363,7 @@
         "claimId": "claim-9265919b6d39ec15",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-eafc388246933af9"
+          "evidence-54a428b445d44929"
         ],
         "text": "Comparison dose decreased by 38.82% relative to baseline."
       },
@@ -1356,7 +1372,7 @@
         "claimId": "claim-98be2d7dd8221ca2",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-eafc388246933af9"
+          "evidence-54a428b445d44929"
         ],
         "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
       },
@@ -1365,13 +1381,13 @@
         "claimId": "claim-0409d2d114518ff0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-eafc388246933af9"
+          "evidence-54a428b445d44929"
         ],
         "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
       }
     ],
     "evidenceIds": [
-      "evidence-eafc388246933af9"
+      "evidence-54a428b445d44929"
     ],
     "sectionKey": "exposure-refinement",
     "title": "Exposure Refinement Delta"

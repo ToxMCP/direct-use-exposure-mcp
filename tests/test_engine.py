@@ -104,6 +104,11 @@ def test_dermal_screening_defaults_and_dose() -> None:
     assert scenario.uncertainty_tier == UncertaintyTier.TIER_A
     assert scenario.validation_summary is not None
     assert scenario.validation_summary.validation_status.value == "benchmark_regression"
+    assert scenario.validation_summary.evidence_readiness.value == (
+        "benchmark_plus_external_candidates"
+    )
+    assert "retention_factor" in scenario.validation_summary.heuristic_assumption_names
+    assert "heuristic_defaults_active" in scenario.validation_summary.validation_gap_ids
     assert scenario.sensitivity_ranking[0].parameter_name in {
         "body_weight_kg",
         "concentration_fraction",
@@ -162,6 +167,12 @@ def test_inhalation_screening_defaults_and_dose() -> None:
     )
     assert scenario.validation_summary is not None
     assert scenario.validation_summary.route_mechanism == "inhalation_well_mixed_spray"
+    assert scenario.validation_summary.evidence_readiness.value == (
+        "benchmark_plus_external_candidates"
+    )
+    assert "tier0_spray_external_validation_candidate_only" in (
+        scenario.validation_summary.validation_gap_ids
+    )
     assert any(
         item.entry_id == "limitation-breathing_zone_not_modeled"
         for item in scenario.uncertainty_register
@@ -247,6 +258,10 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
     enriched = enrich_scenario_uncertainty(engine, scenario)
     assert enriched.validation_summary is not None
     assert enriched.validation_summary.route_mechanism == "inhalation_near_field_far_field"
+    assert enriched.validation_summary.highest_supported_uncertainty_tier == UncertaintyTier.TIER_C
+    assert "tier1_nf_ff_external_validation_candidate_only" in (
+        enriched.validation_summary.validation_gap_ids
+    )
     assert any(
         item.dependency_id == "near-field-geometry-cluster"
         for item in enriched.dependency_metadata

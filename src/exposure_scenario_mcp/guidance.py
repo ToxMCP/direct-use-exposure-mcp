@@ -12,7 +12,7 @@ from exposure_scenario_mcp.models import (
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
-from exposure_scenario_mcp.validation import validation_manifest
+from exposure_scenario_mcp.validation import build_validation_dossier_report
 
 
 def _benchmark_matrix_lines() -> list[str]:
@@ -448,26 +448,61 @@ def inhalation_tier_upgrade_guide() -> str:
 
 
 def validation_framework() -> str:
-    manifest = validation_manifest()
+    report = build_validation_dossier_report()
     lines = [
         "# Validation Framework",
         "",
-        "Current validation posture is verification plus benchmark regression.",
+        "Current validation posture is verification plus benchmark regression, with a typed",
+        "validation dossier for external-dataset readiness and open evidence gaps.",
         "",
         "## Benchmark Domains",
         "",
     ]
-    for item in manifest["benchmarkDomains"]:
+    for item in report.benchmark_domains:
         lines.append(
-            f"- `{item['domain']}`: {', '.join(f'`{case_id}`' for case_id in item['caseIds'])}"
+            f"- `{item.domain}`: {', '.join(f'`{case_id}`' for case_id in item.case_ids)}"
         )
+        for note in item.notes:
+            lines.append(f"  note: {note}")
     lines.extend(["", "## External Dataset Candidates", ""])
-    for item in manifest["externalDatasets"]:
+    for item in report.external_datasets:
         lines.append(
-            f"- `{item['datasetId']}` [{item['status']}] {item['observable']}: {item['note']}"
+            f"- `{item.dataset_id}` [{item.status.value}] {item.observable}: {item.note}"
         )
+    lines.extend(["", "## Heuristic Source Families", ""])
+    for source_id in report.heuristic_source_ids:
+        lines.append(f"- `{source_id}`")
+    lines.extend(["", "## Open Validation Gaps", ""])
+    for item in report.open_gaps:
+        lines.append(f"- `{item.gap_id}` [{item.severity.value}] {item.title}")
     lines.extend(["", "## Notes", ""])
-    lines.extend(f"- {item}" for item in manifest["notes"])
+    lines.extend(f"- {item}" for item in report.notes)
+    return "\n".join(lines)
+
+
+def validation_dossier_markdown() -> str:
+    report = build_validation_dossier_report()
+    lines = [
+        "# Validation Dossier",
+        "",
+        f"- Policy version: `{report.policy_version}`",
+        f"- Benchmark domains: `{len(report.benchmark_domains)}`",
+        f"- External dataset candidates: `{len(report.external_datasets)}`",
+        f"- Heuristic source families still active: `{len(report.heuristic_source_ids)}`",
+        "",
+        "## Open Gaps",
+        "",
+    ]
+    for item in report.open_gaps:
+        domains = ", ".join(f"`{domain}`" for domain in item.applies_to_domains)
+        sources = ", ".join(f"`{source_id}`" for source_id in item.related_source_ids) or "none"
+        lines.append(f"- `{item.gap_id}` [{item.severity.value}] {item.title}")
+        lines.append(f"  domains: {domains}")
+        lines.append(f"  sources: {sources}")
+        lines.append(f"  note: {item.note}")
+        lines.append(f"  recommendation: {item.recommendation}")
+    lines.extend(["", "## Notes", ""])
+    lines.extend(f"- {item}" for item in report.notes)
     return "\n".join(lines)
 
 

@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "UncertaintyTier": {
+      "enum": [
+        "tier_a",
+        "tier_b",
+        "tier_c",
+        "tier_d",
+        "tier_e"
+      ],
+      "title": "UncertaintyTier",
+      "type": "string"
+    },
+    "ValidationStatus": {
+      "enum": [
+        "verification_only",
+        "benchmark_regression",
+        "external_validation_partial",
+        "calibrated"
+      ],
+      "title": "ValidationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "domain": {
+      "description": "Named validation domain or route mechanism.",
+      "title": "Domain",
+      "type": "string"
+    },
+    "caseIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Caseids",
+      "type": "array"
+    },
+    "validationStatus": {
+      "$ref": "#/$defs/ValidationStatus"
+    },
+    "highestSupportedUncertaintyTier": {
+      "$ref": "#/$defs/UncertaintyTier"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "domain",
+    "validationStatus",
+    "highestSupportedUncertaintyTier"
+  ],
+  "title": "ValidationBenchmarkDomain",
+  "type": "object"
+}

@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "ValidationGapSeverity": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "ValidationGapSeverity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "gapId": {
+      "title": "Gapid",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "severity": {
+      "$ref": "#/$defs/ValidationGapSeverity"
+    },
+    "appliesToDomains": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Appliestodomains",
+      "type": "array"
+    },
+    "relatedSourceIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Relatedsourceids",
+      "type": "array"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    },
+    "recommendation": {
+      "title": "Recommendation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "gapId",
+    "title",
+    "severity",
+    "note",
+    "recommendation"
+  ],
+  "title": "ValidationGap",
+  "type": "object"
+}

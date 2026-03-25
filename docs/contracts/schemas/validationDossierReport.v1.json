@@ -1,0 +1,245 @@
+{
+  "$defs": {
+    "ExternalValidationDataset": {
+      "additionalProperties": false,
+      "properties": {
+        "datasetId": {
+          "title": "Datasetid",
+          "type": "string"
+        },
+        "domain": {
+          "description": "Target validation domain or route mechanism.",
+          "title": "Domain",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ExternalValidationDatasetStatus"
+        },
+        "observable": {
+          "title": "Observable",
+          "type": "string"
+        },
+        "targetMetrics": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Targetmetrics",
+          "type": "array"
+        },
+        "applicableTierClaims": {
+          "items": {
+            "$ref": "#/$defs/TierLevel"
+          },
+          "title": "Applicabletierclaims",
+          "type": "array"
+        },
+        "productFamilies": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Productfamilies",
+          "type": "array"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "datasetId",
+        "domain",
+        "status",
+        "observable",
+        "note"
+      ],
+      "title": "ExternalValidationDataset",
+      "type": "object"
+    },
+    "ExternalValidationDatasetStatus": {
+      "enum": [
+        "candidate_only",
+        "partial",
+        "accepted_reference"
+      ],
+      "title": "ExternalValidationDatasetStatus",
+      "type": "string"
+    },
+    "TierLevel": {
+      "enum": [
+        "tier_0",
+        "tier_1",
+        "tier_2",
+        "tier_3"
+      ],
+      "title": "TierLevel",
+      "type": "string"
+    },
+    "UncertaintyTier": {
+      "enum": [
+        "tier_a",
+        "tier_b",
+        "tier_c",
+        "tier_d",
+        "tier_e"
+      ],
+      "title": "UncertaintyTier",
+      "type": "string"
+    },
+    "ValidationBenchmarkDomain": {
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "description": "Named validation domain or route mechanism.",
+          "title": "Domain",
+          "type": "string"
+        },
+        "caseIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Caseids",
+          "type": "array"
+        },
+        "validationStatus": {
+          "$ref": "#/$defs/ValidationStatus"
+        },
+        "highestSupportedUncertaintyTier": {
+          "$ref": "#/$defs/UncertaintyTier"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "domain",
+        "validationStatus",
+        "highestSupportedUncertaintyTier"
+      ],
+      "title": "ValidationBenchmarkDomain",
+      "type": "object"
+    },
+    "ValidationGap": {
+      "additionalProperties": false,
+      "properties": {
+        "gapId": {
+          "title": "Gapid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/ValidationGapSeverity"
+        },
+        "appliesToDomains": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Appliestodomains",
+          "type": "array"
+        },
+        "relatedSourceIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Relatedsourceids",
+          "type": "array"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        },
+        "recommendation": {
+          "title": "Recommendation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "gapId",
+        "title",
+        "severity",
+        "note",
+        "recommendation"
+      ],
+      "title": "ValidationGap",
+      "type": "object"
+    },
+    "ValidationGapSeverity": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "ValidationGapSeverity",
+      "type": "string"
+    },
+    "ValidationStatus": {
+      "enum": [
+        "verification_only",
+        "benchmark_regression",
+        "external_validation_partial",
+        "calibrated"
+      ],
+      "title": "ValidationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "validationDossierReport.v1",
+      "default": "validationDossierReport.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "policyVersion": {
+      "title": "Policyversion",
+      "type": "string"
+    },
+    "benchmarkDomains": {
+      "items": {
+        "$ref": "#/$defs/ValidationBenchmarkDomain"
+      },
+      "title": "Benchmarkdomains",
+      "type": "array"
+    },
+    "externalDatasets": {
+      "items": {
+        "$ref": "#/$defs/ExternalValidationDataset"
+      },
+      "title": "Externaldatasets",
+      "type": "array"
+    },
+    "heuristicSourceIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Heuristicsourceids",
+      "type": "array"
+    },
+    "openGaps": {
+      "items": {
+        "$ref": "#/$defs/ValidationGap"
+      },
+      "title": "Opengaps",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policyVersion"
+  ],
+  "title": "ValidationDossierReport",
+  "type": "object"
+}

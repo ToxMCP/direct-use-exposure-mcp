@@ -39,6 +39,7 @@ from exposure_scenario_mcp.guidance import (
     tier1_inhalation_parameter_guide,
     troubleshooting_guide,
     uncertainty_framework,
+    validation_dossier_markdown,
     validation_framework,
 )
 from exposure_scenario_mcp.integrations import (
@@ -97,7 +98,7 @@ from exposure_scenario_mcp.uncertainty import (
     build_parameter_bounds_summary,
     enrich_scenario_uncertainty,
 )
-from exposure_scenario_mcp.validation import validation_manifest
+from exposure_scenario_mcp.validation import build_validation_dossier_report, validation_manifest
 
 
 def _success_result(message: str, payload_model) -> CallToolResult:
@@ -645,6 +646,21 @@ def create_mcp_server() -> FastMCP:
         """Machine-readable validation and benchmark-domain metadata."""
 
         return json.dumps(validation_manifest(), indent=2)
+
+    @mcp.resource("validation://dossier-report")
+    def validation_dossier_report_resource() -> str:
+        """Machine-readable validation dossier with coverage, candidates, and gaps."""
+
+        payload = build_validation_dossier_report(defaults_registry).model_dump(
+            mode="json", by_alias=True
+        )
+        return json.dumps(payload, indent=2)
+
+    @mcp.resource("docs://validation-dossier")
+    def docs_validation_dossier() -> str:
+        """Human-readable validation dossier with open evidence gaps and priorities."""
+
+        return validation_dossier_markdown()
 
     @mcp.resource("release://readiness-report")
     def release_readiness_report() -> str:

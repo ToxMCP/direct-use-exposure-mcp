@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "ExternalValidationDatasetStatus": {
+      "enum": [
+        "candidate_only",
+        "partial",
+        "accepted_reference"
+      ],
+      "title": "ExternalValidationDatasetStatus",
+      "type": "string"
+    },
+    "TierLevel": {
+      "enum": [
+        "tier_0",
+        "tier_1",
+        "tier_2",
+        "tier_3"
+      ],
+      "title": "TierLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "datasetId": {
+      "title": "Datasetid",
+      "type": "string"
+    },
+    "domain": {
+      "description": "Target validation domain or route mechanism.",
+      "title": "Domain",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ExternalValidationDatasetStatus"
+    },
+    "observable": {
+      "title": "Observable",
+      "type": "string"
+    },
+    "targetMetrics": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Targetmetrics",
+      "type": "array"
+    },
+    "applicableTierClaims": {
+      "items": {
+        "$ref": "#/$defs/TierLevel"
+      },
+      "title": "Applicabletierclaims",
+      "type": "array"
+    },
+    "productFamilies": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Productfamilies",
+      "type": "array"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "datasetId",
+    "domain",
+    "status",
+    "observable",
+    "note"
+  ],
+  "title": "ExternalValidationDataset",
+  "type": "object"
+}

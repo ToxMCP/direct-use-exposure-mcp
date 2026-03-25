@@ -11,6 +11,16 @@
       "title": "UncertaintyTier",
       "type": "string"
     },
+    "ValidationEvidenceReadiness": {
+      "enum": [
+        "benchmark_only",
+        "benchmark_plus_external_candidates",
+        "external_partial",
+        "calibrated"
+      ],
+      "title": "ValidationEvidenceReadiness",
+      "type": "string"
+    },
     "ValidationStatus": {
       "enum": [
         "verification_only",
@@ -45,6 +55,23 @@
       "title": "Externaldatasetids",
       "type": "array"
     },
+    "evidenceReadiness": {
+      "$ref": "#/$defs/ValidationEvidenceReadiness"
+    },
+    "heuristicAssumptionNames": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Heuristicassumptionnames",
+      "type": "array"
+    },
+    "validationGapIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Validationgapids",
+      "type": "array"
+    },
     "highestSupportedUncertaintyTier": {
       "$ref": "#/$defs/UncertaintyTier"
     },
@@ -68,6 +95,7 @@
   "required": [
     "validationStatus",
     "routeMechanism",
+    "evidenceReadiness",
     "highestSupportedUncertaintyTier",
     "probabilisticEnablement"
   ],

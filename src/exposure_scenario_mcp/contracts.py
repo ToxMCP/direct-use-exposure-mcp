@@ -57,6 +57,7 @@ from exposure_scenario_mcp.models import (
     ExposureEnvelopeSummary,
     ExposureScenario,
     ExposureScenarioRequest,
+    ExternalValidationDataset,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
     MonotonicityCheck,
@@ -96,6 +97,9 @@ from exposure_scenario_mcp.models import (
     TierUpgradeInputRequirement,
     ToolResultMeta,
     UncertaintyRegisterEntry,
+    ValidationBenchmarkDomain,
+    ValidationDossierReport,
+    ValidationGap,
     ValidationSummary,
 )
 from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
@@ -122,6 +126,10 @@ SCHEMA_MODELS = {
     "uncertaintyRegisterEntry.v1": UncertaintyRegisterEntry,
     "sensitivityRankingEntry.v1": SensitivityRankingEntry,
     "dependencyDescriptor.v1": DependencyDescriptor,
+    "validationBenchmarkDomain.v1": ValidationBenchmarkDomain,
+    "externalValidationDataset.v1": ExternalValidationDataset,
+    "validationGap.v1": ValidationGap,
+    "validationDossierReport.v1": ValidationDossierReport,
     "validationSummary.v1": ValidationSummary,
     "tierUpgradeInputRequirement.v1": TierUpgradeInputRequirement,
     "tierUpgradeAdvisory.v1": TierUpgradeAdvisory,
@@ -388,6 +396,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Validation and benchmark-domain posture for current route models.",
             ),
             ContractResourceEntry(
+                uri="docs://validation-dossier",
+                description="Validation dossier with external candidate coverage and open gaps.",
+            ),
+            ContractResourceEntry(
                 uri="docs://suite-integration-guide",
                 description="Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP.",
             ),
@@ -429,6 +441,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="validation://manifest",
                 description="Machine-readable validation and external-dataset candidate manifest.",
+            ),
+            ContractResourceEntry(
+                uri="validation://dossier-report",
+                description=(
+                    "Machine-readable validation dossier with external candidates "
+                    "and open gaps."
+                ),
             ),
             ContractResourceEntry(
                 uri="release://readiness-report",

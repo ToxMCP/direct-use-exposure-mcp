@@ -15,6 +15,7 @@ from exposure_scenario_mcp.guidance import (
     release_readiness_markdown,
     tier1_inhalation_parameter_guide,
     uncertainty_framework,
+    validation_dossier_markdown,
     validation_framework,
 )
 
@@ -40,6 +41,7 @@ def test_release_guidance_mentions_current_benchmark_matrix() -> None:
 def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     uncertainty = uncertainty_framework()
     validation = validation_framework()
+    dossier = validation_dossier_markdown()
     archetypes = archetype_library_guide()
     inhalation_tier_guide = inhalation_tier_upgrade_guide()
     tier1_parameter_guide = tier1_inhalation_parameter_guide()
@@ -78,3 +80,6 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "benchmarkDomains" not in validation
     assert "External Dataset Candidates" in validation
     assert "`air_chamber_spray_time_series_candidate`" in validation
+    assert "Validation Dossier" in dossier
+    assert "`heuristic_defaults_active`" in dossier
+    assert "`tier1_nf_ff_external_validation_candidate_only`" in dossier

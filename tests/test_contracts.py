@@ -13,6 +13,7 @@ from exposure_scenario_mcp.contracts import (
 )
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.server import create_mcp_server
+from exposure_scenario_mcp.validation import build_validation_dossier_report
 from scripts.generate_contract_assets import main as generate_contract_assets
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -96,6 +97,10 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "uncertaintyRegisterEntry.v1" in manifest["schemas"]
     assert "sensitivityRankingEntry.v1" in manifest["schemas"]
     assert "dependencyDescriptor.v1" in manifest["schemas"]
+    assert "validationBenchmarkDomain.v1" in manifest["schemas"]
+    assert "externalValidationDataset.v1" in manifest["schemas"]
+    assert "validationGap.v1" in manifest["schemas"]
+    assert "validationDossierReport.v1" in manifest["schemas"]
     assert "validationSummary.v1" in manifest["schemas"]
     assert "tierUpgradeInputRequirement.v1" in manifest["schemas"]
     assert "tierUpgradeAdvisory.v1" in manifest["schemas"]
@@ -141,6 +146,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://uncertainty-framework",
         "docs://inhalation-tier-upgrade-guide",
         "docs://validation-framework",
+        "docs://validation-dossier",
         "docs://troubleshooting",
         "tier1-inhalation://manifest",
         "archetypes://manifest",
@@ -151,6 +157,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://conformance-report",
         "docs://security-provenance-review",
         "validation://manifest",
+        "validation://dossier-report",
         "release://metadata-report",
         "release://readiness-report",
         "release://security-provenance-review-report",
@@ -158,6 +165,23 @@ def test_contract_manifest_and_server_boot() -> None:
 
     server = create_mcp_server()
     assert server is not None
+
+
+def test_validation_dossier_report_matches_schema_and_surface() -> None:
+    generate_contract_assets()
+    schema = json.loads(
+        (SCHEMA_DIR / "validationDossierReport.v1.json").read_text(encoding="utf-8")
+    )
+    report = build_validation_dossier_report(DefaultsRegistry.load()).model_dump(
+        mode="json", by_alias=True
+    )
+
+    validate(instance=report, schema=schema)
+    assert report["policyVersion"] == "2026.03.25.v2"
+    assert "heuristic_defaults_active" in {item["gapId"] for item in report["openGaps"]}
+    assert "near_field_far_field_spray_candidate" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
 
 
 def test_release_readiness_report_matches_schema_and_manifest_counts() -> None:

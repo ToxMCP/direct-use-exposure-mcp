@@ -106,6 +106,9 @@
     "externalDatasetIds": [
       "aggregate_external_proxy_candidate"
     ],
+    "evidenceReadiness": "benchmark_plus_external_candidates",
+    "heuristicAssumptionNames": [],
+    "validationGapIds": [],
     "highestSupportedUncertaintyTier": "tier_b",
     "probabilisticEnablement": "blocked",
     "notes": [

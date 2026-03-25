@@ -1401,16 +1401,27 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
           "externalDatasetIds": [
             "near_field_far_field_spray_candidate"
           ],
-          "highestSupportedUncertaintyTier": "tier_b",
+          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "heuristicAssumptionNames": [
+            "aerosolized_fraction",
+            "density_g_per_ml"
+          ],
+          "validationGapIds": [
+            "tier1_nf_ff_external_validation_candidate_only",
+            "heuristic_defaults_active"
+          ],
+          "highestSupportedUncertaintyTier": "tier_c",
           "probabilisticEnablement": "blocked",
           "notes": [
             "Deterministic verification and benchmark regression are available for this domain.",
             "External validation remains a documented future capability rather than an active gate.",
+            "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
             "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
           ]
         },
@@ -2814,16 +2825,27 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
           "externalDatasetIds": [
             "near_field_far_field_spray_candidate"
           ],
-          "highestSupportedUncertaintyTier": "tier_b",
+          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "heuristicAssumptionNames": [
+            "aerosolized_fraction",
+            "density_g_per_ml"
+          ],
+          "validationGapIds": [
+            "tier1_nf_ff_external_validation_candidate_only",
+            "heuristic_defaults_active"
+          ],
+          "highestSupportedUncertaintyTier": "tier_c",
           "probabilisticEnablement": "blocked",
           "notes": [
             "Deterministic verification and benchmark regression are available for this domain.",
             "External validation remains a documented future capability rather than an active gate.",
+            "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
             "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
           ]
         },
@@ -4227,16 +4249,27 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
           "externalDatasetIds": [
             "near_field_far_field_spray_candidate"
           ],
-          "highestSupportedUncertaintyTier": "tier_b",
+          "evidenceReadiness": "benchmark_plus_external_candidates",
+          "heuristicAssumptionNames": [
+            "aerosolized_fraction",
+            "density_g_per_ml"
+          ],
+          "validationGapIds": [
+            "tier1_nf_ff_external_validation_candidate_only",
+            "heuristic_defaults_active"
+          ],
+          "highestSupportedUncertaintyTier": "tier_c",
           "probabilisticEnablement": "blocked",
           "notes": [
             "Deterministic verification and benchmark regression are available for this domain.",
             "External validation remains a documented future capability rather than an active gate.",
+            "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
             "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
           ]
         },
@@ -4463,16 +4496,27 @@
     "validationStatus": "benchmark_regression",
     "routeMechanism": "inhalation_near_field_far_field",
     "benchmarkCaseIds": [
+      "inhalation_tier1_scenario_package_probability",
       "inhalation_tier1_trigger_spray_nf_ff"
     ],
     "externalDatasetIds": [
       "near_field_far_field_spray_candidate"
     ],
-    "highestSupportedUncertaintyTier": "tier_b",
+    "evidenceReadiness": "benchmark_plus_external_candidates",
+    "heuristicAssumptionNames": [
+      "aerosolized_fraction",
+      "density_g_per_ml"
+    ],
+    "validationGapIds": [
+      "tier1_nf_ff_external_validation_candidate_only",
+      "heuristic_defaults_active"
+    ],
+    "highestSupportedUncertaintyTier": "tier_c",
     "probabilisticEnablement": "blocked",
     "notes": [
       "Deterministic verification and benchmark regression are available for this domain.",
       "External validation remains a documented future capability rather than an active gate.",
+      "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
       "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
     ]
   },
