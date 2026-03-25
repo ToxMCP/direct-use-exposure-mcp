@@ -178,14 +178,15 @@ def uncertainty_framework() -> str:
 
 ## Tier 1 Hooks
 
-- Spray inhalation scenarios can emit `tierUpgradeAdvisories` that recommend a future Tier 1
-  near-field/far-field model without pretending it exists today.
+- Spray inhalation scenarios can emit `tierUpgradeAdvisories` that recommend Tier 1
+  near-field/far-field modeling whenever Tier 0 room averages are too coarse.
 - `requestedTier=tier_1` is a forward-compatible contract hook for inhalation requests and
   currently fails loudly with an actionable `not_implemented` error.
-- `exposure_build_inhalation_tier1_screening_scenario` now publishes the future Tier 1 request
-  surface and returns a structured blocked notice instead of pretending a solver exists.
-- Tier 1 remains a blocked model family until the NF/FF solver and validation evidence are
-  published.
+- `exposure_build_inhalation_tier1_screening_scenario` accepts the governed
+  `inhalationTier1ScenarioRequest.v1` contract and returns a deterministic Tier 1 external-dose
+  scenario for spray contexts.
+- Tier 1 remains a screening model family with explicit airflow-class and particle-regime
+  heuristics; it is not a calibrated aerosol transport simulator.
 
 ## Tier C
 
@@ -288,14 +289,14 @@ def inhalation_tier_upgrade_guide() -> str:
 
 ## Current State
 
-- `v0.1.0` implements Tier 0 inhalation only: a deterministic, well-mixed single-zone room model.
+- `v0.1.0` implements Tier 0 inhalation and a spray-focused Tier 1 NF/FF screening path.
 - Spray scenarios can emit `tierUpgradeAdvisories` when the Tier 0 output is likely to miss
   breathing-zone peaks or source-proximal behavior.
 - `requestedTier=tier_1` is accepted as a forward-compatible contract hook but currently returns
   a typed `inhalation_tier_1_not_implemented` error.
 - `exposure_build_inhalation_tier1_screening_scenario` accepts the published
-  `inhalationTier1ScenarioRequest.v1` schema and returns a structured
-  `inhalationTier1CapabilityNotice.v1` block notice.
+  `inhalationTier1ScenarioRequest.v1` schema and returns an `exposureScenario.v1` result with
+  Tier 1 semantics.
 
 ## When The Hook Triggers
 
@@ -303,7 +304,7 @@ def inhalation_tier_upgrade_guide() -> str:
 - Short event durations where transient peaks are plausible
 - Any screening context where a room-average concentration is not sufficient
 
-## Required Future Inputs
+## Required Tier 1 Inputs
 
 - `source_distance_m`
 - `spray_duration_seconds`
@@ -311,24 +312,26 @@ def inhalation_tier_upgrade_guide() -> str:
 - `airflow_directionality`
 - `particle_size_regime`
 
-## Current Stub Tool
+## Current Tier 1 Tool
 
 - Tool: `exposure_build_inhalation_tier1_screening_scenario`
 - Request schema: `inhalationTier1ScenarioRequest.v1`
-- Response schema: `inhalationTier1CapabilityNotice.v1`
-- Current behavior: validates the planned NF/FF request surface and returns a blocked notice while
-  the Tier 1 solver remains unavailable.
+- Response schema: `exposureScenario.v1`
+- Current behavior: builds a deterministic near-field/far-field screening scenario for spray
+  events while preserving Tier 1 limitations, quality flags, and screening-only caveats.
 
 ## Guardrails
 
 - Do not reinterpret Tier 0 spray outputs as near-field resolved.
-- Do not treat the advisory as proof that Tier 1 is already implemented.
+- Do not treat Tier 1 screening outputs as validated CFD, deposition, or absorbed-dose models.
 - Keep `tierUpgradeAdvisories`, `limitations`, and `tierSemantics` attached to downstream reports.
 
-## Planned Tier 1 Direction
+## Tier 1 Screening Semantics
 
 - Model family: `inhalation_near_field_far_field_screening`
 - Scope: still external-dose only
+- Mechanism: room-average far-field background plus an active-spray near-field increment
+- Required inputs use governed airflow-directionality and particle-regime vocabularies
 - Non-goals: deposited dose, absorbed dose, PBPK state variables, or final risk conclusions
 """
 

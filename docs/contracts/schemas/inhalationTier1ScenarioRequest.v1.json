@@ -1,5 +1,25 @@
 {
   "$defs": {
+    "AirflowDirectionality": {
+      "enum": [
+        "quiescent",
+        "cross_draft",
+        "source_to_breathing_zone",
+        "breathing_zone_to_source",
+        "general_room_mixing"
+      ],
+      "title": "AirflowDirectionality",
+      "type": "string"
+    },
+    "ParticleSizeRegime": {
+      "enum": [
+        "fine_aerosol",
+        "mixed_spray",
+        "coarse_spray"
+      ],
+      "title": "ParticleSizeRegime",
+      "type": "string"
+    },
     "PopulationProfile": {
       "additionalProperties": false,
       "properties": {
@@ -394,14 +414,12 @@
       "type": "number"
     },
     "airflow_directionality": {
-      "description": "Directional airflow context near the source and breathing zone.",
-      "title": "Airflow Directionality",
-      "type": "string"
+      "$ref": "#/$defs/AirflowDirectionality",
+      "description": "Directional airflow context near the source and breathing zone."
     },
     "particle_size_regime": {
-      "description": "Spray droplet or aerosol size regime used for screening semantics.",
-      "title": "Particle Size Regime",
-      "type": "string"
+      "$ref": "#/$defs/ParticleSizeRegime",
+      "description": "Spray droplet or aerosol size regime used for screening semantics."
     }
   },
   "required": [

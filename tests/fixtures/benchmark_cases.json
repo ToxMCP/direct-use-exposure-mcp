@@ -83,6 +83,62 @@
       }
     },
     {
+      "id": "inhalation_tier1_trigger_spray_nf_ff",
+      "kind": "scenario",
+      "description": "Adult EU trigger spray Tier 1 near-field/far-field screening case with explicit geometry, timing, and airflow-class inputs.",
+      "request": {
+        "schema_version": "inhalationTier1ScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "chemical_name": "Benchmark Solvent A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Trigger Spray Tier 1",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 25,
+          "air_exchange_rate_per_hour": 2.0,
+          "exposure_duration_hours": 0.5
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {},
+        "source_distance_m": 0.35,
+        "spray_duration_seconds": 8.0,
+        "near_field_volume_m3": 2.0,
+        "airflow_directionality": "cross_draft",
+        "particle_size_regime": "coarse_spray"
+      },
+      "expected": {
+        "external_dose_value": 0.06262114,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "far_field_average_air_concentration_mg_per_m3": 3.03417868,
+          "near_field_active_spray_concentration_mg_per_m3": 1449.46275011,
+          "average_air_concentration_mg_per_m3": 9.46275011,
+          "inhaled_mass_mg_per_day": 4.25823755
+        },
+        "assumptions": {
+          "source_distance_m": 0.35,
+          "near_field_volume_m3": 2.0,
+          "interzonal_mixing_rate_m3_per_hour": 68.0
+        }
+      }
+    },
+    {
       "id": "oral_direct_oral_screening",
       "kind": "scenario",
       "description": "Child direct-oral liquid case covering oral screening semantics and volume-to-mass conversion defaults.",

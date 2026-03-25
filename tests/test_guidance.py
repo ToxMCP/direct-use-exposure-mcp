@@ -59,6 +59,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "requestedTier=tier_1" in inhalation_tier_guide
     assert "exposure_build_inhalation_tier1_screening_scenario" in inhalation_tier_guide
     assert "inhalationTier1ScenarioRequest.v1" in inhalation_tier_guide
+    assert "exposureScenario.v1" in inhalation_tier_guide
     assert "source_distance_m" in inhalation_tier_guide
     assert "benchmarkDomains" not in validation
     assert "External Dataset Candidates" in validation

@@ -65,7 +65,6 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
-    InhalationTier1CapabilityNotice,
     InhalationTier1ScenarioRequest,
     ParameterBoundsSummary,
     PbpkScenarioInput,
@@ -74,7 +73,7 @@ from exposure_scenario_mcp.models import (
     ScenarioPackageProbabilitySummary,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_capability_notice
+from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
 from exposure_scenario_mcp.probability_bounds import (
     build_probability_bounds_from_profile,
     build_probability_bounds_from_scenario_package,
@@ -93,6 +92,7 @@ from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
     build_exposure_envelope_from_library,
     build_parameter_bounds_summary,
+    enrich_scenario_uncertainty,
 )
 from exposure_scenario_mcp.validation import validation_manifest
 
@@ -185,14 +185,18 @@ def create_mcp_server() -> FastMCP:
     )
     def exposure_build_inhalation_tier1_screening_scenario(
         params: InhalationTier1ScenarioRequest,
-    ) -> Annotated[CallToolResult, InhalationTier1CapabilityNotice]:
-        """Validate the future Tier 1 NF/FF request surface and return a blocked notice."""
+    ) -> Annotated[CallToolResult, ExposureScenario]:
+        """Build one deterministic Tier 1 inhalation scenario using NF/FF screening semantics."""
 
-        notice = build_inhalation_tier_1_capability_notice(params)
-        return _success_result(
-            "Accepted the Tier 1 inhalation request surface, but the solver is not implemented.",
-            notice,
-        )
+        try:
+            scenario = build_inhalation_tier_1_screening_scenario(params, defaults_registry)
+            scenario = enrich_scenario_uncertainty(engine, scenario)
+            return _success_result(
+                f"Built Tier 1 inhalation screening scenario {scenario.scenario_id}.",
+                scenario,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
 
     @mcp.tool(
         name="exposure_build_exposure_envelope",

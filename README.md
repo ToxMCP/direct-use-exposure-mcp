@@ -113,7 +113,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `Tier B parameter bounds` | Propagates explicit lower and upper parameter bounds through a deterministic scenario to produce min/max ranges, monotonicity checks, and bounded uncertainty records. |
 | `Tier C probability bounds` | Publishes packaged single-driver probability-bounds profiles with curated driver taxonomy and evaluates their support points without Monte Carlo or joint-distribution claims. |
 | `Tier C scenario packages` | Publishes dependency-aware packaged scenario states with cumulative probability bounds, curated package taxonomy, and preserved coupled drivers without Monte Carlo claims. |
-| `Tier 1 inhalation hooks` | Publishes machine-actionable upgrade advisories for spray inhalation scenarios, exposes a forward-compatible `requestedTier` hook, and ships a blocked Tier 1 NF/FF stub tool with typed request/notice contracts. |
+| `Tier 1 inhalation hooks` | Publishes machine-actionable upgrade advisories for spray inhalation scenarios, preserves the `requestedTier` planning hook on Tier 0 requests, and ships a deterministic Tier 1 NF/FF screening tool with governed geometry and airflow inputs. |
 | `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |

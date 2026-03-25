@@ -55,8 +55,8 @@
     {
       "name": "exposure_build_inhalation_tier1_screening_scenario",
       "request_schema": "inhalationTier1ScenarioRequest.v1",
-      "response_schema": "inhalationTier1CapabilityNotice.v1",
-      "description": "Publish the future Tier 1 near-field/far-field request surface and return a blocked capability notice until the solver exists."
+      "response_schema": "exposureScenario.v1",
+      "description": "Build a deterministic Tier 1 near-field/far-field inhalation screening scenario for spray events."
     },
     {
       "name": "exposure_export_pbpk_scenario_input",
@@ -219,7 +219,6 @@
     "exposureScenarioRequest.v1": "schemas/exposureScenarioRequest.v1.json",
     "inhalationScenarioRequest.v1": "schemas/inhalationScenarioRequest.v1.json",
     "inhalationTier1ScenarioRequest.v1": "schemas/inhalationTier1ScenarioRequest.v1.json",
-    "inhalationTier1CapabilityNotice.v1": "schemas/inhalationTier1CapabilityNotice.v1.json",
     "exposureScenario.v1": "schemas/exposureScenario.v1.json",
     "archetypeLibraryTemplate.v1": "schemas/archetypeLibraryTemplate.v1.json",
     "archetypeLibrarySet.v1": "schemas/archetypeLibrarySet.v1.json",
@@ -292,7 +291,7 @@
     "inhalation_request": "schemas/examples/inhalation_request.json",
     "inhalation_scenario": "schemas/examples/inhalation_scenario.json",
     "inhalation_tier1_request": "schemas/examples/inhalation_tier1_request.json",
-    "inhalation_tier1_capability_notice": "schemas/examples/inhalation_tier1_capability_notice.json",
+    "inhalation_tier1_scenario": "schemas/examples/inhalation_tier1_scenario.json",
     "exposure_envelope_summary": "schemas/examples/exposure_envelope_summary.json",
     "exposure_envelope_from_library_request": "schemas/examples/exposure_envelope_from_library_request.json",
     "exposure_envelope_from_library_summary": "schemas/examples/exposure_envelope_from_library_summary.json",

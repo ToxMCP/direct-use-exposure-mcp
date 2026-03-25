@@ -14,8 +14,10 @@ from exposure_scenario_mcp.models import (
     ExportPbpkScenarioInputRequest,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    InhalationTier1ScenarioRequest,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
 from exposure_scenario_mcp.runtime import (
     PluginRegistry,
     ScenarioEngine,
@@ -23,6 +25,7 @@ from exposure_scenario_mcp.runtime import (
     compare_scenarios,
     export_pbpk_input,
 )
+from exposure_scenario_mcp.uncertainty import enrich_scenario_uncertainty
 
 FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "benchmark_cases.json"
 
@@ -34,14 +37,24 @@ def build_engine() -> ScenarioEngine:
     return ScenarioEngine(registry=registry, defaults_registry=DefaultsRegistry.load())
 
 
-def build_request(payload: dict) -> ExposureScenarioRequest | InhalationScenarioRequest:
+def build_request(
+    payload: dict,
+) -> ExposureScenarioRequest | InhalationScenarioRequest | InhalationTier1ScenarioRequest:
+    if payload.get("schema_version") == "inhalationTier1ScenarioRequest.v1":
+        return InhalationTier1ScenarioRequest(**payload)
     if payload["route"] == "inhalation":
         return InhalationScenarioRequest(**payload)
     return ExposureScenarioRequest(**payload)
 
 
 def build_scenario(engine: ScenarioEngine, payload: dict):
-    return engine.build(build_request(payload))
+    request = build_request(payload)
+    if isinstance(request, InhalationTier1ScenarioRequest):
+        return enrich_scenario_uncertainty(
+            engine,
+            build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load()),
+        )
+    return engine.build(request)
 
 
 def assumption_values(scenario) -> dict[str, object]:

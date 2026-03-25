@@ -58,7 +58,6 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
-    InhalationTier1CapabilityNotice,
     InhalationTier1ScenarioRequest,
     MonotonicityCheck,
     ParameterBoundInput,
@@ -105,7 +104,6 @@ SCHEMA_MODELS = {
     "exposureScenarioRequest.v1": ExposureScenarioRequest,
     "inhalationScenarioRequest.v1": InhalationScenarioRequest,
     "inhalationTier1ScenarioRequest.v1": InhalationTier1ScenarioRequest,
-    "inhalationTier1CapabilityNotice.v1": InhalationTier1CapabilityNotice,
     "exposureScenario.v1": ExposureScenario,
     "archetypeLibraryTemplate.v1": ArchetypeLibraryTemplate,
     "archetypeLibrarySet.v1": ArchetypeLibrarySet,
@@ -253,10 +251,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractToolEntry(
                 name="exposure_build_inhalation_tier1_screening_scenario",
                 request_schema="inhalationTier1ScenarioRequest.v1",
-                response_schema="inhalationTier1CapabilityNotice.v1",
+                response_schema="exposureScenario.v1",
                 description=(
-                    "Publish the future Tier 1 near-field/far-field request surface and "
-                    "return a blocked capability notice until the solver exists."
+                    "Build a deterministic Tier 1 near-field/far-field inhalation screening "
+                    "scenario for spray events."
                 ),
             ),
             ContractToolEntry(

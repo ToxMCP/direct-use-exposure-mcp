@@ -77,6 +77,46 @@ ASSUMPTION_UNCERTAINTY_TYPES: dict[str, tuple[UncertaintyType, ...]] = {
         UncertaintyType.VARIABILITY,
         UncertaintyType.SCENARIO_UNCERTAINTY,
     ),
+    "source_distance_m": (
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+        UncertaintyType.MODEL_UNCERTAINTY,
+    ),
+    "spray_duration_seconds": (
+        UncertaintyType.VARIABILITY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "near_field_volume_m3": (
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+        UncertaintyType.MODEL_UNCERTAINTY,
+    ),
+    "airflow_directionality": (
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+        UncertaintyType.MODEL_UNCERTAINTY,
+    ),
+    "particle_size_regime": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.MODEL_UNCERTAINTY,
+    ),
+    "near_field_exchange_turnover_per_hour": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "interzonal_mixing_rate_m3_per_hour": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "near_field_active_spray_concentration_mg_per_m3": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "far_field_average_air_concentration_mg_per_m3": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "breathing_zone_time_weighted_average_mg_per_m3": (
+        UncertaintyType.MODEL_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
     "use_events_per_day": (UncertaintyType.VARIABILITY,),
     "use_amount_per_event": (
         UncertaintyType.VARIABILITY,
@@ -130,6 +170,11 @@ ASSUMPTION_DOMAIN_FIELDS: dict[str, tuple[str, ...]] = {
     "room_volume_m3": ("region", "product_category", "application_method"),
     "air_exchange_rate_per_hour": ("region", "product_category", "application_method"),
     "exposure_duration_hours": ("region", "application_method"),
+    "source_distance_m": ("application_method", "physical_form"),
+    "spray_duration_seconds": ("application_method", "physical_form"),
+    "near_field_volume_m3": ("application_method", "physical_form", "region"),
+    "airflow_directionality": ("application_method", "physical_form", "region"),
+    "particle_size_regime": ("application_method", "physical_form"),
     "use_events_per_day": ("population_group", "product_category", "application_method"),
     "use_amount_per_event": ("product_category", "physical_form", "application_method"),
     "concentration_fraction": ("product_category", "physical_form"),

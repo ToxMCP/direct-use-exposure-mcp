@@ -16,6 +16,7 @@ BENCHMARK_CASE_DOMAINS = {
     "dermal_density_precedence_volume_case": "dermal_direct_application",
     "oral_direct_oral_screening": "oral_direct_intake",
     "inhalation_trigger_spray_screening": "inhalation_well_mixed_spray",
+    "inhalation_tier1_trigger_spray_nf_ff": "inhalation_near_field_far_field",
     "cross_route_aggregate_summary": "aggregate_cross_route_screening",
     "zero_baseline_comparison": "scenario_delta_comparison",
     "dermal_pbpk_export": "pbpk_external_handoff",
@@ -76,6 +77,8 @@ def infer_route_mechanism(scenario: ExposureScenario) -> str:
         if profile.application_method == "incidental_oral":
             return "oral_incidental_transfer"
         return "oral_direct_intake"
+    if scenario.tier_semantics.tier_claimed.value == "tier_1":
+        return "inhalation_near_field_far_field"
     if profile.application_method in {"trigger_spray", "pump_spray", "aerosol_spray"}:
         return "inhalation_well_mixed_spray"
     return "inhalation_room_average"
@@ -103,8 +106,8 @@ def validation_manifest() -> dict:
             "Current v0.1 validation posture is benchmark regression plus verification.",
             "No external validation datasets are wired into executable scoring yet.",
             (
-                "Tier 1 inhalation hooks and a blocked NF/FF request stub are published for "
-                "spray scenarios, but the Tier 1 model family itself is still not implemented."
+                "Tier 1 inhalation NF/FF screening is implemented for spray scenarios, but "
+                "external validation remains a documented future capability."
             ),
             (
                 "Probabilistic tiers remain gated until dependency handling and "

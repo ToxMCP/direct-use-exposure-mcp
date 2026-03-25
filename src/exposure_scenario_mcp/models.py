@@ -101,6 +101,20 @@ class TierUpgradeStatus(StrEnum):
     REQUESTED_NOT_IMPLEMENTED = "requested_not_implemented"
 
 
+class AirflowDirectionality(StrEnum):
+    QUIESCENT = "quiescent"
+    CROSS_DRAFT = "cross_draft"
+    SOURCE_TO_BREATHING_ZONE = "source_to_breathing_zone"
+    BREATHING_ZONE_TO_SOURCE = "breathing_zone_to_source"
+    GENERAL_ROOM_MIXING = "general_room_mixing"
+
+
+class ParticleSizeRegime(StrEnum):
+    FINE_AEROSOL = "fine_aerosol"
+    MIXED_SPRAY = "mixed_spray"
+    COARSE_SPRAY = "coarse_spray"
+
+
 class UncertaintyTier(StrEnum):
     TIER_A = "tier_a"
     TIER_B = "tier_b"
@@ -690,11 +704,11 @@ class InhalationTier1ScenarioRequest(ExposureScenarioRequest):
         gt=0.0,
         description="Local near-field control volume around the user.",
     )
-    airflow_directionality: str = Field(
+    airflow_directionality: AirflowDirectionality = Field(
         ...,
         description="Directional airflow context near the source and breathing zone.",
     )
-    particle_size_regime: str = Field(
+    particle_size_regime: ParticleSizeRegime = Field(
         ...,
         description="Spray droplet or aerosol size regime used for screening semantics.",
     )
@@ -713,56 +727,6 @@ class InhalationTier1ScenarioRequest(ExposureScenarioRequest):
                 "InhalationTier1ScenarioRequest currently supports physical_form='spray' only."
             )
         return self
-
-
-class InhalationTier1CapabilityNotice(StrictModel):
-    schema_version: Literal["inhalationTier1CapabilityNotice.v1"] = (
-        "inhalationTier1CapabilityNotice.v1"
-    )
-    tool_name: str = Field(
-        ...,
-        alias="toolName",
-        description="Tool exposing the future Tier 1 request surface.",
-    )
-    route: Literal[Route.INHALATION] = Field(
-        default=Route.INHALATION,
-        description="Route served by the capability notice.",
-    )
-    requested_tier: Literal[TierLevel.TIER_1] = Field(
-        default=TierLevel.TIER_1,
-        alias="requestedTier",
-        description="Requested tier preserved by the notice.",
-    )
-    status: Literal["blocked_not_implemented"] = Field(
-        default="blocked_not_implemented",
-        description="The request surface is published, but the solver remains unavailable.",
-    )
-    recommended_model_family: str = Field(
-        ...,
-        alias="recommendedModelFamily",
-        description="Future model family targeted by this request surface.",
-    )
-    guidance_resource: str = Field(
-        ...,
-        alias="guidanceResource",
-        description="Documentation resource describing the current Tier 1 boundary.",
-    )
-    accepted_inputs: list[str] = Field(
-        default_factory=list,
-        alias="acceptedInputs",
-        description="Tier 1-specific input fields accepted by the published stub contract.",
-    )
-    blocking_gaps: list[str] = Field(
-        default_factory=list,
-        alias="blockingGaps",
-        description="Machine-readable reasons the Tier 1 builder still cannot execute.",
-    )
-    next_steps: list[str] = Field(
-        default_factory=list,
-        alias="nextSteps",
-        description="Concrete next actions for clients or downstream workflows.",
-    )
-    rationale: str = Field(..., description="Why the request is blocked despite being accepted.")
 
 
 class ScenarioDose(StrictModel):

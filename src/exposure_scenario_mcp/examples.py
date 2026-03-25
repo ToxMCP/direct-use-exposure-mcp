@@ -41,7 +41,7 @@ from exposure_scenario_mcp.models import (
     ScenarioPackageProbabilitySummary,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_capability_notice
+from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
 from exposure_scenario_mcp.probability_bounds import (
     build_probability_bounds_from_profile,
     build_probability_bounds_from_scenario_package,
@@ -60,6 +60,7 @@ from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
     build_exposure_envelope_from_library,
     build_parameter_bounds_summary,
+    enrich_scenario_uncertainty,
 )
 
 EXAMPLE_GENERATED_AT = "2026-03-24T00:00:00+00:00"
@@ -67,6 +68,7 @@ EXAMPLE_IDS = {
     "screening_dermal_scenario": "exp-example-dermal-001",
     "screening_dermal_refined_scenario": "exp-example-dermal-refined-001",
     "inhalation_scenario": "inh-example-room-001",
+    "inhalation_tier1_scenario": "inh-tier1-example-001",
     "aggregate_summary": "agg-example-couse-001",
     "envelope_summary": "env-example-dermal-001",
     "bounds_summary": "bnd-example-dermal-001",
@@ -345,8 +347,16 @@ def build_examples() -> dict[str, dict]:
         airflow_directionality="cross_draft",
         particle_size_regime="coarse_spray",
     )
-    inhalation_tier1_capability_notice = build_inhalation_tier_1_capability_notice(
-        inhalation_tier1_request
+    inhalation_tier1_scenario = _freeze_scenario(
+        enrich_scenario_uncertainty(
+            engine,
+            build_inhalation_tier_1_screening_scenario(
+                inhalation_tier1_request,
+                defaults_registry,
+                generated_at=EXAMPLE_GENERATED_AT,
+            ),
+        ),
+        EXAMPLE_IDS["inhalation_tier1_scenario"],
     )
 
     refined_request = dermal_request.model_copy(
@@ -570,7 +580,7 @@ def build_examples() -> dict[str, dict]:
         "inhalation_tier1_request": inhalation_tier1_request.model_dump(
             mode="json", by_alias=True
         ),
-        "inhalation_tier1_capability_notice": inhalation_tier1_capability_notice.model_dump(
+        "inhalation_tier1_scenario": inhalation_tier1_scenario.model_dump(
             mode="json", by_alias=True
         ),
         "exposure_envelope_summary": envelope_summary.model_dump(mode="json", by_alias=True),

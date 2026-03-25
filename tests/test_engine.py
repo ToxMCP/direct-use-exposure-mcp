@@ -5,6 +5,7 @@ import pytest
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
+    AirflowDirectionality,
     ApplicabilityStatus,
     BuildAggregateExposureScenarioInput,
     BuildExposureEnvelopeFromLibraryInput,
@@ -21,6 +22,7 @@ from exposure_scenario_mcp.models import (
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
     ParameterBoundInput,
+    ParticleSizeRegime,
     PopulationProfile,
     ProductUseProfile,
     Route,
@@ -29,7 +31,9 @@ from exposure_scenario_mcp.models import (
     UncertaintyTier,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_capability_notice
+from exposure_scenario_mcp.plugins.inhalation import (
+    build_inhalation_tier_1_screening_scenario,
+)
 from exposure_scenario_mcp.probability_bounds import (
     build_probability_bounds_from_profile,
     build_probability_bounds_from_scenario_package,
@@ -48,6 +52,7 @@ from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
     build_exposure_envelope_from_library,
     build_parameter_bounds_summary,
+    enrich_scenario_uncertainty,
 )
 
 
@@ -163,7 +168,8 @@ def test_inhalation_screening_defaults_and_dose() -> None:
     )
 
 
-def test_inhalation_tier_1_stub_notice_is_machine_actionable() -> None:
+def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
+    engine = build_engine()
     request = InhalationTier1ScenarioRequest(
         chemical_id="DTXSID123",
         route=Route.INHALATION,
@@ -177,33 +183,52 @@ def test_inhalation_tier_1_stub_notice_is_machine_actionable() -> None:
             use_amount_unit="mL",
             use_events_per_day=1,
             room_volume_m3=25,
+            exposure_duration_hours=0.5,
+            air_exchange_rate_per_hour=2.0,
         ),
         population_profile=PopulationProfile(
             population_group="adult",
             body_weight_kg=68,
             inhalation_rate_m3_per_hour=0.9,
+            region="EU",
         ),
         source_distance_m=0.35,
         spray_duration_seconds=8.0,
         near_field_volume_m3=2.0,
-        airflow_directionality="cross_draft",
-        particle_size_regime="coarse_spray",
+        airflow_directionality=AirflowDirectionality.CROSS_DRAFT,
+        particle_size_regime=ParticleSizeRegime.COARSE_SPRAY,
     )
 
-    notice = build_inhalation_tier_1_capability_notice(request)
+    scenario = build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load())
 
-    assert notice.status == "blocked_not_implemented"
-    assert notice.tool_name == "exposure_build_inhalation_tier1_screening_scenario"
-    assert notice.recommended_model_family == "inhalation_near_field_far_field_screening"
-    assert notice.guidance_resource == "docs://inhalation-tier-upgrade-guide"
-    assert notice.accepted_inputs == [
-        "source_distance_m",
-        "spray_duration_seconds",
-        "near_field_volume_m3",
-        "airflow_directionality",
-        "particle_size_regime",
-    ]
-    assert "tier_1_solver_not_implemented" in notice.blocking_gaps
+    assert scenario.external_dose.value == pytest.approx(0.06262114, rel=1e-6)
+    assert scenario.tier_semantics.tier_claimed == TierLevel.TIER_1
+    assert scenario.route_metrics["far_field_average_air_concentration_mg_per_m3"] == pytest.approx(
+        3.03417868, rel=1e-6
+    )
+    assert scenario.route_metrics[
+        "near_field_active_spray_concentration_mg_per_m3"
+    ] == pytest.approx(1449.46275011, rel=1e-6)
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        9.46275011, rel=1e-6
+    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
+        4.25823755, rel=1e-6
+    )
+    assert scenario.route_metrics["interzonal_mixing_rate_m3_per_hour"] == pytest.approx(
+        68.0, rel=1e-6
+    )
+    assert any(item.code == "near_field_exchange_screening" for item in scenario.limitations)
+    assert any(item.code == "tier_1_nf_ff_screening" for item in scenario.quality_flags)
+
+    enriched = enrich_scenario_uncertainty(engine, scenario)
+    assert enriched.validation_summary is not None
+    assert enriched.validation_summary.route_mechanism == "inhalation_near_field_far_field"
+    assert any(
+        item.dependency_id == "near-field-geometry-cluster"
+        for item in enriched.dependency_metadata
+    )
+    assert any(item.parameter_name == "source_distance_m" for item in enriched.sensitivity_ranking)
 
 
 def test_eu_inhalation_room_defaults_use_regional_source() -> None:

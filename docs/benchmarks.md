@@ -12,6 +12,7 @@ The deterministic benchmark corpus for `v0.1.0` is stored in `tests/fixtures/ben
 
 - Adult dermal leave-on hand cream screening
 - Adult inhalation trigger spray screening
+- Adult inhalation Tier 1 trigger spray near-field/far-field screening
 - Child direct-oral liquid screening
 - Adult dermal cream volume-to-mass conversion with density override precedence
 - Cross-route aggregate summary with contributor fractions and limitation flagging

@@ -28,6 +28,7 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    InhalationTier1ScenarioRequest,
     MonotonicDirection,
     MonotonicityCheck,
     ParameterBoundInput,
@@ -36,6 +37,7 @@ from exposure_scenario_mcp.models import (
     ScenarioDose,
     SensitivityDirection,
     SensitivityRankingEntry,
+    TierLevel,
     UncertaintyQuantificationStatus,
     UncertaintyRegisterEntry,
     UncertaintyTier,
@@ -61,6 +63,9 @@ SENSITIVITY_FIELD_MAP = {
     "exposure_duration_hours": ("product_use_profile", "exposure_duration_hours"),
     "body_weight_kg": ("population_profile", "body_weight_kg"),
     "inhalation_rate_m3_per_hour": ("population_profile", "inhalation_rate_m3_per_hour"),
+    "source_distance_m": ("request", "source_distance_m"),
+    "spray_duration_seconds": ("request", "spray_duration_seconds"),
+    "near_field_volume_m3": ("request", "near_field_volume_m3"),
 }
 BOUNDS_PARAMETER_CONFIG: dict[
     str, dict[str, set[Route] | MonotonicDirection | bool]
@@ -126,6 +131,16 @@ LIMITATION_UNCERTAINTY_MAP = {
         BiasDirection.LIKELY_UNDER,
         "high",
     ),
+    "near_field_exchange_screening": (
+        [UncertaintyType.MODEL_UNCERTAINTY, UncertaintyType.SCENARIO_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "high",
+    ),
+    "particle_regime_screening": (
+        [UncertaintyType.MODEL_UNCERTAINTY, UncertaintyType.PARAMETER_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "medium",
+    ),
     "cross_route_aggregate": (
         [UncertaintyType.MODEL_UNCERTAINTY],
         BiasDirection.BIDIRECTIONAL,
@@ -140,6 +155,25 @@ LIMITATION_UNCERTAINTY_MAP = {
 
 
 def request_from_scenario(scenario: ExposureScenario) -> ExposureScenarioRequest:
+    assumption_values = {item.name: item.value for item in scenario.assumptions}
+    if (
+        scenario.route == Route.INHALATION
+        and scenario.tier_semantics.tier_claimed == TierLevel.TIER_1
+    ):
+        return InhalationTier1ScenarioRequest(
+            chemical_id=scenario.chemical_id,
+            chemical_name=scenario.chemical_name,
+            route=scenario.route,
+            scenario_class=scenario.scenario_class,
+            product_use_profile=scenario.product_use_profile,
+            population_profile=scenario.population_profile,
+            source_distance_m=float(assumption_values["source_distance_m"]),
+            spray_duration_seconds=float(assumption_values["spray_duration_seconds"]),
+            near_field_volume_m3=float(assumption_values["near_field_volume_m3"]),
+            airflow_directionality=str(assumption_values["airflow_directionality"]),
+            particle_size_regime=str(assumption_values["particle_size_regime"]),
+            assumption_overrides={},
+        )
     request_cls = (
         InhalationScenarioRequest if scenario.route == Route.INHALATION else ExposureScenarioRequest
     )
@@ -160,6 +194,8 @@ def _with_override(
     value: float,
 ) -> ExposureScenarioRequest:
     target = SENSITIVITY_FIELD_MAP[assumption_name]
+    if target[0] == "request":
+        return request.model_copy(update={target[1]: value})
     if target[0] == "product_use_profile":
         return request.model_copy(
             update={
@@ -173,6 +209,16 @@ def _with_override(
             "population_profile": request.population_profile.model_copy(update={target[1]: value})
         }
     )
+
+
+def _build_request_scenario(engine, request: ExposureScenarioRequest) -> ExposureScenario:
+    if isinstance(request, InhalationTier1ScenarioRequest):
+        from exposure_scenario_mcp.plugins.inhalation import (
+            build_inhalation_tier_1_screening_scenario,
+        )
+
+        return build_inhalation_tier_1_screening_scenario(request, engine.defaults_registry)
+    return engine.build(request, include_diagnostics=False)
 
 
 def _bound_config(parameter_name: str) -> dict[str, set[Route] | MonotonicDirection | bool]:
@@ -291,7 +337,7 @@ def build_sensitivity_ranking(engine, scenario: ExposureScenario) -> list[Sensit
         perturbed_value = round(baseline_value * (1.0 + PERTURBATION_FRACTION), 8)
         try:
             perturbed_request = _with_override(request, assumption.name, perturbed_value)
-            perturbed_scenario = engine.build(perturbed_request, include_diagnostics=False)
+            perturbed_scenario = _build_request_scenario(engine, perturbed_request)
         except (ExposureScenarioError, ValueError):
             continue
         absolute_delta = round(perturbed_scenario.external_dose.value - base_value, 8)
@@ -412,6 +458,29 @@ def build_dependency_metadata(scenario: ExposureScenario) -> list[DependencyDesc
                 note=(
                     "Later uncertainty tiers should condition aerosol release on the spray "
                     "mechanism rather than sample it independently."
+                ),
+            )
+        )
+    if (
+        scenario.route == Route.INHALATION
+        and scenario.tier_semantics.tier_claimed == TierLevel.TIER_1
+    ):
+        items.append(
+            DependencyDescriptor(
+                dependency_id="near-field-geometry-cluster",
+                title="Tier 1 NF/FF geometry and timing should move together",
+                relationship_type=DependencyRelationship.SCENARIO_PACKAGE,
+                assumption_names=[
+                    "source_distance_m",
+                    "spray_duration_seconds",
+                    "near_field_volume_m3",
+                    "airflow_directionality",
+                    "particle_size_regime",
+                ],
+                handling_strategy=DependencyHandlingStrategy.SCENARIO_PACKAGED,
+                note=(
+                    "Tier 1 spray geometry, timing, and airflow classes should remain a "
+                    "coherent scenario package rather than independent marginals."
                 ),
             )
         )

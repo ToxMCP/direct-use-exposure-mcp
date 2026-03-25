@@ -27,8 +27,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - Tier C support is limited to packaged single-driver or scenario-package probability bounds
   without Monte Carlo sampling or joint-distribution claims.
 - Inhalation requests expose `requestedTier` and `tierUpgradeAdvisories` as forward-compatible
-  Tier 1 hooks, and a dedicated Tier 1 stub tool publishes the NF/FF request surface while the
-  Tier 1 model family itself remains unimplemented.
+  Tier 1 hooks, and a dedicated Tier 1 NF/FF tool builds deterministic spray scenarios with
+  explicit geometry, timing, and airflow-class inputs.
 - ToxClaw evidence and refinement bundles emit deterministic content hashes and stable IDs.
 - Security and provenance findings are published through `release://security-provenance-review-report`.
 - Release metadata is published through `release://metadata-report`.
@@ -38,6 +38,7 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 
 - `dermal_hand_cream_screening` [scenario] Adult leave-on hand cream screening case with default body weight, surface area, retention, and transfer efficiency.
 - `inhalation_trigger_spray_screening` [scenario] Adult EU trigger spray inhalation case with explicit room volume and regional default ventilation/duration.
+- `inhalation_tier1_trigger_spray_nf_ff` [scenario] Adult EU trigger spray Tier 1 NF/FF case with explicit source distance, spray duration, near-field volume, and airflow class.
 - `oral_direct_oral_screening` [scenario] Child direct-oral liquid case covering oral screening semantics and volume-to-mass conversion defaults.
 - `dermal_density_precedence_volume_case` [scenario] Adult dermal cream case covering physical-form density override precedence for mL inputs.
 - `cross_route_aggregate_summary` [aggregate] Aggregate summary spanning the canonical dermal and inhalation benchmark scenarios.
