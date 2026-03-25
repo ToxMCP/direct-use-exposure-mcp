@@ -28,6 +28,7 @@ EXAMPLE_SCHEMA_MAP = {
     "inhalation_request": "inhalationScenarioRequest.v1",
     "inhalation_scenario": "exposureScenario.v1",
     "exposure_envelope_summary": "exposureEnvelopeSummary.v1",
+    "parameter_bounds_summary": "parameterBoundsSummary.v1",
     "aggregate_summary": "aggregateExposureSummary.v1",
     "pbpk_input": "pbpkScenarioInput.v1",
     "pbpk_external_import_request": "pbpkExternalImportRequest.v1",
@@ -60,7 +61,7 @@ def test_contract_manifest_and_server_boot() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
-    assert len(manifest["tools"]) == 9
+    assert len(manifest["tools"]) == 10
     assert "exposureScenario.v1" in manifest["schemas"]
     assert "assumptionGovernance.v1" in manifest["schemas"]
     assert "uncertaintyRegisterEntry.v1" in manifest["schemas"]
@@ -69,6 +70,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "validationSummary.v1" in manifest["schemas"]
     assert "buildExposureEnvelopeInput.v1" in manifest["schemas"]
     assert "exposureEnvelopeSummary.v1" in manifest["schemas"]
+    assert "buildParameterBoundsInput.v1" in manifest["schemas"]
+    assert "parameterBoundsSummary.v1" in manifest["schemas"]
     assert "pbpkExternalImportPackage.v1" in manifest["schemas"]
     assert "pbpkExternalImportRequest.v1" in manifest["schemas"]
     assert "releaseMetadataReport.v1" in manifest["schemas"]
@@ -77,6 +80,7 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "tierSemantics.v1" in manifest["schemas"]
     assert "screening_dermal_scenario" in manifest["examples"]
     assert "exposure_envelope_summary" in manifest["examples"]
+    assert "parameter_bounds_summary" in manifest["examples"]
     assert "toxclaw_evidence_bundle" in manifest["examples"]
     assert "toxclaw_refinement_bundle" in manifest["examples"]
     assert {

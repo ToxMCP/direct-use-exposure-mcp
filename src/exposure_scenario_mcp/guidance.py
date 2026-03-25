@@ -115,12 +115,15 @@ def uncertainty_framework() -> str:
 ## Tier B
 
 - Named deterministic scenario envelopes built from explicit archetypes.
+- Deterministic parameter-bounds propagation from explicit lower and upper driver values.
 - Envelope spans are bounded scenario sets, not confidence intervals.
+- Parameter-bounds summaries are screening ranges, not population intervals or probabilistic claims.
 - Driver attribution is based on explicit archetype differences, not Monte Carlo decomposition.
 
 ## Current Guardrail
 
-- `v0.1.0` supports Tier A on every scenario output and Tier B via deterministic envelopes.
+- `v0.1.0` supports Tier A on every scenario output and Tier B via deterministic envelopes
+  and parameter-bounds propagation.
 - Probabilistic tiers remain blocked until validation evidence, dependency handling, and
   distribution governance mature.
 """

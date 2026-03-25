@@ -32,6 +32,7 @@ from exposure_scenario_mcp.models import (
     AssumptionGovernance,
     BuildAggregateExposureScenarioInput,
     BuildExposureEnvelopeInput,
+    BuildParameterBoundsInput,
     CompareExposureScenariosInput,
     ContractManifest,
     ContractPromptEntry,
@@ -50,6 +51,9 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    MonotonicityCheck,
+    ParameterBoundInput,
+    ParameterBoundsSummary,
     PbpkScenarioInput,
     PopulationProfile,
     ProductUseProfile,
@@ -82,6 +86,10 @@ SCHEMA_MODELS = {
     "sensitivityRankingEntry.v1": SensitivityRankingEntry,
     "dependencyDescriptor.v1": DependencyDescriptor,
     "validationSummary.v1": ValidationSummary,
+    "parameterBoundInput.v1": ParameterBoundInput,
+    "monotonicityCheck.v1": MonotonicityCheck,
+    "buildParameterBoundsInput.v1": BuildParameterBoundsInput,
+    "parameterBoundsSummary.v1": ParameterBoundsSummary,
     "aggregateExposureSummary.v1": AggregateExposureSummary,
     "exposureAssumptionRecord.v1": ExposureAssumptionRecord,
     "assumptionGovernance.v1": AssumptionGovernance,
@@ -146,6 +154,15 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 request_schema="buildExposureEnvelopeInput.v1",
                 response_schema="exposureEnvelopeSummary.v1",
                 description="Build a deterministic Tier B envelope from named scenario archetypes.",
+            ),
+            ContractToolEntry(
+                name="exposure_build_parameter_bounds_summary",
+                request_schema="buildParameterBoundsInput.v1",
+                response_schema="parameterBoundsSummary.v1",
+                description=(
+                    "Build a deterministic bounds-propagation summary from explicit lower "
+                    "and upper parameter values."
+                ),
             ),
             ContractToolEntry(
                 name="exposure_build_aggregate_exposure_scenario",

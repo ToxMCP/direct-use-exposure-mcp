@@ -17,6 +17,12 @@
       "description": "Build a deterministic Tier B envelope from named scenario archetypes."
     },
     {
+      "name": "exposure_build_parameter_bounds_summary",
+      "request_schema": "buildParameterBoundsInput.v1",
+      "response_schema": "parameterBoundsSummary.v1",
+      "description": "Build a deterministic bounds-propagation summary from explicit lower and upper parameter values."
+    },
+    {
       "name": "exposure_build_aggregate_exposure_scenario",
       "request_schema": "buildAggregateExposureScenarioInput.v1",
       "response_schema": "aggregateExposureSummary.v1",
@@ -169,6 +175,10 @@
     "sensitivityRankingEntry.v1": "schemas/sensitivityRankingEntry.v1.json",
     "dependencyDescriptor.v1": "schemas/dependencyDescriptor.v1.json",
     "validationSummary.v1": "schemas/validationSummary.v1.json",
+    "parameterBoundInput.v1": "schemas/parameterBoundInput.v1.json",
+    "monotonicityCheck.v1": "schemas/monotonicityCheck.v1.json",
+    "buildParameterBoundsInput.v1": "schemas/buildParameterBoundsInput.v1.json",
+    "parameterBoundsSummary.v1": "schemas/parameterBoundsSummary.v1.json",
     "aggregateExposureSummary.v1": "schemas/aggregateExposureSummary.v1.json",
     "exposureAssumptionRecord.v1": "schemas/exposureAssumptionRecord.v1.json",
     "assumptionGovernance.v1": "schemas/assumptionGovernance.v1.json",
@@ -214,6 +224,7 @@
     "inhalation_request": "schemas/examples/inhalation_request.json",
     "inhalation_scenario": "schemas/examples/inhalation_scenario.json",
     "exposure_envelope_summary": "schemas/examples/exposure_envelope_summary.json",
+    "parameter_bounds_summary": "schemas/examples/parameter_bounds_summary.json",
     "aggregate_summary": "schemas/examples/aggregate_summary.json",
     "pbpk_input": "schemas/examples/pbpk_input.json",
     "pbpk_external_import_request": "schemas/examples/pbpk_external_import_request.json",

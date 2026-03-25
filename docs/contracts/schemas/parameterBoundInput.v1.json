@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "parameterName": {
+      "title": "Parametername",
+      "type": "string"
+    },
+    "lowerValue": {
+      "title": "Lowervalue",
+      "type": "number"
+    },
+    "upperValue": {
+      "title": "Uppervalue",
+      "type": "number"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "rationale": {
+      "description": "Why this bounded driver belongs in the summary.",
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "parameterName",
+    "lowerValue",
+    "upperValue",
+    "rationale"
+  ],
+  "title": "ParameterBoundInput",
+  "type": "object"
+}

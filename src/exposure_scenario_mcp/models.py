@@ -284,6 +284,34 @@ class ValidationSummary(StrictModel):
     notes: list[str] = Field(default_factory=list)
 
 
+class MonotonicDirection(StrEnum):
+    INCREASE_INCREASES_DOSE = "increase_increases_dose"
+    INCREASE_DECREASES_DOSE = "increase_decreases_dose"
+
+
+class ParameterBoundInput(StrictModel):
+    parameter_name: str = Field(..., alias="parameterName")
+    lower_value: float = Field(..., alias="lowerValue")
+    upper_value: float = Field(..., alias="upperValue")
+    unit: str | None = None
+    rationale: str = Field(..., description="Why this bounded driver belongs in the summary.")
+
+    @model_validator(mode="after")
+    def validate_bounds(self) -> ParameterBoundInput:
+        if self.upper_value <= self.lower_value:
+            raise ValueError("upperValue must be greater than lowerValue.")
+        return self
+
+
+class MonotonicityCheck(StrictModel):
+    parameter_name: str = Field(..., alias="parameterName")
+    expected_direction: MonotonicDirection = Field(..., alias="expectedDirection")
+    lower_dose: float = Field(..., alias="lowerDose")
+    upper_dose: float = Field(..., alias="upperDose")
+    status: Literal["pass", "warning", "blocked"]
+    note: str
+
+
 class ExposureAssumptionRecord(StrictModel):
     schema_version: Literal["exposureAssumptionRecord.v1"] = "exposureAssumptionRecord.v1"
     name: str = Field(..., description="Stable parameter name used by the engine.")
@@ -635,6 +663,17 @@ class BuildExposureEnvelopeInput(StrictModel):
     )
 
 
+class BuildParameterBoundsInput(StrictModel):
+    schema_version: Literal["buildParameterBoundsInput.v1"] = "buildParameterBoundsInput.v1"
+    label: str = Field(..., description="Human-readable bounds summary label.")
+    base_request: ExposureScenarioRequest = Field(
+        ..., alias="baseRequest", description="Baseline deterministic scenario request."
+    )
+    bounded_parameters: list[ParameterBoundInput] = Field(
+        ..., alias="boundedParameters", min_length=1
+    )
+
+
 class EnvelopeArchetypeResult(StrictModel):
     label: str = Field(..., description="Archetype label.")
     description: str = Field(..., description="Archetype description.")
@@ -680,6 +719,42 @@ class ExposureEnvelopeSummary(StrictModel):
         default=None, alias="validationSummary"
     )
     provenance: ProvenanceBundle = Field(..., description="Envelope provenance.")
+    interpretation_notes: list[str] = Field(
+        default_factory=list, description="Human-readable interpretation notes."
+    )
+
+
+class ParameterBoundsSummary(StrictModel):
+    schema_version: Literal["parameterBoundsSummary.v1"] = "parameterBoundsSummary.v1"
+    summary_id: str = Field(..., alias="summaryId")
+    chemical_id: str = Field(..., description="Shared chemical identifier.")
+    route: Route = Field(..., description="Common route across the bounded scenarios.")
+    scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
+    label: str = Field(..., description="Human-readable bounds summary label.")
+    uncertainty_tier: UncertaintyTier = Field(
+        default=UncertaintyTier.TIER_B, alias="uncertaintyTier"
+    )
+    base_scenario: ExposureScenario = Field(..., alias="baseScenario")
+    min_scenario: ExposureScenario = Field(..., alias="minScenario")
+    max_scenario: ExposureScenario = Field(..., alias="maxScenario")
+    bounded_parameters: list[ParameterBoundInput] = Field(
+        default_factory=list, alias="boundedParameters"
+    )
+    monotonicity_checks: list[MonotonicityCheck] = Field(
+        default_factory=list, alias="monotonicityChecks"
+    )
+    min_dose: ScenarioDose = Field(..., alias="minDose")
+    max_dose: ScenarioDose = Field(..., alias="maxDose")
+    uncertainty_register: list[UncertaintyRegisterEntry] = Field(
+        default_factory=list, alias="uncertaintyRegister"
+    )
+    dependency_metadata: list[DependencyDescriptor] = Field(
+        default_factory=list, alias="dependencyMetadata"
+    )
+    validation_summary: ValidationSummary | None = Field(
+        default=None, alias="validationSummary"
+    )
+    provenance: ProvenanceBundle = Field(..., description="Bounds-summary provenance.")
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable interpretation notes."
     )

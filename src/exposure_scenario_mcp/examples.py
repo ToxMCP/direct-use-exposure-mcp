@@ -16,6 +16,7 @@ from exposure_scenario_mcp.integrations import (
 from exposure_scenario_mcp.models import (
     BuildAggregateExposureScenarioInput,
     BuildExposureEnvelopeInput,
+    BuildParameterBoundsInput,
     CompareExposureScenariosInput,
     EnvelopeArchetypeInput,
     ExportPbpkExternalImportBundleRequest,
@@ -25,6 +26,8 @@ from exposure_scenario_mcp.models import (
     ExposureEnvelopeSummary,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    ParameterBoundInput,
+    ParameterBoundsSummary,
     PopulationProfile,
     ProductUseProfile,
     Route,
@@ -39,7 +42,10 @@ from exposure_scenario_mcp.runtime import (
     compare_scenarios,
     export_pbpk_input,
 )
-from exposure_scenario_mcp.uncertainty import build_exposure_envelope
+from exposure_scenario_mcp.uncertainty import (
+    build_exposure_envelope,
+    build_parameter_bounds_summary,
+)
 
 EXAMPLE_GENERATED_AT = "2026-03-24T00:00:00+00:00"
 EXAMPLE_IDS = {
@@ -48,9 +54,12 @@ EXAMPLE_IDS = {
     "inhalation_scenario": "inh-example-room-001",
     "aggregate_summary": "agg-example-couse-001",
     "envelope_summary": "env-example-dermal-001",
+    "bounds_summary": "bnd-example-dermal-001",
     "envelope_low_scenario": "exp-example-envelope-low-001",
     "envelope_typical_scenario": "exp-example-envelope-typical-001",
     "envelope_high_scenario": "exp-example-envelope-high-001",
+    "bounds_min_scenario": "exp-example-bounds-min-001",
+    "bounds_max_scenario": "exp-example-bounds-max-001",
 }
 
 
@@ -119,6 +128,28 @@ def _freeze_envelope(summary: ExposureEnvelopeSummary) -> ExposureEnvelopeSummar
             "archetypes": frozen_archetypes,
             "min_dose": min_dose,
             "max_dose": max_dose,
+            "provenance": _freeze_provenance(summary.provenance),
+        },
+        deep=True,
+    )
+
+
+def _freeze_bounds_summary(summary: ParameterBoundsSummary) -> ParameterBoundsSummary:
+    return summary.model_copy(
+        update={
+            "summary_id": EXAMPLE_IDS["bounds_summary"],
+            "base_scenario": _freeze_scenario(
+                summary.base_scenario,
+                EXAMPLE_IDS["screening_dermal_scenario"],
+            ),
+            "min_scenario": _freeze_scenario(
+                summary.min_scenario,
+                EXAMPLE_IDS["bounds_min_scenario"],
+            ),
+            "max_scenario": _freeze_scenario(
+                summary.max_scenario,
+                EXAMPLE_IDS["bounds_max_scenario"],
+            ),
             "provenance": _freeze_provenance(summary.provenance),
         },
         deep=True,
@@ -253,6 +284,35 @@ def build_examples() -> dict[str, dict]:
             generated_at=EXAMPLE_GENERATED_AT,
         )
     )
+    parameter_bounds_summary = _freeze_bounds_summary(
+        build_parameter_bounds_summary(
+            BuildParameterBoundsInput(
+                label="Example dermal parameter bounds",
+                baseRequest=dermal_request,
+                boundedParameters=[
+                    ParameterBoundInput(
+                        parameterName="concentration_fraction",
+                        lowerValue=0.01,
+                        upperValue=0.03,
+                        rationale=(
+                            "Bound ingredient concentration between low and high plausible "
+                            "values."
+                        ),
+                    ),
+                    ParameterBoundInput(
+                        parameterName="body_weight_kg",
+                        lowerValue=60,
+                        upperValue=90,
+                        unit="kg",
+                        rationale="Bound normalization by plausible adult body weights.",
+                    ),
+                ],
+            ),
+            engine,
+            defaults_registry,
+            generated_at=EXAMPLE_GENERATED_AT,
+        )
+    )
 
     aggregate_input = BuildAggregateExposureScenarioInput(
         chemical_id="DTXSID7020182",
@@ -331,6 +391,9 @@ def build_examples() -> dict[str, dict]:
         "inhalation_request": inhalation_request.model_dump(mode="json", by_alias=True),
         "inhalation_scenario": inhalation_scenario.model_dump(mode="json", by_alias=True),
         "exposure_envelope_summary": envelope_summary.model_dump(mode="json", by_alias=True),
+        "parameter_bounds_summary": parameter_bounds_summary.model_dump(
+            mode="json", by_alias=True
+        ),
         "aggregate_summary": aggregate_summary.model_dump(mode="json", by_alias=True),
         "pbpk_input": pbpk_input.model_dump(mode="json", by_alias=True),
         "pbpk_external_import_request": pbpk_external_import_package.request_payload.model_dump(

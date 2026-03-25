@@ -45,6 +45,7 @@ from exposure_scenario_mcp.models import (
     AggregateExposureSummary,
     BuildAggregateExposureScenarioInput,
     BuildExposureEnvelopeInput,
+    BuildParameterBoundsInput,
     CompareExposureScenariosInput,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
@@ -54,6 +55,7 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    ParameterBoundsSummary,
     PbpkScenarioInput,
     ScenarioComparisonRecord,
 )
@@ -66,7 +68,10 @@ from exposure_scenario_mcp.runtime import (
     compare_scenarios,
     export_pbpk_input,
 )
-from exposure_scenario_mcp.uncertainty import build_exposure_envelope
+from exposure_scenario_mcp.uncertainty import (
+    build_exposure_envelope,
+    build_parameter_bounds_summary,
+)
 from exposure_scenario_mcp.validation import validation_manifest
 
 
@@ -163,6 +168,30 @@ def create_mcp_server() -> FastMCP:
             return _success_result(
                 f"Built deterministic envelope {envelope.envelope_id}.",
                 envelope,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_parameter_bounds_summary",
+        annotations={
+            "title": "Build Parameter Bounds Summary",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_build_parameter_bounds_summary(
+        params: BuildParameterBoundsInput,
+    ) -> Annotated[CallToolResult, ParameterBoundsSummary]:
+        """Build a deterministic Tier B bounds summary from explicit parameter ranges."""
+
+        try:
+            summary = build_parameter_bounds_summary(params, engine, defaults_registry)
+            return _success_result(
+                f"Built parameter bounds summary {summary.summary_id}.",
+                summary,
             )
         except ExposureScenarioError as error:
             return _error_result(error)

@@ -1,0 +1,53 @@
+{
+  "$defs": {
+    "MonotonicDirection": {
+      "enum": [
+        "increase_increases_dose",
+        "increase_decreases_dose"
+      ],
+      "title": "MonotonicDirection",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "parameterName": {
+      "title": "Parametername",
+      "type": "string"
+    },
+    "expectedDirection": {
+      "$ref": "#/$defs/MonotonicDirection"
+    },
+    "lowerDose": {
+      "title": "Lowerdose",
+      "type": "number"
+    },
+    "upperDose": {
+      "title": "Upperdose",
+      "type": "number"
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "warning",
+        "blocked"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "parameterName",
+    "expectedDirection",
+    "lowerDose",
+    "upperDose",
+    "status",
+    "note"
+  ],
+  "title": "MonotonicityCheck",
+  "type": "object"
+}

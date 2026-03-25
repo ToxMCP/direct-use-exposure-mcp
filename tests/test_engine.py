@@ -7,6 +7,7 @@ from exposure_scenario_mcp.models import (
     ApplicabilityStatus,
     BuildAggregateExposureScenarioInput,
     BuildExposureEnvelopeInput,
+    BuildParameterBoundsInput,
     CompareExposureScenariosInput,
     DefaultVisibility,
     EnvelopeArchetypeInput,
@@ -14,6 +15,7 @@ from exposure_scenario_mcp.models import (
     EvidenceGrade,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    ParameterBoundInput,
     PopulationProfile,
     ProductUseProfile,
     Route,
@@ -28,7 +30,10 @@ from exposure_scenario_mcp.runtime import (
     aggregate_scenarios,
     compare_scenarios,
 )
-from exposure_scenario_mcp.uncertainty import build_exposure_envelope
+from exposure_scenario_mcp.uncertainty import (
+    build_exposure_envelope,
+    build_parameter_bounds_summary,
+)
 
 
 def build_engine() -> ScenarioEngine:
@@ -401,3 +406,54 @@ def test_deterministic_exposure_envelope_builds_tier_b_summary() -> None:
     assert summary.validation_summary.highest_supported_uncertainty_tier == UncertaintyTier.TIER_B
     assert summary.uncertainty_register[0].quantification_status.value == "bounded"
     assert summary.driver_attribution
+
+
+def test_parameter_bounds_summary_builds_bounded_range() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    base_request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="EU"),
+    )
+
+    summary = build_parameter_bounds_summary(
+        BuildParameterBoundsInput(
+            label="Dermal bounds",
+            baseRequest=base_request,
+            boundedParameters=[
+                ParameterBoundInput(
+                    parameterName="concentration_fraction",
+                    lowerValue=0.01,
+                    upperValue=0.03,
+                    rationale="Bound concentration to plausible low and high values.",
+                ),
+                ParameterBoundInput(
+                    parameterName="body_weight_kg",
+                    lowerValue=60,
+                    upperValue=90,
+                    unit="kg",
+                    rationale="Bound body weight for normalization.",
+                ),
+            ],
+        ),
+        engine,
+        defaults_registry,
+    )
+
+    assert summary.uncertainty_tier == UncertaintyTier.TIER_B
+    assert summary.min_dose.value < summary.base_scenario.external_dose.value
+    assert summary.max_dose.value > summary.base_scenario.external_dose.value
+    assert all(item.status == "pass" for item in summary.monotonicity_checks)
+    assert summary.uncertainty_register[0].quantification_status.value == "bounded"

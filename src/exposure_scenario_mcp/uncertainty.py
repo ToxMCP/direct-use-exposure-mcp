@@ -12,6 +12,7 @@ from exposure_scenario_mcp.errors import ExposureScenarioError, ensure
 from exposure_scenario_mcp.models import (
     BiasDirection,
     BuildExposureEnvelopeInput,
+    BuildParameterBoundsInput,
     DependencyDescriptor,
     DependencyHandlingStrategy,
     DependencyRelationship,
@@ -21,6 +22,10 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    MonotonicDirection,
+    MonotonicityCheck,
+    ParameterBoundInput,
+    ParameterBoundsSummary,
     Route,
     ScenarioDose,
     SensitivityDirection,
@@ -50,6 +55,63 @@ SENSITIVITY_FIELD_MAP = {
     "exposure_duration_hours": ("product_use_profile", "exposure_duration_hours"),
     "body_weight_kg": ("population_profile", "body_weight_kg"),
     "inhalation_rate_m3_per_hour": ("population_profile", "inhalation_rate_m3_per_hour"),
+}
+BOUNDS_PARAMETER_CONFIG: dict[
+    str, dict[str, set[Route] | MonotonicDirection | bool]
+] = {
+    "concentration_fraction": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.DERMAL, Route.ORAL, Route.INHALATION},
+    },
+    "use_amount_per_event": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.DERMAL, Route.ORAL, Route.INHALATION},
+    },
+    "use_events_per_day": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.DERMAL, Route.ORAL, Route.INHALATION},
+    },
+    "density_g_per_ml": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.DERMAL, Route.ORAL, Route.INHALATION},
+        "requires_ml_amount": True,
+    },
+    "retention_factor": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.DERMAL},
+    },
+    "transfer_efficiency": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.DERMAL},
+    },
+    "ingestion_fraction": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.ORAL},
+    },
+    "aerosolized_fraction": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.INHALATION},
+    },
+    "room_volume_m3": {
+        "direction": MonotonicDirection.INCREASE_DECREASES_DOSE,
+        "routes": {Route.INHALATION},
+    },
+    "air_exchange_rate_per_hour": {
+        "direction": MonotonicDirection.INCREASE_DECREASES_DOSE,
+        "routes": {Route.INHALATION},
+    },
+    "exposure_duration_hours": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.INHALATION},
+    },
+    "body_weight_kg": {
+        "direction": MonotonicDirection.INCREASE_DECREASES_DOSE,
+        "routes": {Route.DERMAL, Route.ORAL, Route.INHALATION},
+    },
+    "inhalation_rate_m3_per_hour": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.INHALATION},
+    },
 }
 
 LIMITATION_UNCERTAINTY_MAP = {
@@ -105,6 +167,107 @@ def _with_override(
             "population_profile": request.population_profile.model_copy(update={target[1]: value})
         }
     )
+
+
+def _bound_config(parameter_name: str) -> dict[str, set[Route] | MonotonicDirection | bool]:
+    ensure(
+        parameter_name in BOUNDS_PARAMETER_CONFIG,
+        "bounds_parameter_unsupported",
+        f"Parameter `{parameter_name}` is not supported for bounds propagation.",
+        suggestion=(
+            "Use one of: "
+            + ", ".join(f"`{name}`" for name in sorted(BOUNDS_PARAMETER_CONFIG))
+            + "."
+        ),
+    )
+    return BOUNDS_PARAMETER_CONFIG[parameter_name]
+
+
+def _validate_bound_input(
+    base_request: ExposureScenarioRequest,
+    bound: ParameterBoundInput,
+) -> dict[str, set[Route] | MonotonicDirection | bool]:
+    config = _bound_config(bound.parameter_name)
+    supported_routes = config["routes"]
+    ensure(
+        base_request.route in supported_routes,
+        "bounds_parameter_route_mismatch",
+        (
+            f"Parameter `{bound.parameter_name}` is not valid for route "
+            f"`{base_request.route.value}`."
+        ),
+        suggestion="Choose parameter bounds that are route-relevant for the base request.",
+    )
+    if config.get("requires_ml_amount"):
+        ensure(
+            base_request.product_use_profile.use_amount_unit.value == "mL",
+            "bounds_parameter_context_mismatch",
+            (
+                f"Parameter `{bound.parameter_name}` requires a volume-based use amount "
+                "so density can affect the scenario."
+            ),
+            suggestion="Use an mL-based scenario or bound a different parameter.",
+        )
+    return config
+
+
+def _bounds_requests(
+    base_request: ExposureScenarioRequest,
+    bounded_parameters: list[ParameterBoundInput],
+) -> tuple[ExposureScenarioRequest, ExposureScenarioRequest]:
+    min_request = base_request
+    max_request = base_request
+    for bound in bounded_parameters:
+        config = _validate_bound_input(base_request, bound)
+        direction = config["direction"]
+        if direction == MonotonicDirection.INCREASE_INCREASES_DOSE:
+            min_value, max_value = bound.lower_value, bound.upper_value
+        else:
+            min_value, max_value = bound.upper_value, bound.lower_value
+        min_request = _with_override(min_request, bound.parameter_name, min_value)
+        max_request = _with_override(max_request, bound.parameter_name, max_value)
+    return min_request, max_request
+
+
+def _monotonicity_checks(
+    base_request: ExposureScenarioRequest,
+    bounded_parameters: list[ParameterBoundInput],
+    engine,
+) -> list[MonotonicityCheck]:
+    checks: list[MonotonicityCheck] = []
+    for bound in bounded_parameters:
+        config = _validate_bound_input(base_request, bound)
+        lower_request = _with_override(base_request, bound.parameter_name, bound.lower_value)
+        upper_request = _with_override(base_request, bound.parameter_name, bound.upper_value)
+        lower_scenario = engine.build(lower_request, include_diagnostics=False)
+        upper_scenario = engine.build(upper_request, include_diagnostics=False)
+        direction = config["direction"]
+        if direction == MonotonicDirection.INCREASE_INCREASES_DOSE:
+            status = (
+                "pass"
+                if upper_scenario.external_dose.value >= lower_scenario.external_dose.value
+                else "blocked"
+            )
+        else:
+            status = (
+                "pass"
+                if upper_scenario.external_dose.value <= lower_scenario.external_dose.value
+                else "blocked"
+            )
+        checks.append(
+            MonotonicityCheck(
+                parameter_name=bound.parameter_name,
+                expected_direction=direction,
+                lower_dose=round(lower_scenario.external_dose.value, 8),
+                upper_dose=round(upper_scenario.external_dose.value, 8),
+                status=status,
+                note=(
+                    "Monotonicity check compares single-parameter lower and upper bounds "
+                    "against the deterministic base scenario."
+                ),
+            )
+        )
+    return checks
 
 
 def build_sensitivity_ranking(engine, scenario: ExposureScenario) -> list[SensitivityRankingEntry]:
@@ -588,5 +751,129 @@ def build_exposure_envelope(
         interpretation_notes=[
             "This envelope is a deterministic Tier B scenario set, not a probabilistic interval.",
             "Archetype definitions remain the primary explanation for the resulting span.",
+        ],
+    )
+
+
+def build_parameter_bounds_summary(
+    params: BuildParameterBoundsInput,
+    engine,
+    registry: DefaultsRegistry,
+    *,
+    generated_at: str | None = None,
+) -> ParameterBoundsSummary:
+    base_scenario = engine.build(params.base_request)
+    min_request, max_request = _bounds_requests(
+        params.base_request,
+        params.bounded_parameters,
+    )
+    min_scenario = engine.build(min_request)
+    max_scenario = engine.build(max_request)
+    monotonicity_checks = _monotonicity_checks(
+        params.base_request,
+        params.bounded_parameters,
+        engine,
+    )
+    dependency_metadata = base_scenario.dependency_metadata
+    validation_summary = base_scenario.validation_summary
+    uncertainty_register = [
+        UncertaintyRegisterEntry(
+            entry_id="bounds-summary-range",
+            title="Parameter-bounds summary is a deterministic bounded range",
+            uncertainty_types=[
+                UncertaintyType.PARAMETER_UNCERTAINTY,
+                UncertaintyType.SCENARIO_UNCERTAINTY,
+            ],
+            related_assumptions=[
+                item.parameter_name for item in params.bounded_parameters
+            ],
+            quantification_status=UncertaintyQuantificationStatus.BOUNDED,
+            bias_direction=BiasDirection.BIDIRECTIONAL,
+            impact_level="high",
+            summary=(
+                "The summary propagates explicit lower and upper parameter bounds through the "
+                "deterministic engine without assigning probabilities."
+            ),
+            recommendation=(
+                "Do not interpret the resulting range as a confidence interval or population "
+                "probability statement."
+            ),
+        )
+    ]
+    for bound in params.bounded_parameters:
+        uncertainty_register.append(
+            UncertaintyRegisterEntry(
+                entry_id=f"bound-{bound.parameter_name}",
+                title=f"Bounded parameter `{bound.parameter_name}` drives the summary",
+                uncertainty_types=[
+                    UncertaintyType.PARAMETER_UNCERTAINTY,
+                    UncertaintyType.SCENARIO_UNCERTAINTY,
+                ],
+                related_assumptions=[bound.parameter_name],
+                quantification_status=UncertaintyQuantificationStatus.BOUNDED,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level="medium",
+                summary=(
+                    f"`{bound.parameter_name}` is bounded between {bound.lower_value:g} and "
+                    f"{bound.upper_value:g}."
+                ),
+                recommendation=bound.rationale,
+            )
+        )
+    if any(item.status != "pass" for item in monotonicity_checks):
+        uncertainty_register.append(
+            UncertaintyRegisterEntry(
+                entry_id="bounds-monotonicity-warning",
+                title="At least one monotonicity check failed",
+                uncertainty_types=[UncertaintyType.MODEL_UNCERTAINTY],
+                related_assumptions=[
+                    item.parameter_name
+                    for item in monotonicity_checks
+                    if item.status != "pass"
+                ],
+                quantification_status=UncertaintyQuantificationStatus.BOUNDED,
+                bias_direction=BiasDirection.UNKNOWN,
+                impact_level="high",
+                summary=(
+                    "One or more bounded parameters did not behave monotonically under the "
+                    "current deterministic assumptions."
+                ),
+                recommendation=(
+                    "Review route applicability and use scenario envelopes instead of "
+                    "monotonic bounds when the driver is not monotonic."
+                ),
+            )
+        )
+    tracker = AssumptionTracker(registry=registry)
+    tracker.add_derived(
+        "bounded_parameter_count",
+        len(params.bounded_parameters),
+        None,
+        "Tier B bounds summary count derived from explicit bounded drivers.",
+    )
+    return ParameterBoundsSummary(
+        summary_id=f"bnd-{uuid4().hex[:12]}",
+        chemical_id=base_scenario.chemical_id,
+        route=base_scenario.route,
+        scenario_class=base_scenario.scenario_class,
+        label=params.label,
+        base_scenario=base_scenario,
+        min_scenario=min_scenario,
+        max_scenario=max_scenario,
+        bounded_parameters=params.bounded_parameters,
+        monotonicity_checks=monotonicity_checks,
+        min_dose=min_scenario.external_dose,
+        max_dose=max_scenario.external_dose,
+        uncertainty_register=uncertainty_register,
+        dependency_metadata=dependency_metadata,
+        validation_summary=validation_summary,
+        provenance=tracker.provenance(
+            plugin_id="parameter_bounds_service",
+            algorithm_id="uncertainty.bounds.v1",
+            generated_at=generated_at,
+        ),
+        interpretation_notes=[
+            "This output is a bounded deterministic range, not a probabilistic interval.",
+            "Bounds are only as defensible as the supplied parameter ranges and route relevance.",
         ],
     )
