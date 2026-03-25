@@ -252,7 +252,7 @@ Current published package version: `0.1.0`
 - `schemas/` - generated schemas and examples
 - `docs/contracts/` - published schemas and contract manifest mirrors
 - `docs/releases/` - release notes and release metadata
-- `docs/` - operator, troubleshooting, provenance, readiness, and suite integration docs
+- `docs/` - operator, troubleshooting, provenance, readiness, suite integration, and adjacent-service design notes
 - `evals/` - read-only evaluation bundle
 - `tests/` - runtime, contract, integration, and release-artifact tests
 
@@ -281,6 +281,10 @@ It does **not**:
 - replace mechanistic or WoE interpretation
 - produce final risk judgments
 - silently elevate heuristic screening assumptions into decision-ready conclusions
+
+If the suite later adds a dedicated evidence-curation service, see
+[docs/literature_mcp_requirements.md](./docs/literature_mcp_requirements.md) for the proposed
+boundary and contract requirements.
 
 ## Contributing
 

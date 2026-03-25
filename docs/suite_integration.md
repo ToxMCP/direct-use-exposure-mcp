@@ -5,8 +5,19 @@ Exposure Scenario MCP is intended to act as the external-dose engine inside the 
 ## Boundary
 
 - Exposure Scenario MCP owns external dose construction and refinement only.
+- A future Literature MCP, if introduced, should own source normalization, parameter-candidate
+  extraction, applicability tagging, and evidence-pack curation rather than dose math.
 - PBPK MCP owns internal exposure, TK simulation, and downstream biological interpretation.
 - ToxClaw owns orchestration, line-of-evidence handling, refinement choice, and final reporting.
+
+## Literature MCP (future/optional)
+
+- Exposure Scenario MCP should consume only reviewed, machine-readable evidence packs from a
+  Literature MCP, not raw extraction candidates.
+- Literature MCP should remain optional until the suite needs shared evidence registries or
+  repeatable cross-repo review workflows.
+- See [literature_mcp_requirements.md](./literature_mcp_requirements.md) for the proposed tool,
+  resource, and contract surface.
 
 ## CompTox
 
