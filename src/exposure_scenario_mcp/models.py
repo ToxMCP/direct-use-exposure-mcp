@@ -312,6 +312,54 @@ class MonotonicityCheck(StrictModel):
     note: str
 
 
+class ProbabilityBoundSupportPointDefinition(StrictModel):
+    point_id: str = Field(..., alias="pointId")
+    parameter_value: float = Field(..., alias="parameterValue")
+    cumulative_probability_lower: float = Field(
+        ..., alias="cumulativeProbabilityLower", ge=0.0, le=1.0
+    )
+    cumulative_probability_upper: float = Field(
+        ..., alias="cumulativeProbabilityUpper", ge=0.0, le=1.0
+    )
+    note: str
+
+    @model_validator(mode="after")
+    def validate_probability_bounds(self) -> ProbabilityBoundSupportPointDefinition:
+        if self.cumulative_probability_upper < self.cumulative_probability_lower:
+            raise ValueError(
+                "cumulativeProbabilityUpper must be greater than or equal to "
+                "cumulativeProbabilityLower."
+            )
+        return self
+
+
+class ProbabilityBoundsDriverProfile(StrictModel):
+    profile_id: str = Field(..., alias="profileId")
+    label: str = Field(..., description="Human-readable driver-profile label.")
+    description: str = Field(..., description="What this driver profile is intended to represent.")
+    parameter_name: str = Field(..., alias="parameterName")
+    route: Route = Field(..., description="Route for which the driver profile applies.")
+    scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
+    archetype_library_set_id: str | None = Field(default=None, alias="archetypeLibrarySetId")
+    applicability: dict[str, ScalarValue] = Field(default_factory=dict)
+    support_points: list[ProbabilityBoundSupportPointDefinition] = Field(
+        ..., alias="supportPoints", min_length=2
+    )
+    limitations: list[str] = Field(default_factory=list)
+
+
+class ProbabilityBoundsProfileManifest(StrictModel):
+    schema_version: Literal["probabilityBoundsProfileManifest.v1"] = (
+        "probabilityBoundsProfileManifest.v1"
+    )
+    profile_version: str = Field(..., alias="profileVersion")
+    profile_hash_sha256: str = Field(..., alias="profileHashSha256")
+    path: str = Field(..., description="Package or repository path for the profile manifest.")
+    profile_count: int = Field(..., alias="profileCount", ge=0)
+    notes: list[str] = Field(default_factory=list)
+    profiles: list[ProbabilityBoundsDriverProfile] = Field(default_factory=list)
+
+
 class ExposureAssumptionRecord(StrictModel):
     schema_version: Literal["exposureAssumptionRecord.v1"] = "exposureAssumptionRecord.v1"
     name: str = Field(..., description="Stable parameter name used by the engine.")
@@ -742,6 +790,19 @@ class BuildParameterBoundsInput(StrictModel):
     )
 
 
+class BuildProbabilityBoundsFromProfileInput(StrictModel):
+    schema_version: Literal["buildProbabilityBoundsFromProfileInput.v1"] = (
+        "buildProbabilityBoundsFromProfileInput.v1"
+    )
+    label: str = Field(..., description="Human-readable probability-bounds summary label.")
+    base_request: ExposureScenarioRequest = Field(
+        ..., alias="baseRequest", description="Baseline deterministic scenario request."
+    )
+    driver_profile_id: str = Field(
+        ..., alias="driverProfileId", description="Packaged single-driver probability profile ID."
+    )
+
+
 class EnvelopeArchetypeResult(StrictModel):
     template_id: str | None = Field(default=None, alias="templateId")
     label: str = Field(..., description="Archetype label.")
@@ -826,6 +887,59 @@ class ParameterBoundsSummary(StrictModel):
         default=None, alias="validationSummary"
     )
     provenance: ProvenanceBundle = Field(..., description="Bounds-summary provenance.")
+    interpretation_notes: list[str] = Field(
+        default_factory=list, description="Human-readable interpretation notes."
+    )
+
+
+class ProbabilityBoundDosePoint(StrictModel):
+    point_id: str = Field(..., alias="pointId")
+    parameter_value: float = Field(..., alias="parameterValue")
+    dose: ScenarioDose = Field(
+        ...,
+        description="Resolved deterministic dose at this support point.",
+    )
+    cumulative_probability_lower: float = Field(
+        ..., alias="cumulativeProbabilityLower", ge=0.0, le=1.0
+    )
+    cumulative_probability_upper: float = Field(
+        ..., alias="cumulativeProbabilityUpper", ge=0.0, le=1.0
+    )
+    note: str
+
+
+class ProbabilityBoundsProfileSummary(StrictModel):
+    schema_version: Literal["probabilityBoundsProfileSummary.v1"] = (
+        "probabilityBoundsProfileSummary.v1"
+    )
+    summary_id: str = Field(..., alias="summaryId")
+    chemical_id: str = Field(..., description="Shared chemical identifier.")
+    route: Route = Field(..., description="Route for which the profile was evaluated.")
+    scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
+    label: str = Field(..., description="Human-readable probability-bounds summary label.")
+    uncertainty_tier: UncertaintyTier = Field(
+        default=UncertaintyTier.TIER_C, alias="uncertaintyTier"
+    )
+    driver_profile_id: str = Field(..., alias="driverProfileId")
+    driver_parameter_name: str = Field(..., alias="driverParameterName")
+    profile_version: str = Field(..., alias="profileVersion")
+    archetype_library_set_id: str | None = Field(default=None, alias="archetypeLibrarySetId")
+    base_scenario: ExposureScenario = Field(..., alias="baseScenario")
+    support_points: list[ProbabilityBoundDosePoint] = Field(
+        default_factory=list, alias="supportPoints"
+    )
+    minimum_dose: ScenarioDose = Field(..., alias="minimumDose")
+    maximum_dose: ScenarioDose = Field(..., alias="maximumDose")
+    uncertainty_register: list[UncertaintyRegisterEntry] = Field(
+        default_factory=list, alias="uncertaintyRegister"
+    )
+    dependency_metadata: list[DependencyDescriptor] = Field(
+        default_factory=list, alias="dependencyMetadata"
+    )
+    validation_summary: ValidationSummary | None = Field(
+        default=None, alias="validationSummary"
+    )
+    provenance: ProvenanceBundle = Field(..., description="Probability-bounds provenance.")
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable interpretation notes."
     )

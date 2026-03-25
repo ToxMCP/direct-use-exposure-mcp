@@ -29,6 +29,12 @@
       "description": "Build a deterministic bounds-propagation summary from explicit lower and upper parameter values."
     },
     {
+      "name": "exposure_build_probability_bounds_from_profile",
+      "request_schema": "buildProbabilityBoundsFromProfileInput.v1",
+      "response_schema": "probabilityBoundsProfileSummary.v1",
+      "description": "Build a packaged single-driver probability-bounds summary with other scenario inputs fixed."
+    },
+    {
       "name": "exposure_build_aggregate_exposure_scenario",
       "request_schema": "buildAggregateExposureScenarioInput.v1",
       "response_schema": "aggregateExposureSummary.v1",
@@ -85,12 +91,20 @@
       "description": "Machine-readable packaged Tier B archetype-library manifest."
     },
     {
+      "uri": "probability-bounds://manifest",
+      "description": "Machine-readable packaged Tier C single-driver profile manifest."
+    },
+    {
       "uri": "docs://algorithm-notes",
       "description": "Algorithm notes for the deterministic engines."
     },
     {
       "uri": "docs://archetype-library-guide",
       "description": "Guide to the packaged Tier B archetype library and its guardrails."
+    },
+    {
+      "uri": "docs://probability-bounds-guide",
+      "description": "Guide to the packaged Tier C probability-bounds profiles."
     },
     {
       "uri": "docs://defaults-evidence-map",
@@ -110,7 +124,7 @@
     },
     {
       "uri": "docs://uncertainty-framework",
-      "description": "Tier A/B uncertainty guidance and interpretation boundaries."
+      "description": "Tier A/B/C uncertainty guidance and interpretation boundaries."
     },
     {
       "uri": "docs://validation-framework",
@@ -193,6 +207,12 @@
     "dependencyDescriptor.v1": "schemas/dependencyDescriptor.v1.json",
     "validationSummary.v1": "schemas/validationSummary.v1.json",
     "buildExposureEnvelopeFromLibraryInput.v1": "schemas/buildExposureEnvelopeFromLibraryInput.v1.json",
+    "probabilityBoundSupportPointDefinition.v1": "schemas/probabilityBoundSupportPointDefinition.v1.json",
+    "probabilityBoundsDriverProfile.v1": "schemas/probabilityBoundsDriverProfile.v1.json",
+    "probabilityBoundsProfileManifest.v1": "schemas/probabilityBoundsProfileManifest.v1.json",
+    "buildProbabilityBoundsFromProfileInput.v1": "schemas/buildProbabilityBoundsFromProfileInput.v1.json",
+    "probabilityBoundDosePoint.v1": "schemas/probabilityBoundDosePoint.v1.json",
+    "probabilityBoundsProfileSummary.v1": "schemas/probabilityBoundsProfileSummary.v1.json",
     "parameterBoundInput.v1": "schemas/parameterBoundInput.v1.json",
     "monotonicityCheck.v1": "schemas/monotonicityCheck.v1.json",
     "buildParameterBoundsInput.v1": "schemas/buildParameterBoundsInput.v1.json",
@@ -245,6 +265,8 @@
     "exposure_envelope_from_library_request": "schemas/examples/exposure_envelope_from_library_request.json",
     "exposure_envelope_from_library_summary": "schemas/examples/exposure_envelope_from_library_summary.json",
     "parameter_bounds_summary": "schemas/examples/parameter_bounds_summary.json",
+    "probability_bounds_from_profile_request": "schemas/examples/probability_bounds_from_profile_request.json",
+    "probability_bounds_profile_summary": "schemas/examples/probability_bounds_profile_summary.json",
     "aggregate_summary": "schemas/examples/aggregate_summary.json",
     "pbpk_input": "schemas/examples/pbpk_input.json",
     "pbpk_external_import_request": "schemas/examples/pbpk_external_import_request.json",

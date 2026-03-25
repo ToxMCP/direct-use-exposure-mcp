@@ -35,11 +35,14 @@ jobs:
           from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
           from exposure_scenario_mcp.contracts import build_release_metadata_report
           from exposure_scenario_mcp.defaults import DefaultsRegistry
+          from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 
           registry = DefaultsRegistry.load()
           archetypes = ArchetypeLibraryRegistry.load()
+          profiles = ProbabilityBoundsProfileRegistry.load()
           assert registry.version == "2026.03.24.v3"
           assert archetypes.version == "2026.03.25.v1"
+          assert profiles.version == "2026.03.25.v1"
           assert len(load_benchmark_manifest()["cases"]) >= 2
           assert build_release_metadata_report(registry).package_version == __version__
           PY

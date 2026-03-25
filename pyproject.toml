@@ -31,6 +31,7 @@ packages = ["src/exposure_scenario_mcp", "scripts"]
 [tool.hatch.build.targets.wheel.force-include]
 "defaults/v1/core_defaults.json" = "exposure_scenario_mcp/data/defaults/v1/core_defaults.json"
 "archetypes/v1/envelope_archetype_library.json" = "exposure_scenario_mcp/data/archetypes/v1/envelope_archetype_library.json"
+"probability_bounds/v1/driver_probability_profiles.json" = "exposure_scenario_mcp/data/probability_bounds/v1/driver_probability_profiles.json"
 "tests/fixtures/benchmark_cases.json" = "exposure_scenario_mcp/data/benchmarks/benchmark_cases.json"
 
 [tool.pytest.ini_options]

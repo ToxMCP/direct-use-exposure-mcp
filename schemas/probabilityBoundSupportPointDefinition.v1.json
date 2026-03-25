@@ -1,0 +1,38 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "pointId": {
+      "title": "Pointid",
+      "type": "string"
+    },
+    "parameterValue": {
+      "title": "Parametervalue",
+      "type": "number"
+    },
+    "cumulativeProbabilityLower": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Cumulativeprobabilitylower",
+      "type": "number"
+    },
+    "cumulativeProbabilityUpper": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Cumulativeprobabilityupper",
+      "type": "number"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "pointId",
+    "parameterValue",
+    "cumulativeProbabilityLower",
+    "cumulativeProbabilityUpper",
+    "note"
+  ],
+  "title": "ProbabilityBoundSupportPointDefinition",
+  "type": "object"
+}

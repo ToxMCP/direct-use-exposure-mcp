@@ -38,6 +38,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
+    BuildProbabilityBoundsFromProfileInput,
     CompareExposureScenariosInput,
     ContractManifest,
     ContractPromptEntry,
@@ -61,6 +62,11 @@ from exposure_scenario_mcp.models import (
     ParameterBoundsSummary,
     PbpkScenarioInput,
     PopulationProfile,
+    ProbabilityBoundDosePoint,
+    ProbabilityBoundsDriverProfile,
+    ProbabilityBoundsProfileManifest,
+    ProbabilityBoundsProfileSummary,
+    ProbabilityBoundSupportPointDefinition,
     ProductUseProfile,
     ProvenanceBundle,
     PublicSurfaceSummary,
@@ -79,6 +85,7 @@ from exposure_scenario_mcp.models import (
     ValidationSummary,
 )
 from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
+from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
 
 SCHEMA_MODELS = {
@@ -95,6 +102,12 @@ SCHEMA_MODELS = {
     "dependencyDescriptor.v1": DependencyDescriptor,
     "validationSummary.v1": ValidationSummary,
     "buildExposureEnvelopeFromLibraryInput.v1": BuildExposureEnvelopeFromLibraryInput,
+    "probabilityBoundSupportPointDefinition.v1": ProbabilityBoundSupportPointDefinition,
+    "probabilityBoundsDriverProfile.v1": ProbabilityBoundsDriverProfile,
+    "probabilityBoundsProfileManifest.v1": ProbabilityBoundsProfileManifest,
+    "buildProbabilityBoundsFromProfileInput.v1": BuildProbabilityBoundsFromProfileInput,
+    "probabilityBoundDosePoint.v1": ProbabilityBoundDosePoint,
+    "probabilityBoundsProfileSummary.v1": ProbabilityBoundsProfileSummary,
     "parameterBoundInput.v1": ParameterBoundInput,
     "monotonicityCheck.v1": MonotonicityCheck,
     "buildParameterBoundsInput.v1": BuildParameterBoundsInput,
@@ -183,6 +196,15 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractToolEntry(
+                name="exposure_build_probability_bounds_from_profile",
+                request_schema="buildProbabilityBoundsFromProfileInput.v1",
+                response_schema="probabilityBoundsProfileSummary.v1",
+                description=(
+                    "Build a packaged single-driver probability-bounds summary with "
+                    "other scenario inputs fixed."
+                ),
+            ),
+            ContractToolEntry(
                 name="exposure_build_aggregate_exposure_scenario",
                 request_schema="buildAggregateExposureScenarioInput.v1",
                 response_schema="aggregateExposureSummary.v1",
@@ -245,12 +267,20 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Machine-readable packaged Tier B archetype-library manifest.",
             ),
             ContractResourceEntry(
+                uri="probability-bounds://manifest",
+                description="Machine-readable packaged Tier C single-driver profile manifest.",
+            ),
+            ContractResourceEntry(
                 uri="docs://algorithm-notes",
                 description="Algorithm notes for the deterministic engines.",
             ),
             ContractResourceEntry(
                 uri="docs://archetype-library-guide",
                 description="Guide to the packaged Tier B archetype library and its guardrails.",
+            ),
+            ContractResourceEntry(
+                uri="docs://probability-bounds-guide",
+                description="Guide to the packaged Tier C probability-bounds profiles.",
             ),
             ContractResourceEntry(
                 uri="docs://defaults-evidence-map",
@@ -276,7 +306,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ),
             ContractResourceEntry(
                 uri="docs://uncertainty-framework",
-                description="Tier A/B uncertainty guidance and interpretation boundaries.",
+                description="Tier A/B/C uncertainty guidance and interpretation boundaries.",
             ),
             ContractResourceEntry(
                 uri="docs://validation-framework",
@@ -429,6 +459,15 @@ def algorithm_notes() -> str:
 - Library-backed envelopes keep `archetypeLibrarySetId`, `archetypeLibraryVersion`, template IDs,
   and library limitations visible in the result.
 
+## Single-Driver Probability Bounds
+
+- Packaged Tier C profiles publish cumulative probability bounds for one selected driver at a
+  time, with all other scenario inputs fixed at the base request.
+- `exposure_build_probability_bounds_from_profile` evaluates each support point deterministically
+  and preserves the packaged probability bounds without Monte Carlo sampling.
+- Probability-bounds outputs remain screening summaries and must not be interpreted as validated
+  population exposure distributions.
+
 ## Comparison
 
 - Compare primary dose values directly.
@@ -443,6 +482,13 @@ def benchmark_manifest() -> dict:
 
 def archetype_library_manifest() -> dict:
     return ArchetypeLibraryRegistry.load().manifest().model_dump(mode="json", by_alias=True)
+
+
+def probability_bounds_profile_manifest() -> dict:
+    return ProbabilityBoundsProfileRegistry.load().manifest().model_dump(
+        mode="json",
+        by_alias=True,
+    )
 
 
 def _project_metadata() -> tuple[str, str]:

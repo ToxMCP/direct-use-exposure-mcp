@@ -9,6 +9,7 @@ from exposure_scenario_mcp.models import (
     ReleaseReadinessReport,
     SecurityProvenanceReviewReport,
 )
+from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.validation import validation_manifest
 
 
@@ -38,6 +39,21 @@ def _archetype_library_lines() -> list[str]:
             lines.append(
                 f"  drivers: {', '.join(f'`{name}`' for name in item.driver_parameters)}"
             )
+    return lines
+
+
+def _probability_profile_lines() -> list[str]:
+    manifest = ProbabilityBoundsProfileRegistry.load().manifest()
+    lines = [
+        "## Packaged Probability Profiles",
+        "",
+        f"- Profile version: `{manifest.profile_version}`",
+        f"- Profile count: `{manifest.profile_count}`",
+    ]
+    for item in manifest.profiles:
+        lines.append(
+            f"- `{item.profile_id}` [{item.route.value}/{item.parameter_name}] {item.label}"
+        )
     return lines
 
 
@@ -140,10 +156,18 @@ def uncertainty_framework() -> str:
 - Parameter-bounds summaries are screening ranges, not population intervals or probabilistic claims.
 - Driver attribution is based on explicit archetype differences, not Monte Carlo decomposition.
 
+## Tier C
+
+- Packaged single-driver probability-bounds profiles for selected monotonic drivers.
+- Cumulative probability bounds apply to the selected driver support points only.
+- All other scenario inputs remain fixed at the base scenario.
+- Tier C outputs are not joint exposure distributions or population simulations.
+
 ## Current Guardrail
 
-- `v0.1.0` supports Tier A on every scenario output and Tier B via deterministic envelopes
-  and parameter-bounds propagation.
+- `v0.1.0` supports Tier A on every scenario output, Tier B via deterministic envelopes
+  and parameter-bounds propagation, and Tier C only for packaged single-driver
+  probability bounds.
 - Probabilistic tiers remain blocked until validation evidence, dependency handling, and
   distribution governance mature.
 """
@@ -177,6 +201,37 @@ def archetype_library_guide() -> str:
             "  governed template is preferable to manual archetype construction.",
             "- Preserve `archetypeLibrarySetId`, `archetypeLibraryVersion`,",
             "  and any emitted library limitations in downstream reports.",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def probability_bounds_guide() -> str:
+    lines = [
+        "# Probability Bounds Guide",
+        "",
+        "Packaged probability-bounds profiles expose cumulative probability bounds for one",
+        "selected driver at a time while all other scenario inputs remain fixed.",
+        "",
+        "## Guardrails",
+        "",
+        "- Tier C probability-bounds outputs are not joint scenario distributions.",
+        "- Profiles are packaged and reviewable; callers do not inject arbitrary",
+        "  probability claims.",
+        "- Dependence remains externalized because only one driver varies per summary.",
+        "",
+    ]
+    lines.extend(_probability_profile_lines())
+    lines.extend(
+        [
+            "",
+            "## Client Guidance",
+            "",
+            "- Discover packaged driver profiles through `probability-bounds://manifest`.",
+            "- Use `exposure_build_probability_bounds_from_profile` only when the base request",
+            "  matches the published profile applicability.",
+            "- Preserve `driverProfileId`, `profileVersion`, and all profile limitations in",
+            "  downstream summaries and reports.",
         ]
     )
     return "\n".join(lines)

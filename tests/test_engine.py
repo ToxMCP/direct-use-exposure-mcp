@@ -10,6 +10,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
+    BuildProbabilityBoundsFromProfileInput,
     CompareExposureScenariosInput,
     DefaultVisibility,
     EnvelopeArchetypeInput,
@@ -26,6 +27,8 @@ from exposure_scenario_mcp.models import (
     UncertaintyTier,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.probability_bounds import build_probability_bounds_from_profile
+from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.runtime import (
     PluginRegistry,
     ScenarioEngine,
@@ -491,3 +494,45 @@ def test_parameter_bounds_summary_builds_bounded_range() -> None:
     assert summary.max_dose.value > summary.base_scenario.external_dose.value
     assert all(item.status == "pass" for item in summary.monotonicity_checks)
     assert summary.uncertainty_register[0].quantification_status.value == "bounded"
+
+
+def test_probability_bounds_profile_builds_tier_c_summary() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    profiles = ProbabilityBoundsProfileRegistry.load()
+    base_request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="EU"),
+    )
+
+    summary = build_probability_bounds_from_profile(
+        BuildProbabilityBoundsFromProfileInput(
+            label="Dermal single-driver probability bounds",
+            baseRequest=base_request,
+            driverProfileId="adult_leave_on_hand_cream_use_amount_per_event",
+        ),
+        engine,
+        defaults_registry,
+        profiles,
+        generated_at="2026-03-24T00:00:00+00:00",
+    )
+
+    assert summary.uncertainty_tier == UncertaintyTier.TIER_C
+    assert summary.driver_profile_id == "adult_leave_on_hand_cream_use_amount_per_event"
+    assert summary.profile_version == profiles.version
+    assert summary.archetype_library_set_id == "adult_leave_on_hand_cream"
+    assert len(summary.support_points) == 3
+    assert summary.minimum_dose.value < summary.maximum_dose.value
+    assert summary.uncertainty_register[0].quantification_status.value == "probability_bounds"

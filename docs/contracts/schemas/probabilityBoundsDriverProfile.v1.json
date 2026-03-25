@@ -1,0 +1,151 @@
+{
+  "$defs": {
+    "ProbabilityBoundSupportPointDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "pointId": {
+          "title": "Pointid",
+          "type": "string"
+        },
+        "parameterValue": {
+          "title": "Parametervalue",
+          "type": "number"
+        },
+        "cumulativeProbabilityLower": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Cumulativeprobabilitylower",
+          "type": "number"
+        },
+        "cumulativeProbabilityUpper": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Cumulativeprobabilityupper",
+          "type": "number"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pointId",
+        "parameterValue",
+        "cumulativeProbabilityLower",
+        "cumulativeProbabilityUpper",
+        "note"
+      ],
+      "title": "ProbabilityBoundSupportPointDefinition",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "ScenarioClass": {
+      "enum": [
+        "screening",
+        "aggregate",
+        "inhalation",
+        "refined",
+        "population_distribution"
+      ],
+      "title": "ScenarioClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "profileId": {
+      "title": "Profileid",
+      "type": "string"
+    },
+    "label": {
+      "description": "Human-readable driver-profile label.",
+      "title": "Label",
+      "type": "string"
+    },
+    "description": {
+      "description": "What this driver profile is intended to represent.",
+      "title": "Description",
+      "type": "string"
+    },
+    "parameterName": {
+      "title": "Parametername",
+      "type": "string"
+    },
+    "route": {
+      "$ref": "#/$defs/Route",
+      "description": "Route for which the driver profile applies."
+    },
+    "scenarioClass": {
+      "$ref": "#/$defs/ScenarioClass"
+    },
+    "archetypeLibrarySetId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Archetypelibrarysetid"
+    },
+    "applicability": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Applicability",
+      "type": "object"
+    },
+    "supportPoints": {
+      "items": {
+        "$ref": "#/$defs/ProbabilityBoundSupportPointDefinition"
+      },
+      "minItems": 2,
+      "title": "Supportpoints",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "profileId",
+    "label",
+    "description",
+    "parameterName",
+    "route",
+    "scenarioClass",
+    "supportPoints"
+  ],
+  "title": "ProbabilityBoundsDriverProfile",
+  "type": "object"
+}

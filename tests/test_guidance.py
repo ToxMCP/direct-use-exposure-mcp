@@ -9,6 +9,7 @@ from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     conformance_report_markdown,
+    probability_bounds_guide,
     release_notes_markdown,
     release_readiness_markdown,
     uncertainty_framework,
@@ -38,11 +39,15 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     uncertainty = uncertainty_framework()
     validation = validation_framework()
     archetypes = archetype_library_guide()
+    probability_bounds = probability_bounds_guide()
 
     assert "Tier A" in uncertainty
     assert "Tier B" in uncertainty
+    assert "Tier C" in uncertainty
     assert "Packaged Archetype Sets" in archetypes
     assert "`adult_leave_on_hand_cream`" in archetypes
+    assert "Packaged Probability Profiles" in probability_bounds
+    assert "`adult_leave_on_hand_cream_use_amount_per_event`" in probability_bounds
     assert "benchmarkDomains" not in validation
     assert "External Dataset Candidates" in validation
     assert "`air_chamber_spray_time_series_candidate`" in validation

@@ -1,0 +1,94 @@
+{
+  "profile_version": "2026.03.25.v1",
+  "notes": [
+    "Packaged probability-bounds profiles are limited to single-driver perturbations with other drivers held fixed at the caller's base scenario.",
+    "These profiles publish cumulative probability bounds for selected support points and do not represent a joint population distribution.",
+    "Tier C probability-bounds outputs remain screening summaries and must not be interpreted as validated exposure distributions."
+  ],
+  "profiles": [
+    {
+      "profileId": "adult_leave_on_hand_cream_use_amount_per_event",
+      "label": "Adult leave-on hand cream use amount profile",
+      "description": "Single-driver probability bounds for use amount per event in adult leave-on hand cream screening.",
+      "parameterName": "use_amount_per_event",
+      "route": "dermal",
+      "scenarioClass": "screening",
+      "archetypeLibrarySetId": "adult_leave_on_hand_cream",
+      "applicability": {
+        "product_category": "personal_care",
+        "physical_form": "cream",
+        "application_method": "hand_application",
+        "population_group": "adult"
+      },
+      "supportPoints": [
+        {
+          "pointId": "low",
+          "parameterValue": 0.8,
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.25,
+          "note": "Lower screening support point for reduced use amount."
+        },
+        {
+          "pointId": "typical",
+          "parameterValue": 1.5,
+          "cumulativeProbabilityLower": 0.25,
+          "cumulativeProbabilityUpper": 0.75,
+          "note": "Reference support point aligned to the baseline screening example."
+        },
+        {
+          "pointId": "high",
+          "parameterValue": 2.4,
+          "cumulativeProbabilityLower": 0.75,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Upper screening support point for heavier product use."
+        }
+      ],
+      "limitations": [
+        "This profile varies use amount only and holds frequency, concentration, and transfer semantics fixed.",
+        "The profile does not imply a validated consumer-use distribution."
+      ]
+    },
+    {
+      "profileId": "adult_trigger_spray_room_volume_m3",
+      "label": "Adult trigger spray room volume profile",
+      "description": "Single-driver probability bounds for room volume in trigger-spray inhalation screening.",
+      "parameterName": "room_volume_m3",
+      "route": "inhalation",
+      "scenarioClass": "inhalation",
+      "archetypeLibrarySetId": "adult_trigger_spray_room",
+      "applicability": {
+        "product_category": "household_cleaner",
+        "physical_form": "spray",
+        "application_method": "trigger_spray",
+        "population_group": "adult"
+      },
+      "supportPoints": [
+        {
+          "pointId": "compact_room",
+          "parameterValue": 18.0,
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.2,
+          "note": "Compact-room support point for higher concentration screening."
+        },
+        {
+          "pointId": "typical_room",
+          "parameterValue": 25.0,
+          "cumulativeProbabilityLower": 0.2,
+          "cumulativeProbabilityUpper": 0.8,
+          "note": "Reference room support point aligned to the baseline screening example."
+        },
+        {
+          "pointId": "large_room",
+          "parameterValue": 35.0,
+          "cumulativeProbabilityLower": 0.8,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Large-room support point for lower concentration screening."
+        }
+      ],
+      "limitations": [
+        "This profile varies room volume only and does not resolve near-field plume behavior.",
+        "Ventilation, duration, and release mechanics remain fixed at the base scenario."
+      ]
+    }
+  ]
+}

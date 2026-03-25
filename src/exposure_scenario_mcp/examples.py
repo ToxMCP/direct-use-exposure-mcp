@@ -19,6 +19,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
+    BuildProbabilityBoundsFromProfileInput,
     CompareExposureScenariosInput,
     EnvelopeArchetypeInput,
     ExportPbpkExternalImportBundleRequest,
@@ -31,11 +32,14 @@ from exposure_scenario_mcp.models import (
     ParameterBoundInput,
     ParameterBoundsSummary,
     PopulationProfile,
+    ProbabilityBoundsProfileSummary,
     ProductUseProfile,
     Route,
     ScenarioClass,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.probability_bounds import build_probability_bounds_from_profile
+from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.result_meta import build_tool_result_meta
 from exposure_scenario_mcp.runtime import (
     PluginRegistry,
@@ -67,6 +71,7 @@ EXAMPLE_IDS = {
     "library_envelope_high_scenario": "exp-example-library-envelope-high-001",
     "bounds_min_scenario": "exp-example-bounds-min-001",
     "bounds_max_scenario": "exp-example-bounds-max-001",
+    "probability_bounds_summary": "pbnd-example-dermal-001",
 }
 
 
@@ -178,6 +183,22 @@ def _freeze_bounds_summary(summary: ParameterBoundsSummary) -> ParameterBoundsSu
     )
 
 
+def _freeze_probability_bounds_summary(
+    summary: ProbabilityBoundsProfileSummary,
+) -> ProbabilityBoundsProfileSummary:
+    return summary.model_copy(
+        update={
+            "summary_id": EXAMPLE_IDS["probability_bounds_summary"],
+            "base_scenario": _freeze_scenario(
+                summary.base_scenario,
+                EXAMPLE_IDS["screening_dermal_scenario"],
+            ),
+            "provenance": _freeze_provenance(summary.provenance),
+        },
+        deep=True,
+    )
+
+
 def _engine() -> ScenarioEngine:
     defaults_registry = DefaultsRegistry.load()
     registry = PluginRegistry()
@@ -190,6 +211,7 @@ def build_examples() -> dict[str, dict]:
     engine = _engine()
     defaults_registry = DefaultsRegistry.load()
     archetype_library = ArchetypeLibraryRegistry.load()
+    probability_profiles = ProbabilityBoundsProfileRegistry.load()
 
     dermal_request = ExposureScenarioRequest(
         chemical_id="DTXSID7020182",
@@ -357,6 +379,20 @@ def build_examples() -> dict[str, dict]:
             generated_at=EXAMPLE_GENERATED_AT,
         )
     )
+    probability_bounds_request = BuildProbabilityBoundsFromProfileInput(
+        label="Example dermal probability bounds",
+        baseRequest=dermal_request,
+        driverProfileId="adult_leave_on_hand_cream_use_amount_per_event",
+    )
+    probability_bounds_summary = _freeze_probability_bounds_summary(
+        build_probability_bounds_from_profile(
+            probability_bounds_request,
+            engine,
+            defaults_registry,
+            probability_profiles,
+            generated_at=EXAMPLE_GENERATED_AT,
+        )
+    )
 
     aggregate_input = BuildAggregateExposureScenarioInput(
         chemical_id="DTXSID7020182",
@@ -442,6 +478,12 @@ def build_examples() -> dict[str, dict]:
             mode="json", by_alias=True
         ),
         "parameter_bounds_summary": parameter_bounds_summary.model_dump(
+            mode="json", by_alias=True
+        ),
+        "probability_bounds_from_profile_request": probability_bounds_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "probability_bounds_profile_summary": probability_bounds_summary.model_dump(
             mode="json", by_alias=True
         ),
         "aggregate_summary": aggregate_summary.model_dump(mode="json", by_alias=True),

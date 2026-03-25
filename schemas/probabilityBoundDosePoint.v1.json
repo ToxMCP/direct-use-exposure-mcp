@@ -1,0 +1,81 @@
+{
+  "$defs": {
+    "DoseUnit": {
+      "enum": [
+        "mg/day",
+        "mg/event",
+        "mg/kg-day",
+        "mg/m3"
+      ],
+      "title": "DoseUnit",
+      "type": "string"
+    },
+    "ScenarioDose": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "description": "Dose metric label.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "description": "Numeric value for the dose metric.",
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/DoseUnit",
+          "description": "Canonical dose unit."
+        }
+      },
+      "required": [
+        "metric",
+        "value",
+        "unit"
+      ],
+      "title": "ScenarioDose",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "pointId": {
+      "title": "Pointid",
+      "type": "string"
+    },
+    "parameterValue": {
+      "title": "Parametervalue",
+      "type": "number"
+    },
+    "dose": {
+      "$ref": "#/$defs/ScenarioDose",
+      "description": "Resolved deterministic dose at this support point."
+    },
+    "cumulativeProbabilityLower": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Cumulativeprobabilitylower",
+      "type": "number"
+    },
+    "cumulativeProbabilityUpper": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Cumulativeprobabilityupper",
+      "type": "number"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "pointId",
+    "parameterValue",
+    "dose",
+    "cumulativeProbabilityLower",
+    "cumulativeProbabilityUpper",
+    "note"
+  ],
+  "title": "ProbabilityBoundDosePoint",
+  "type": "object"
+}

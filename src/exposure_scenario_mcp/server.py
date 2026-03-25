@@ -18,6 +18,7 @@ from exposure_scenario_mcp.contracts import (
     build_release_metadata_report,
     build_release_readiness_report,
     build_security_provenance_review_report,
+    probability_bounds_profile_manifest,
     schema_payloads,
 )
 from exposure_scenario_mcp.defaults import DefaultsRegistry, defaults_evidence_map
@@ -26,6 +27,7 @@ from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     conformance_report_markdown,
     operator_guide,
+    probability_bounds_guide,
     provenance_policy,
     release_notes_markdown,
     release_readiness_markdown,
@@ -50,6 +52,7 @@ from exposure_scenario_mcp.models import (
     BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
     BuildParameterBoundsInput,
+    BuildProbabilityBoundsFromProfileInput,
     CompareExposureScenariosInput,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
@@ -61,9 +64,12 @@ from exposure_scenario_mcp.models import (
     InhalationScenarioRequest,
     ParameterBoundsSummary,
     PbpkScenarioInput,
+    ProbabilityBoundsProfileSummary,
     ScenarioComparisonRecord,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.probability_bounds import build_probability_bounds_from_profile
+from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.result_meta import build_tool_result_meta
 from exposure_scenario_mcp.runtime import (
     PluginRegistry,
@@ -99,6 +105,7 @@ def _error_result(error: ExposureScenarioError) -> CallToolResult:
 def create_mcp_server() -> FastMCP:
     defaults_registry = DefaultsRegistry.load()
     archetype_library = ArchetypeLibraryRegistry.load()
+    probability_profiles = ProbabilityBoundsProfileRegistry.load()
     plugin_registry = PluginRegistry()
     plugin_registry.register(ScreeningScenarioPlugin())
     plugin_registry.register(InhalationScreeningPlugin())
@@ -226,6 +233,35 @@ def create_mcp_server() -> FastMCP:
             summary = build_parameter_bounds_summary(params, engine, defaults_registry)
             return _success_result(
                 f"Built parameter bounds summary {summary.summary_id}.",
+                summary,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_probability_bounds_from_profile",
+        annotations={
+            "title": "Build Probability Bounds From Profile",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_build_probability_bounds_from_profile(
+        params: BuildProbabilityBoundsFromProfileInput,
+    ) -> Annotated[CallToolResult, ProbabilityBoundsProfileSummary]:
+        """Build a Tier C single-driver probability-bounds summary from a packaged profile."""
+
+        try:
+            summary = build_probability_bounds_from_profile(
+                params,
+                engine,
+                defaults_registry,
+                probability_profiles,
+            )
+            return _success_result(
+                f"Built probability-bounds summary {summary.summary_id}.",
                 summary,
             )
         except ExposureScenarioError as error:
@@ -397,6 +433,12 @@ def create_mcp_server() -> FastMCP:
 
         return json.dumps(archetype_library_manifest(), indent=2)
 
+    @mcp.resource("probability-bounds://manifest")
+    def packaged_probability_bounds_manifest() -> str:
+        """Machine-readable packaged single-driver probability-bounds profile manifest."""
+
+        return json.dumps(probability_bounds_profile_manifest(), indent=2)
+
     @mcp.resource("docs://algorithm-notes")
     def docs_algorithm_notes() -> str:
         """Deterministic algorithm notes for the public engines."""
@@ -408,6 +450,12 @@ def create_mcp_server() -> FastMCP:
         """Guide to the packaged Tier B archetype library and its guardrails."""
 
         return archetype_library_guide()
+
+    @mcp.resource("docs://probability-bounds-guide")
+    def docs_probability_bounds_guide() -> str:
+        """Guide to the packaged Tier C probability-bounds profiles."""
+
+        return probability_bounds_guide()
 
     @mcp.resource("docs://defaults-evidence-map")
     def docs_defaults_evidence_map() -> str:
