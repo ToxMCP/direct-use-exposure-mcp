@@ -538,11 +538,73 @@ def test_probability_bounds_profile_builds_tier_c_summary() -> None:
 
     assert summary.uncertainty_tier == UncertaintyTier.TIER_C
     assert summary.driver_profile_id == "adult_leave_on_hand_cream_use_amount_per_event"
+    assert summary.product_family == "personal_care"
+    assert summary.driver_family.value == "use_burden"
+    assert summary.dependency_cluster == "use-intensity-cluster"
+    assert summary.fixed_axes == ["concentration_fraction", "use_events_per_day"]
+    assert summary.relationship_type.value == "behavioral"
+    assert summary.handling_strategy.value == "not_quantified"
     assert summary.profile_version == profiles.version
     assert summary.archetype_library_set_id == "adult_leave_on_hand_cream"
     assert len(summary.support_points) == 3
     assert summary.minimum_dose.value < summary.maximum_dose.value
     assert summary.uncertainty_register[0].quantification_status.value == "probability_bounds"
+    assert any(
+        item.dependency_id == "single-driver:adult_leave_on_hand_cream_use_amount_per_event"
+        for item in summary.dependency_metadata
+    )
+
+
+def test_oral_probability_bounds_profile_builds_tier_c_summary() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    profiles = ProbabilityBoundsProfileRegistry.load()
+    base_request = ExposureScenarioRequest(
+        chemical_id="DTXSID124",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="medicinal_liquid",
+            physical_form="liquid",
+            application_method="direct_oral",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=2.5,
+            use_amount_unit="mL",
+            use_events_per_day=2,
+            density_g_per_ml=1.0,
+            ingestion_fraction=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="child",
+            body_weight_kg=16.0,
+            region="EU",
+        ),
+    )
+
+    summary = build_probability_bounds_from_profile(
+        BuildProbabilityBoundsFromProfileInput(
+            label="Child oral single-driver probability bounds",
+            baseRequest=base_request,
+            driverProfileId="child_direct_oral_liquid_use_events_per_day",
+        ),
+        engine,
+        defaults_registry,
+        profiles,
+        generated_at="2026-03-25T00:00:00+00:00",
+    )
+
+    assert summary.route == Route.ORAL
+    assert summary.product_family == "medicinal_liquid"
+    assert summary.driver_family.value == "ingestion_regimen"
+    assert summary.dependency_cluster == "oral-regimen-cluster"
+    assert summary.fixed_axes == [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "ingestion_fraction",
+    ]
+    assert len(summary.support_points) == 3
+    assert summary.minimum_dose.value < summary.maximum_dose.value
 
 
 def test_scenario_package_probability_builds_tier_c_summary() -> None:

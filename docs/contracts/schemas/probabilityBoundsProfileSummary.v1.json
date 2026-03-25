@@ -213,6 +213,16 @@
       "title": "DoseUnit",
       "type": "string"
     },
+    "DriverProfileFamily": {
+      "enum": [
+        "use_burden",
+        "formulation_strength",
+        "microenvironment",
+        "ingestion_regimen"
+      ],
+      "title": "DriverProfileFamily",
+      "type": "string"
+    },
     "EvidenceBasis": {
       "enum": [
         "explicit_input",
@@ -1382,6 +1392,35 @@
       "title": "Driverparametername",
       "type": "string"
     },
+    "productFamily": {
+      "description": "Named product-family or use-family.",
+      "title": "Productfamily",
+      "type": "string"
+    },
+    "driverFamily": {
+      "$ref": "#/$defs/DriverProfileFamily",
+      "description": "Curated taxonomy family for the varied driver."
+    },
+    "dependencyCluster": {
+      "title": "Dependencycluster",
+      "type": "string"
+    },
+    "fixedAxes": {
+      "description": "Related axes intentionally held fixed while the driver varies.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Fixedaxes",
+      "type": "array"
+    },
+    "relationshipType": {
+      "$ref": "#/$defs/DependencyRelationship",
+      "description": "Dependency relationship classification."
+    },
+    "handlingStrategy": {
+      "$ref": "#/$defs/DependencyHandlingStrategy",
+      "description": "How unmodeled dependencies are handled."
+    },
     "profileVersion": {
       "title": "Profileversion",
       "type": "string"
@@ -1460,6 +1499,11 @@
     "label",
     "driverProfileId",
     "driverParameterName",
+    "productFamily",
+    "driverFamily",
+    "dependencyCluster",
+    "relationshipType",
+    "handlingStrategy",
     "profileVersion",
     "baseScenario",
     "minimumDose",

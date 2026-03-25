@@ -146,6 +146,13 @@ class ScenarioPackageFamily(StrEnum):
     INGESTION_REGIMEN = "ingestion_regimen"
 
 
+class DriverProfileFamily(StrEnum):
+    USE_BURDEN = "use_burden"
+    FORMULATION_STRENGTH = "formulation_strength"
+    MICROENVIRONMENT = "microenvironment"
+    INGESTION_REGIMEN = "ingestion_regimen"
+
+
 class ValidationStatus(StrEnum):
     VERIFICATION_ONLY = "verification_only"
     BENCHMARK_REGRESSION = "benchmark_regression"
@@ -348,6 +355,36 @@ class ProbabilityBoundsDriverProfile(StrictModel):
     route: Route = Field(..., description="Route for which the driver profile applies.")
     scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
     archetype_library_set_id: str | None = Field(default=None, alias="archetypeLibrarySetId")
+    product_family: str = Field(
+        ...,
+        alias="productFamily",
+        description="Named product-family or use-family for the driver profile.",
+    )
+    driver_family: DriverProfileFamily = Field(
+        ...,
+        alias="driverFamily",
+        description="Curated taxonomy family for the varied driver.",
+    )
+    dependency_cluster: str = Field(
+        ...,
+        alias="dependencyCluster",
+        description="Named dependency cluster surrounding the varied driver.",
+    )
+    fixed_axes: list[str] = Field(
+        default_factory=list,
+        alias="fixedAxes",
+        description="Related axes intentionally held fixed while the driver varies.",
+    )
+    relationship_type: DependencyRelationship = Field(
+        ...,
+        alias="relationshipType",
+        description="Dependency relationship classification for the profile context.",
+    )
+    handling_strategy: DependencyHandlingStrategy = Field(
+        ...,
+        alias="handlingStrategy",
+        description="How unmodeled dependencies are handled for the profile.",
+    )
     applicability: dict[str, ScalarValue] = Field(default_factory=dict)
     support_points: list[ProbabilityBoundSupportPointDefinition] = Field(
         ..., alias="supportPoints", min_length=2
@@ -1027,6 +1064,24 @@ class ProbabilityBoundsProfileSummary(StrictModel):
     )
     driver_profile_id: str = Field(..., alias="driverProfileId")
     driver_parameter_name: str = Field(..., alias="driverParameterName")
+    product_family: str = Field(
+        ..., alias="productFamily", description="Named product-family or use-family."
+    )
+    driver_family: DriverProfileFamily = Field(
+        ..., alias="driverFamily", description="Curated taxonomy family for the varied driver."
+    )
+    dependency_cluster: str = Field(..., alias="dependencyCluster")
+    fixed_axes: list[str] = Field(
+        default_factory=list,
+        alias="fixedAxes",
+        description="Related axes intentionally held fixed while the driver varies.",
+    )
+    relationship_type: DependencyRelationship = Field(
+        ..., alias="relationshipType", description="Dependency relationship classification."
+    )
+    handling_strategy: DependencyHandlingStrategy = Field(
+        ..., alias="handlingStrategy", description="How unmodeled dependencies are handled."
+    )
     profile_version: str = Field(..., alias="profileVersion")
     archetype_library_set_id: str | None = Field(default=None, alias="archetypeLibrarySetId")
     base_scenario: ExposureScenario = Field(..., alias="baseScenario")

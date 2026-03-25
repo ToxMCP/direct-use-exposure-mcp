@@ -8,7 +8,16 @@
   "uncertaintyTier": "tier_c",
   "driverProfileId": "adult_leave_on_hand_cream_use_amount_per_event",
   "driverParameterName": "use_amount_per_event",
-  "profileVersion": "2026.03.25.v1",
+  "productFamily": "personal_care",
+  "driverFamily": "use_burden",
+  "dependencyCluster": "use-intensity-cluster",
+  "fixedAxes": [
+    "concentration_fraction",
+    "use_events_per_day"
+  ],
+  "relationshipType": "behavioral",
+  "handlingStrategy": "not_quantified",
+  "profileVersion": "2026.03.25.v2",
   "archetypeLibrarySetId": "adult_leave_on_hand_cream",
   "baseScenario": {
     "schema_version": "exposureScenario.v1",
@@ -735,6 +744,18 @@
       ],
       "handlingStrategy": "scenario_packaged",
       "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+    },
+    {
+      "dependencyId": "single-driver:adult_leave_on_hand_cream_use_amount_per_event",
+      "title": "Adult leave-on hand cream use amount profile driver profile context",
+      "relationshipType": "behavioral",
+      "assumptionNames": [
+        "use_amount_per_event",
+        "concentration_fraction",
+        "use_events_per_day"
+      ],
+      "handlingStrategy": "not_quantified",
+      "note": "Single-driver `use_burden` profile for `personal_care` contexts. Only the named driver varies; the fixed axes remain scenario-specific and their dependence is not quantified here."
     }
   ],
   "validationSummary": {
@@ -753,7 +774,7 @@
       "Deterministic verification and benchmark regression are available for this domain.",
       "External validation remains a documented future capability rather than an active gate.",
       "Probabilistic outputs stay disabled until dependencies and validation evidence mature.",
-      "Single-driver probability bounds are packaged for selected drivers only."
+      "Single-driver `use_burden` probability bounds are packaged for selected drivers only."
     ]
   },
   "provenance": {
@@ -772,6 +793,7 @@
   "interpretation_notes": [
     "This output carries single-driver probability bounds, not a joint population distribution.",
     "Only the packaged driver varies across support points; all other scenario inputs remain fixed.",
+    "Fixed axes for this profile: concentration_fraction, use_events_per_day.",
     "Profile limitation: This profile varies use amount only and holds frequency, concentration, and transfer semantics fixed.",
     "Profile limitation: The profile does not imply a validated consumer-use distribution."
   ]

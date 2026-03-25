@@ -1,5 +1,36 @@
 {
   "$defs": {
+    "DependencyHandlingStrategy": {
+      "enum": [
+        "scenario_packaged",
+        "conditional_model_required",
+        "joint_model_required",
+        "not_quantified"
+      ],
+      "title": "DependencyHandlingStrategy",
+      "type": "string"
+    },
+    "DependencyRelationship": {
+      "enum": [
+        "structural",
+        "physiological",
+        "behavioral",
+        "mechanistic",
+        "scenario_package"
+      ],
+      "title": "DependencyRelationship",
+      "type": "string"
+    },
+    "DriverProfileFamily": {
+      "enum": [
+        "use_burden",
+        "formulation_strength",
+        "microenvironment",
+        "ingestion_regimen"
+      ],
+      "title": "DriverProfileFamily",
+      "type": "string"
+    },
     "ProbabilityBoundSupportPointDefinition": {
       "additionalProperties": false,
       "properties": {
@@ -98,6 +129,36 @@
       "default": null,
       "title": "Archetypelibrarysetid"
     },
+    "productFamily": {
+      "description": "Named product-family or use-family for the driver profile.",
+      "title": "Productfamily",
+      "type": "string"
+    },
+    "driverFamily": {
+      "$ref": "#/$defs/DriverProfileFamily",
+      "description": "Curated taxonomy family for the varied driver."
+    },
+    "dependencyCluster": {
+      "description": "Named dependency cluster surrounding the varied driver.",
+      "title": "Dependencycluster",
+      "type": "string"
+    },
+    "fixedAxes": {
+      "description": "Related axes intentionally held fixed while the driver varies.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Fixedaxes",
+      "type": "array"
+    },
+    "relationshipType": {
+      "$ref": "#/$defs/DependencyRelationship",
+      "description": "Dependency relationship classification for the profile context."
+    },
+    "handlingStrategy": {
+      "$ref": "#/$defs/DependencyHandlingStrategy",
+      "description": "How unmodeled dependencies are handled for the profile."
+    },
     "applicability": {
       "additionalProperties": {
         "anyOf": [
@@ -144,6 +205,11 @@
     "parameterName",
     "route",
     "scenarioClass",
+    "productFamily",
+    "driverFamily",
+    "dependencyCluster",
+    "relationshipType",
+    "handlingStrategy",
     "supportPoints"
   ],
   "title": "ProbabilityBoundsDriverProfile",

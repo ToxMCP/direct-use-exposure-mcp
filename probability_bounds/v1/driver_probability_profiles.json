@@ -1,8 +1,9 @@
 {
-  "profile_version": "2026.03.25.v1",
+  "profile_version": "2026.03.25.v2",
   "notes": [
     "Packaged probability-bounds profiles are limited to single-driver perturbations with other drivers held fixed at the caller's base scenario.",
     "These profiles publish cumulative probability bounds for selected support points and do not represent a joint population distribution.",
+    "Each packaged profile carries a curated driver family, product family, dependency cluster, fixed axes, and handling semantics.",
     "Tier C probability-bounds outputs remain screening summaries and must not be interpreted as validated exposure distributions."
   ],
   "profiles": [
@@ -14,6 +15,15 @@
       "route": "dermal",
       "scenarioClass": "screening",
       "archetypeLibrarySetId": "adult_leave_on_hand_cream",
+      "productFamily": "personal_care",
+      "driverFamily": "use_burden",
+      "dependencyCluster": "use-intensity-cluster",
+      "fixedAxes": [
+        "concentration_fraction",
+        "use_events_per_day"
+      ],
+      "relationshipType": "behavioral",
+      "handlingStrategy": "not_quantified",
       "applicability": {
         "product_category": "personal_care",
         "physical_form": "cream",
@@ -49,6 +59,57 @@
       ]
     },
     {
+      "profileId": "adult_leave_on_hand_cream_concentration_fraction",
+      "label": "Adult leave-on hand cream concentration profile",
+      "description": "Single-driver probability bounds for concentration fraction in adult leave-on hand cream screening.",
+      "parameterName": "concentration_fraction",
+      "route": "dermal",
+      "scenarioClass": "screening",
+      "archetypeLibrarySetId": "adult_leave_on_hand_cream",
+      "productFamily": "personal_care",
+      "driverFamily": "formulation_strength",
+      "dependencyCluster": "composition-use-burden-cluster",
+      "fixedAxes": [
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "relationshipType": "mechanistic",
+      "handlingStrategy": "not_quantified",
+      "applicability": {
+        "product_category": "personal_care",
+        "physical_form": "cream",
+        "application_method": "hand_application",
+        "population_group": "adult"
+      },
+      "supportPoints": [
+        {
+          "pointId": "low_strength",
+          "parameterValue": 0.01,
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.2,
+          "note": "Lower screening support point for reduced formulation strength."
+        },
+        {
+          "pointId": "typical_strength",
+          "parameterValue": 0.02,
+          "cumulativeProbabilityLower": 0.2,
+          "cumulativeProbabilityUpper": 0.7,
+          "note": "Reference support point aligned to the baseline screening example."
+        },
+        {
+          "pointId": "high_strength",
+          "parameterValue": 0.04,
+          "cumulativeProbabilityLower": 0.7,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Upper screening support point for heavier formulation strength."
+        }
+      ],
+      "limitations": [
+        "This profile varies concentration only and holds amount, frequency, and transfer semantics fixed.",
+        "The profile does not imply a validated formulation market distribution."
+      ]
+    },
+    {
       "profileId": "adult_trigger_spray_room_volume_m3",
       "label": "Adult trigger spray room volume profile",
       "description": "Single-driver probability bounds for room volume in trigger-spray inhalation screening.",
@@ -56,6 +117,18 @@
       "route": "inhalation",
       "scenarioClass": "inhalation",
       "archetypeLibrarySetId": "adult_trigger_spray_room",
+      "productFamily": "household_cleaner",
+      "driverFamily": "microenvironment",
+      "dependencyCluster": "room-context-cluster",
+      "fixedAxes": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+        "air_exchange_rate_per_hour",
+        "exposure_duration_hours"
+      ],
+      "relationshipType": "structural",
+      "handlingStrategy": "not_quantified",
       "applicability": {
         "product_category": "household_cleaner",
         "physical_form": "spray",
@@ -88,6 +161,58 @@
       "limitations": [
         "This profile varies room volume only and does not resolve near-field plume behavior.",
         "Ventilation, duration, and release mechanics remain fixed at the base scenario."
+      ]
+    },
+    {
+      "profileId": "child_direct_oral_liquid_use_events_per_day",
+      "label": "Child direct-oral liquid frequency profile",
+      "description": "Single-driver probability bounds for use frequency in child direct-oral liquid screening.",
+      "parameterName": "use_events_per_day",
+      "route": "oral",
+      "scenarioClass": "screening",
+      "archetypeLibrarySetId": "child_direct_oral_liquid",
+      "productFamily": "medicinal_liquid",
+      "driverFamily": "ingestion_regimen",
+      "dependencyCluster": "oral-regimen-cluster",
+      "fixedAxes": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "ingestion_fraction"
+      ],
+      "relationshipType": "behavioral",
+      "handlingStrategy": "not_quantified",
+      "applicability": {
+        "product_category": "medicinal_liquid",
+        "physical_form": "liquid",
+        "application_method": "direct_oral",
+        "population_group": "child"
+      },
+      "supportPoints": [
+        {
+          "pointId": "low_frequency",
+          "parameterValue": 1.0,
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.2,
+          "note": "Lower screening support point for reduced direct-oral frequency."
+        },
+        {
+          "pointId": "typical_frequency",
+          "parameterValue": 2.0,
+          "cumulativeProbabilityLower": 0.2,
+          "cumulativeProbabilityUpper": 0.85,
+          "note": "Reference support point aligned to the baseline direct-oral example."
+        },
+        {
+          "pointId": "high_frequency",
+          "parameterValue": 3.0,
+          "cumulativeProbabilityLower": 0.85,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Upper screening support point for heavier direct-oral frequency."
+        }
+      ],
+      "limitations": [
+        "This profile varies dosing frequency only and keeps amount, strength, and ingestion completeness fixed.",
+        "The profile does not imply a validated pediatric regimen distribution."
       ]
     }
   ]

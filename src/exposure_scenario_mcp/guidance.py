@@ -53,7 +53,11 @@ def _probability_profile_lines() -> list[str]:
     ]
     for item in manifest.profiles:
         lines.append(
-            f"- `{item.profile_id}` [{item.route.value}/{item.parameter_name}] {item.label}"
+            
+                f"- `{item.profile_id}` "
+                f"[{item.route.value}/{item.driver_family.value}/{item.product_family}] "
+                f"{item.label}"
+            
         )
     return lines
 
@@ -242,6 +246,9 @@ def probability_bounds_guide() -> str:
         "  probability claims.",
         "- Single-driver summaries keep dependence externalized because only one",
         "  driver varies.",
+        "- Single-driver summaries carry curated driver taxonomy through",
+        "  `driverFamily`, `productFamily`, `dependencyCluster`, `fixedAxes`,",
+        "  `relationshipType`, and `handlingStrategy`.",
         "- Scenario-package summaries carry curated package taxonomy through",
         "  `packageFamily`, `productFamily`, `dependencyAxes`, `relationshipType`,",
         "  and `handlingStrategy`.",
@@ -262,7 +269,8 @@ def probability_bounds_guide() -> str:
             "- Use `exposure_build_probability_bounds_from_scenario_package` when preserving",
             "  coupled drivers matters more than isolating a single parameter.",
             "- Preserve `driverProfileId` or `packageProfileId`, `profileVersion`, and all",
-            "  emitted taxonomy and limitation fields in downstream summaries and reports.",
+            "  emitted taxonomy, fixed-axis, and limitation fields in downstream summaries",
+            "  and reports.",
         ]
     )
     return "\n".join(lines)

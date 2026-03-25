@@ -46,7 +46,7 @@ jobs:
           packages = ScenarioProbabilityPackageRegistry.load()
           assert registry.version == "2026.03.24.v3"
           assert archetypes.version == "2026.03.25.v1"
-          assert profiles.version == "2026.03.25.v1"
+          assert profiles.version == "2026.03.25.v2"
           assert packages.version == "2026.03.25.v2"
           assert len(load_benchmark_manifest()["cases"]) >= 2
           assert build_release_metadata_report(registry).package_version == __version__

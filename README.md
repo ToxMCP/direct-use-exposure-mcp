@@ -78,7 +78,7 @@ The design is intentionally narrow:
 - Tier B deterministic scenario envelopes from named archetypes
 - Packaged Tier B archetype-library sets for governed envelope construction
 - Tier B deterministic parameter-bounds propagation without probabilistic overclaiming
-- Packaged Tier C single-driver probability-bounds profiles
+- Packaged Tier C single-driver probability-bounds profiles with curated driver taxonomy
 - Packaged Tier C coupled-driver scenario-package probability profiles with curated package taxonomy
 - Simple additive aggregate exposure summaries
 - Scenario comparison and refinement deltas
@@ -110,7 +110,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `Tier B deterministic envelopes` | Builds named archetype envelopes with bounded min/median/max outputs and explicit driver attribution without probabilistic overclaiming. |
 | `Tier B archetype library` | Publishes governed packaged archetype sets and instantiates them into deterministic envelopes with set/version provenance. |
 | `Tier B parameter bounds` | Propagates explicit lower and upper parameter bounds through a deterministic scenario to produce min/max ranges, monotonicity checks, and bounded uncertainty records. |
-| `Tier C probability bounds` | Publishes packaged single-driver probability-bounds profiles and evaluates their support points without Monte Carlo or joint-distribution claims. |
+| `Tier C probability bounds` | Publishes packaged single-driver probability-bounds profiles with curated driver taxonomy and evaluates their support points without Monte Carlo or joint-distribution claims. |
 | `Tier C scenario packages` | Publishes dependency-aware packaged scenario states with cumulative probability bounds, curated package taxonomy, and preserved coupled drivers without Monte Carlo claims. |
 | `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |

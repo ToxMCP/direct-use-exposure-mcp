@@ -110,6 +110,23 @@ def _validate_profile_against_request(
         )
 
 
+def _single_driver_dependency_descriptor(
+    profile: ProbabilityBoundsDriverProfile,
+) -> DependencyDescriptor:
+    return DependencyDescriptor(
+        dependencyId=f"single-driver:{profile.profile_id}",
+        title=f"{profile.label} driver profile context",
+        relationshipType=profile.relationship_type,
+        assumptionNames=[profile.parameter_name, *profile.fixed_axes],
+        handlingStrategy=profile.handling_strategy,
+        note=(
+            f"Single-driver `{profile.driver_family.value}` profile for `{profile.product_family}` "
+            "contexts. Only the named driver varies; the fixed axes remain scenario-specific and "
+            "their dependence is not quantified here."
+        ),
+    )
+
+
 def build_probability_bounds_from_profile(
     params: BuildProbabilityBoundsFromProfileInput,
     engine,
@@ -180,14 +197,20 @@ def build_probability_bounds_from_profile(
                 ),
             )
         )
-    dependency_metadata = base_scenario.dependency_metadata
+    dependency_metadata = [
+        *base_scenario.dependency_metadata,
+        _single_driver_dependency_descriptor(profile),
+    ]
     validation_summary = base_scenario.validation_summary.model_copy(
         update={
             "highest_supported_uncertainty_tier": UncertaintyTier.TIER_C,
             "probabilistic_enablement": "gated",
             "notes": [
                 *base_scenario.validation_summary.notes,
-                "Single-driver probability bounds are packaged for selected drivers only.",
+                (
+                    f"Single-driver `{profile.driver_family.value}` probability bounds are "
+                    "packaged for selected drivers only."
+                ),
             ],
         },
         deep=True,
@@ -205,6 +228,12 @@ def build_probability_bounds_from_profile(
         None,
         "Packaged probability-bounds driver profile identifier.",
     )
+    tracker.add_derived(
+        "probability_driver_family",
+        profile.driver_family.value,
+        None,
+        "Curated taxonomy family for the packaged single-driver profile.",
+    )
     return ProbabilityBoundsProfileSummary(
         summaryId=f"pbnd-{base_scenario.scenario_id.split('-')[-1]}",
         chemical_id=base_scenario.chemical_id,
@@ -213,6 +242,12 @@ def build_probability_bounds_from_profile(
         label=params.label,
         driverProfileId=profile.profile_id,
         driverParameterName=profile.parameter_name,
+        productFamily=profile.product_family,
+        driverFamily=profile.driver_family,
+        dependencyCluster=profile.dependency_cluster,
+        fixedAxes=profile.fixed_axes,
+        relationshipType=profile.relationship_type,
+        handlingStrategy=profile.handling_strategy,
         profileVersion=profiles.version,
         archetypeLibrarySetId=profile.archetype_library_set_id,
         baseScenario=base_scenario,
@@ -235,6 +270,9 @@ def build_probability_bounds_from_profile(
             (
                 "Only the packaged driver varies across support points; all other "
                 "scenario inputs remain fixed."
+            ),
+            (
+                f"Fixed axes for this profile: {', '.join(profile.fixed_axes) or 'none declared'}."
             ),
         ]
         + [f"Profile limitation: {item}" for item in profile.limitations],
