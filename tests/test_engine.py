@@ -221,8 +221,13 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
     assert scenario.route_metrics["tier1_product_profile_id"] == (
         "household_cleaner_trigger_spray_tier1"
     )
+    assert scenario.route_metrics["tier1_profile_alignment_status"] == "aligned"
+    assert scenario.route_metrics["tier1_profile_divergence_count"] == 0
     assert any(item.code == "near_field_exchange_screening" for item in scenario.limitations)
     assert any(item.code == "tier_1_nf_ff_screening" for item in scenario.quality_flags)
+    assert not any(
+        item.code == "tier1_profile_anchor_divergence" for item in scenario.quality_flags
+    )
     assumptions = {item.name: item for item in scenario.assumptions}
     assert assumptions["near_field_exchange_turnover_per_hour"].value == pytest.approx(
         32.0, rel=1e-6
@@ -282,7 +287,57 @@ def test_inhalation_tier_1_matches_personal_care_pump_profile() -> None:
     scenario = build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load())
 
     assert scenario.route_metrics["tier1_product_profile_id"] == "personal_care_pump_spray_tier1"
+    assert scenario.route_metrics["tier1_profile_alignment_status"] == "aligned"
+    assert scenario.route_metrics["tier1_profile_divergence_count"] == 0
     assert any("personal_care_pump_spray_tier1" in note for note in scenario.interpretation_notes)
+
+
+def test_inhalation_tier_1_warns_when_inputs_diverge_from_profile_anchor() -> None:
+    request = InhalationTier1ScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+            exposure_duration_hours=0.5,
+            air_exchange_rate_per_hour=2.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+        source_distance_m=0.7,
+        spray_duration_seconds=18.0,
+        near_field_volume_m3=3.2,
+        airflow_directionality=AirflowDirectionality.GENERAL_ROOM_MIXING,
+        particle_size_regime=ParticleSizeRegime.MIXED_SPRAY,
+    )
+
+    scenario = build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load())
+
+    assert scenario.route_metrics["tier1_product_profile_id"] == (
+        "household_cleaner_trigger_spray_tier1"
+    )
+    assert scenario.route_metrics["tier1_profile_alignment_status"] == "divergent"
+    assert scenario.route_metrics["tier1_profile_divergence_count"] == 5
+    divergence_flag = next(
+        item for item in scenario.quality_flags if item.code == "tier1_profile_anchor_divergence"
+    )
+    assert divergence_flag.severity.value == "warning"
+    assert "airflow_directionality=general_room_mixing" in divergence_flag.message
+    assert "particle_size_regime=mixed_spray" in divergence_flag.message
+    assert any(
+        "Tier 1 profile alignment warning:" in note for note in scenario.interpretation_notes
+    )
 
 
 def test_eu_inhalation_room_defaults_use_regional_source() -> None:

@@ -64,11 +64,14 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "exposureScenario.v1" in inhalation_tier_guide
     assert "tier1-inhalation://manifest" in inhalation_tier_guide
     assert "docs://tier1-inhalation-parameter-guide" in inhalation_tier_guide
+    assert "`tier1_profile_alignment_status`" in inhalation_tier_guide
+    assert "`tier1_profile_anchor_divergence`" in inhalation_tier_guide
     assert "`household_cleaner_trigger_spray_tier1`" in inhalation_tier_guide
     assert "`personal_care_aerosol_spray_tier1`" in inhalation_tier_guide
     assert "Tier 1 Inhalation Parameter Guide" in tier1_parameter_guide
     assert "`benchmark_tier1_nf_ff_personal_care_profiles_v1`" in tier1_parameter_guide
     assert "`personal_care_pump_spray_tier1`" in tier1_parameter_guide
+    assert "`tier1_profile_anchor_divergence`" in tier1_parameter_guide
     assert "source_distance_m" in inhalation_tier_guide
     assert "benchmarkDomains" not in validation
     assert "External Dataset Candidates" in validation

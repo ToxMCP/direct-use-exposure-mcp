@@ -48,7 +48,9 @@
     "breathing_zone_time_weighted_average_mg_per_m3": 9.46275011,
     "interzonal_mixing_rate_m3_per_hour": 68.0,
     "inhaled_mass_mg_per_day": 4.25823755,
-    "tier1_product_profile_id": "household_cleaner_trigger_spray_tier1"
+    "tier1_product_profile_id": "household_cleaner_trigger_spray_tier1",
+    "tier1_profile_alignment_status": "aligned",
+    "tier1_profile_divergence_count": 0
   },
   "assumptions": [
     {

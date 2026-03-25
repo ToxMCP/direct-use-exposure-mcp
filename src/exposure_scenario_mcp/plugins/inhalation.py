@@ -33,6 +33,11 @@ from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfi
 TIER_1_SPRAY_METHODS = {"trigger_spray", "pump_spray", "aerosol_spray"}
 TIER_1_MODEL_FAMILY = "inhalation_near_field_far_field_screening"
 TIER_1_GUIDANCE_RESOURCE = "docs://inhalation-tier-upgrade-guide"
+TIER_1_PROFILE_NUMERIC_TOLERANCES = {
+    "source_distance_m": 0.35,
+    "near_field_volume_m3": 0.35,
+    "spray_duration_seconds": 0.4,
+}
 
 
 def tier_1_input_requirements() -> list[TierUpgradeInputRequirement]:
@@ -65,6 +70,65 @@ def tier_1_input_requirements() -> list[TierUpgradeInputRequirement]:
     ]
 
 
+def _relative_difference(actual: float, reference: float) -> float:
+    if reference == 0:
+        return 0.0 if actual == 0 else float("inf")
+    return abs(actual - reference) / abs(reference)
+
+
+def _tier_1_profile_alignment(
+    request: InhalationTier1ScenarioRequest,
+    matched_profile,
+) -> tuple[str, list[str]]:
+    if matched_profile is None:
+        return "no_profile_match", []
+
+    divergences: list[str] = []
+
+    if request.airflow_directionality != matched_profile.recommended_airflow_directionality:
+        divergences.append(
+            "airflow_directionality="
+            f"{request.airflow_directionality.value} differs from recommended "
+            f"{matched_profile.recommended_airflow_directionality.value}"
+        )
+    if request.particle_size_regime != matched_profile.recommended_particle_size_regime:
+        divergences.append(
+            "particle_size_regime="
+            f"{request.particle_size_regime.value} differs from recommended "
+            f"{matched_profile.recommended_particle_size_regime.value}"
+        )
+
+    numeric_pairs = (
+        (
+            "source_distance_m",
+            request.source_distance_m,
+            matched_profile.default_source_distance_m,
+            "m",
+        ),
+        (
+            "near_field_volume_m3",
+            request.near_field_volume_m3,
+            matched_profile.recommended_near_field_volume_m3,
+            "m3",
+        ),
+        (
+            "spray_duration_seconds",
+            request.spray_duration_seconds,
+            matched_profile.default_spray_duration_seconds,
+            "s",
+        ),
+    )
+    for name, actual, recommended, unit in numeric_pairs:
+        tolerance = TIER_1_PROFILE_NUMERIC_TOLERANCES[name]
+        if _relative_difference(actual, recommended) > tolerance:
+            divergences.append(
+                f"{name}={actual:g} {unit} differs materially from recommended "
+                f"{recommended:g} {unit}"
+            )
+
+    return ("divergent" if divergences else "aligned"), divergences
+
+
 def build_inhalation_tier_1_screening_scenario(
     request: InhalationTier1ScenarioRequest,
     registry: DefaultsRegistry,
@@ -93,6 +157,10 @@ def build_inhalation_tier_1_screening_scenario(
         application_method=profile.application_method,
     )
     matched_profile = matched_profiles[0] if matched_profiles else None
+    profile_alignment_status, profile_divergences = _tier_1_profile_alignment(
+        request,
+        matched_profile,
+    )
 
     product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
     chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
@@ -412,6 +480,24 @@ def build_inhalation_tier_1_screening_scenario(
         ),
         severity=Severity.INFO,
     )
+    if matched_profile is not None and profile_divergences:
+        tracker.add_quality_flag(
+            "tier1_profile_anchor_divergence",
+            (
+                "Caller-supplied Tier 1 inputs diverge materially from the matched packaged "
+                f"profile `{matched_profile.profile_id}`: " + "; ".join(profile_divergences) + "."
+            ),
+            severity=Severity.WARNING,
+        )
+    if matched_profile is None:
+        tracker.add_quality_flag(
+            "tier1_profile_no_packaged_match",
+            (
+                "No packaged Tier 1 profile matched the current product family and application "
+                "method; screening geometry and regime inputs remain fully caller-defined."
+            ),
+            severity=Severity.INFO,
+        )
 
     return ExposureScenario(
         scenario_id=f"inh-tier1-{uuid4().hex[:10]}",
@@ -451,6 +537,8 @@ def build_inhalation_tier_1_screening_scenario(
             "interzonal_mixing_rate_m3_per_hour": round(interzonal_mixing_rate, 8),
             "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
             "tier1_product_profile_id": matched_profile.profile_id if matched_profile else None,
+            "tier1_profile_alignment_status": profile_alignment_status,
+            "tier1_profile_divergence_count": len(profile_divergences),
         },
         assumptions=tracker.assumptions,
         provenance=tracker.provenance(
@@ -491,6 +579,21 @@ def build_inhalation_tier_1_screening_scenario(
                     "regime inputs remain authoritative."
                 ]
                 if matched_profile is not None
+                else []
+            ),
+            *(
+                [
+                    "Tier 1 profile alignment warning: " + "; ".join(profile_divergences) + "."
+                ]
+                if profile_divergences
+                else []
+            ),
+            *(
+                [
+                    "No packaged Tier 1 profile matched this product family/application "
+                    "method combination."
+                ]
+                if matched_profile is None
                 else []
             ),
         ],

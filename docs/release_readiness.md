@@ -34,6 +34,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
   routing hooks, a dedicated Tier 1 NF/FF tool builds deterministic spray scenarios with
   explicit geometry, timing, airflow-class, and particle-regime inputs, and the packaged
   Tier 1 manifest publishes the governing screening profiles behind those classes.
+- Tier 1 NF/FF outputs emit explicit alignment warnings when caller-supplied geometry or regime
+  inputs diverge materially from a matched packaged profile anchor.
 - ToxClaw evidence and refinement bundles emit deterministic content hashes and stable IDs.
 - Security and provenance findings are published through `release://security-provenance-review-report`.
 - Release metadata is published through `release://metadata-report`.

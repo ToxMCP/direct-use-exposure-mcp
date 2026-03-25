@@ -138,6 +138,10 @@ def tier1_inhalation_parameter_guide() -> str:
             "  provenance can distinguish those recommendation families.",
             "- Caller-supplied Tier 1 geometry and timing inputs remain authoritative even when a",
             "  matching packaged profile exists.",
+            "- When caller-supplied Tier 1 geometry or regime inputs diverge materially from a",
+            "  matched packaged profile, the runtime emits a warning-quality",
+            "  `tier1_profile_anchor_divergence` flag and records alignment status in",
+            "  `route_metrics`.",
         ]
     )
     return "\n".join(lines)
@@ -403,6 +407,9 @@ def inhalation_tier_upgrade_guide() -> str:
         "- The packaged manifest publishes explicit screening parameter",
         "  sources rather than burying",
         "  Tier 1 heuristics in code constants.",
+        "- Preserve `tier1_profile_alignment_status` and any",
+        "  `tier1_profile_anchor_divergence` warning when caller inputs",
+        "  depart materially from the packaged Tier 1 anchors.",
         "",
     ]
     lines.extend(_tier1_inhalation_profile_lines())
