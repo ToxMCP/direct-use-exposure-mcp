@@ -1,5 +1,26 @@
 {
   "$defs": {
+    "DependencyHandlingStrategy": {
+      "enum": [
+        "scenario_packaged",
+        "conditional_model_required",
+        "joint_model_required",
+        "not_quantified"
+      ],
+      "title": "DependencyHandlingStrategy",
+      "type": "string"
+    },
+    "DependencyRelationship": {
+      "enum": [
+        "structural",
+        "physiological",
+        "behavioral",
+        "mechanistic",
+        "scenario_package"
+      ],
+      "title": "DependencyRelationship",
+      "type": "string"
+    },
     "Route": {
       "enum": [
         "dermal",
@@ -18,6 +39,16 @@
         "population_distribution"
       ],
       "title": "ScenarioClass",
+      "type": "string"
+    },
+    "ScenarioPackageFamily": {
+      "enum": [
+        "use_intensity",
+        "composition_use_burden",
+        "microenvironment_context",
+        "ingestion_regimen"
+      ],
+      "title": "ScenarioPackageFamily",
       "type": "string"
     },
     "ScenarioPackageProbabilityPointDefinition": {
@@ -86,10 +117,36 @@
           "title": "Archetypelibrarysetid",
           "type": "string"
         },
+        "productFamily": {
+          "description": "Named product-family or use-family for the package.",
+          "title": "Productfamily",
+          "type": "string"
+        },
+        "packageFamily": {
+          "$ref": "#/$defs/ScenarioPackageFamily",
+          "description": "Curated dependency taxonomy family for the package."
+        },
         "dependencyCluster": {
           "description": "Named coupled-driver cluster preserved by the package.",
           "title": "Dependencycluster",
           "type": "string"
+        },
+        "dependencyAxes": {
+          "description": "Curated driver axes preserved together.",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Dependencyaxes",
+          "type": "array"
+        },
+        "relationshipType": {
+          "$ref": "#/$defs/DependencyRelationship",
+          "description": "Dependency relationship classification for the packaged bundle."
+        },
+        "handlingStrategy": {
+          "$ref": "#/$defs/DependencyHandlingStrategy",
+          "description": "How the coupled drivers are handled in the packaged summary."
         },
         "supportPoints": {
           "items": {
@@ -114,7 +171,12 @@
         "route",
         "scenarioClass",
         "archetypeLibrarySetId",
+        "productFamily",
+        "packageFamily",
         "dependencyCluster",
+        "dependencyAxes",
+        "relationshipType",
+        "handlingStrategy",
         "supportPoints"
       ],
       "title": "ScenarioPackageProbabilityProfile",

@@ -139,6 +139,13 @@ class DependencyHandlingStrategy(StrEnum):
     NOT_QUANTIFIED = "not_quantified"
 
 
+class ScenarioPackageFamily(StrEnum):
+    USE_INTENSITY = "use_intensity"
+    COMPOSITION_USE_BURDEN = "composition_use_burden"
+    MICROENVIRONMENT_CONTEXT = "microenvironment_context"
+    INGESTION_REGIMEN = "ingestion_regimen"
+
+
 class ValidationStatus(StrEnum):
     VERIFICATION_ONLY = "verification_only"
     BENCHMARK_REGRESSION = "benchmark_regression"
@@ -390,10 +397,36 @@ class ScenarioPackageProbabilityProfile(StrictModel):
     route: Route = Field(..., description="Route for which the package profile applies.")
     scenario_class: ScenarioClass = Field(..., alias="scenarioClass")
     archetype_library_set_id: str = Field(..., alias="archetypeLibrarySetId")
+    product_family: str = Field(
+        ...,
+        alias="productFamily",
+        description="Named product-family or use-family for the package.",
+    )
+    package_family: ScenarioPackageFamily = Field(
+        ...,
+        alias="packageFamily",
+        description="Curated dependency taxonomy family for the package.",
+    )
     dependency_cluster: str = Field(
         ...,
         alias="dependencyCluster",
         description="Named coupled-driver cluster preserved by the package.",
+    )
+    dependency_axes: list[str] = Field(
+        ...,
+        alias="dependencyAxes",
+        min_length=1,
+        description="Curated driver axes preserved together.",
+    )
+    relationship_type: DependencyRelationship = Field(
+        ...,
+        alias="relationshipType",
+        description="Dependency relationship classification for the packaged bundle.",
+    )
+    handling_strategy: DependencyHandlingStrategy = Field(
+        ...,
+        alias="handlingStrategy",
+        description="How the coupled drivers are handled in the packaged summary.",
     )
     support_points: list[ScenarioPackageProbabilityPointDefinition] = Field(
         ..., alias="supportPoints", min_length=2
@@ -1046,7 +1079,24 @@ class ScenarioPackageProbabilitySummary(StrictModel):
         default=UncertaintyTier.TIER_C, alias="uncertaintyTier"
     )
     package_profile_id: str = Field(..., alias="packageProfileId")
+    product_family: str = Field(
+        ..., alias="productFamily", description="Named product-family or use-family."
+    )
+    package_family: ScenarioPackageFamily = Field(
+        ..., alias="packageFamily", description="Curated dependency taxonomy family."
+    )
     dependency_cluster: str = Field(..., alias="dependencyCluster")
+    dependency_axes: list[str] = Field(
+        default_factory=list,
+        alias="dependencyAxes",
+        description="Curated driver axes preserved together in the package.",
+    )
+    relationship_type: DependencyRelationship = Field(
+        ..., alias="relationshipType", description="Dependency relationship classification."
+    )
+    handling_strategy: DependencyHandlingStrategy = Field(
+        ..., alias="handlingStrategy", description="How the packaged summary handles dependence."
+    )
     profile_version: str = Field(..., alias="profileVersion")
     archetype_library_set_id: str = Field(..., alias="archetypeLibrarySetId")
     archetype_library_version: str = Field(..., alias="archetypeLibraryVersion")

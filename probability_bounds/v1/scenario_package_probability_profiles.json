@@ -1,8 +1,9 @@
 {
-  "profile_version": "2026.03.25.v1",
+  "profile_version": "2026.03.25.v2",
   "notes": [
     "Scenario-package probability profiles preserve coupled drivers by referencing packaged archetype-library templates as coherent support points.",
     "These profiles publish cumulative probability bounds over scenario packages, not over independent parameter marginals.",
+    "Each packaged profile carries a curated package family, product family, and dependency axes so coupled-driver handling remains explicit.",
     "Tier C scenario-package outputs remain screening summaries and must not be interpreted as validated population exposure distributions."
   ],
   "profiles": [
@@ -13,7 +14,16 @@
       "route": "dermal",
       "scenarioClass": "screening",
       "archetypeLibrarySetId": "adult_leave_on_hand_cream",
+      "productFamily": "personal_care",
+      "packageFamily": "use_intensity",
       "dependencyCluster": "use-intensity-cluster",
+      "dependencyAxes": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "relationshipType": "scenario_package",
+      "handlingStrategy": "scenario_packaged",
       "supportPoints": [
         {
           "pointId": "lower_package",
@@ -43,13 +53,70 @@
       ]
     },
     {
+      "profileId": "adult_leave_on_hand_cream_composition_use_package",
+      "label": "Adult leave-on hand cream composition/use package",
+      "description": "Probability bounds over coupled formulation-strength and use-burden packages for adult hand-cream screening.",
+      "route": "dermal",
+      "scenarioClass": "screening",
+      "archetypeLibrarySetId": "adult_leave_on_hand_cream",
+      "productFamily": "personal_care",
+      "packageFamily": "composition_use_burden",
+      "dependencyCluster": "composition-use-burden-cluster",
+      "dependencyAxes": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "relationshipType": "scenario_package",
+      "handlingStrategy": "scenario_packaged",
+      "supportPoints": [
+        {
+          "pointId": "lower_package",
+          "templateId": "adult_leave_on_hand_cream_low",
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.2,
+          "note": "Lower formulation-strength and use-burden package for lighter dermal screening."
+        },
+        {
+          "pointId": "typical_package",
+          "templateId": "adult_leave_on_hand_cream_typical",
+          "cumulativeProbabilityLower": 0.2,
+          "cumulativeProbabilityUpper": 0.7,
+          "note": "Reference composition/use package aligned to the baseline adult hand-cream archetype."
+        },
+        {
+          "pointId": "upper_package",
+          "templateId": "adult_leave_on_hand_cream_high",
+          "cumulativeProbabilityLower": 0.7,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Upper formulation-strength and use-burden package for heavier dermal screening."
+        }
+      ],
+      "limitations": [
+        "This package keeps composition strength and use burden packaged together, so it should not be decomposed into independent marginals.",
+        "The profile remains a screening-level package and does not imply a validated consumer-use distribution."
+      ]
+    },
+    {
       "profileId": "adult_trigger_spray_room_context_package",
       "label": "Adult trigger spray room-context package",
       "description": "Probability bounds over coupled room and use-context packages for trigger-spray inhalation screening.",
       "route": "inhalation",
       "scenarioClass": "inhalation",
       "archetypeLibrarySetId": "adult_trigger_spray_room",
+      "productFamily": "household_cleaner",
+      "packageFamily": "microenvironment_context",
       "dependencyCluster": "room-context-cluster",
+      "dependencyAxes": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+        "room_volume_m3",
+        "air_exchange_rate_per_hour",
+        "exposure_duration_hours"
+      ],
+      "relationshipType": "scenario_package",
+      "handlingStrategy": "scenario_packaged",
       "supportPoints": [
         {
           "pointId": "lower_package",
@@ -76,6 +143,52 @@
       "limitations": [
         "This package preserves coupled room-volume, ventilation, duration, and release settings but does not resolve breathing-zone peaks.",
         "The profile is not a validated indoor-microenvironment distribution."
+      ]
+    },
+    {
+      "profileId": "child_direct_oral_liquid_regimen_package",
+      "label": "Child direct-oral liquid regimen package",
+      "description": "Probability bounds over coupled dosing-regimen packages for child direct-oral liquid screening.",
+      "route": "oral",
+      "scenarioClass": "screening",
+      "archetypeLibrarySetId": "child_direct_oral_liquid",
+      "productFamily": "medicinal_liquid",
+      "packageFamily": "ingestion_regimen",
+      "dependencyCluster": "oral-regimen-cluster",
+      "dependencyAxes": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+        "ingestion_fraction"
+      ],
+      "relationshipType": "scenario_package",
+      "handlingStrategy": "scenario_packaged",
+      "supportPoints": [
+        {
+          "pointId": "lower_package",
+          "templateId": "child_direct_oral_liquid_low",
+          "cumulativeProbabilityLower": 0.0,
+          "cumulativeProbabilityUpper": 0.2,
+          "note": "Lower dosing-regimen package for reduced direct-oral screening."
+        },
+        {
+          "pointId": "typical_package",
+          "templateId": "child_direct_oral_liquid_typical",
+          "cumulativeProbabilityLower": 0.2,
+          "cumulativeProbabilityUpper": 0.85,
+          "note": "Reference dosing-regimen package aligned to the baseline child direct-oral archetype."
+        },
+        {
+          "pointId": "upper_package",
+          "templateId": "child_direct_oral_liquid_high",
+          "cumulativeProbabilityLower": 0.85,
+          "cumulativeProbabilityUpper": 1.0,
+          "note": "Upper dosing-regimen package for higher direct-oral screening."
+        }
+      ],
+      "limitations": [
+        "This package keeps concentration, amount, frequency, and ingestion completeness bundled together for direct-oral screening.",
+        "The profile is not a validated pediatric dosing distribution."
       ]
     }
   ]

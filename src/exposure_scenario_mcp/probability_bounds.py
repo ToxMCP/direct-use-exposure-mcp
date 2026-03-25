@@ -250,6 +250,23 @@ def _merge_dependency_metadata(scenarios) -> list[DependencyDescriptor]:
     return list(merged.values())
 
 
+def _scenario_package_dependency_descriptor(
+    profile: ScenarioPackageProbabilityProfile,
+) -> DependencyDescriptor:
+    return DependencyDescriptor(
+        dependencyId=f"scenario-package:{profile.profile_id}",
+        title=f"{profile.label} packaged dependency bundle",
+        relationshipType=profile.relationship_type,
+        assumptionNames=profile.dependency_axes,
+        handlingStrategy=profile.handling_strategy,
+        note=(
+            f"Packaged `{profile.package_family.value}` bundle for `{profile.product_family}` "
+            "contexts. The published support points preserve these axes together instead of "
+            "sampling them independently."
+        ),
+    )
+
+
 def _validate_scenario_package_profile(
     profile: ScenarioPackageProbabilityProfile,
     template_set,
@@ -329,13 +346,14 @@ def build_probability_bounds_from_scenario_package(
                 UncertaintyType.SCENARIO_UNCERTAINTY,
                 UncertaintyType.VARIABILITY,
             ],
-            related_assumptions=[profile.dependency_cluster],
+            related_assumptions=profile.dependency_axes,
             quantification_status=UncertaintyQuantificationStatus.PROBABILITY_BOUNDS,
             bias_direction=BiasDirection.BIDIRECTIONAL,
             impact_level="high",
             summary=(
                 f"Profile `{profile.profile_id}` applies cumulative probability bounds to "
-                "packaged scenario states that preserve coupled drivers."
+                f"packaged `{profile.package_family.value}` states that preserve coupled "
+                "drivers."
             ),
             recommendation=(
                 "Treat these outputs as bounded package frequencies, not as a full joint "
@@ -349,7 +367,7 @@ def build_probability_bounds_from_scenario_package(
                 entry_id="scenario-package-probability-bounds-limitations",
                 title="Scenario-package probability limitations remain in force",
                 uncertainty_types=[UncertaintyType.MODEL_UNCERTAINTY],
-                related_assumptions=[profile.dependency_cluster],
+                related_assumptions=profile.dependency_axes,
                 quantification_status=UncertaintyQuantificationStatus.PROBABILITY_BOUNDS,
                 bias_direction=BiasDirection.UNKNOWN,
                 impact_level="medium",
@@ -360,7 +378,6 @@ def build_probability_bounds_from_scenario_package(
                 ),
             )
         )
-    dependency_metadata = _merge_dependency_metadata([scenario for _, scenario in scenarios])
     representative_validation = scenarios[0][1].validation_summary
     validation_summary = representative_validation.model_copy(
         update={
@@ -369,13 +386,15 @@ def build_probability_bounds_from_scenario_package(
             "notes": [
                 *representative_validation.notes,
                 (
-                    "Scenario-package probability bounds preserve coupled "
-                    "drivers within packaged templates."
+                    f"Scenario-package probability bounds preserve coupled "
+                    f"`{profile.package_family.value}` drivers within packaged templates."
                 ),
             ],
         },
         deep=True,
     )
+    dependency_metadata = _merge_dependency_metadata([scenario for _, scenario in scenarios])
+    dependency_metadata.append(_scenario_package_dependency_descriptor(profile))
     tracker = AssumptionTracker(registry=registry)
     tracker.add_derived(
         "scenario_package_profile_id",
@@ -389,6 +408,12 @@ def build_probability_bounds_from_scenario_package(
         None,
         "Tier C scenario-package probability support-point count.",
     )
+    tracker.add_derived(
+        "scenario_package_family",
+        profile.package_family.value,
+        None,
+        "Curated dependency taxonomy family for the packaged scenario profile.",
+    )
     return ScenarioPackageProbabilitySummary(
         summaryId=f"pspkg-{uuid4().hex[:12]}",
         chemical_id=params.chemical_id,
@@ -396,7 +421,12 @@ def build_probability_bounds_from_scenario_package(
         scenarioClass=profile.scenario_class,
         label=params.label or profile.label,
         packageProfileId=profile.profile_id,
+        productFamily=profile.product_family,
+        packageFamily=profile.package_family,
         dependencyCluster=profile.dependency_cluster,
+        dependencyAxes=profile.dependency_axes,
+        relationshipType=profile.relationship_type,
+        handlingStrategy=profile.handling_strategy,
         profileVersion=packages.version,
         archetypeLibrarySetId=template_set.set_id,
         archetypeLibraryVersion=archetypes.version,

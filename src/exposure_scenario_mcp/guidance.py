@@ -68,7 +68,11 @@ def _scenario_package_probability_lines() -> list[str]:
     ]
     for item in manifest.profiles:
         lines.append(
-            f"- `{item.profile_id}` [{item.route.value}/{item.dependency_cluster}] {item.label}"
+            
+                f"- `{item.profile_id}` "
+                f"[{item.route.value}/{item.package_family.value}/{item.product_family}] "
+                f"{item.label}"
+            
         )
     return lines
 
@@ -236,7 +240,11 @@ def probability_bounds_guide() -> str:
         "- Tier C probability-bounds outputs are not joint scenario distributions.",
         "- Profiles are packaged and reviewable; callers do not inject arbitrary",
         "  probability claims.",
-        "- Dependence remains externalized because only one driver varies per summary.",
+        "- Single-driver summaries keep dependence externalized because only one",
+        "  driver varies.",
+        "- Scenario-package summaries carry curated package taxonomy through",
+        "  `packageFamily`, `productFamily`, `dependencyAxes`, `relationshipType`,",
+        "  and `handlingStrategy`.",
         "",
     ]
     lines.extend(_probability_profile_lines())
@@ -253,8 +261,8 @@ def probability_bounds_guide() -> str:
             "  matches the published profile applicability.",
             "- Use `exposure_build_probability_bounds_from_scenario_package` when preserving",
             "  coupled drivers matters more than isolating a single parameter.",
-            "- Preserve `driverProfileId`, `profileVersion`, and all profile limitations in",
-            "  downstream summaries and reports.",
+            "- Preserve `driverProfileId` or `packageProfileId`, `profileVersion`, and all",
+            "  emitted taxonomy and limitation fields in downstream summaries and reports.",
         ]
     )
     return "\n".join(lines)

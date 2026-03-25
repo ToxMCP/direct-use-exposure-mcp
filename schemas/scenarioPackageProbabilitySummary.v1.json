@@ -967,6 +967,16 @@
       "title": "ScenarioDose",
       "type": "object"
     },
+    "ScenarioPackageFamily": {
+      "enum": [
+        "use_intensity",
+        "composition_use_burden",
+        "microenvironment_context",
+        "ingestion_regimen"
+      ],
+      "title": "ScenarioPackageFamily",
+      "type": "string"
+    },
     "ScenarioPackageProbabilityPointResult": {
       "additionalProperties": false,
       "properties": {
@@ -1378,9 +1388,34 @@
       "title": "Packageprofileid",
       "type": "string"
     },
+    "productFamily": {
+      "description": "Named product-family or use-family.",
+      "title": "Productfamily",
+      "type": "string"
+    },
+    "packageFamily": {
+      "$ref": "#/$defs/ScenarioPackageFamily",
+      "description": "Curated dependency taxonomy family."
+    },
     "dependencyCluster": {
       "title": "Dependencycluster",
       "type": "string"
+    },
+    "dependencyAxes": {
+      "description": "Curated driver axes preserved together in the package.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Dependencyaxes",
+      "type": "array"
+    },
+    "relationshipType": {
+      "$ref": "#/$defs/DependencyRelationship",
+      "description": "Dependency relationship classification."
+    },
+    "handlingStrategy": {
+      "$ref": "#/$defs/DependencyHandlingStrategy",
+      "description": "How the packaged summary handles dependence."
     },
     "profileVersion": {
       "title": "Profileversion",
@@ -1452,7 +1487,11 @@
     "scenarioClass",
     "label",
     "packageProfileId",
+    "productFamily",
+    "packageFamily",
     "dependencyCluster",
+    "relationshipType",
+    "handlingStrategy",
     "profileVersion",
     "archetypeLibrarySetId",
     "archetypeLibraryVersion",

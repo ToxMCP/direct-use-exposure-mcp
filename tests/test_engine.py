@@ -569,8 +569,56 @@ def test_scenario_package_probability_builds_tier_c_summary() -> None:
     assert summary.package_profile_id == "adult_leave_on_hand_cream_use_intensity_package"
     assert summary.archetype_library_set_id == "adult_leave_on_hand_cream"
     assert summary.archetype_library_version == archetype_library.version
+    assert summary.product_family == "personal_care"
+    assert summary.package_family.value == "use_intensity"
     assert summary.dependency_cluster == "use-intensity-cluster"
+    assert summary.dependency_axes == [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+    ]
+    assert summary.relationship_type.value == "scenario_package"
+    assert summary.handling_strategy.value == "scenario_packaged"
     assert len(summary.support_points) == 3
     assert all(item.scenario.route == Route.DERMAL for item in summary.support_points)
     assert summary.minimum_dose.value < summary.maximum_dose.value
     assert summary.uncertainty_register[0].quantification_status.value == "probability_bounds"
+    assert any(
+        item.dependency_id == "scenario-package:adult_leave_on_hand_cream_use_intensity_package"
+        for item in summary.dependency_metadata
+    )
+
+
+def test_oral_scenario_package_probability_builds_tier_c_summary() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    archetype_library = ArchetypeLibraryRegistry.load()
+    packages = ScenarioProbabilityPackageRegistry.load()
+
+    summary = build_probability_bounds_from_scenario_package(
+        BuildProbabilityBoundsFromScenarioPackageInput(
+            packageProfileId="child_direct_oral_liquid_regimen_package",
+            chemicalId="DTXSID124",
+            chemicalName="Example Oral Chemical",
+            label="Child oral scenario-package probability bounds",
+        ),
+        engine,
+        defaults_registry,
+        archetype_library,
+        packages,
+        generated_at="2026-03-25T00:00:00+00:00",
+    )
+
+    assert summary.route == Route.ORAL
+    assert summary.scenario_class == ScenarioClass.SCREENING
+    assert summary.product_family == "medicinal_liquid"
+    assert summary.package_family.value == "ingestion_regimen"
+    assert summary.dependency_axes == [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day",
+        "ingestion_fraction",
+    ]
+    assert len(summary.support_points) == 3
+    assert all(item.scenario.route == Route.ORAL for item in summary.support_points)
+    assert summary.minimum_dose.value < summary.maximum_dose.value

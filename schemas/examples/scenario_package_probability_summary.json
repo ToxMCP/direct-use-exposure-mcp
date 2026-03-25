@@ -7,8 +7,17 @@
   "label": "Example dermal scenario-package probability bounds",
   "uncertaintyTier": "tier_c",
   "packageProfileId": "adult_leave_on_hand_cream_use_intensity_package",
+  "productFamily": "personal_care",
+  "packageFamily": "use_intensity",
   "dependencyCluster": "use-intensity-cluster",
-  "profileVersion": "2026.03.25.v1",
+  "dependencyAxes": [
+    "concentration_fraction",
+    "use_amount_per_event",
+    "use_events_per_day"
+  ],
+  "relationshipType": "scenario_package",
+  "handlingStrategy": "scenario_packaged",
+  "profileVersion": "2026.03.25.v2",
   "archetypeLibrarySetId": "adult_leave_on_hand_cream",
   "archetypeLibraryVersion": "2026.03.25.v1",
   "supportPoints": [
@@ -1952,12 +1961,14 @@
         "variability"
       ],
       "relatedAssumptions": [
-        "use-intensity-cluster"
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day"
       ],
       "quantificationStatus": "probability_bounds",
       "biasDirection": "bidirectional",
       "impactLevel": "high",
-      "summary": "Profile `adult_leave_on_hand_cream_use_intensity_package` applies cumulative probability bounds to packaged scenario states that preserve coupled drivers.",
+      "summary": "Profile `adult_leave_on_hand_cream_use_intensity_package` applies cumulative probability bounds to packaged `use_intensity` states that preserve coupled drivers.",
       "recommendation": "Treat these outputs as bounded package frequencies, not as a full joint population exposure model."
     },
     {
@@ -1967,7 +1978,9 @@
         "model_uncertainty"
       ],
       "relatedAssumptions": [
-        "use-intensity-cluster"
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day"
       ],
       "quantificationStatus": "probability_bounds",
       "biasDirection": "unknown",
@@ -1987,6 +2000,18 @@
       ],
       "handlingStrategy": "scenario_packaged",
       "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+    },
+    {
+      "dependencyId": "scenario-package:adult_leave_on_hand_cream_use_intensity_package",
+      "title": "Adult leave-on hand cream use-intensity package packaged dependency bundle",
+      "relationshipType": "scenario_package",
+      "assumptionNames": [
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "handlingStrategy": "scenario_packaged",
+      "note": "Packaged `use_intensity` bundle for `personal_care` contexts. The published support points preserve these axes together instead of sampling them independently."
     }
   ],
   "validationSummary": {
@@ -2005,7 +2030,7 @@
       "Deterministic verification and benchmark regression are available for this domain.",
       "External validation remains a documented future capability rather than an active gate.",
       "Probabilistic outputs stay disabled until dependencies and validation evidence mature.",
-      "Scenario-package probability bounds preserve coupled drivers within packaged templates."
+      "Scenario-package probability bounds preserve coupled `use_intensity` drivers within packaged templates."
     ]
   },
   "provenance": {
