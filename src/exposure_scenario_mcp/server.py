@@ -46,6 +46,7 @@ from exposure_scenario_mcp.guidance import (
     uncertainty_framework,
     validation_dossier_markdown,
     validation_framework,
+    validation_reference_bands_guide,
 )
 from exposure_scenario_mcp.integrations import (
     PbpkExternalImportPackage,
@@ -103,7 +104,11 @@ from exposure_scenario_mcp.uncertainty import (
     build_parameter_bounds_summary,
     enrich_scenario_uncertainty,
 )
-from exposure_scenario_mcp.validation import build_validation_dossier_report, validation_manifest
+from exposure_scenario_mcp.validation import (
+    build_validation_dossier_report,
+    validation_manifest,
+    validation_reference_band_manifest,
+)
 
 
 def _success_result(message: str, payload_model) -> CallToolResult:
@@ -676,11 +681,23 @@ def create_mcp_server() -> FastMCP:
         )
         return json.dumps(payload, indent=2)
 
+    @mcp.resource("validation://reference-bands")
+    def validation_reference_bands_resource() -> str:
+        """Machine-readable executable validation reference-band manifest."""
+
+        return json.dumps(validation_reference_band_manifest(), indent=2)
+
     @mcp.resource("docs://validation-dossier")
     def docs_validation_dossier() -> str:
         """Human-readable validation dossier with open evidence gaps and priorities."""
 
         return validation_dossier_markdown()
+
+    @mcp.resource("docs://validation-reference-bands")
+    def docs_validation_reference_bands() -> str:
+        """Human-readable executable validation reference-band guide."""
+
+        return validation_reference_bands_guide()
 
     @mcp.resource("release://readiness-report")
     def release_readiness_report() -> str:

@@ -1,0 +1,133 @@
+{
+  "$defs": {
+    "ValidationReferenceBand": {
+      "additionalProperties": false,
+      "properties": {
+        "referenceBandId": {
+          "title": "Referencebandid",
+          "type": "string"
+        },
+        "checkId": {
+          "title": "Checkid",
+          "type": "string"
+        },
+        "referenceDatasetId": {
+          "title": "Referencedatasetid",
+          "type": "string"
+        },
+        "domain": {
+          "description": "Validation domain or route mechanism.",
+          "title": "Domain",
+          "type": "string"
+        },
+        "comparedMetric": {
+          "title": "Comparedmetric",
+          "type": "string"
+        },
+        "referenceLower": {
+          "title": "Referencelower",
+          "type": "number"
+        },
+        "referenceUpper": {
+          "title": "Referenceupper",
+          "type": "number"
+        },
+        "unit": {
+          "description": "Unit for the compared metric.",
+          "title": "Unit",
+          "type": "string"
+        },
+        "applicableSelectors": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Structured selectors describing where the reference band is intended to apply.",
+          "title": "Applicableselectors",
+          "type": "object"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "referenceBandId",
+        "checkId",
+        "referenceDatasetId",
+        "domain",
+        "comparedMetric",
+        "referenceLower",
+        "referenceUpper",
+        "unit",
+        "note"
+      ],
+      "title": "ValidationReferenceBand",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "validationReferenceBandManifest.v1",
+      "default": "validationReferenceBandManifest.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "referenceVersion": {
+      "title": "Referenceversion",
+      "type": "string"
+    },
+    "referenceHashSha256": {
+      "title": "Referencehashsha256",
+      "type": "string"
+    },
+    "path": {
+      "description": "Package or repository path for the reference-band manifest.",
+      "title": "Path",
+      "type": "string"
+    },
+    "bandCount": {
+      "minimum": 0,
+      "title": "Bandcount",
+      "type": "integer"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "bands": {
+      "items": {
+        "$ref": "#/$defs/ValidationReferenceBand"
+      },
+      "title": "Bands",
+      "type": "array"
+    }
+  },
+  "required": [
+    "referenceVersion",
+    "referenceHashSha256",
+    "path",
+    "bandCount"
+  ],
+  "title": "ValidationReferenceBandManifest",
+  "type": "object"
+}

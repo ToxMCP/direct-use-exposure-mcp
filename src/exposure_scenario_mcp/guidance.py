@@ -14,6 +14,7 @@ from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileR
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 from exposure_scenario_mcp.validation import build_validation_dossier_report
+from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
 
 
 def _benchmark_matrix_lines() -> list[str]:
@@ -450,6 +451,7 @@ def inhalation_tier_upgrade_guide() -> str:
 
 def validation_framework() -> str:
     report = build_validation_dossier_report()
+    reference_manifest = ValidationReferenceBandRegistry.load().manifest()
     lines = [
         "# Validation Framework",
         "",
@@ -478,6 +480,11 @@ def validation_framework() -> str:
             "",
             "- `validationSummary.executedValidationChecks` is populated only when a scenario",
             "  matches a supported reference pattern with directly comparable metrics.",
+            (
+                f"- The executable reference-band manifest currently publishes "
+                f"`{reference_manifest.band_count}`"
+            ),
+            "  narrow screening bands through `validation://reference-bands`.",
             "- Current executable checks cover hand-cream loading realism for hand-scale",
             "  dermal scenarios and wet-cloth contact mass realism for household-cleaner",
             "  wipe scenarios.",
@@ -491,6 +498,38 @@ def validation_framework() -> str:
         lines.append(f"- `{item.gap_id}` [{item.severity.value}] {item.title}")
     lines.extend(["", "## Notes", ""])
     lines.extend(f"- {item}" for item in report.notes)
+    return "\n".join(lines)
+
+
+def validation_reference_bands_guide() -> str:
+    manifest = ValidationReferenceBandRegistry.load().manifest()
+    lines = [
+        "# Validation Reference Bands",
+        "",
+        "These bands back the narrow executable validation checks exposed through",
+        "`validationSummary.executedValidationChecks`.",
+        "",
+        f"- Reference version: `{manifest.reference_version}`",
+        f"- Manifest hash: `{manifest.reference_hash_sha256}`",
+        f"- Band count: `{manifest.band_count}`",
+        f"- Resource path: `{manifest.path}`",
+        "",
+        "## Bands",
+        "",
+    ]
+    for item in manifest.bands:
+        selectors = ", ".join(
+            f"{key}={value}" for key, value in sorted(item.applicable_selectors.items())
+        ) or "global"
+        lines.append(
+            f"- `{item.reference_band_id}` -> `{item.check_id}` "
+            f"[{item.domain}] `{item.reference_lower}` to `{item.reference_upper}` `{item.unit}`"
+        )
+        lines.append(f"  dataset: `{item.reference_dataset_id}`")
+        lines.append(f"  selectors: {selectors}")
+        lines.append(f"  note: {item.note}")
+    lines.extend(["", "## Notes", ""])
+    lines.extend(f"- {item}" for item in manifest.notes)
     return "\n".join(lines)
 
 

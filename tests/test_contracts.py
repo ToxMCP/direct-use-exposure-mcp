@@ -14,6 +14,7 @@ from exposure_scenario_mcp.contracts import (
 from exposure_scenario_mcp.defaults import DefaultsRegistry, build_defaults_curation_report
 from exposure_scenario_mcp.server import create_mcp_server
 from exposure_scenario_mcp.validation import build_validation_dossier_report
+from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
 from scripts.generate_contract_assets import main as generate_contract_assets
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -99,6 +100,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "dependencyDescriptor.v1" in manifest["schemas"]
     assert "validationBenchmarkDomain.v1" in manifest["schemas"]
     assert "externalValidationDataset.v1" in manifest["schemas"]
+    assert "validationReferenceBand.v1" in manifest["schemas"]
+    assert "validationReferenceBandManifest.v1" in manifest["schemas"]
     assert "validationGap.v1" in manifest["schemas"]
     assert "executedValidationCheck.v1" in manifest["schemas"]
     assert "defaultsCurationEntry.v1" in manifest["schemas"]
@@ -151,6 +154,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://defaults-curation-report",
         "docs://validation-framework",
         "docs://validation-dossier",
+        "docs://validation-reference-bands",
         "docs://troubleshooting",
         "defaults://curation-report",
         "tier1-inhalation://manifest",
@@ -163,6 +167,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://security-provenance-review",
         "validation://manifest",
         "validation://dossier-report",
+        "validation://reference-bands",
         "release://metadata-report",
         "release://readiness-report",
         "release://security-provenance-review-report",
@@ -189,6 +194,24 @@ def test_validation_dossier_report_matches_schema_and_surface() -> None:
     }
     assert "rivm_wet_cloth_dermal_contact_loading_2018" in {
         item["datasetId"] for item in report["externalDatasets"]
+    }
+
+
+def test_validation_reference_band_manifest_matches_schema_and_surface() -> None:
+    generate_contract_assets()
+    schema = json.loads(
+        (SCHEMA_DIR / "validationReferenceBandManifest.v1.json").read_text(encoding="utf-8")
+    )
+    report = ValidationReferenceBandRegistry.load().manifest().model_dump(
+        mode="json", by_alias=True
+    )
+
+    validate(instance=report, schema=schema)
+    assert report["referenceVersion"] == "2026.03.25.v1"
+    assert report["bandCount"] == 2
+    assert {item["checkId"] for item in report["bands"]} == {
+        "hand_cream_application_loading_2012",
+        "wet_cloth_contact_mass_2018",
     }
 
 

@@ -171,6 +171,10 @@
       "description": "Validation dossier with cited external references and open gaps."
     },
     {
+      "uri": "docs://validation-reference-bands",
+      "description": "Human-readable executable validation reference-band guide with applicability selectors."
+    },
+    {
       "uri": "docs://suite-integration-guide",
       "description": "Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP."
     },
@@ -205,6 +209,10 @@
     {
       "uri": "validation://dossier-report",
       "description": "Machine-readable validation dossier with external references and open gaps."
+    },
+    {
+      "uri": "validation://reference-bands",
+      "description": "Machine-readable executable validation reference-band manifest."
     },
     {
       "uri": "release://readiness-report",
@@ -257,6 +265,8 @@
     "dependencyDescriptor.v1": "schemas/dependencyDescriptor.v1.json",
     "validationBenchmarkDomain.v1": "schemas/validationBenchmarkDomain.v1.json",
     "externalValidationDataset.v1": "schemas/externalValidationDataset.v1.json",
+    "validationReferenceBand.v1": "schemas/validationReferenceBand.v1.json",
+    "validationReferenceBandManifest.v1": "schemas/validationReferenceBandManifest.v1.json",
     "validationGap.v1": "schemas/validationGap.v1.json",
     "executedValidationCheck.v1": "schemas/executedValidationCheck.v1.json",
     "defaultsCurationEntry.v1": "schemas/defaultsCurationEntry.v1.json",

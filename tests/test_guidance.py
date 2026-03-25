@@ -18,6 +18,7 @@ from exposure_scenario_mcp.guidance import (
     uncertainty_framework,
     validation_dossier_markdown,
     validation_framework,
+    validation_reference_bands_guide,
 )
 
 
@@ -48,6 +49,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     inhalation_tier_guide = inhalation_tier_upgrade_guide()
     tier1_parameter_guide = tier1_inhalation_parameter_guide()
     probability_bounds = probability_bounds_guide()
+    validation_bands = validation_reference_bands_guide()
 
     assert "Tier A" in uncertainty
     assert "Tier B" in uncertainty
@@ -84,8 +86,13 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`cleaning_trigger_spray_airborne_mass_fraction_2019`" in validation
     assert "pubmed.ncbi.nlm.nih.gov/31361572" in validation
     assert "Executable Validation Checks" in validation
+    assert "validation://reference-bands" in validation
     assert "executedValidationChecks" in validation
     assert "wet-cloth contact mass realism" in validation
+    assert "Validation Reference Bands" in validation_bands
+    assert "`hand_cream_application_loading_2012_band`" in validation_bands
+    assert "`wet_cloth_contact_mass_2018_band`" in validation_bands
+    assert "selectors:" in validation_bands
     assert "Validation Dossier" in dossier
     assert "`heuristic_defaults_active`" in dossier
     assert "`tier1_nf_ff_external_validation_partial_only`" in dossier

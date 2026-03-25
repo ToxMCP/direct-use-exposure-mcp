@@ -103,6 +103,8 @@ from exposure_scenario_mcp.models import (
     ValidationBenchmarkDomain,
     ValidationDossierReport,
     ValidationGap,
+    ValidationReferenceBand,
+    ValidationReferenceBandManifest,
     ValidationSummary,
 )
 from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
@@ -131,6 +133,8 @@ SCHEMA_MODELS = {
     "dependencyDescriptor.v1": DependencyDescriptor,
     "validationBenchmarkDomain.v1": ValidationBenchmarkDomain,
     "externalValidationDataset.v1": ExternalValidationDataset,
+    "validationReferenceBand.v1": ValidationReferenceBand,
+    "validationReferenceBandManifest.v1": ValidationReferenceBandManifest,
     "validationGap.v1": ValidationGap,
     "executedValidationCheck.v1": ExecutedValidationCheck,
     "defaultsCurationEntry.v1": DefaultsCurationEntry,
@@ -414,6 +418,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Validation dossier with cited external references and open gaps.",
             ),
             ContractResourceEntry(
+                uri="docs://validation-reference-bands",
+                description=(
+                    "Human-readable executable validation reference-band guide with "
+                    "applicability selectors."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="docs://suite-integration-guide",
                 description="Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP.",
             ),
@@ -461,6 +472,12 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description=(
                     "Machine-readable validation dossier with external references and "
                     "open gaps."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="validation://reference-bands",
+                description=(
+                    "Machine-readable executable validation reference-band manifest."
                 ),
             ),
             ContractResourceEntry(

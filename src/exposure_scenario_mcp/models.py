@@ -16,6 +16,20 @@ class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, populate_by_name=True)
 
 
+def _validate_required_auditable_text(value: str) -> str:
+    if value == "":
+        raise ValueError("Value must not be empty.")
+    if any(ord(char) < 32 or ord(char) == 127 for char in value):
+        raise ValueError("Value must not contain control characters.")
+    return value
+
+
+def _validate_optional_auditable_text(value: str | None) -> str | None:
+    if value is None:
+        return None
+    return _validate_required_auditable_text(value)
+
+
 class Route(StrEnum):
     DERMAL = "dermal"
     ORAL = "oral"
@@ -401,6 +415,40 @@ class ExternalValidationDataset(StrictModel):
         return self
 
 
+class ValidationReferenceBand(StrictModel):
+    reference_band_id: str = Field(..., alias="referenceBandId")
+    check_id: str = Field(..., alias="checkId")
+    reference_dataset_id: str = Field(..., alias="referenceDatasetId")
+    domain: str = Field(..., description="Validation domain or route mechanism.")
+    compared_metric: str = Field(..., alias="comparedMetric")
+    reference_lower: float = Field(..., alias="referenceLower")
+    reference_upper: float = Field(..., alias="referenceUpper")
+    unit: str = Field(..., description="Unit for the compared metric.")
+    applicable_selectors: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        alias="applicableSelectors",
+        description=(
+            "Structured selectors describing where the reference band is intended to apply."
+        ),
+    )
+    note: str
+
+
+class ValidationReferenceBandManifest(StrictModel):
+    schema_version: Literal["validationReferenceBandManifest.v1"] = (
+        "validationReferenceBandManifest.v1"
+    )
+    reference_version: str = Field(..., alias="referenceVersion")
+    reference_hash_sha256: str = Field(..., alias="referenceHashSha256")
+    path: str = Field(
+        ...,
+        description="Package or repository path for the reference-band manifest.",
+    )
+    band_count: int = Field(..., alias="bandCount", ge=0)
+    notes: list[str] = Field(default_factory=list)
+    bands: list[ValidationReferenceBand] = Field(default_factory=list)
+
+
 class ValidationGap(StrictModel):
     gap_id: str = Field(..., alias="gapId")
     title: str
@@ -761,6 +809,17 @@ class ProductUseProfile(StrictModel):
         default=None, description="Duration of exposure per event.", gt=0.0
     )
 
+    @field_validator(
+        "product_name",
+        "product_category",
+        "physical_form",
+        "application_method",
+        "retention_type",
+    )
+    @classmethod
+    def validate_auditable_text_fields(cls, value: str | None) -> str | None:
+        return _validate_optional_auditable_text(value)
+
 
 class PopulationProfile(StrictModel):
     schema_version: Literal["populationProfile.v1"] = "populationProfile.v1"
@@ -781,6 +840,11 @@ class PopulationProfile(StrictModel):
         default="global", description="Regional context for defaults or interpretation."
     )
 
+    @field_validator("population_group", "region")
+    @classmethod
+    def validate_population_text_fields(cls, value: str) -> str:
+        return _validate_required_auditable_text(value)
+
 
 class ExposureScenarioRequest(StrictModel):
     schema_version: Literal["exposureScenarioRequest.v1"] = "exposureScenarioRequest.v1"
@@ -799,6 +863,11 @@ class ExposureScenarioRequest(StrictModel):
     assumption_overrides: dict[str, ScalarValue] = Field(
         default_factory=dict, description="Additional explicit overrides for auditability."
     )
+
+    @field_validator("chemical_id", "chemical_name")
+    @classmethod
+    def validate_request_text_fields(cls, value: str | None) -> str | None:
+        return _validate_optional_auditable_text(value)
 
 
 class InhalationScenarioRequest(ExposureScenarioRequest):

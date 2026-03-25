@@ -121,6 +121,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
 | `Refinement workflow support` | Emits comparison/refinement bundles with explicit `refine_exposure` semantics and workflow hooks. |
 | `Validation dossier` | Publishes a typed validation dossier with benchmark domains, cited external validation datasets, heuristic-source families, and open evidence gaps, and threads evidence-readiness, executed validation checks, and gap IDs into every scenario-level `validationSummary`. |
+| `Executable validation bands` | Publishes a typed, versioned manifest for the narrow executable reference bands used by `validationSummary.executedValidationChecks`, so screening acceptance anchors are data-driven rather than hardcoded. |
 | `Curated dermal contact packs` | Replaces the highest-volume transfer and surface-contact-retention heuristics with RIVM-backed screening defaults for `personal_care` hand application and `household_cleaner` wipe contact while preserving explicit applicability domains and remaining evidence gaps. |
 | `Defaults curation report` | Publishes a typed branch-level report showing which defaults paths are curated, route-semantic, or still heuristic, so downstream clients can target the strongest scenario branches deliberately. |
 | `Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
@@ -181,6 +182,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `benchmarks://manifest`
 - `validation://manifest`
 - `validation://dossier-report`
+- `validation://reference-bands`
 
 ### Operator and scientific documentation
 
@@ -197,6 +199,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `docs://uncertainty-framework`
 - `docs://validation-framework`
 - `docs://validation-dossier`
+- `docs://validation-reference-bands`
 - `docs://suite-integration-guide`
 - `docs://troubleshooting`
 

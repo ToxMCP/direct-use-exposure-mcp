@@ -21,6 +21,7 @@ from exposure_scenario_mcp.models import (
     ValidationStatus,
     ValidationSummary,
 )
+from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
 
 BENCHMARK_CASE_DOMAINS = {
     "dermal_hand_cream_screening": "dermal_direct_application",
@@ -73,11 +74,6 @@ BENCHMARK_DOMAIN_NOTES = {
         )
     ],
 }
-
-HAND_CREAM_LOADING_REFERENCE_LOWER = 0.37
-HAND_CREAM_LOADING_REFERENCE_UPPER = 1.57
-WET_CLOTH_CONTACT_REFERENCE_LOWER = 0.31
-WET_CLOTH_CONTACT_REFERENCE_UPPER = 0.62
 
 EXTERNAL_VALIDATION_DATASETS = [
     ExternalValidationDataset(
@@ -392,6 +388,10 @@ def validation_manifest() -> dict:
     return build_validation_dossier_report().model_dump(mode="json", by_alias=True)
 
 
+def validation_reference_band_manifest() -> dict:
+    return ValidationReferenceBandRegistry.load().manifest().model_dump(mode="json", by_alias=True)
+
+
 def _evidence_readiness(
     benchmark_case_ids: list[str],
     datasets: list[ExternalValidationDataset],
@@ -431,6 +431,7 @@ def _assumption_value(scenario: ExposureScenario, name: str) -> float | None:
 def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedValidationCheck]:
     profile = scenario.product_use_profile
     checks: list[ExecutedValidationCheck] = []
+    reference_registry = ValidationReferenceBandRegistry.load()
 
     if (
         scenario.route == Route.DERMAL
@@ -446,12 +447,15 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
             and product_mass_g_event is not None
             and 0.0 < exposed_area <= 1200.0
         ):
+            reference_band = reference_registry.band_for_check(
+                "hand_cream_application_loading_2012"
+            )
             observed = (product_mass_g_event * 1000.0) / exposed_area
             status = (
                 ValidationCheckStatus.PASS
-                if HAND_CREAM_LOADING_REFERENCE_LOWER
+                if reference_band.reference_lower
                 <= observed
-                <= HAND_CREAM_LOADING_REFERENCE_UPPER
+                <= reference_band.reference_upper
                 else ValidationCheckStatus.WARNING
             )
             checks.append(
@@ -462,9 +466,9 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                     status=status,
                     comparedMetric="product_loading_mg_per_cm2_per_event",
                     observedValue=round(observed, 8),
-                    referenceLower=HAND_CREAM_LOADING_REFERENCE_LOWER,
-                    referenceUpper=HAND_CREAM_LOADING_REFERENCE_UPPER,
-                    unit="mg/cm2/event",
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
                     note=(
                         "Observed hand-cream application loading is compared against the "
                         "reported mean ± SD band from Schliemann et al. when the supplied "
@@ -481,15 +485,16 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         and profile.concentration_fraction > 0.0
         and profile.use_events_per_day > 0.0
     ):
+        reference_band = reference_registry.band_for_check("wet_cloth_contact_mass_2018")
         external_mass_mg_day = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
         observed = external_mass_mg_day / (
             1000.0 * profile.concentration_fraction * profile.use_events_per_day
         )
         status = (
             ValidationCheckStatus.PASS
-            if WET_CLOTH_CONTACT_REFERENCE_LOWER
+            if reference_band.reference_lower
             <= observed
-            <= WET_CLOTH_CONTACT_REFERENCE_UPPER
+            <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -500,9 +505,9 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                 status=status,
                 comparedMetric="product_contact_mass_g_per_event",
                 observedValue=round(observed, 8),
-                referenceLower=WET_CLOTH_CONTACT_REFERENCE_LOWER,
-                referenceUpper=WET_CLOTH_CONTACT_REFERENCE_UPPER,
-                unit="g/event",
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
                 note=(
                     "Observed product mass at the skin boundary is compared against RIVM "
                     "wet-cloth contact amounts derived for household cleaning scenarios."

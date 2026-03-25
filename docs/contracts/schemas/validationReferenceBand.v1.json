@@ -1,0 +1,80 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "referenceBandId": {
+      "title": "Referencebandid",
+      "type": "string"
+    },
+    "checkId": {
+      "title": "Checkid",
+      "type": "string"
+    },
+    "referenceDatasetId": {
+      "title": "Referencedatasetid",
+      "type": "string"
+    },
+    "domain": {
+      "description": "Validation domain or route mechanism.",
+      "title": "Domain",
+      "type": "string"
+    },
+    "comparedMetric": {
+      "title": "Comparedmetric",
+      "type": "string"
+    },
+    "referenceLower": {
+      "title": "Referencelower",
+      "type": "number"
+    },
+    "referenceUpper": {
+      "title": "Referenceupper",
+      "type": "number"
+    },
+    "unit": {
+      "description": "Unit for the compared metric.",
+      "title": "Unit",
+      "type": "string"
+    },
+    "applicableSelectors": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Structured selectors describing where the reference band is intended to apply.",
+      "title": "Applicableselectors",
+      "type": "object"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "referenceBandId",
+    "checkId",
+    "referenceDatasetId",
+    "domain",
+    "comparedMetric",
+    "referenceLower",
+    "referenceUpper",
+    "unit",
+    "note"
+  ],
+  "title": "ValidationReferenceBand",
+  "type": "object"
+}

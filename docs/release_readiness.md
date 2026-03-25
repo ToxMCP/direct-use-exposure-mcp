@@ -33,6 +33,8 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - A typed validation dossier is published so benchmark domains, cited external validation
   datasets, heuristic source families, open evidence gaps, and executable validation checks are
   machine-readable rather than prose-only.
+- Executable validation reference bands are versioned, hashed, and published through
+  `validation://reference-bands` so narrow realism checks do not rely on hardcoded thresholds.
 - Curated dermal contact defaults are published for personal-care hand application and
   household-cleaner wipe contact instead of relying only on generic transfer and
   surface-contact-retention heuristics.
