@@ -65,6 +65,8 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    InhalationTier1CapabilityNotice,
+    InhalationTier1ScenarioRequest,
     ParameterBoundsSummary,
     PbpkScenarioInput,
     ProbabilityBoundsProfileSummary,
@@ -72,6 +74,7 @@ from exposure_scenario_mcp.models import (
     ScenarioPackageProbabilitySummary,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_capability_notice
 from exposure_scenario_mcp.probability_bounds import (
     build_probability_bounds_from_profile,
     build_probability_bounds_from_scenario_package,
@@ -169,6 +172,27 @@ def create_mcp_server() -> FastMCP:
             )
         except ExposureScenarioError as error:
             return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_inhalation_tier1_screening_scenario",
+        annotations={
+            "title": "Build Inhalation Tier 1 Screening Scenario",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_build_inhalation_tier1_screening_scenario(
+        params: InhalationTier1ScenarioRequest,
+    ) -> Annotated[CallToolResult, InhalationTier1CapabilityNotice]:
+        """Validate the future Tier 1 NF/FF request surface and return a blocked notice."""
+
+        notice = build_inhalation_tier_1_capability_notice(params)
+        return _success_result(
+            "Accepted the Tier 1 inhalation request surface, but the solver is not implemented.",
+            notice,
+        )
 
     @mcp.tool(
         name="exposure_build_exposure_envelope",

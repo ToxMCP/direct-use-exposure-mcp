@@ -1,0 +1,26 @@
+{
+  "schema_version": "inhalationTier1CapabilityNotice.v1",
+  "toolName": "exposure_build_inhalation_tier1_screening_scenario",
+  "route": "inhalation",
+  "requestedTier": "tier_1",
+  "status": "blocked_not_implemented",
+  "recommendedModelFamily": "inhalation_near_field_far_field_screening",
+  "guidanceResource": "docs://inhalation-tier-upgrade-guide",
+  "acceptedInputs": [
+    "source_distance_m",
+    "spray_duration_seconds",
+    "near_field_volume_m3",
+    "airflow_directionality",
+    "particle_size_regime"
+  ],
+  "blockingGaps": [
+    "tier_1_solver_not_implemented",
+    "tier_1_validation_evidence_incomplete"
+  ],
+  "nextSteps": [
+    "Retain this request payload as the future NF/FF screening input record.",
+    "Use exposure_build_inhalation_screening_scenario for the current Tier 0 room model.",
+    "Preserve the Tier 1 request alongside validation candidates before downstream use."
+  ],
+  "rationale": "The Tier 1 near-field/far-field request surface is published for workflow planning and auditability, but the governed Tier 1 screening solver is not implemented yet for spray scenario 'Example Trigger Spray'."
+}

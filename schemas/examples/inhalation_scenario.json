@@ -966,8 +966,8 @@
         }
       ],
       "blockingGaps": [
-        "tier_1_model_not_implemented",
-        "tier_1_request_fields_not_published"
+        "tier_1_solver_not_implemented",
+        "tier_1_validation_evidence_incomplete"
       ],
       "guidanceResource": "docs://inhalation-tier-upgrade-guide",
       "rationale": "Spray events can produce short-duration breathing-zone peaks that are not resolved by the Tier-0 well-mixed room model."

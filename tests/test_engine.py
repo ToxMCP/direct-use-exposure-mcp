@@ -19,6 +19,7 @@ from exposure_scenario_mcp.models import (
     EvidenceGrade,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    InhalationTier1ScenarioRequest,
     ParameterBoundInput,
     PopulationProfile,
     ProductUseProfile,
@@ -28,6 +29,7 @@ from exposure_scenario_mcp.models import (
     UncertaintyTier,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_capability_notice
 from exposure_scenario_mcp.probability_bounds import (
     build_probability_bounds_from_profile,
     build_probability_bounds_from_scenario_package,
@@ -159,6 +161,49 @@ def test_inhalation_screening_defaults_and_dose() -> None:
         item.entry_id == "limitation-breathing_zone_not_modeled"
         for item in scenario.uncertainty_register
     )
+
+
+def test_inhalation_tier_1_stub_notice_is_machine_actionable() -> None:
+    request = InhalationTier1ScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+        ),
+        source_distance_m=0.35,
+        spray_duration_seconds=8.0,
+        near_field_volume_m3=2.0,
+        airflow_directionality="cross_draft",
+        particle_size_regime="coarse_spray",
+    )
+
+    notice = build_inhalation_tier_1_capability_notice(request)
+
+    assert notice.status == "blocked_not_implemented"
+    assert notice.tool_name == "exposure_build_inhalation_tier1_screening_scenario"
+    assert notice.recommended_model_family == "inhalation_near_field_far_field_screening"
+    assert notice.guidance_resource == "docs://inhalation-tier-upgrade-guide"
+    assert notice.accepted_inputs == [
+        "source_distance_m",
+        "spray_duration_seconds",
+        "near_field_volume_m3",
+        "airflow_directionality",
+        "particle_size_regime",
+    ]
+    assert "tier_1_solver_not_implemented" in notice.blocking_gaps
 
 
 def test_eu_inhalation_room_defaults_use_regional_source() -> None:

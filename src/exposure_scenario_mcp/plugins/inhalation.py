@@ -9,6 +9,8 @@ from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import (
     DoseUnit,
     ExposureScenario,
+    InhalationTier1CapabilityNotice,
+    InhalationTier1ScenarioRequest,
     Route,
     ScenarioClass,
     ScenarioDose,
@@ -26,6 +28,68 @@ from exposure_scenario_mcp.runtime import (
     resolve_product_mass_g,
 )
 
+TIER_1_SPRAY_METHODS = {"trigger_spray", "pump_spray", "aerosol_spray"}
+TIER_1_MODEL_FAMILY = "inhalation_near_field_far_field_screening"
+TIER_1_GUIDANCE_RESOURCE = "docs://inhalation-tier-upgrade-guide"
+
+
+def tier_1_input_requirements() -> list[TierUpgradeInputRequirement]:
+    return [
+        TierUpgradeInputRequirement(
+            fieldName="source_distance_m",
+            description="Distance from the breathing zone to the active spray source.",
+            reason="Near-field concentration depends on source-to-breathing-zone geometry.",
+        ),
+        TierUpgradeInputRequirement(
+            fieldName="spray_duration_seconds",
+            description="Active spray emission duration for each event.",
+            reason="Short spray bursts can create transient peaks not captured by room averages.",
+        ),
+        TierUpgradeInputRequirement(
+            fieldName="near_field_volume_m3",
+            description="Local near-field control volume around the user.",
+            reason="A Tier 1 split requires an explicit near-field compartment size.",
+        ),
+        TierUpgradeInputRequirement(
+            fieldName="airflow_directionality",
+            description="Directional airflow or ventilation context near the source.",
+            reason="Local airflow governs coupling between near-field and far-field zones.",
+        ),
+        TierUpgradeInputRequirement(
+            fieldName="particle_size_regime",
+            description="Spray droplet or aerosol size regime used for screening.",
+            reason="Spray behavior and local persistence depend on size-driven transport.",
+        ),
+    ]
+
+
+def build_inhalation_tier_1_capability_notice(
+    request: InhalationTier1ScenarioRequest,
+) -> InhalationTier1CapabilityNotice:
+    scenario_label = request.product_use_profile.product_name or request.chemical_id
+    return InhalationTier1CapabilityNotice(
+        toolName="exposure_build_inhalation_tier1_screening_scenario",
+        route=Route.INHALATION,
+        requestedTier=request.requested_tier,
+        recommendedModelFamily=TIER_1_MODEL_FAMILY,
+        guidanceResource=TIER_1_GUIDANCE_RESOURCE,
+        acceptedInputs=[item.field_name for item in tier_1_input_requirements()],
+        blockingGaps=[
+            "tier_1_solver_not_implemented",
+            "tier_1_validation_evidence_incomplete",
+        ],
+        nextSteps=[
+            "Retain this request payload as the future NF/FF screening input record.",
+            "Use exposure_build_inhalation_screening_scenario for the current Tier 0 room model.",
+            "Preserve the Tier 1 request alongside validation candidates before downstream use.",
+        ],
+        rationale=(
+            "The Tier 1 near-field/far-field request surface is published for workflow planning "
+            "and auditability, but the governed Tier 1 screening solver is not implemented yet "
+            f"for spray scenario '{scenario_label}'."
+        ),
+    )
+
 
 class InhalationScreeningPlugin(ScenarioPlugin):
     plugin_id = "inhalation_screening_plugin"
@@ -39,8 +103,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
         application_method: str,
         exposure_duration_hours: float,
     ) -> list[TierUpgradeAdvisory]:
-        spray_methods = {"trigger_spray", "pump_spray", "aerosol_spray"}
-        if application_method not in spray_methods:
+        if application_method not in TIER_1_SPRAY_METHODS:
             return []
         trigger_codes = ["spray_application", "breathing_zone_peak_relevant"]
         if exposure_duration_hours <= 0.5:
@@ -52,52 +115,14 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 currentTier=TierLevel.TIER_0,
                 targetTier=TierLevel.TIER_1,
                 status=TierUpgradeStatus.RECOMMENDED_NOT_IMPLEMENTED,
-                recommendedModelFamily="inhalation_near_field_far_field_screening",
+                recommendedModelFamily=TIER_1_MODEL_FAMILY,
                 triggerCodes=trigger_codes,
-                requiredInputs=[
-                    TierUpgradeInputRequirement(
-                        fieldName="source_distance_m",
-                        description="Distance from the breathing zone to the active spray source.",
-                        reason=(
-                            "Near-field concentration depends on source-to-breathing-zone "
-                            "geometry."
-                        ),
-                    ),
-                    TierUpgradeInputRequirement(
-                        fieldName="spray_duration_seconds",
-                        description="Active spray emission duration for each event.",
-                        reason=(
-                            "Short spray bursts can create transient peaks not captured "
-                            "by room averages."
-                        ),
-                    ),
-                    TierUpgradeInputRequirement(
-                        fieldName="near_field_volume_m3",
-                        description="Local near-field control volume around the user.",
-                        reason="A Tier 1 split requires an explicit near-field compartment size.",
-                    ),
-                    TierUpgradeInputRequirement(
-                        fieldName="airflow_directionality",
-                        description="Directional airflow or ventilation context near the source.",
-                        reason=(
-                            "Local airflow governs coupling between near-field and far-field "
-                            "zones."
-                        ),
-                    ),
-                    TierUpgradeInputRequirement(
-                        fieldName="particle_size_regime",
-                        description="Spray droplet or aerosol size regime used for screening.",
-                        reason=(
-                            "Spray behavior and local persistence depend on size-driven "
-                            "transport."
-                        ),
-                    ),
-                ],
+                requiredInputs=tier_1_input_requirements(),
                 blockingGaps=[
-                    "tier_1_model_not_implemented",
-                    "tier_1_request_fields_not_published",
+                    "tier_1_solver_not_implemented",
+                    "tier_1_validation_evidence_incomplete",
                 ],
-                guidanceResource="docs://inhalation-tier-upgrade-guide",
+                guidanceResource=TIER_1_GUIDANCE_RESOURCE,
                 rationale=(
                     "Spray events can produce short-duration breathing-zone peaks that are not "
                     "resolved by the Tier-0 well-mixed room model."
@@ -110,7 +135,6 @@ class InhalationScreeningPlugin(ScenarioPlugin):
         profile = request.product_use_profile
         population = request.population_profile
         registry = context.registry
-        spray_methods = {"trigger_spray", "pump_spray", "aerosol_spray"}
 
         if request.requested_tier == TierLevel.TIER_1:
             raise ExposureScenarioError(
@@ -121,12 +145,15 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 ),
                 suggestion=(
                     "Use requestedTier=`tier_0` for the current screening model and inspect "
-                    "`docs://inhalation-tier-upgrade-guide` plus any emitted "
-                    "`tierUpgradeAdvisories` to prepare future Tier 1 inputs."
+                    "`docs://inhalation-tier-upgrade-guide`, any emitted "
+                    "`tierUpgradeAdvisories`, or the dedicated "
+                    "`exposure_build_inhalation_tier1_screening_scenario` stub tool to "
+                    "prepare future Tier 1 inputs."
                 ),
                 details={
                     "requestedTier": request.requested_tier.value,
-                    "guidanceResource": "docs://inhalation-tier-upgrade-guide",
+                    "guidanceResource": TIER_1_GUIDANCE_RESOURCE,
+                    "stubTool": "exposure_build_inhalation_tier1_screening_scenario",
                 },
             )
 
@@ -291,7 +318,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             "mg/kg-day",
             "Normalized external dose = inhaled mass per day / body weight.",
         )
-        if profile.application_method in spray_methods:
+        if profile.application_method in TIER_1_SPRAY_METHODS:
             tracker.add_limitation(
                 "breathing_zone_not_modeled",
                 (

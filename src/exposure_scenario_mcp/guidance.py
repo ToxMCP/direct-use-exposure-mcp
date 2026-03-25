@@ -182,8 +182,10 @@ def uncertainty_framework() -> str:
   near-field/far-field model without pretending it exists today.
 - `requestedTier=tier_1` is a forward-compatible contract hook for inhalation requests and
   currently fails loudly with an actionable `not_implemented` error.
-- Tier 1 remains a contract placeholder until future request fields and a governed model family
-  are published.
+- `exposure_build_inhalation_tier1_screening_scenario` now publishes the future Tier 1 request
+  surface and returns a structured blocked notice instead of pretending a solver exists.
+- Tier 1 remains a blocked model family until the NF/FF solver and validation evidence are
+  published.
 
 ## Tier C
 
@@ -291,6 +293,9 @@ def inhalation_tier_upgrade_guide() -> str:
   breathing-zone peaks or source-proximal behavior.
 - `requestedTier=tier_1` is accepted as a forward-compatible contract hook but currently returns
   a typed `inhalation_tier_1_not_implemented` error.
+- `exposure_build_inhalation_tier1_screening_scenario` accepts the published
+  `inhalationTier1ScenarioRequest.v1` schema and returns a structured
+  `inhalationTier1CapabilityNotice.v1` block notice.
 
 ## When The Hook Triggers
 
@@ -305,6 +310,14 @@ def inhalation_tier_upgrade_guide() -> str:
 - `near_field_volume_m3`
 - `airflow_directionality`
 - `particle_size_regime`
+
+## Current Stub Tool
+
+- Tool: `exposure_build_inhalation_tier1_screening_scenario`
+- Request schema: `inhalationTier1ScenarioRequest.v1`
+- Response schema: `inhalationTier1CapabilityNotice.v1`
+- Current behavior: validates the planned NF/FF request surface and returns a blocked notice while
+  the Tier 1 solver remains unavailable.
 
 ## Guardrails
 

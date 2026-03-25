@@ -30,6 +30,7 @@ from exposure_scenario_mcp.models import (
     ExposureEnvelopeSummary,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    InhalationTier1ScenarioRequest,
     ParameterBoundInput,
     ParameterBoundsSummary,
     PopulationProfile,
@@ -40,6 +41,7 @@ from exposure_scenario_mcp.models import (
     ScenarioPackageProbabilitySummary,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_capability_notice
 from exposure_scenario_mcp.probability_bounds import (
     build_probability_bounds_from_profile,
     build_probability_bounds_from_scenario_package,
@@ -315,6 +317,37 @@ def build_examples() -> dict[str, dict]:
         engine.build(inhalation_request),
         EXAMPLE_IDS["inhalation_scenario"],
     )
+    inhalation_tier1_request = InhalationTier1ScenarioRequest(
+        chemical_id="DTXSID7020182",
+        chemical_name="Example Solvent A",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Trigger Spray",
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+        source_distance_m=0.35,
+        spray_duration_seconds=8.0,
+        near_field_volume_m3=2.0,
+        airflow_directionality="cross_draft",
+        particle_size_regime="coarse_spray",
+    )
+    inhalation_tier1_capability_notice = build_inhalation_tier_1_capability_notice(
+        inhalation_tier1_request
+    )
 
     refined_request = dermal_request.model_copy(
         update={
@@ -534,6 +567,12 @@ def build_examples() -> dict[str, dict]:
         "screening_dermal_scenario": dermal_scenario.model_dump(mode="json", by_alias=True),
         "inhalation_request": inhalation_request.model_dump(mode="json", by_alias=True),
         "inhalation_scenario": inhalation_scenario.model_dump(mode="json", by_alias=True),
+        "inhalation_tier1_request": inhalation_tier1_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "inhalation_tier1_capability_notice": inhalation_tier1_capability_notice.model_dump(
+            mode="json", by_alias=True
+        ),
         "exposure_envelope_summary": envelope_summary.model_dump(mode="json", by_alias=True),
         "exposure_envelope_from_library_request": library_envelope_request.model_dump(
             mode="json", by_alias=True

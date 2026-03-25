@@ -103,8 +103,8 @@ def validation_manifest() -> dict:
             "Current v0.1 validation posture is benchmark regression plus verification.",
             "No external validation datasets are wired into executable scoring yet.",
             (
-                "Tier 1 inhalation hooks are published for spray scenarios, but the Tier 1 "
-                "model family itself is still not implemented."
+                "Tier 1 inhalation hooks and a blocked NF/FF request stub are published for "
+                "spray scenarios, but the Tier 1 model family itself is still not implemented."
             ),
             (
                 "Probabilistic tiers remain gated until dependency handling and "

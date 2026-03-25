@@ -659,6 +659,112 @@ class InhalationScenarioRequest(ExposureScenarioRequest):
         return self
 
 
+class InhalationTier1ScenarioRequest(ExposureScenarioRequest):
+    schema_version: Literal["inhalationTier1ScenarioRequest.v1"] = (
+        "inhalationTier1ScenarioRequest.v1"
+    )
+    scenario_class: ScenarioClass = Field(
+        default=ScenarioClass.INHALATION,
+        description="Requested scenario class for the future Tier 1 inhalation family.",
+    )
+    requested_tier: Literal[TierLevel.TIER_1] = Field(
+        default=TierLevel.TIER_1,
+        alias="requestedTier",
+        description=(
+            "Tier 1 inhalation request surface for a future near-field/far-field screening "
+            "model family."
+        ),
+    )
+    source_distance_m: float = Field(
+        ...,
+        gt=0.0,
+        description="Distance from the breathing zone to the active spray source.",
+    )
+    spray_duration_seconds: float = Field(
+        ...,
+        gt=0.0,
+        description="Active spray emission duration for each use event.",
+    )
+    near_field_volume_m3: float = Field(
+        ...,
+        gt=0.0,
+        description="Local near-field control volume around the user.",
+    )
+    airflow_directionality: str = Field(
+        ...,
+        description="Directional airflow context near the source and breathing zone.",
+    )
+    particle_size_regime: str = Field(
+        ...,
+        description="Spray droplet or aerosol size regime used for screening semantics.",
+    )
+
+    @model_validator(mode="after")
+    def validate_tier_1_inhalation_scope(self) -> InhalationTier1ScenarioRequest:
+        profile = self.product_use_profile
+        if self.route != Route.INHALATION:
+            raise ValueError("InhalationTier1ScenarioRequest requires route='inhalation'.")
+        if profile.application_method not in {"trigger_spray", "pump_spray", "aerosol_spray"}:
+            raise ValueError(
+                "InhalationTier1ScenarioRequest currently supports spray application methods only."
+            )
+        if profile.physical_form != "spray":
+            raise ValueError(
+                "InhalationTier1ScenarioRequest currently supports physical_form='spray' only."
+            )
+        return self
+
+
+class InhalationTier1CapabilityNotice(StrictModel):
+    schema_version: Literal["inhalationTier1CapabilityNotice.v1"] = (
+        "inhalationTier1CapabilityNotice.v1"
+    )
+    tool_name: str = Field(
+        ...,
+        alias="toolName",
+        description="Tool exposing the future Tier 1 request surface.",
+    )
+    route: Literal[Route.INHALATION] = Field(
+        default=Route.INHALATION,
+        description="Route served by the capability notice.",
+    )
+    requested_tier: Literal[TierLevel.TIER_1] = Field(
+        default=TierLevel.TIER_1,
+        alias="requestedTier",
+        description="Requested tier preserved by the notice.",
+    )
+    status: Literal["blocked_not_implemented"] = Field(
+        default="blocked_not_implemented",
+        description="The request surface is published, but the solver remains unavailable.",
+    )
+    recommended_model_family: str = Field(
+        ...,
+        alias="recommendedModelFamily",
+        description="Future model family targeted by this request surface.",
+    )
+    guidance_resource: str = Field(
+        ...,
+        alias="guidanceResource",
+        description="Documentation resource describing the current Tier 1 boundary.",
+    )
+    accepted_inputs: list[str] = Field(
+        default_factory=list,
+        alias="acceptedInputs",
+        description="Tier 1-specific input fields accepted by the published stub contract.",
+    )
+    blocking_gaps: list[str] = Field(
+        default_factory=list,
+        alias="blockingGaps",
+        description="Machine-readable reasons the Tier 1 builder still cannot execute.",
+    )
+    next_steps: list[str] = Field(
+        default_factory=list,
+        alias="nextSteps",
+        description="Concrete next actions for clients or downstream workflows.",
+    )
+    rationale: str = Field(..., description="Why the request is blocked despite being accepted.")
+
+
 class ScenarioDose(StrictModel):
     metric: str = Field(..., description="Dose metric label.")
     value: float = Field(..., description="Numeric value for the dose metric.")

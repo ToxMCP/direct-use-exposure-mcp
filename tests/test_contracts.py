@@ -27,6 +27,8 @@ EXAMPLE_SCHEMA_MAP = {
     "screening_dermal_scenario": "exposureScenario.v1",
     "inhalation_request": "inhalationScenarioRequest.v1",
     "inhalation_scenario": "exposureScenario.v1",
+    "inhalation_tier1_request": "inhalationTier1ScenarioRequest.v1",
+    "inhalation_tier1_capability_notice": "inhalationTier1CapabilityNotice.v1",
     "exposure_envelope_summary": "exposureEnvelopeSummary.v1",
     "exposure_envelope_from_library_request": "buildExposureEnvelopeFromLibraryInput.v1",
     "exposure_envelope_from_library_summary": "exposureEnvelopeSummary.v1",
@@ -67,8 +69,10 @@ def test_contract_manifest_and_server_boot() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
-    assert len(manifest["tools"]) == 13
+    assert len(manifest["tools"]) == 14
     assert "exposureScenario.v1" in manifest["schemas"]
+    assert "inhalationTier1ScenarioRequest.v1" in manifest["schemas"]
+    assert "inhalationTier1CapabilityNotice.v1" in manifest["schemas"]
     assert "archetypeLibraryManifest.v1" in manifest["schemas"]
     assert "archetypeLibrarySet.v1" in manifest["schemas"]
     assert "archetypeLibraryTemplate.v1" in manifest["schemas"]
@@ -100,6 +104,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "tierSemantics.v1" in manifest["schemas"]
     assert "screening_dermal_scenario" in manifest["examples"]
     assert "exposure_envelope_summary" in manifest["examples"]
+    assert "inhalation_tier1_request" in manifest["examples"]
+    assert "inhalation_tier1_capability_notice" in manifest["examples"]
     assert "exposure_envelope_from_library_request" in manifest["examples"]
     assert "exposure_envelope_from_library_summary" in manifest["examples"]
     assert "parameter_bounds_summary" in manifest["examples"]

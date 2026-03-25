@@ -9,6 +9,7 @@ from exposure_scenario_mcp.models import (
     BuildAggregateExposureScenarioInput,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
+    InhalationTier1ScenarioRequest,
     PopulationProfile,
     ProductUseProfile,
     Route,
@@ -118,6 +119,34 @@ def test_inhalation_requested_tier_1_fails_loudly() -> None:
 
     assert exc_info.value.code == "inhalation_tier_1_not_implemented"
     assert exc_info.value.details["guidanceResource"] == "docs://inhalation-tier-upgrade-guide"
+    assert (
+        exc_info.value.details["stubTool"]
+        == "exposure_build_inhalation_tier1_screening_scenario"
+    )
+
+
+def test_inhalation_tier_1_request_rejects_non_spray_scope() -> None:
+    with pytest.raises(ValidationError):
+        InhalationTier1ScenarioRequest(
+            chemical_id="DTXSID123",
+            route=Route.INHALATION,
+            product_use_profile=ProductUseProfile(
+                product_category="personal_care",
+                physical_form="cream",
+                application_method="hand_application",
+                retention_type="leave_on",
+                concentration_fraction=0.02,
+                use_amount_per_event=1.5,
+                use_amount_unit="g",
+                use_events_per_day=3,
+            ),
+            population_profile=PopulationProfile(population_group="adult"),
+            source_distance_m=0.4,
+            spray_duration_seconds=10.0,
+            near_field_volume_m3=2.0,
+            airflow_directionality="cross_draft",
+            particle_size_regime="coarse_spray",
+        )
 
 
 def test_aggregate_rejects_duplicate_component_ids() -> None:
