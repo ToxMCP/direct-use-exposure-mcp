@@ -293,6 +293,14 @@
       "description": "Architecture guide for splitting exposure, fate, dietary, and worker modeling concerns across cooperating MCPs."
     },
     {
+      "uri": "docs://capability-maturity-matrix",
+      "description": "One-page maturity framing for the released MCP surface."
+    },
+    {
+      "uri": "docs://repository-slug-decision",
+      "description": "Decision note for keeping the current repository slug through v0.1.x."
+    },
+    {
       "uri": "docs://worker-routing-guide",
       "description": "Guide to the worker-task router and occupational escalation hooks."
     },

@@ -8,6 +8,7 @@ from exposure_scenario_mcp.contracts import (
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
+    capability_maturity_matrix_guide,
     conformance_report_markdown,
     defaults_curation_report_markdown,
     exposure_platform_architecture_guide,
@@ -18,6 +19,7 @@ from exposure_scenario_mcp.guidance import (
     probability_bounds_guide,
     release_notes_markdown,
     release_readiness_markdown,
+    repository_slug_decision_guide,
     tier1_inhalation_parameter_guide,
     uncertainty_framework,
     validation_coverage_report_markdown,
@@ -69,6 +71,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     architecture = exposure_platform_architecture_guide()
     validation_bands = validation_reference_bands_guide()
     validation_time_series = validation_time_series_packs_guide()
+    capability_matrix = capability_maturity_matrix_guide()
+    slug_decision = repository_slug_decision_guide()
     worker_routing = worker_routing_guide()
     worker_tier2 = worker_tier2_bridge_guide()
     worker_art = worker_art_adapter_guide()
@@ -201,6 +205,15 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Dietary MCP" in architecture
     assert "Worker Exposure Mode" in architecture
     assert "PBPK remains a separate MCP boundary" in architecture
+    assert "Capability Maturity Matrix" in capability_matrix
+    assert "`benchmark-regressed`" in capability_matrix
+    assert "`external-normalized`" in capability_matrix
+    assert "`bounded surrogate`" in capability_matrix
+    assert "docs/capability_maturity_matrix.md" in capability_matrix
+    assert "Repository Slug Decision" in slug_decision
+    assert "`ToxMCP/expossure-scenario-mcp`" in slug_decision
+    assert "`v0.1.x`" in slug_decision
+    assert "docs/adr/0004-repository-slug.md" in slug_decision
     assert "Worker Routing Guide" in worker_routing
     assert "exposure_route_worker_task" in worker_routing
     assert "workerTaskRoutingInput.v1" in worker_routing

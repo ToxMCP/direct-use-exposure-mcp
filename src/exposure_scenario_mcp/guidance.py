@@ -329,6 +329,75 @@ wrap every exposure tool directly.
 """
 
 
+def capability_maturity_matrix_guide() -> str:
+    return """# Capability Maturity Matrix
+
+This guide explains how to interpret the released `0.1.0` surface.
+
+The MCP now has four layers:
+
+- a narrow core deterministic external-dose engine
+- evidence normalization and integrated workflow helpers
+- bounded worker routing, execution, and external exchange layers
+- validation, benchmark, and release-governance publication
+
+## Maturity Labels
+
+- `benchmark-regressed`: deterministic behavior is locked to executable benchmark cases
+  and release checks
+- `curated`: reviewed defaults or packaged determinants are in use for the covered branch
+- `external-normalized`: the MCP can ingest or reconcile external evidence or solver
+  artifacts into governed contracts
+- `bounded surrogate`: a deliberately simplified execution path is provided, with
+  explicit solver limits
+- `heuristic screening`: the branch remains screening-only and still depends on
+  heuristic defaults
+
+## Current Read
+
+- Core deterministic exposure engine: `benchmark-regressed`, with a mix of curated and
+  heuristic branches
+- Evidence reconciliation and integrated workflow: `external-normalized`
+- Worker inhalation support: `bounded surrogate` plus governed external ART exchange
+- Worker dermal support: `bounded surrogate` with curated and heuristic elements
+- Validation and release governance: `benchmark-regressed`
+
+## How To Use This
+
+- Prefer benchmark-regressed and curated branches when showcasing regulatory trust.
+- Treat external-normalized layers as contract-governed bridges, not as reimplemented
+  upstream systems.
+- Treat heuristic screening branches as useful triage outputs, not decision-ready conclusions.
+
+Static companion: `docs/capability_maturity_matrix.md`
+"""
+
+
+def repository_slug_decision_guide() -> str:
+    return """# Repository Slug Decision
+
+The current public GitHub repository slug is:
+
+- `ToxMCP/expossure-scenario-mcp`
+
+It is intentionally kept through the `v0.1.x` line.
+
+## Why It Was Not Renamed Immediately
+
+- badges, clone URLs, and existing references already point to the current slug
+- release and review artifacts already encode the current slug
+- changing it during the first released line would create needless churn
+
+## Current Policy
+
+- keep the current slug through `v0.1.x`
+- revisit a rename only as an explicit release-management decision in a later minor
+  release or suite-wide naming pass
+
+Static companion: `docs/adr/0004-repository-slug.md`
+"""
+
+
 def worker_routing_guide() -> str:
     return """# Worker Routing Guide
 

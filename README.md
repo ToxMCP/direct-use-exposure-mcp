@@ -63,12 +63,16 @@ flowchart LR
     Server --> Refinement
 ```
 
-The design is intentionally narrow:
+The core engine is intentionally narrow, even though the released MCP also publishes
+bounded worker, exchange, and validation surfaces:
 
 - `Exposure Scenario MCP` owns external-dose construction only.
 - `PBPK MCP` owns kinetic translation and internal-dose interpretation.
 - `ToxClaw` owns evidence orchestration, review flow, and NGRA-facing report synthesis.
 - Defaults, assumptions, provenance, and limitations are first-class outputs, not hidden internals.
+
+For a one-page maturity framing of the full released surface, see
+[docs/capability_maturity_matrix.md](./docs/capability_maturity_matrix.md).
 
 ## What's in v0.1.0
 
@@ -112,6 +116,19 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - **auditable** through assumption records, defaults versioning, provenance, and quality flags
 - **bounded** so it complements PBPK and ToxClaw instead of overlapping them
 
+## Capability maturity
+
+The repo now has a broader released surface than the early "small deterministic builder"
+story implied. The cleanest way to read it is:
+
+- `core deterministic exposure engine`: benchmark-regressed external-dose construction
+- `evidence reconciliation and integrated workflow`: external-normalized orchestration helpers
+- `worker inhalation and dermal`: bounded extension layers with explicit solver limits
+- `validation and release resources`: first-class trust and governance surface
+
+The detailed maturity matrix is in
+[docs/capability_maturity_matrix.md](./docs/capability_maturity_matrix.md).
+
 ## Feature snapshot
 
 | Capability | Description |
@@ -150,17 +167,18 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 1. [Architecture](#architecture)
 2. [What's in v0.1.0](#whats-in-v010)
 3. [Why this project exists](#why-this-project-exists)
-4. [Feature snapshot](#feature-snapshot)
-5. [Tool catalog](#tool-catalog)
-6. [Resource catalog](#resource-catalog)
-7. [Quick start](#quick-start)
-8. [Release verification](#release-verification)
-9. [Repository layout](#repository-layout)
-10. [Current limitations](#current-limitations)
-11. [Scientific boundaries](#scientific-boundaries)
-12. [Contributing](#contributing)
-13. [Code of conduct](#code-of-conduct)
-14. [License](#license)
+4. [Capability maturity](#capability-maturity)
+5. [Feature snapshot](#feature-snapshot)
+6. [Tool catalog](#tool-catalog)
+7. [Resource catalog](#resource-catalog)
+8. [Quick start](#quick-start)
+9. [Release verification](#release-verification)
+10. [Repository layout](#repository-layout)
+11. [Current limitations](#current-limitations)
+12. [Scientific boundaries](#scientific-boundaries)
+13. [Contributing](#contributing)
+14. [Code of conduct](#code-of-conduct)
+15. [License](#license)
 
 ## Tool catalog
 
@@ -246,6 +264,8 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `docs://suite-integration-guide`
 - `docs://integrated-exposure-workflow-guide`
 - `docs://exposure-platform-architecture`
+- `docs://capability-maturity-matrix`
+- `docs://repository-slug-decision`
 - `docs://worker-routing-guide`
 - `docs://worker-tier2-bridge-guide`
 - `docs://worker-art-adapter-guide`
@@ -283,6 +303,10 @@ uv run pytest
 uv run exposure-scenario-mcp --transport stdio
 ```
 
+The current GitHub slug is intentionally kept as
+`ToxMCP/expossure-scenario-mcp` for the `v0.1.x` line. See
+[docs/adr/0004-repository-slug.md](./docs/adr/0004-repository-slug.md).
+
 Run over Streamable HTTP:
 
 ```bash
@@ -292,10 +316,13 @@ uv run exposure-scenario-mcp --transport streamable-http --host 127.0.0.1 --port
 Current published surface from `docs/contracts/contract_manifest.json`:
 
 - `29` tools
-- `53` resources
+- `55` resources
 - `2` prompts
 - `132` schemas
 - `62` examples
+
+Legacy `Exposure_Scenario_MCP_tasks.*` planning artifacts at the repo root are now archived
+status notes, not the live implementation backlog.
 
 ## Release verification
 
@@ -316,7 +343,7 @@ Current published package version: `0.1.0`
 - `schemas/` - generated schemas and examples
 - `docs/contracts/` - published schemas and contract manifest mirrors
 - `docs/releases/` - release notes and release metadata
-- `docs/` - operator, troubleshooting, provenance, readiness, suite integration, architecture, and adjacent-service design notes
+- `docs/` - operator, troubleshooting, provenance, readiness, capability maturity, suite integration, architecture, and adjacent-service design notes
 - `evals/` - read-only evaluation bundle
 - `tests/` - runtime, contract, integration, and release-artifact tests
 

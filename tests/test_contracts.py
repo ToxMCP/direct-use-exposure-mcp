@@ -266,6 +266,8 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://validation-time-series-packs",
         "docs://goldset-benchmark-guide",
         "docs://exposure-platform-architecture",
+        "docs://capability-maturity-matrix",
+        "docs://repository-slug-decision",
         "docs://integrated-exposure-workflow-guide",
         "docs://worker-routing-guide",
         "docs://worker-tier2-bridge-guide",
@@ -602,6 +604,7 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert {"wheel", "sdist"} == {item["kind"] for item in artifact["distributionArtifacts"]}
     assert "docs://release-notes" in artifact["publishedDocs"]
     assert "docs://goldset-benchmark-guide" in artifact["publishedDocs"]
+    assert "docs://capability-maturity-matrix" in artifact["publishedDocs"]
     for item in artifact["distributionArtifacts"]:
         if item["present"]:
             assert item["sha256"] is not None

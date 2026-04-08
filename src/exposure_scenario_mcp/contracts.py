@@ -703,6 +703,14 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractResourceEntry(
+                uri="docs://capability-maturity-matrix",
+                description="One-page maturity framing for the released MCP surface.",
+            ),
+            ContractResourceEntry(
+                uri="docs://repository-slug-decision",
+                description="Decision note for keeping the current repository slug through v0.1.x.",
+            ),
+            ContractResourceEntry(
                 uri="docs://worker-routing-guide",
                 description="Guide to the worker-task router and occupational escalation hooks.",
             ),
@@ -1254,6 +1262,7 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://release-readiness",
             "docs://security-provenance-review",
             "docs://goldset-benchmark-guide",
+            "docs://capability-maturity-matrix",
             "docs/releases/v0.1.0.md",
         ],
         validation_commands=readiness.validation_commands,
