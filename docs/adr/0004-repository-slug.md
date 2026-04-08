@@ -9,9 +9,9 @@ The public product name is now:
 
 - `Direct-Use Exposure MCP`
 
-The current technical identifiers are still:
+The current technical identifiers are:
 
-- GitHub repository slug: `ToxMCP/expossure-scenario-mcp`
+- GitHub repository slug: `ToxMCP/direct-use-exposure-mcp`
 - Python package: `exposure-scenario-mcp`
 - Import path: `exposure_scenario_mcp`
 - MCP server name: `exposure_scenario_mcp`
@@ -20,7 +20,7 @@ The new product name is a better scientific fit now that the suite boundary is e
 this MCP owns direct-use and near-field external-dose construction, while Fate MCP,
 Dietary MCP, PBPK MCP, and ToxClaw own adjacent concerns.
 
-At the same time, the existing technical identifiers are already live in:
+At the same time, the package and protocol identifiers are already live in:
 
 - badges
 - clone instructions
@@ -31,13 +31,15 @@ At the same time, the existing technical identifiers are already live in:
 
 ## Decision
 
-Adopt `Direct-Use Exposure MCP` as the canonical public product name now.
+Adopt `Direct-Use Exposure MCP` as the canonical public product name.
 
-Keep the current GitHub slug, Python package name, import path, CLI command, and MCP server
-identifier stable through the `v0.1.x` line.
+Rename the GitHub repository slug now to `ToxMCP/direct-use-exposure-mcp`.
 
-Treat any full technical rename as a later compatibility-managed change rather than a silent
-documentation cleanup.
+Keep the Python package name, import path, CLI command, and MCP server identifier stable through
+the `v0.1.x` line.
+
+Treat any package- or protocol-level technical rename as a later compatibility-managed change
+rather than a silent documentation cleanup.
 
 ## Consequences
 
@@ -45,20 +47,19 @@ Positive:
 
 - the public name now matches the actual scientific boundary more closely
 - the suite can reserve broader names like `Exposure MCP` for a future orchestrated family
-- existing users do not lose clone URLs, import paths, or CLI entry points during the first
-  released line
+- the public GitHub URL now matches the product name
+- package users do not lose import paths or CLI entry points during the first released line
 
 Negative:
 
-- product name and technical identifiers remain temporarily different
-- docs must be explicit about the staged naming policy
-- a future repo/package rename will still require release coordination
+- package/protocol identifiers remain temporarily different from the public repo name
+- docs must remain explicit about the staged naming policy
+- a future package rename will still require release coordination
 
 ## Follow-up
 
 If the suite decides to complete the technical rename later, coordinate it with:
 
-- GitHub slug updates
 - badges and clone instructions
 - package metadata and CLI migration notes
 - generated release artifacts

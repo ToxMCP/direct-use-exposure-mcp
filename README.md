@@ -1,6 +1,6 @@
 # Direct-Use Exposure MCP
 
-[![CI](https://github.com/ToxMCP/expossure-scenario-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/expossure-scenario-mcp/actions/workflows/ci.yml)
+[![CI](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
@@ -299,8 +299,8 @@ The detailed maturity matrix is in
 ## Quick start
 
 ```bash
-git clone https://github.com/ToxMCP/expossure-scenario-mcp.git
-cd expossure-scenario-mcp
+git clone https://github.com/ToxMCP/direct-use-exposure-mcp.git
+cd direct-use-exposure-mcp
 
 uv sync --extra dev
 uv run generate-exposure-contracts
@@ -312,7 +312,7 @@ The public product name is now `Direct-Use Exposure MCP`, while the current GitH
 Python package, import path, CLI, and MCP server IDs remain stable through the `v0.1.x`
 line. The current GitHub slug is:
 
-- `ToxMCP/expossure-scenario-mcp`
+- `ToxMCP/direct-use-exposure-mcp`
 
 See
 [docs/adr/0004-repository-slug.md](./docs/adr/0004-repository-slug.md).

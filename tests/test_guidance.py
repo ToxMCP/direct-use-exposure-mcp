@@ -215,7 +215,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`bounded surrogate`" in capability_matrix
     assert "docs/capability_maturity_matrix.md" in capability_matrix
     assert "Repository Slug Decision" in slug_decision
-    assert "`ToxMCP/expossure-scenario-mcp`" in slug_decision
+    assert "`ToxMCP/direct-use-exposure-mcp`" in slug_decision
     assert "`v0.1.x`" in slug_decision
     assert "docs/adr/0004-repository-slug.md" in slug_decision
     assert "Cross-MCP Contract Guide" in cross_mcp_contracts

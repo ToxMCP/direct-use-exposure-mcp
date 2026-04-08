@@ -496,7 +496,7 @@ The public product name is now:
 
 The current public GitHub repository slug is still:
 
-- `ToxMCP/expossure-scenario-mcp`
+- `ToxMCP/direct-use-exposure-mcp`
 
 The Python package, import path, CLI command, and MCP server identifiers also remain stable
 through the `v0.1.x` line.
