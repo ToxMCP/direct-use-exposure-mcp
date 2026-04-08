@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from exposure_scenario_mcp.contracts import (
     build_release_metadata_report,
     build_release_readiness_report,
@@ -56,6 +58,15 @@ def test_release_guidance_mentions_current_benchmark_matrix() -> None:
     assert "`dermal_pbpk_external_import_package`" in readiness_markdown
     assert f"Benchmark cases published: `{metadata.benchmark_case_count}`" in conformance
     assert "`dermal_pbpk_external_import_package`" in conformance
+
+
+def test_published_release_notes_match_generated_markdown() -> None:
+    registry = DefaultsRegistry.load()
+    metadata = build_release_metadata_report(registry)
+    published_path = Path(__file__).resolve().parents[1] / "docs" / "releases" / "v0.1.0.md"
+    published = published_path.read_text()
+    expected = release_notes_markdown(metadata).rstrip() + "\n"
+    assert published == expected
 
 
 def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:

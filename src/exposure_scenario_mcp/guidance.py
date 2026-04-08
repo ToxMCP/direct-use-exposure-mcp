@@ -1849,14 +1849,12 @@ def security_provenance_review_markdown(report: SecurityProvenanceReviewReport) 
 
 def release_notes_markdown(report: ReleaseMetadataReport) -> str:
     lines = [
-        "# Release Notes",
+        "# Direct-Use Exposure MCP v0.1.0",
         "",
-        (
-            "Direct-Use Exposure MCP `v0.1.0` is the first public deterministic external-dose "
-            "release candidate for the ToxMCP suite."
-        ),
+        "Direct-Use Exposure MCP `v0.1.0` is the first public deterministic external-dose "
+        "release candidate for the ToxMCP suite.",
         "",
-        "## Release Scope",
+        "## Included In This Release",
         "",
         "- Dermal, direct-use/incidental oral, and inhalation screening scenario construction",
         "- Aggregate/co-use summaries and auditable scenario comparison",
