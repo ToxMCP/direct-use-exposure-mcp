@@ -1,0 +1,264 @@
+{
+  "$defs": {
+    "ChemicalIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "chemicalIdentity.v1",
+          "default": "chemicalIdentity.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemicalId": {
+          "description": "Stable suite-level chemical identifier used across MCP boundaries.",
+          "title": "Chemicalid",
+          "type": "string"
+        },
+        "preferredName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred human-readable chemical name for cross-MCP handoffs.",
+          "title": "Preferredname"
+        },
+        "casrn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "CAS Registry Number when available for reconciliation or review.",
+          "title": "Casrn"
+        },
+        "dtxsid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "EPA CompTox DTXSID when available.",
+          "title": "Dtxsid"
+        },
+        "smiles": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Canonical or representative SMILES string when available.",
+          "title": "Smiles"
+        },
+        "inchiKey": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "InChIKey when available for downstream identity reconciliation.",
+          "title": "Inchikey"
+        },
+        "externalIdentifiers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Additional external identifiers preserved verbatim for auditability.",
+          "title": "Externalidentifiers",
+          "type": "object"
+        },
+        "notes": {
+          "description": "Additional identity notes that should remain attached to handoffs.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chemicalId"
+      ],
+      "title": "ChemicalIdentity",
+      "type": "object"
+    },
+    "ReleaseMediumFraction": {
+      "additionalProperties": false,
+      "properties": {
+        "medium": {
+          "description": "Target release medium, for example air, water, soil, or sediment.",
+          "title": "Medium",
+          "type": "string"
+        },
+        "fraction": {
+          "description": "Fraction of the release allocated to the named medium.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Fraction",
+          "type": "number"
+        }
+      },
+      "required": [
+        "medium",
+        "fraction"
+      ],
+      "title": "ReleaseMediumFraction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "environmentalReleaseScenario.v1",
+      "default": "environmentalReleaseScenario.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "releaseScenarioId": {
+      "description": "Stable identifier for the environmental release scenario.",
+      "title": "Releasescenarioid",
+      "type": "string"
+    },
+    "chemicalIdentity": {
+      "$ref": "#/$defs/ChemicalIdentity",
+      "description": "Normalized chemical identity preserved across MCP boundaries."
+    },
+    "sourceTermType": {
+      "description": "Whether the release is expressed as a one-time mass or an emission rate.",
+      "enum": [
+        "mass",
+        "emission_rate"
+      ],
+      "title": "Sourcetermtype",
+      "type": "string"
+    },
+    "releaseMassMg": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Released mass when the source term is expressed as a finite mass.",
+      "title": "Releasemassmg"
+    },
+    "emissionRateMgPerHour": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Emission rate when the source term is expressed as a release rate.",
+      "title": "Emissionratemgperhour"
+    },
+    "releaseDurationHours": {
+      "description": "Duration of the release window in hours.",
+      "exclusiveMinimum": 0.0,
+      "title": "Releasedurationhours",
+      "type": "number"
+    },
+    "timingPattern": {
+      "description": "Human-readable timing pattern such as one-time, episodic, or seasonal.",
+      "title": "Timingpattern",
+      "type": "string"
+    },
+    "regionScope": {
+      "description": "Region or site scope used for the future fate handoff.",
+      "title": "Regionscope",
+      "type": "string"
+    },
+    "siteContext": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional site or setting label such as residential fringe or warehouse.",
+      "title": "Sitecontext"
+    },
+    "releaseMediaFractions": {
+      "description": "Media-fraction ledger for the environmental release scenario.",
+      "items": {
+        "$ref": "#/$defs/ReleaseMediumFraction"
+      },
+      "minItems": 1,
+      "title": "Releasemediafractions",
+      "type": "array"
+    },
+    "treatmentOrRemovalFraction": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional treatment or removal fraction applied before environmental entry.",
+      "title": "Treatmentorremovalfraction"
+    },
+    "evidenceSources": {
+      "description": "Upstream evidence references backing the release scenario.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidencesources",
+      "type": "array"
+    },
+    "notes": {
+      "description": "Additional notes that should remain attached to the release scenario.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "releaseScenarioId",
+    "chemicalIdentity",
+    "sourceTermType",
+    "releaseDurationHours",
+    "timingPattern",
+    "regionScope",
+    "releaseMediaFractions"
+  ],
+  "title": "EnvironmentalReleaseScenario",
+  "type": "object"
+}

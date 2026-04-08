@@ -30,25 +30,35 @@ from exposure_scenario_mcp.models import (
     BuildParameterBoundsInput,
     BuildProbabilityBoundsFromProfileInput,
     BuildProbabilityBoundsFromScenarioPackageInput,
+    ChemicalIdentity,
     CompareExposureScenariosInput,
+    ConcentrationSurface,
     EnvelopeArchetypeInput,
+    EnvironmentalReleaseScenario,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
     ExportToxClawEvidenceBundleRequest,
     ExportToxClawRefinementBundleRequest,
     ExposureEnvelopeSummary,
+    ExposureScenarioDefinition,
     ExposureScenarioRequest,
+    FitForPurpose,
     InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
+    LimitationNote,
     ParameterBoundInput,
     ParameterBoundsSummary,
     PopulationProfile,
     ProbabilityBoundsProfileSummary,
     ProductUseProfile,
+    ProvenanceBundle,
+    QualityFlag,
     Route,
+    RouteDoseEstimate,
     ScenarioClass,
     ScenarioPackageProbabilitySummary,
+    Severity,
     TierLevel,
     WorkerTaskRoutingInput,
 )
@@ -396,9 +406,127 @@ def build_examples() -> dict[str, dict]:
             region="EU",
         ),
     )
+    chemical_identity = ChemicalIdentity(
+        chemicalId="DTXSID7020182",
+        preferredName="Example Solvent A",
+        casrn="123-45-6",
+        dtxsid="DTXSID7020182",
+        externalIdentifiers={"exampleRegistry": "EX-0001"},
+        notes=["Illustrative shared suite identity contract derived from the example scenario."],
+    )
+    exposure_scenario_definition = ExposureScenarioDefinition(
+        scenarioDefinitionId="exp-def-example-001",
+        chemicalIdentity=chemical_identity,
+        route=Route.DERMAL,
+        scenarioClass=ScenarioClass.SCREENING,
+        pathwaySemantics="direct_use",
+        productUseProfile=dermal_request.product_use_profile,
+        populationProfile=dermal_request.population_profile,
+        assumptionOverrides=dermal_request.assumption_overrides,
+        notes=[
+            "Example shared scenario-definition contract for a direct-use consumer hand cream case."
+        ],
+    )
     dermal_scenario = _freeze_scenario(
         engine.build(dermal_request),
         EXAMPLE_IDS["screening_dermal_scenario"],
+    )
+    route_dose_estimate = RouteDoseEstimate(
+        chemicalIdentity=chemical_identity,
+        route=dermal_scenario.route,
+        scenarioClass=dermal_scenario.scenario_class,
+        dose=dermal_scenario.external_dose,
+        sourceScenarioDefinitionId=exposure_scenario_definition.scenario_definition_id,
+        sourceScenarioId=dermal_scenario.scenario_id,
+        populationProfile=dermal_request.population_profile,
+        fitForPurpose=dermal_scenario.fit_for_purpose,
+        provenance=_freeze_provenance(dermal_scenario.provenance),
+        limitations=dermal_scenario.limitations,
+        qualityFlags=dermal_scenario.quality_flags,
+        notes=[
+            "Example shared route-dose contract emitted from a deterministic direct-use scenario."
+        ],
+    )
+    environmental_release_scenario = EnvironmentalReleaseScenario(
+        releaseScenarioId="rel-example-001",
+        chemicalIdentity=chemical_identity,
+        sourceTermType="mass",
+        releaseMassMg=2500.0,
+        releaseDurationHours=24.0,
+        timingPattern="single post-application environmental release window",
+        regionScope="EU residential fringe",
+        siteContext="treated outdoor perimeter near residential receptor",
+        releaseMediaFractions=[
+            {"medium": "air", "fraction": 0.6},
+            {"medium": "soil", "fraction": 0.4},
+        ],
+        treatmentOrRemovalFraction=0.1,
+        evidenceSources=["ExampleFateEvidence:release-scenario-001"],
+        notes=[
+            "Illustrative future Fate MCP ingress contract published by Exposure MCP "
+            "for boundary alignment."
+        ],
+    )
+    concentration_surface = ConcentrationSurface(
+        surfaceId="conc-surface-example-001",
+        chemicalIdentity=chemical_identity,
+        medium="air",
+        compartment="outdoor_residential_air",
+        geographicScope="EU residential screening zone",
+        compartmentContext={
+            "distanceBandMeters": "0-100",
+            "microenvironment": "outdoor_residential",
+        },
+        timeSemantics="24h average post-application concentration",
+        concentrationValue=0.018,
+        concentrationUnit="mg/m3",
+        modelFamily="future_fate_mcp_adapter",
+        sourceReleaseScenarioId=environmental_release_scenario.release_scenario_id,
+        fitForPurpose=FitForPurpose(
+            label="future_fate_handoff",
+            suitable_for=[
+                "Future concentration-to-dose workflows",
+                "Cross-MCP fate-to-exposure integration testing",
+            ],
+            not_suitable_for=[
+                "Direct body-weight-normalized dose interpretation without a downstream consumer",
+                "Final risk conclusions",
+            ],
+        ),
+        provenance=ProvenanceBundle(
+            algorithm_id="example.future_fate_handoff.v1",
+            plugin_id="shared_contract_example_generator",
+            plugin_version="0.1.0",
+            defaults_version=defaults_registry.version,
+            defaults_hash_sha256=defaults_registry.sha256,
+            generated_at=EXAMPLE_GENERATED_AT,
+            notes=[
+                "Illustrative concentration surface example for cross-MCP contract publication."
+            ],
+        ),
+        limitations=[
+            LimitationNote(
+                code="future_fate_contract_example_only",
+                severity=Severity.WARNING,
+                message=(
+                    "This example is a contract-alignment payload, not the output of a native "
+                    "Fate MCP solver."
+                ),
+            )
+        ],
+        qualityFlags=[
+            QualityFlag(
+                code="external_normalized_future_surface",
+                severity=Severity.INFO,
+                message=(
+                    "This example shows the future concentration-surface handoff shape only."
+                ),
+            )
+        ],
+        notes=[
+            "Published by Exposure MCP so sibling Fate and Dietary services can build "
+            "against a stable shared contract."
+        ],
     )
 
     inhalation_request = InhalationScenarioRequest(
@@ -1074,6 +1202,15 @@ def build_examples() -> dict[str, dict]:
     )
 
     return {
+        "chemical_identity": chemical_identity.model_dump(mode="json", by_alias=True),
+        "exposure_scenario_definition": exposure_scenario_definition.model_dump(
+            mode="json", by_alias=True
+        ),
+        "route_dose_estimate": route_dose_estimate.model_dump(mode="json", by_alias=True),
+        "environmental_release_scenario": environmental_release_scenario.model_dump(
+            mode="json", by_alias=True
+        ),
+        "concentration_surface": concentration_surface.model_dump(mode="json", by_alias=True),
         "screening_dermal_request": dermal_request.model_dump(mode="json", by_alias=True),
         "screening_dermal_scenario": dermal_scenario.model_dump(mode="json", by_alias=True),
         "inhalation_request": inhalation_request.model_dump(mode="json", by_alias=True),

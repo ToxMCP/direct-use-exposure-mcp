@@ -1,0 +1,60 @@
+{
+  "schema_version": "exposureScenarioDefinition.v1",
+  "scenarioDefinitionId": "exp-def-example-001",
+  "chemicalIdentity": {
+    "schema_version": "chemicalIdentity.v1",
+    "chemicalId": "DTXSID7020182",
+    "preferredName": "Example Solvent A",
+    "casrn": "123-45-6",
+    "dtxsid": "DTXSID7020182",
+    "smiles": null,
+    "inchiKey": null,
+    "externalIdentifiers": {
+      "exampleRegistry": "EX-0001"
+    },
+    "notes": [
+      "Illustrative shared suite identity contract derived from the example scenario."
+    ]
+  },
+  "route": "dermal",
+  "scenarioClass": "screening",
+  "pathwaySemantics": "direct_use",
+  "productUseProfile": {
+    "schema_version": "productUseProfile.v1",
+    "product_name": "Example Hand Cream",
+    "product_subtype": null,
+    "product_category": "personal_care",
+    "physical_form": "cream",
+    "application_method": "hand_application",
+    "retention_type": "leave_on",
+    "concentration_fraction": 0.02,
+    "use_amount_per_event": 1.5,
+    "use_amount_unit": "g",
+    "use_events_per_day": 3.0,
+    "density_g_per_ml": null,
+    "transfer_efficiency": null,
+    "retention_factor": null,
+    "ingestion_fraction": null,
+    "aerosolized_fraction": null,
+    "room_volume_m3": null,
+    "air_exchange_rate_per_hour": null,
+    "exposure_duration_hours": null
+  },
+  "populationProfile": {
+    "schema_version": "populationProfile.v1",
+    "population_group": "adult",
+    "body_weight_kg": null,
+    "inhalation_rate_m3_per_hour": null,
+    "exposed_surface_area_cm2": null,
+    "demographic_tags": [
+      "consumer",
+      "general_population"
+    ],
+    "region": "EU"
+  },
+  "sourceConcentrationSurfaceIds": [],
+  "assumptionOverrides": {},
+  "notes": [
+    "Example shared scenario-definition contract for a direct-use consumer hand cream case."
+  ]
+}

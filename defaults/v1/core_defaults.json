@@ -9,13 +9,13 @@
     },
     {
       "source_id": "screening_route_semantics_defaults_v1",
-      "title": "Exposure Scenario MCP curated screening route-semantics defaults",
+      "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
       "locator": "docs://defaults-evidence-map#screening-route-semantics",
       "version": "2026.03.25.v6"
     },
     {
       "source_id": "heuristic_density_defaults_v1",
-      "title": "Exposure Scenario MCP heuristic density screening defaults",
+      "title": "Direct-Use Exposure MCP heuristic density screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
       "version": "2026.03.25.v6"
     },
@@ -27,7 +27,7 @@
     },
     {
       "source_id": "heuristic_retention_defaults_v1",
-      "title": "Exposure Scenario MCP heuristic retention screening defaults",
+      "title": "Direct-Use Exposure MCP heuristic retention screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-retention-defaults",
       "version": "2026.03.25.v6"
     },
@@ -39,7 +39,7 @@
     },
     {
       "source_id": "heuristic_transfer_efficiency_defaults_v1",
-      "title": "Exposure Scenario MCP heuristic transfer-efficiency screening defaults",
+      "title": "Direct-Use Exposure MCP heuristic transfer-efficiency screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-transfer-defaults",
       "version": "2026.03.25.v10"
     },
@@ -57,7 +57,7 @@
     },
     {
       "source_id": "heuristic_incidental_oral_defaults_v1",
-      "title": "Exposure Scenario MCP heuristic incidental-oral screening defaults",
+      "title": "Direct-Use Exposure MCP heuristic incidental-oral screening defaults",
       "locator": "docs://defaults-evidence-map#heuristic-incidental-oral-defaults",
       "version": "2026.03.25.v6"
     },
@@ -87,25 +87,25 @@
     },
     {
       "source_id": "heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026",
-      "title": "Exposure Scenario MCP heuristic pest-control trigger-spray airborne-fraction bridge informed by RIVM ConsExpo spray families",
+      "title": "Direct-Use Exposure MCP heuristic pest-control trigger-spray airborne-fraction bridge informed by RIVM ConsExpo spray families",
       "locator": "docs://defaults-evidence-map#heuristic-pest-control-trigger-spray-airborne-fraction-bridge",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "heuristic_consexpo_pest_control_aerosol_airborne_fraction_bridge_2026",
-      "title": "Exposure Scenario MCP heuristic pest-control aerosol airborne-fraction bridge informed by RIVM ConsExpo air-space spray families",
+      "title": "Direct-Use Exposure MCP heuristic pest-control aerosol airborne-fraction bridge informed by RIVM ConsExpo air-space spray families",
       "locator": "docs://defaults-evidence-map#heuristic-pest-control-aerosol-airborne-fraction-bridge",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "heuristic_consexpo_pest_control_aerosol_density_bridge_2026",
-      "title": "Exposure Scenario MCP heuristic pest-control aerosol density bridge informed by RIVM ConsExpo pest-control aerosol families",
+      "title": "Direct-Use Exposure MCP heuristic pest-control aerosol density bridge informed by RIVM ConsExpo pest-control aerosol families",
       "locator": "docs://defaults-evidence-map#heuristic-pest-control-aerosol-density-bridge",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
-      "title": "Exposure Scenario MCP heuristic residual spray airborne-fraction defaults",
+      "title": "Direct-Use Exposure MCP heuristic residual spray airborne-fraction defaults",
       "locator": "docs://defaults-evidence-map#heuristic-spray-airborne-fraction-defaults",
       "version": "2026.03.25.v7"
     },
@@ -117,13 +117,13 @@
     },
     {
       "source_id": "heuristic_time_limited_release_duration_defaults_v1",
-      "title": "Exposure Scenario MCP heuristic time-limited release duration defaults",
+      "title": "Direct-Use Exposure MCP heuristic time-limited release duration defaults",
       "locator": "docs://defaults-evidence-map#heuristic-time-limited-release-duration-defaults",
       "version": "2026.03.25.v6"
     },
     {
       "source_id": "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026",
-      "title": "Exposure Scenario MCP heuristic air-space pest-control room-default bridge informed by RIVM ConsExpo whole-room aerosol scenarios",
+      "title": "Direct-Use Exposure MCP heuristic air-space pest-control room-default bridge informed by RIVM ConsExpo whole-room aerosol scenarios",
       "locator": "docs://defaults-evidence-map#heuristic-pest-control-air-space-room-defaults-bridge",
       "version": "2026.04.07.v1"
     },
@@ -141,55 +141,55 @@
     },
     {
       "source_id": "worker_dermal_body_zone_area_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker dermal body-zone area defaults",
+      "title": "Direct-Use Exposure MCP heuristic worker dermal body-zone area defaults",
       "locator": "docs://defaults-evidence-map#worker-dermal-body-zone-area-heuristics-2026",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "worker_dermal_ppe_penetration_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker dermal PPE penetration defaults",
+      "title": "Direct-Use Exposure MCP heuristic worker dermal PPE penetration defaults",
       "locator": "docs://defaults-evidence-map#worker-dermal-ppe-penetration-heuristics-2026",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "worker_dermal_absorption_fraction_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker dermal absorption-fraction defaults",
+      "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
       "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "worker_dermal_contact_duration_scaling_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker dermal contact-duration scaling defaults",
+      "title": "Direct-Use Exposure MCP heuristic worker dermal contact-duration scaling defaults",
       "locator": "docs://defaults-evidence-map#worker-dermal-contact-duration-scaling-heuristics-2026",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "worker_dermal_barrier_material_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker dermal barrier-material modifiers",
+      "title": "Direct-Use Exposure MCP heuristic worker dermal barrier-material modifiers",
       "locator": "docs://defaults-evidence-map#worker-dermal-barrier-material-heuristics-2026",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "worker_dermal_physchem_modifier_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker dermal physchem modifiers",
+      "title": "Direct-Use Exposure MCP heuristic worker dermal physchem modifiers",
       "locator": "docs://defaults-evidence-map#worker-dermal-physchem-modifier-heuristics-2026",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "worker_inhalation_control_factor_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker inhalation control-profile factors",
+      "title": "Direct-Use Exposure MCP heuristic worker inhalation control-profile factors",
       "locator": "docs://defaults-evidence-map#worker-inhalation-control-factor-heuristics-2026",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "worker_inhalation_rpe_factor_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker inhalation respiratory-protection factors",
+      "title": "Direct-Use Exposure MCP heuristic worker inhalation respiratory-protection factors",
       "locator": "docs://defaults-evidence-map#worker-inhalation-respiratory-protection-heuristics-2026",
       "version": "2026.04.07.v1"
     },
     {
       "source_id": "worker_inhalation_vapor_release_fraction_heuristics_2026",
-      "title": "Exposure Scenario MCP heuristic worker inhalation vapor-release fractions",
+      "title": "Direct-Use Exposure MCP heuristic worker inhalation vapor-release fractions",
       "locator": "docs://defaults-evidence-map#worker-inhalation-vapor-release-heuristics-2026",
       "version": "2026.04.07.v1"
     }

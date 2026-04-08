@@ -1,6 +1,6 @@
-# Contributing to Exposure Scenario MCP
+# Contributing to Direct-Use Exposure MCP
 
-Exposure Scenario MCP is the deterministic external-dose construction layer in
+Direct-Use Exposure MCP is the deterministic external-dose construction layer in
 the ToxMCP suite. Contributions should keep the server explicit, auditable, and
 scientifically bounded.
 

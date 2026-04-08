@@ -584,7 +584,7 @@ def _product_amount_unit(value: ScalarValue | object) -> ProductAmountUnit | Non
 def _execution_algorithm_source() -> AssumptionSourceReference:
     return AssumptionSourceReference(
         source_id="worker_dermal_absorbed_dose_execution_v1",
-        title="Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        title="Direct-Use Exposure MCP worker dermal absorbed-dose execution algorithm",
         locator=WORKER_DERMAL_EXECUTION_GUIDANCE_RESOURCE,
         version="2026.04.07.v1",
     )
@@ -1498,7 +1498,7 @@ def build_worker_dermal_absorbed_dose_bridge(
             severity=Severity.WARNING,
             message=(
                 "This package prepares a future occupational dermal absorbed-dose handoff "
-                "only. Exposure Scenario MCP does not execute a dermal absorption or PPE "
+                "only. Direct-Use Exposure MCP does not execute a dermal absorption or PPE "
                 "solver here."
             ),
         )

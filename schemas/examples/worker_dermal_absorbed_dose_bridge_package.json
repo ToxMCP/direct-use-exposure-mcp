@@ -292,7 +292,7 @@
       {
         "code": "worker_dermal_bridge_no_solver",
         "severity": "warning",
-        "message": "This package prepares a future occupational dermal absorbed-dose handoff only. Exposure Scenario MCP does not execute a dermal absorption or PPE solver here."
+        "message": "This package prepares a future occupational dermal absorbed-dose handoff only. Direct-Use Exposure MCP does not execute a dermal absorption or PPE solver here."
       }
     ],
     "recommendedNextSteps": [
@@ -314,7 +314,7 @@
     "plugin_id": "worker_dermal_absorbed_dose_bridge_export",
     "plugin_version": "0.1.0",
     "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Bridge package only; no dermal absorption or glove breakthrough solver is executed.",

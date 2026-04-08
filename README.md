@@ -1,4 +1,4 @@
-# Exposure Scenario MCP
+# Direct-Use Exposure MCP
 
 [![CI](https://github.com/ToxMCP/expossure-scenario-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/expossure-scenario-mcp/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
@@ -6,11 +6,11 @@
 
 > Part of **ToxMCP** Suite
 
-**Public MCP server for deterministic external exposure scenario construction in exposure-led NGRA workflows.**
-It turns product-use assumptions into auditable dermal, oral, inhalation, and aggregate
-external-dose scenarios, then exports ToxClaw-ready evidence objects and PBPK-ready
-handoff payloads without taking over PBPK execution, WoE synthesis, BER, PoD derivation,
-or final risk decisions.
+**Public MCP server for deterministic direct-use and near-field external exposure construction in exposure-led NGRA workflows.**
+It turns product-use assumptions into auditable dermal, direct-use/incidental oral,
+inhalation, and aggregate external-dose scenarios, then exports ToxClaw-ready evidence
+objects and PBPK-ready handoff payloads without taking over PBPK execution, WoE synthesis,
+BER, PoD derivation, or final risk decisions.
 
 ## Architecture
 
@@ -31,7 +31,7 @@ flowchart LR
 
     subgraph Engine["Scenario Engine"]
         Runtime["Deterministic runtime"]
-        Screening["Dermal / oral screening plugin"]
+        Screening["Dermal / direct-use oral screening plugin"]
         Inhalation["Inhalation screening plugin"]
         Aggregate["Aggregate/co-use summary"]
     end
@@ -66,7 +66,7 @@ flowchart LR
 The core engine is intentionally narrow, even though the released MCP also publishes
 bounded worker, exchange, and validation surfaces:
 
-- `Exposure Scenario MCP` owns external-dose construction only.
+- `Direct-Use Exposure MCP` owns external-dose construction only.
 - `PBPK MCP` owns kinetic translation and internal-dose interpretation.
 - `ToxClaw` owns evidence orchestration, review flow, and NGRA-facing report synthesis.
 - Defaults, assumptions, provenance, and limitations are first-class outputs, not hidden internals.
@@ -76,7 +76,7 @@ For a one-page maturity framing of the full released surface, see
 
 ## What's in v0.1.0
 
-- Deterministic dermal and oral screening scenario construction
+- Deterministic dermal plus direct-use/incidental oral screening scenario construction
 - Deterministic inhalation screening with room-volume and ventilation semantics
 - Tier A uncertainty registers, deterministic sensitivity ranking, and dependency metadata
 - Tier B deterministic scenario envelopes from named archetypes
@@ -94,6 +94,8 @@ For a one-page maturity framing of the full released surface, see
 - ToxClaw evidence export and refinement-bundle export
 - PBPK scenario export plus exact external-import payload packaging
 - Published JSON schemas, examples, contract manifest, and release metadata
+- Published shared cross-MCP contracts for identity, scenario-definition, route-dose, and future
+  Fate handoffs
 - Release-readiness, result-status, troubleshooting, and provenance resources
 - Published architecture guidance for splitting exposure, fate, dietary, and worker domains
 - Worker-task routing guidance plus a deterministic router for current MCP vs future occupational adapter paths
@@ -109,7 +111,7 @@ Exposure information is often the weakest structured input in early NGRA orchest
 there may be CompTox context, product-use hints in prompts, or local refinement notes,
 but not a stable, auditable external-dose object that downstream systems can trust.
 
-Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
+Direct-Use Exposure MCP gives the suite a dedicated exposure layer that is:
 
 - **deterministic-first** for transparent screening use
 - **MCP-native** with typed tools, resources, prompts, schemas, and examples
@@ -133,7 +135,7 @@ The detailed maturity matrix is in
 
 | Capability | Description |
 | --- | --- |
-| `Screening scenarios` | Builds route-specific external-dose scenarios for dermal, oral, and inhalation screening use cases. |
+| `Screening scenarios` | Builds route-specific external-dose scenarios for dermal, direct-use/incidental oral, and inhalation screening use cases. |
 | `Tier A uncertainty diagnostics` | Publishes qualitative uncertainty registers, one-at-a-time sensitivity ranking, dependency metadata, and validation posture on each scenario. |
 | `Tier B deterministic envelopes` | Builds named archetype envelopes with bounded min/median/max outputs and explicit driver attribution without probabilistic overclaiming. |
 | `Tier B archetype library` | Publishes governed packaged archetype sets, including Tier 1 inhalation request templates where near-field screening is part of the intended context, and instantiates them into deterministic envelopes with set/version provenance. |
@@ -160,6 +162,7 @@ The detailed maturity matrix is in
 | `Curated dermal contact packs` | Replaces the highest-volume transfer and surface-contact-retention heuristics with RIVM-backed screening defaults for `personal_care` hand application and `household_cleaner` wipe contact while preserving explicit applicability domains and remaining evidence gaps. |
 | `Defaults curation report` | Publishes a typed branch-level report showing which defaults paths are curated, route-semantic, or still heuristic, so downstream clients can target the strongest scenario branches deliberately. |
 | `Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
+| `Shared suite contracts` | Publishes governed cross-MCP schemas for shared chemical identity, scenario definition, route-dose handoff, and future Fate concentration handoffs. |
 | `Scientific guardrails` | Keeps BER, PoD derivation, PBPK execution, and final risk conclusions outside this server while publishing assumption governance and tier semantics on every scenario. |
 
 ## Table of contents
@@ -266,6 +269,8 @@ The detailed maturity matrix is in
 - `docs://exposure-platform-architecture`
 - `docs://capability-maturity-matrix`
 - `docs://repository-slug-decision`
+- `docs://cross-mcp-contract-guide`
+- `docs://service-selection-guide`
 - `docs://worker-routing-guide`
 - `docs://worker-tier2-bridge-guide`
 - `docs://worker-art-adapter-guide`
@@ -303,8 +308,13 @@ uv run pytest
 uv run exposure-scenario-mcp --transport stdio
 ```
 
-The current GitHub slug is intentionally kept as
-`ToxMCP/expossure-scenario-mcp` for the `v0.1.x` line. See
+The public product name is now `Direct-Use Exposure MCP`, while the current GitHub slug,
+Python package, import path, CLI, and MCP server IDs remain stable through the `v0.1.x`
+line. The current GitHub slug is:
+
+- `ToxMCP/expossure-scenario-mcp`
+
+See
 [docs/adr/0004-repository-slug.md](./docs/adr/0004-repository-slug.md).
 
 Run over Streamable HTTP:
@@ -316,10 +326,10 @@ uv run exposure-scenario-mcp --transport streamable-http --host 127.0.0.1 --port
 Current published surface from `docs/contracts/contract_manifest.json`:
 
 - `29` tools
-- `55` resources
+- `57` resources
 - `2` prompts
-- `132` schemas
-- `62` examples
+- `137` schemas
+- `67` examples
 
 Legacy `Exposure_Scenario_MCP_tasks.*` planning artifacts at the repo root are now archived
 status notes, not the live implementation backlog.
@@ -361,16 +371,22 @@ The current `v0.1.0` release is intentionally honest about what it does not do:
 
 ## Scientific boundaries
 
-Exposure Scenario MCP is the **external-dose construction** layer in the suite.
+Direct-Use Exposure MCP is the **external-dose construction** layer in the suite.
 That means:
 
 - it may infer and default screening inputs
 - it may compare and aggregate scenarios
 - it may export PBPK- and ToxClaw-facing handoff objects
+- it keeps direct-use and incidental oral inside this repo while leaving diet-mediated oral
+  to a sibling Dietary MCP
+- it can publish shared suite contracts for future Fate and Dietary handoffs without taking
+  ownership of those runtimes
 
 It does **not**:
 
 - claim toxicokinetic authority
+- own environmental release or multimedia fate math
+- own diet-mediated oral intake workflows
 - replace mechanistic or WoE interpretation
 - produce final risk judgments
 - silently elevate heuristic screening assumptions into decision-ready conclusions

@@ -301,6 +301,14 @@
       "description": "Decision note for keeping the current repository slug through v0.1.x."
     },
     {
+      "uri": "docs://cross-mcp-contract-guide",
+      "description": "Guide to the shared suite-facing contracts published for sibling MCPs."
+    },
+    {
+      "uri": "docs://service-selection-guide",
+      "description": "Guide to routing questions and handoffs across Exposure, Fate, Dietary, PBPK, and ToxClaw."
+    },
+    {
       "uri": "docs://worker-routing-guide",
       "description": "Guide to the worker-task router and occupational escalation hooks."
     },
@@ -412,8 +420,13 @@
     }
   ],
   "schemas": {
+    "chemicalIdentity.v1": "schemas/chemicalIdentity.v1.json",
     "productUseProfile.v1": "schemas/productUseProfile.v1.json",
     "populationProfile.v1": "schemas/populationProfile.v1.json",
+    "exposureScenarioDefinition.v1": "schemas/exposureScenarioDefinition.v1.json",
+    "routeDoseEstimate.v1": "schemas/routeDoseEstimate.v1.json",
+    "environmentalReleaseScenario.v1": "schemas/environmentalReleaseScenario.v1.json",
+    "concentrationSurface.v1": "schemas/concentrationSurface.v1.json",
     "exposureScenarioRequest.v1": "schemas/exposureScenarioRequest.v1.json",
     "inhalationResidualAirReentryScenarioRequest.v1": "schemas/inhalationResidualAirReentryScenarioRequest.v1.json",
     "inhalationScenarioRequest.v1": "schemas/inhalationScenarioRequest.v1.json",
@@ -546,6 +559,11 @@
     "securityProvenanceReviewReport.v1": "schemas/securityProvenanceReviewReport.v1.json"
   },
   "examples": {
+    "chemical_identity": "schemas/examples/chemical_identity.json",
+    "exposure_scenario_definition": "schemas/examples/exposure_scenario_definition.json",
+    "route_dose_estimate": "schemas/examples/route_dose_estimate.json",
+    "environmental_release_scenario": "schemas/examples/environmental_release_scenario.json",
+    "concentration_surface": "schemas/examples/concentration_surface.json",
     "screening_dermal_request": "schemas/examples/screening_dermal_request.json",
     "screening_dermal_scenario": "schemas/examples/screening_dermal_scenario.json",
     "inhalation_request": "schemas/examples/inhalation_request.json",

@@ -1,0 +1,43 @@
+{
+  "schema_version": "environmentalReleaseScenario.v1",
+  "releaseScenarioId": "rel-example-001",
+  "chemicalIdentity": {
+    "schema_version": "chemicalIdentity.v1",
+    "chemicalId": "DTXSID7020182",
+    "preferredName": "Example Solvent A",
+    "casrn": "123-45-6",
+    "dtxsid": "DTXSID7020182",
+    "smiles": null,
+    "inchiKey": null,
+    "externalIdentifiers": {
+      "exampleRegistry": "EX-0001"
+    },
+    "notes": [
+      "Illustrative shared suite identity contract derived from the example scenario."
+    ]
+  },
+  "sourceTermType": "mass",
+  "releaseMassMg": 2500.0,
+  "emissionRateMgPerHour": null,
+  "releaseDurationHours": 24.0,
+  "timingPattern": "single post-application environmental release window",
+  "regionScope": "EU residential fringe",
+  "siteContext": "treated outdoor perimeter near residential receptor",
+  "releaseMediaFractions": [
+    {
+      "medium": "air",
+      "fraction": 0.6
+    },
+    {
+      "medium": "soil",
+      "fraction": 0.4
+    }
+  ],
+  "treatmentOrRemovalFraction": 0.1,
+  "evidenceSources": [
+    "ExampleFateEvidence:release-scenario-001"
+  ],
+  "notes": [
+    "Illustrative future Fate MCP ingress contract published by Exposure MCP for boundary alignment."
+  ]
+}

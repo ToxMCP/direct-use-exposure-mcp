@@ -1,52 +1,65 @@
-# ADR 0004: Repository Slug Stability
+# ADR 0004: Public Naming Transition
 
 - Status: Accepted
 - Date: 2026-04-08
 
 ## Context
 
-The public GitHub repository slug is currently:
+The public product name is now:
 
-- `ToxMCP/expossure-scenario-mcp`
+- `Direct-Use Exposure MCP`
 
-The spelling is awkward, but it is also already live in:
+The current technical identifiers are still:
+
+- GitHub repository slug: `ToxMCP/expossure-scenario-mcp`
+- Python package: `exposure-scenario-mcp`
+- Import path: `exposure_scenario_mcp`
+- MCP server name: `exposure_scenario_mcp`
+
+The new product name is a better scientific fit now that the suite boundary is explicit:
+this MCP owns direct-use and near-field external-dose construction, while Fate MCP,
+Dietary MCP, PBPK MCP, and ToxClaw own adjacent concerns.
+
+At the same time, the existing technical identifiers are already live in:
 
 - badges
 - clone instructions
-- local setup scripts
-- published release metadata
-- external notes and review artifacts
-
-Changing the slug immediately would improve polish, but it would also create avoidable
-churn for the released `0.1.0` line.
+- package metadata
+- generated release artifacts
+- contract manifests
+- review and validation outputs
 
 ## Decision
 
-Keep the current repository slug through the `v0.1.x` series.
+Adopt `Direct-Use Exposure MCP` as the canonical public product name now.
 
-Do not silently rename the GitHub repository as part of documentation cleanup. Revisit a
-rename only as an explicit release-management decision for a future minor release or for a
-broader ToxMCP suite naming pass.
+Keep the current GitHub slug, Python package name, import path, CLI command, and MCP server
+identifier stable through the `v0.1.x` line.
+
+Treat any full technical rename as a later compatibility-managed change rather than a silent
+documentation cleanup.
 
 ## Consequences
 
 Positive:
 
-- avoids breaking clone URLs, badges, and existing references during the first released line
-- keeps release and review artifacts stable
-- avoids creating unnecessary GitHub and packaging churn while the platform surface is still
-  settling
+- the public name now matches the actual scientific boundary more closely
+- the suite can reserve broader names like `Exposure MCP` for a future orchestrated family
+- existing users do not lose clone URLs, import paths, or CLI entry points during the first
+  released line
 
 Negative:
 
-- the public-facing name remains awkward for now
-- documentation must be explicit that the current slug is intentional, not an unnoticed typo
+- product name and technical identifiers remain temporarily different
+- docs must be explicit about the staged naming policy
+- a future repo/package rename will still require release coordination
 
 ## Follow-up
 
-If the suite adopts a naming normalization pass later, the rename should be coordinated with:
+If the suite decides to complete the technical rename later, coordinate it with:
 
-- README and badge updates
-- release-note callouts
-- clone and onboarding guidance
-- any suite-level orchestrator or cross-MCP documentation
+- GitHub slug updates
+- badges and clone instructions
+- package metadata and CLI migration notes
+- generated release artifacts
+- contract manifests and suite-level documentation

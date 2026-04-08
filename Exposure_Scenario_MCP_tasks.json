@@ -10,15 +10,15 @@
   ],
   "releaseSnapshot": {
     "releaseVersion": "0.1.0",
-    "releaseCommit": "506df226ec7f0a62af70dbb46ba31f74535aace5",
+    "releaseCommit": "28a918b",
     "readinessStatus": "ready_with_known_limitations",
     "reviewStatus": "acceptable_with_warnings",
     "defaultsVersion": "2026.04.07.v18",
     "toolCount": 29,
-    "resourceCount": 53,
+    "resourceCount": 57,
     "promptCount": 2,
-    "schemaCount": 132,
-    "exampleCount": 62,
+    "schemaCount": 137,
+    "exampleCount": 67,
     "benchmarkCaseCount": 22
   },
   "replacementWorkstreams": [

@@ -12,13 +12,13 @@ wrap every exposure tool directly.
 
 ## Recommended MCP Boundaries
 
-### Exposure Scenario MCP
+### Direct-Use Exposure MCP
 
 Owns human external-dose construction for direct-use and near-field scenarios.
 
 - Consumer product-use scenarios
 - Near-field inhalation and indoor aerosol screening
-- Dermal and oral external-dose construction
+- Dermal plus direct-use/incidental oral external-dose construction
 - Worker exposure routing when the inputs still look like task/use scenarios
 - Evidence reconciliation across CompTox, ConsExpo, dossiers, and user uploads
 - PBPK-ready external-dose handoff objects
@@ -40,7 +40,7 @@ Candidate tool families:
 - EUSES
 - ChemFate-style environmental fate engines
 
-This should be a sibling MCP, not an internal subsystem of Exposure Scenario MCP.
+This should be a sibling MCP, not an internal subsystem of Direct-Use Exposure MCP.
 
 ### Dietary MCP
 
@@ -61,7 +61,7 @@ different validation regimes, and different regulatory semantics than product-us
 
 ### Worker Exposure Mode or Worker MCP
 
-Start as a bounded domain inside Exposure Scenario MCP.
+Start as a bounded domain inside Direct-Use Exposure MCP.
 
 - Tier 1 worker screening
 - Tier 2 task refinement
@@ -79,6 +79,9 @@ make the shared abstractions stop paying off.
 ## Shared Cross-MCP Contracts
 
 Every MCP should exchange typed objects instead of model-specific blobs.
+
+The shared suite contracts are now published from this repo as governed schemas so sibling MCPs
+can build against them before Fate MCP and Dietary MCP are fully implemented.
 
 - `chemical_identity`
   DTXSID, CASRN, preferred name, synonyms, source provenance
@@ -99,10 +102,11 @@ Every MCP should exchange typed objects instead of model-specific blobs.
 
 Route by domain, not by brand name.
 
-- Consumer spray or cleaner task -> Exposure Scenario MCP direct-use engine or ConsExpo-aligned pack
-- Worker task with limited data -> Exposure Scenario MCP worker router plus current screening/Tier 1 path
+- Consumer spray or cleaner task -> Direct-Use Exposure MCP direct-use engine or ConsExpo-aligned pack
+- Direct-use oral or incidental oral question -> Direct-Use Exposure MCP
+- Worker task with limited data -> Direct-Use Exposure MCP worker router plus current screening/Tier 1 path
 - Worker task needing higher-tier refinement -> ART/Stoffenmanager adapter path
-- Indoor air or aerosol room problem -> Exposure Scenario MCP indoor engine now; CONTAM/IAQX adapter later
+- Indoor air or aerosol room problem -> Direct-Use Exposure MCP indoor engine now; CONTAM/IAQX adapter later
 - Environmental release or chronic multimedia question -> Fate MCP
 - Food-residue intake question -> Dietary MCP
 
@@ -118,7 +122,7 @@ Route by domain, not by brand name.
 
 ### Phase 1
 
-Strengthen the current Exposure Scenario MCP.
+Strengthen the current Direct-Use Exposure MCP.
 
 - Consumer direct-use coverage
 - Indoor aerosol and subtype-aware inhalation
@@ -142,7 +146,7 @@ Add Fate MCP.
 
 - Environmental release scenarios
 - Multimedia concentration outputs
-- Concentration surfaces that Exposure Scenario MCP can consume
+- Concentration surfaces that Direct-Use Exposure MCP can consume
 
 ### Phase 4
 
@@ -162,7 +166,7 @@ Add probabilistic orchestration over the shared contracts.
 
 ## Non-Goals
 
-- Do not merge PBPK into Exposure Scenario MCP.
+- Do not merge PBPK into Direct-Use Exposure MCP.
 - Do not claim risk conclusions from external-dose outputs.
 - Do not make the first version depend on heavyweight desktop models being callable in real time.
 
@@ -170,7 +174,7 @@ Add probabilistic orchestration over the shared contracts.
 
 For this repository:
 
-1. Keep building Exposure Scenario MCP as the direct-use and near-field engine.
+1. Keep building Direct-Use Exposure MCP as the direct-use and near-field engine.
 2. Keep worker routing in this MCP and mature it before splitting worker exposure into a sibling service.
 3. Treat environmental fate and dietary as separate MCPs with shared contracts.
 4. Keep all regional tools behind evidence packs and model-routing logic rather than exposing

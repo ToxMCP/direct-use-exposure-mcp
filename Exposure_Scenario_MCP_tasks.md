@@ -1,4 +1,4 @@
-# Exposure Scenario MCP Planning Status
+# Direct-Use Exposure MCP Planning Status
 
 This file replaces the original pre-release TaskMaster backlog.
 
@@ -10,11 +10,11 @@ authoritative status source for this repository.
 The repo is already released on `main` as:
 
 - release version: `0.1.0`
-- release commit: `506df226ec7f0a62af70dbb46ba31f74535aace5`
+- release commit: `28a918b`
 - readiness status: `ready_with_known_limitations`
 - review status: `acceptable_with_warnings`
 - defaults version: `2026.04.07.v18`
-- published surface: `29` tools, `53` resources, `2` prompts, `132` schemas, `62` examples
+- published surface: `29` tools, `57` resources, `2` prompts, `137` schemas, `67` examples
 - benchmark cases: `22`
 
 Authoritative current-state documents:

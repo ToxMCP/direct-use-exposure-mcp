@@ -1,4 +1,4 @@
-"""Public data contracts for Exposure Scenario MCP."""
+"""Public data contracts for Direct-Use Exposure MCP."""
 
 from __future__ import annotations
 
@@ -962,6 +962,405 @@ class PopulationProfile(StrictModel):
     @classmethod
     def validate_population_text_fields(cls, value: str) -> str:
         return _validate_required_auditable_text(value)
+
+
+class ChemicalIdentity(StrictModel):
+    schema_version: Literal["chemicalIdentity.v1"] = "chemicalIdentity.v1"
+    chemical_id: str = Field(
+        ...,
+        alias="chemicalId",
+        description="Stable suite-level chemical identifier used across MCP boundaries.",
+    )
+    preferred_name: str | None = Field(
+        default=None,
+        alias="preferredName",
+        description="Preferred human-readable chemical name for cross-MCP handoffs.",
+    )
+    casrn: str | None = Field(
+        default=None,
+        description="CAS Registry Number when available for reconciliation or review.",
+    )
+    dtxsid: str | None = Field(
+        default=None,
+        description="EPA CompTox DTXSID when available.",
+    )
+    smiles: str | None = Field(
+        default=None,
+        description="Canonical or representative SMILES string when available.",
+    )
+    inchi_key: str | None = Field(
+        default=None,
+        alias="inchiKey",
+        description="InChIKey when available for downstream identity reconciliation.",
+    )
+    external_identifiers: dict[str, str] = Field(
+        default_factory=dict,
+        alias="externalIdentifiers",
+        description="Additional external identifiers preserved verbatim for auditability.",
+    )
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Additional identity notes that should remain attached to handoffs.",
+    )
+
+    @field_validator("chemical_id", "preferred_name", "casrn", "dtxsid", "smiles", "inchi_key")
+    @classmethod
+    def validate_identity_text_fields(cls, value: str | None) -> str | None:
+        return _validate_optional_auditable_text(value)
+
+
+class ExposureScenarioDefinition(StrictModel):
+    schema_version: Literal["exposureScenarioDefinition.v1"] = (
+        "exposureScenarioDefinition.v1"
+    )
+    scenario_definition_id: str = Field(
+        ...,
+        alias="scenarioDefinitionId",
+        description="Stable identifier for a shared scenario-definition handoff.",
+    )
+    chemical_identity: ChemicalIdentity = Field(
+        ...,
+        alias="chemicalIdentity",
+        description="Normalized chemical identity preserved across MCP boundaries.",
+    )
+    route: Route = Field(..., description="Route owned by the scenario definition.")
+    scenario_class: ScenarioClass = Field(
+        ...,
+        alias="scenarioClass",
+        description="Scenario class family for the shared scenario-definition handoff.",
+    )
+    pathway_semantics: str = Field(
+        ...,
+        alias="pathwaySemantics",
+        description=(
+            "Short label describing the pathway grammar, for example direct_use, "
+            "near_field, or concentration_to_dose."
+        ),
+    )
+    product_use_profile: ProductUseProfile | None = Field(
+        default=None,
+        alias="productUseProfile",
+        description="Resolved product-use profile for direct-use or near-field scenarios.",
+    )
+    population_profile: PopulationProfile = Field(
+        ...,
+        alias="populationProfile",
+        description="Population context for the shared scenario definition.",
+    )
+    source_concentration_surface_ids: list[str] = Field(
+        default_factory=list,
+        alias="sourceConcentrationSurfaceIds",
+        description=(
+            "Upstream concentration-surface identifiers when the scenario definition "
+            "consumes a Fate MCP handoff rather than direct-use inputs."
+        ),
+    )
+    assumption_overrides: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        alias="assumptionOverrides",
+        description="Explicit override ledger preserved for review and orchestration.",
+    )
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Additional scenario-definition notes that should survive handoffs.",
+    )
+
+    @field_validator("scenario_definition_id", "pathway_semantics")
+    @classmethod
+    def validate_definition_text_fields(cls, value: str) -> str:
+        return _validate_required_auditable_text(value)
+
+    @model_validator(mode="after")
+    def validate_supporting_context(self) -> ExposureScenarioDefinition:
+        if self.product_use_profile is None and not self.source_concentration_surface_ids:
+            raise ValueError(
+                "ExposureScenarioDefinition requires productUseProfile or at least one "
+                "sourceConcentrationSurfaceId."
+            )
+        return self
+
+
+class RouteDoseEstimate(StrictModel):
+    schema_version: Literal["routeDoseEstimate.v1"] = "routeDoseEstimate.v1"
+    chemical_identity: ChemicalIdentity = Field(
+        ...,
+        alias="chemicalIdentity",
+        description="Normalized chemical identity preserved on the route-dose output.",
+    )
+    route: Route = Field(..., description="Route represented by this dose estimate.")
+    scenario_class: ScenarioClass = Field(
+        ...,
+        alias="scenarioClass",
+        description="Scenario class context for the route-dose estimate.",
+    )
+    dose: ScenarioDose = Field(
+        ...,
+        description="Canonical dose metric and unit for downstream consumption.",
+    )
+    source_scenario_definition_id: str | None = Field(
+        default=None,
+        alias="sourceScenarioDefinitionId",
+        description="Scenario-definition identifier that produced this dose estimate.",
+    )
+    source_scenario_id: str | None = Field(
+        default=None,
+        alias="sourceScenarioId",
+        description="Concrete scenario identifier when the dose came from a scenario build.",
+    )
+    source_concentration_surface_ids: list[str] = Field(
+        default_factory=list,
+        alias="sourceConcentrationSurfaceIds",
+        description=(
+            "Upstream concentration-surface identifiers when this dose was derived from "
+            "environmental concentrations."
+        ),
+    )
+    population_profile: PopulationProfile | None = Field(
+        default=None,
+        alias="populationProfile",
+        description="Population normalization context preserved for downstream review.",
+    )
+    fit_for_purpose: FitForPurpose = Field(
+        ...,
+        alias="fitForPurpose",
+        description="Fit-for-purpose statement for the shared route-dose estimate.",
+    )
+    provenance: ProvenanceBundle = Field(
+        ...,
+        description="Provenance for the dose estimate and any defaults or adapters used.",
+    )
+    limitations: list[LimitationNote] = Field(
+        default_factory=list,
+        description="Known limitations that should remain visible downstream.",
+    )
+    quality_flags: list[QualityFlag] = Field(
+        default_factory=list,
+        alias="qualityFlags",
+        description="Quality flags that should remain visible downstream.",
+    )
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Additional route-dose notes preserved for handoffs.",
+    )
+
+    @field_validator("source_scenario_definition_id", "source_scenario_id")
+    @classmethod
+    def validate_route_dose_text_fields(cls, value: str | None) -> str | None:
+        return _validate_optional_auditable_text(value)
+
+
+class ReleaseMediumFraction(StrictModel):
+    medium: str = Field(
+        ...,
+        description="Target release medium, for example air, water, soil, or sediment.",
+    )
+    fraction: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="Fraction of the release allocated to the named medium.",
+    )
+
+    @field_validator("medium")
+    @classmethod
+    def validate_release_medium_text(cls, value: str) -> str:
+        return _validate_required_auditable_text(value)
+
+
+class EnvironmentalReleaseScenario(StrictModel):
+    schema_version: Literal["environmentalReleaseScenario.v1"] = (
+        "environmentalReleaseScenario.v1"
+    )
+    release_scenario_id: str = Field(
+        ...,
+        alias="releaseScenarioId",
+        description="Stable identifier for the environmental release scenario.",
+    )
+    chemical_identity: ChemicalIdentity = Field(
+        ...,
+        alias="chemicalIdentity",
+        description="Normalized chemical identity preserved across MCP boundaries.",
+    )
+    source_term_type: Literal["mass", "emission_rate"] = Field(
+        ...,
+        alias="sourceTermType",
+        description="Whether the release is expressed as a one-time mass or an emission rate.",
+    )
+    release_mass_mg: float | None = Field(
+        default=None,
+        alias="releaseMassMg",
+        gt=0.0,
+        description="Released mass when the source term is expressed as a finite mass.",
+    )
+    emission_rate_mg_per_hour: float | None = Field(
+        default=None,
+        alias="emissionRateMgPerHour",
+        gt=0.0,
+        description="Emission rate when the source term is expressed as a release rate.",
+    )
+    release_duration_hours: float = Field(
+        ...,
+        alias="releaseDurationHours",
+        gt=0.0,
+        description="Duration of the release window in hours.",
+    )
+    timing_pattern: str = Field(
+        ...,
+        alias="timingPattern",
+        description="Human-readable timing pattern such as one-time, episodic, or seasonal.",
+    )
+    region_scope: str = Field(
+        ...,
+        alias="regionScope",
+        description="Region or site scope used for the future fate handoff.",
+    )
+    site_context: str | None = Field(
+        default=None,
+        alias="siteContext",
+        description="Optional site or setting label such as residential fringe or warehouse.",
+    )
+    release_media_fractions: list[ReleaseMediumFraction] = Field(
+        ...,
+        alias="releaseMediaFractions",
+        min_length=1,
+        description="Media-fraction ledger for the environmental release scenario.",
+    )
+    treatment_or_removal_fraction: float | None = Field(
+        default=None,
+        alias="treatmentOrRemovalFraction",
+        ge=0.0,
+        le=1.0,
+        description="Optional treatment or removal fraction applied before environmental entry.",
+    )
+    evidence_sources: list[str] = Field(
+        default_factory=list,
+        alias="evidenceSources",
+        description="Upstream evidence references backing the release scenario.",
+    )
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Additional notes that should remain attached to the release scenario.",
+    )
+
+    @field_validator("release_scenario_id", "timing_pattern", "region_scope", "site_context")
+    @classmethod
+    def validate_environmental_release_text_fields(cls, value: str | None) -> str | None:
+        return _validate_optional_auditable_text(value)
+
+    @model_validator(mode="after")
+    def validate_release_terms(self) -> EnvironmentalReleaseScenario:
+        media_fraction_total = sum(item.fraction for item in self.release_media_fractions)
+        if media_fraction_total <= 0.0:
+            raise ValueError("releaseMediaFractions must contain a positive total fraction.")
+        if media_fraction_total > 1.0 + 1e-9:
+            raise ValueError("releaseMediaFractions must sum to 1.0 or less.")
+        if self.source_term_type == "mass":
+            if self.release_mass_mg is None:
+                raise ValueError("releaseMassMg is required when sourceTermType='mass'.")
+            if self.emission_rate_mg_per_hour is not None:
+                raise ValueError(
+                    "emissionRateMgPerHour must be omitted when sourceTermType='mass'."
+                )
+        if self.source_term_type == "emission_rate":
+            if self.emission_rate_mg_per_hour is None:
+                raise ValueError(
+                    "emissionRateMgPerHour is required when sourceTermType='emission_rate'."
+                )
+            if self.release_mass_mg is not None:
+                raise ValueError(
+                    "releaseMassMg must be omitted when sourceTermType='emission_rate'."
+                )
+        return self
+
+
+class ConcentrationSurface(StrictModel):
+    schema_version: Literal["concentrationSurface.v1"] = "concentrationSurface.v1"
+    surface_id: str = Field(
+        ...,
+        alias="surfaceId",
+        description="Stable identifier for the concentration surface output.",
+    )
+    chemical_identity: ChemicalIdentity = Field(
+        ...,
+        alias="chemicalIdentity",
+        description="Normalized chemical identity preserved across MCP boundaries.",
+    )
+    medium: str = Field(..., description="Medium represented by the concentration surface.")
+    compartment: str = Field(
+        ...,
+        description="Compartment or context represented by the surface, such as outdoor_air.",
+    )
+    geographic_scope: str = Field(
+        ...,
+        alias="geographicScope",
+        description="Geographic scope or regional context for the concentration output.",
+    )
+    compartment_context: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        alias="compartmentContext",
+        description="Structured context such as distance band, microenvironment, or receptor zone.",
+    )
+    time_semantics: str = Field(
+        ...,
+        alias="timeSemantics",
+        description="Time semantics such as steady_state, 24h average, or post-application hour 4.",
+    )
+    concentration_value: float = Field(
+        ...,
+        alias="concentrationValue",
+        description="Numeric concentration estimate for the defined surface.",
+    )
+    concentration_unit: str = Field(
+        ...,
+        alias="concentrationUnit",
+        description="Canonical concentration unit for the defined surface.",
+    )
+    model_family: str = Field(
+        ...,
+        alias="modelFamily",
+        description="Model-family tag used to create the concentration surface.",
+    )
+    source_release_scenario_id: str | None = Field(
+        default=None,
+        alias="sourceReleaseScenarioId",
+        description="Upstream environmental release scenario identifier when available.",
+    )
+    fit_for_purpose: FitForPurpose = Field(
+        ...,
+        alias="fitForPurpose",
+        description="Fit-for-purpose statement for downstream concentration consumers.",
+    )
+    provenance: ProvenanceBundle = Field(
+        ...,
+        description="Provenance for the concentration surface and any defaults or adapters used.",
+    )
+    limitations: list[LimitationNote] = Field(
+        default_factory=list,
+        description="Known limitations that should remain visible downstream.",
+    )
+    quality_flags: list[QualityFlag] = Field(
+        default_factory=list,
+        alias="qualityFlags",
+        description="Quality flags that should remain visible downstream.",
+    )
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Additional surface notes preserved for downstream consumers.",
+    )
+
+    @field_validator(
+        "surface_id",
+        "medium",
+        "compartment",
+        "geographic_scope",
+        "time_semantics",
+        "concentration_unit",
+        "model_family",
+        "source_release_scenario_id",
+    )
+    @classmethod
+    def validate_concentration_surface_text_fields(cls, value: str | None) -> str | None:
+        return _validate_optional_auditable_text(value)
 
 
 class ExposureScenarioRequest(StrictModel):

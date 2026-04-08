@@ -1,0 +1,15 @@
+{
+  "schema_version": "chemicalIdentity.v1",
+  "chemicalId": "DTXSID7020182",
+  "preferredName": "Example Solvent A",
+  "casrn": "123-45-6",
+  "dtxsid": "DTXSID7020182",
+  "smiles": null,
+  "inchiKey": null,
+  "externalIdentifiers": {
+    "exampleRegistry": "EX-0001"
+  },
+  "notes": [
+    "Illustrative shared suite identity contract derived from the example scenario."
+  ]
+}

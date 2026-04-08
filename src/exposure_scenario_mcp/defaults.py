@@ -1,4 +1,4 @@
-"""Versioned defaults registry for Exposure Scenario MCP."""
+"""Versioned defaults registry for Direct-Use Exposure MCP."""
 
 from __future__ import annotations
 

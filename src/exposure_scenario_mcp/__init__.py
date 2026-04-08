@@ -1,4 +1,4 @@
-"""Exposure Scenario MCP package."""
+"""Direct-Use Exposure MCP package."""
 
 from exposure_scenario_mcp.package_metadata import __version__
 

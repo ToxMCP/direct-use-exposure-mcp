@@ -3,7 +3,7 @@
 ## Our commitment
 
 In the interest of fostering an open, professional, and scientifically serious
-environment, maintainers and contributors of Exposure Scenario MCP commit to
+environment, maintainers and contributors of Direct-Use Exposure MCP commit to
 making participation respectful and harassment-free for everyone.
 
 ## Expected behavior

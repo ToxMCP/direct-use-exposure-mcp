@@ -1,6 +1,6 @@
-# Exposure Scenario MCP Contracts
+# Direct-Use Exposure MCP Contracts
 
-This folder documents the public contract surface for Exposure Scenario MCP.
+This folder documents the public contract surface for Direct-Use Exposure MCP.
 
 ## Generated Artifacts
 

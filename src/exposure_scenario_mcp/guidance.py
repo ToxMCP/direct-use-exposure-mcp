@@ -232,10 +232,11 @@ wrap every exposure tool directly.
 
 ## Recommended MCP Boundaries
 
-### Exposure Scenario MCP
+### Direct-Use Exposure MCP
 
 - Owns human external-dose construction for direct-use and near-field scenarios.
-- Covers consumer product-use scenarios, dermal/oral screening, indoor aerosol screening,
+- Covers consumer product-use scenarios, dermal plus direct-use/incidental oral screening,
+  indoor aerosol screening,
   and worker task routing while the shared task/use abstractions still hold.
 - Accepts reviewed evidence packs from CompTox, ConsExpo, dossiers, and user uploads.
 - Emits PBPK-ready external-dose handoff objects.
@@ -245,7 +246,7 @@ wrap every exposure tool directly.
 - Owns environmental release, multimedia fate, and compartment concentrations.
 - Covers release to air, water, soil, and sediment plus long-term concentration surfaces.
 - Candidate model families include `SimpleBox`, `EUSES`, and other multimedia fate engines.
-- Should remain a sibling MCP, not an internal subsystem of Exposure Scenario MCP.
+- Should remain a sibling MCP, not an internal subsystem of Direct-Use Exposure MCP.
 
 ### Dietary MCP
 
@@ -257,7 +258,7 @@ wrap every exposure tool directly.
 
 ### Worker Exposure Mode
 
-- Start worker support inside Exposure Scenario MCP.
+- Start worker support inside Direct-Use Exposure MCP.
 - Use Tier 1/Tier 2 routing rather than a single worker model.
 - Candidate model families include `ECETOC TRA`, `ART`, and `Stoffenmanager` when access
   constraints permit.
@@ -274,13 +275,18 @@ wrap every exposure tool directly.
 - `route_dose_estimate`
 - `pbpk_external_import_bundle`
 
+These shared contracts are now published from this repo as governed schemas so sibling Fate
+and Dietary services can build against stable handoff shapes before their own runtimes land.
+
 ## Routing Model
 
-- Consumer spray or cleaner task -> Exposure Scenario MCP direct-use engine or ConsExpo-aligned pack
-- Worker task with limited data -> Exposure Scenario MCP worker router plus the current
+- Consumer spray or cleaner task -> Direct-Use Exposure MCP direct-use engine
+  or ConsExpo-aligned pack
+- Direct-use oral or incidental oral question -> Direct-Use Exposure MCP
+- Worker task with limited data -> Direct-Use Exposure MCP worker router plus the current
   screening or Tier 1 path
 - Worker task needing higher-tier refinement -> `ART` or `Stoffenmanager` adapter path
-- Indoor aerosol room problem -> Exposure Scenario MCP indoor engine now;
+- Indoor aerosol room problem -> Direct-Use Exposure MCP indoor engine now;
   `CONTAM` or `IAQX` adapter later
 - Environmental release or chronic multimedia question -> Fate MCP
 - Food-residue intake question -> Dietary MCP
@@ -297,14 +303,14 @@ wrap every exposure tool directly.
 
 ### Phase 1
 
-- Strengthen the current Exposure Scenario MCP.
+- Strengthen the current Direct-Use Exposure MCP.
 - Finish consumer direct-use coverage, indoor aerosol refinement, evidence reconciliation, and
   stable PBPK export.
 
 ### Phase 2
 
 - Mature the current worker router, Tier 2 hooks, dermal absorbed-dose hooks, and better
-  inhalation refinement while keeping the worker path inside Exposure Scenario MCP.
+  inhalation refinement while keeping the worker path inside Direct-Use Exposure MCP.
 - Add a structured worker Tier 2 bridge export and ART-side ingest boundary before wiring a
   real occupational solver.
 
@@ -323,9 +329,117 @@ wrap every exposure tool directly.
 
 ## Non-Goals
 
-- Do not merge PBPK into Exposure Scenario MCP.
+- Do not merge PBPK into Direct-Use Exposure MCP.
 - Do not claim risk conclusions from external-dose outputs.
 - Do not make the first version depend on heavyweight desktop models being callable in real time.
+"""
+
+
+def cross_mcp_contract_guide() -> str:
+    return """# Cross-MCP Contract Guide
+
+Direct-Use Exposure MCP now publishes the shared suite-facing contracts that sibling MCPs
+should build against instead of inventing parallel handoff shapes.
+
+## Published Shared Schemas
+
+- `chemicalIdentity.v1`
+- `productUseEvidenceRecord.v1`
+- `exposureScenarioDefinition.v1`
+- `routeDoseEstimate.v1`
+- `environmentalReleaseScenario.v1`
+- `concentrationSurface.v1`
+- `pbpkExternalImportBundle.v1`
+
+## Intent By Contract
+
+### `chemicalIdentity.v1`
+
+- Stable identity handoff for CompTox, Fate, Dietary, Exposure, and PBPK orchestration.
+- Carries the suite chemical identifier plus optional CASRN, DTXSID, and other external IDs.
+
+### `exposureScenarioDefinition.v1`
+
+- Shared scenario-definition contract for direct-use or concentration-to-dose workflows.
+- Keeps product-use grammar separate from concentration-surface references so sibling MCPs can
+  hand off cleanly without forcing tool-native payloads into each other.
+
+### `routeDoseEstimate.v1`
+
+- Compact auditable dose object for downstream orchestration and PBPK preparation.
+- Preserves route, scenario class, provenance, limitations, quality flags, and fit-for-purpose
+  instead of reducing everything to a naked numeric value.
+
+### `environmentalReleaseScenario.v1`
+
+- Future Fate MCP ingress contract for source-to-concentration workflows.
+- Published here so sibling services can lock the shared semantics before Fate MCP is built out.
+
+### `concentrationSurface.v1`
+
+- Future Fate MCP output contract for concentration-to-dose consumers.
+- Keeps medium, compartment, geographic scope, time semantics, model family, and provenance
+  explicit so Exposure MCP does not need fate-tool-native parsing logic later.
+
+## Boundary Notes
+
+- Direct-use oral and incidental oral stay in Direct-Use Exposure MCP.
+- diet-mediated oral belongs in Dietary MCP and should emit `routeDoseEstimate.v1` rather than
+  overloading `exposureScenarioRequest.v1`.
+- Environmental release and multimedia transfer belong in Fate MCP and should emit
+  `concentrationSurface.v1`, not body-weight-normalized human dose.
+- PBPK MCP should consume stable dose semantics and identity records, not product-use prose or
+  model-native blobs.
+
+## Design Rules
+
+- Translate external tools or regional sources into shared contracts, not the reverse.
+- Preserve provenance and limitation notes at every handoff boundary.
+- Treat heuristic and bounded-surrogate paths as explicit maturity states, not hidden internals.
+- Add new shared contracts only when at least one cross-MCP handoff needs them.
+"""
+
+
+def service_selection_guide() -> str:
+    return """# Service Selection Guide
+
+Use this guide when routing a question to the right ToxMCP service.
+
+## Ownership Table
+
+- Consumer product use, direct-use dermal, direct-use oral, incidental oral, indoor aerosol,
+  residual-air reentry, and near-field worker screening -> `Direct-Use Exposure MCP`
+- Environmental release, multimedia transfer, and compartment concentration estimation ->
+  `Fate MCP`
+- Commodity residues, food-consumption mappings, acute/chronic dietary intake ->
+  `Dietary MCP`
+- Internal dose, TK simulation, tissue concentration time courses -> `PBPK MCP`
+- Cross-service orchestration, evidence handling, refinement policy, final reporting -> `ToxClaw`
+
+## Edge Cases
+
+- Direct-use oral stays in Direct-Use Exposure MCP.
+- Diet-mediated oral goes to Dietary MCP.
+- Environmental oral from media is not Dietary by default; it should start with Fate MCP
+  concentration outputs and then enter a future concentration-to-dose workflow.
+- Regional outdoor air due to emissions belongs to Fate MCP.
+- Human dose from environmental air concentration belongs to a concentration-to-dose consumer,
+  not Fate MCP core.
+
+## Handoff Preference
+
+- Identity or product-use evidence first -> normalize into `chemicalIdentity.v1` and
+  `productUseEvidenceRecord.v1`
+- Environmental source term first -> `environmentalReleaseScenario.v1`
+- Environmental concentration output first -> `concentrationSurface.v1`
+- Human dose output first -> `routeDoseEstimate.v1`
+- PBPK-ready external handoff -> `pbpkExternalImportBundle.v1`
+
+## Current Exposure MCP Scope
+
+- Exposure MCP already publishes the shared schemas needed to coordinate with future Fate and
+  Dietary siblings.
+- Publishing these schemas here does not mean Fate or Dietary logic now belongs inside this repo.
 """
 
 
@@ -376,23 +490,29 @@ Static companion: `docs/capability_maturity_matrix.md`
 def repository_slug_decision_guide() -> str:
     return """# Repository Slug Decision
 
-The current public GitHub repository slug is:
+The public product name is now:
+
+- `Direct-Use Exposure MCP`
+
+The current public GitHub repository slug is still:
 
 - `ToxMCP/expossure-scenario-mcp`
 
-It is intentionally kept through the `v0.1.x` line.
+The Python package, import path, CLI command, and MCP server identifiers also remain stable
+through the `v0.1.x` line.
 
-## Why It Was Not Renamed Immediately
+## Staged Naming Policy
+
+- adopt the clearer product name now
+- keep the current slug and technical identifiers through `v0.1.x`
+- treat any full repo/package rename as a later compatibility-managed release step
+
+## Why It Is Staged
 
 - badges, clone URLs, and existing references already point to the current slug
 - release and review artifacts already encode the current slug
-- changing it during the first released line would create needless churn
-
-## Current Policy
-
-- keep the current slug through `v0.1.x`
-- revisit a rename only as an explicit release-management decision in a later minor
-  release or suite-wide naming pass
+- renaming the technical identifiers immediately would create needless churn during the first
+  released line
 
 Static companion: `docs/adr/0004-repository-slug.md`
 """
@@ -401,7 +521,7 @@ Static companion: `docs/adr/0004-repository-slug.md`
 def worker_routing_guide() -> str:
     return """# Worker Routing Guide
 
-Worker support currently stays inside Exposure Scenario MCP only while the shared
+Worker support currently stays inside Direct-Use Exposure MCP only while the shared
 task/use abstractions still hold. Use the worker router to decide whether the task can
 stay on a bounded screening path in this MCP or should be escalated to a future
 occupational adapter.
@@ -490,7 +610,7 @@ solver itself.
 - The bridge is inhalation-only for now.
 - The bridge is strongest for spray or aerosol worker tasks, though any inhalation request
   can still be normalized into the package.
-- Exposure Scenario MCP does not execute a Tier 2 worker model here.
+- Direct-Use Exposure MCP does not execute a Tier 2 worker model here.
 - Do not reinterpret bridge export as a solved occupational estimate, compliance result,
   or measured workplace exposure.
 
@@ -665,7 +785,7 @@ the completed external ART result back into the governed worker execution schema
 
 ## Current Guardrails
 
-- Exposure Scenario MCP still does not run ART internally.
+- Direct-Use Exposure MCP still does not run ART internally.
 - The import path normalizes and compares the external result; it does not independently verify
   the external solver.
 - Keep `rawArtifacts`, `resultPayload`, `qualityNotes`, `qualityFlags`, `limitations`,
@@ -1732,13 +1852,13 @@ def release_notes_markdown(report: ReleaseMetadataReport) -> str:
         "# Release Notes",
         "",
         (
-            "Exposure Scenario MCP `v0.1.0` is the first public deterministic external-dose "
+            "Direct-Use Exposure MCP `v0.1.0` is the first public deterministic external-dose "
             "release candidate for the ToxMCP suite."
         ),
         "",
         "## Release Scope",
         "",
-        "- Dermal, oral, and inhalation screening scenario construction",
+        "- Dermal, direct-use/incidental oral, and inhalation screening scenario construction",
         "- Aggregate/co-use summaries and auditable scenario comparison",
         "- PBPK handoff export aligned to the published PBPK MCP request shape",
         "- Deterministic ToxClaw evidence and refinement-bundle exports",

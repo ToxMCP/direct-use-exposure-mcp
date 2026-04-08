@@ -10,6 +10,7 @@ from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     capability_maturity_matrix_guide,
     conformance_report_markdown,
+    cross_mcp_contract_guide,
     defaults_curation_report_markdown,
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
@@ -20,6 +21,7 @@ from exposure_scenario_mcp.guidance import (
     release_notes_markdown,
     release_readiness_markdown,
     repository_slug_decision_guide,
+    service_selection_guide,
     tier1_inhalation_parameter_guide,
     uncertainty_framework,
     validation_coverage_report_markdown,
@@ -73,6 +75,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     validation_time_series = validation_time_series_packs_guide()
     capability_matrix = capability_maturity_matrix_guide()
     slug_decision = repository_slug_decision_guide()
+    cross_mcp_contracts = cross_mcp_contract_guide()
+    service_selection = service_selection_guide()
     worker_routing = worker_routing_guide()
     worker_tier2 = worker_tier2_bridge_guide()
     worker_art = worker_art_adapter_guide()
@@ -214,6 +218,17 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`ToxMCP/expossure-scenario-mcp`" in slug_decision
     assert "`v0.1.x`" in slug_decision
     assert "docs/adr/0004-repository-slug.md" in slug_decision
+    assert "Cross-MCP Contract Guide" in cross_mcp_contracts
+    assert "`chemicalIdentity.v1`" in cross_mcp_contracts
+    assert "`exposureScenarioDefinition.v1`" in cross_mcp_contracts
+    assert "`routeDoseEstimate.v1`" in cross_mcp_contracts
+    assert "`environmentalReleaseScenario.v1`" in cross_mcp_contracts
+    assert "`concentrationSurface.v1`" in cross_mcp_contracts
+    assert "diet-mediated oral belongs in Dietary MCP" in cross_mcp_contracts
+    assert "Service Selection Guide" in service_selection
+    assert "Direct-use oral stays in Direct-Use Exposure MCP" in service_selection
+    assert "Environmental release, multimedia transfer" in service_selection
+    assert "`pbpkExternalImportBundle.v1`" in service_selection
     assert "Worker Routing Guide" in worker_routing
     assert "exposure_route_worker_task" in worker_routing
     assert "workerTaskRoutingInput.v1" in worker_routing

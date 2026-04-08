@@ -1,0 +1,394 @@
+{
+  "$defs": {
+    "ChemicalIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "chemicalIdentity.v1",
+          "default": "chemicalIdentity.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemicalId": {
+          "description": "Stable suite-level chemical identifier used across MCP boundaries.",
+          "title": "Chemicalid",
+          "type": "string"
+        },
+        "preferredName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred human-readable chemical name for cross-MCP handoffs.",
+          "title": "Preferredname"
+        },
+        "casrn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "CAS Registry Number when available for reconciliation or review.",
+          "title": "Casrn"
+        },
+        "dtxsid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "EPA CompTox DTXSID when available.",
+          "title": "Dtxsid"
+        },
+        "smiles": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Canonical or representative SMILES string when available.",
+          "title": "Smiles"
+        },
+        "inchiKey": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "InChIKey when available for downstream identity reconciliation.",
+          "title": "Inchikey"
+        },
+        "externalIdentifiers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Additional external identifiers preserved verbatim for auditability.",
+          "title": "Externalidentifiers",
+          "type": "object"
+        },
+        "notes": {
+          "description": "Additional identity notes that should remain attached to handoffs.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chemicalId"
+      ],
+      "title": "ChemicalIdentity",
+      "type": "object"
+    },
+    "FitForPurpose": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "High-level fit-for-purpose label.",
+          "title": "Label",
+          "type": "string"
+        },
+        "suitable_for": {
+          "description": "Appropriate use cases.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Suitable For",
+          "type": "array"
+        },
+        "not_suitable_for": {
+          "description": "Known exclusions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Not Suitable For",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "FitForPurpose",
+      "type": "object"
+    },
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "QualityFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable quality flag code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "info",
+          "description": "Quality signal severity."
+        },
+        "message": {
+          "description": "Human-readable quality message.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "QualityFlag",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "concentrationSurface.v1",
+      "default": "concentrationSurface.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "surfaceId": {
+      "description": "Stable identifier for the concentration surface output.",
+      "title": "Surfaceid",
+      "type": "string"
+    },
+    "chemicalIdentity": {
+      "$ref": "#/$defs/ChemicalIdentity",
+      "description": "Normalized chemical identity preserved across MCP boundaries."
+    },
+    "medium": {
+      "description": "Medium represented by the concentration surface.",
+      "title": "Medium",
+      "type": "string"
+    },
+    "compartment": {
+      "description": "Compartment or context represented by the surface, such as outdoor_air.",
+      "title": "Compartment",
+      "type": "string"
+    },
+    "geographicScope": {
+      "description": "Geographic scope or regional context for the concentration output.",
+      "title": "Geographicscope",
+      "type": "string"
+    },
+    "compartmentContext": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Structured context such as distance band, microenvironment, or receptor zone.",
+      "title": "Compartmentcontext",
+      "type": "object"
+    },
+    "timeSemantics": {
+      "description": "Time semantics such as steady_state, 24h average, or post-application hour 4.",
+      "title": "Timesemantics",
+      "type": "string"
+    },
+    "concentrationValue": {
+      "description": "Numeric concentration estimate for the defined surface.",
+      "title": "Concentrationvalue",
+      "type": "number"
+    },
+    "concentrationUnit": {
+      "description": "Canonical concentration unit for the defined surface.",
+      "title": "Concentrationunit",
+      "type": "string"
+    },
+    "modelFamily": {
+      "description": "Model-family tag used to create the concentration surface.",
+      "title": "Modelfamily",
+      "type": "string"
+    },
+    "sourceReleaseScenarioId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Upstream environmental release scenario identifier when available.",
+      "title": "Sourcereleasescenarioid"
+    },
+    "fitForPurpose": {
+      "$ref": "#/$defs/FitForPurpose",
+      "description": "Fit-for-purpose statement for downstream concentration consumers."
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle",
+      "description": "Provenance for the concentration surface and any defaults or adapters used."
+    },
+    "limitations": {
+      "description": "Known limitations that should remain visible downstream.",
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "qualityFlags": {
+      "description": "Quality flags that should remain visible downstream.",
+      "items": {
+        "$ref": "#/$defs/QualityFlag"
+      },
+      "title": "Qualityflags",
+      "type": "array"
+    },
+    "notes": {
+      "description": "Additional surface notes preserved for downstream consumers.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "surfaceId",
+    "chemicalIdentity",
+    "medium",
+    "compartment",
+    "geographicScope",
+    "timeSemantics",
+    "concentrationValue",
+    "concentrationUnit",
+    "modelFamily",
+    "fitForPurpose",
+    "provenance"
+  ],
+  "title": "ConcentrationSurface",
+  "type": "object"
+}

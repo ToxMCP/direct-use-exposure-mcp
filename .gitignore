@@ -7,3 +7,8 @@ __pycache__/
 *.egg-info/
 dist/*
 !dist/.gitignore
+
+# Local review and concat artifacts
+*_external_review*.txt
+repo_concat_external_review.txt
+repo_concat_full.txt

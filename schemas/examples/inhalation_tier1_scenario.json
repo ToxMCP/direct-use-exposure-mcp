@@ -62,7 +62,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -94,10 +94,10 @@
       "source_kind": "default_registry",
       "source": {
         "source_id": "heuristic_density_defaults_v1",
-        "title": "Exposure Scenario MCP heuristic density screening defaults",
+        "title": "Direct-Use Exposure MCP heuristic density screening defaults",
         "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -124,7 +124,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -161,7 +161,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -192,7 +192,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -223,7 +223,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -264,7 +264,7 @@
         "title": "Characterization of airborne particles from cleaning sprays and their corresponding respiratory deposition fractions",
         "locator": "https://pubmed.ncbi.nlm.nih.gov/31361572/",
         "version": "J Aerosol Sci. 2019",
-        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -293,7 +293,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -328,7 +328,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -360,7 +360,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -389,7 +389,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -419,7 +419,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -449,7 +449,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -480,7 +480,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -511,7 +511,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -543,7 +543,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -575,7 +575,7 @@
       "source_kind": "user_input",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -606,7 +606,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -644,7 +644,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -679,7 +679,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -714,10 +714,10 @@
       "source_kind": "default_registry",
       "source": {
         "source_id": "benchmark_tier1_nf_ff_parameter_pack_v1",
-        "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
+        "title": "Direct-Use Exposure MCP Tier 1 NF/FF screening parameter pack",
         "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
         "version": "2026.03.25.v1",
-        "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
+        "hash_sha256": "b0d661f9634a7cf8281f43e20190d33a038131c7f836c9110ba7aa93488ab931"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -746,10 +746,10 @@
       "source_kind": "default_registry",
       "source": {
         "source_id": "benchmark_tier1_nf_ff_parameter_pack_v1",
-        "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
+        "title": "Direct-Use Exposure MCP Tier 1 NF/FF screening parameter pack",
         "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
         "version": "2026.03.25.v1",
-        "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
+        "hash_sha256": "b0d661f9634a7cf8281f43e20190d33a038131c7f836c9110ba7aa93488ab931"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -777,7 +777,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -815,7 +815,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -853,7 +853,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -891,7 +891,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -929,7 +929,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -964,7 +964,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -1002,7 +1002,7 @@
       "source_kind": "derived",
       "source": {
         "source_id": "exposure_scenario_mcp",
-        "title": "Exposure Scenario MCP runtime",
+        "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
         "version": "0.1.0",
         "hash_sha256": null
@@ -1039,7 +1039,7 @@
     "plugin_id": "inhalation_tier_1_nf_ff_service",
     "plugin_version": "0.1.0",
     "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

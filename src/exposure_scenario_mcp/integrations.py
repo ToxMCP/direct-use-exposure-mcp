@@ -2346,7 +2346,7 @@ def build_pbpk_external_import_package(
             "bundleMetadata": {"sourceScenarioId": scenario.scenario_id},
         },
         uncertainty_register={
-            "source": "Exposure Scenario MCP",
+            "source": "Direct-Use Exposure MCP",
             "scope": "upstream-external-exposure-context",
             "summary": (
                 "Exposure-scenario limitations remain upstream and must be synthesized with "
@@ -2632,14 +2632,27 @@ def run_integrated_exposure_workflow(
 
 
 def suite_integration_guide() -> str:
-    return """# Exposure Scenario MCP Suite Integration Guide
+    return """# Direct-Use Exposure MCP Suite Integration Guide
 
 ## Boundary
 
-- Exposure Scenario MCP owns external dose construction only.
+- Direct-Use Exposure MCP owns external dose construction only.
+- Direct-use oral and incidental oral stay inside Direct-Use Exposure MCP.
+- Diet-mediated oral belongs in a sibling Dietary MCP.
+- Environmental release and multimedia concentration generation belong in a sibling Fate MCP.
 - PBPK MCP owns internal exposure and toxicokinetics.
 - ToxClaw owns orchestration, line-of-evidence handling, refinement policy,
   and final interpretation.
+
+## Shared Contracts
+
+- `chemicalIdentity.v1` for suite-stable chemical identity handoff
+- `productUseEvidenceRecord.v1` for reviewed product-use evidence
+- `exposureScenarioDefinition.v1` for direct-use or concentration-to-dose scenario definitions
+- `routeDoseEstimate.v1` for compact downstream dose handoff
+- `environmentalReleaseScenario.v1` for future Fate MCP release ingress
+- `concentrationSurface.v1` for future Fate MCP concentration outputs
+- `pbpkExternalImportBundle.v1` for PBPK MCP external-dose bundle handoff
 
 ## CompTox Integration
 

@@ -121,7 +121,7 @@
         ],
         "warnings": [],
         "limitations": [
-          "The current Exposure Scenario MCP does not implement Tier 2 occupational inhalation models such as ART or Stoffenmanager."
+          "The current Direct-Use Exposure MCP does not implement Tier 2 occupational inhalation models such as ART or Stoffenmanager."
         ],
         "rationale": "A higher worker inhalation tier was requested, so routing escalates to a future occupational adapter rather than reusing deterministic screening.",
         "next_step": "Collect task-control and ventilation inputs for an ART- or Stoffenmanager-aligned adapter."

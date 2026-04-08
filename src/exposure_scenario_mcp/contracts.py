@@ -50,7 +50,9 @@ from exposure_scenario_mcp.models import (
     BuildParameterBoundsInput,
     BuildProbabilityBoundsFromProfileInput,
     BuildProbabilityBoundsFromScenarioPackageInput,
+    ChemicalIdentity,
     CompareExposureScenariosInput,
+    ConcentrationSurface,
     ContractManifest,
     ContractPromptEntry,
     ContractResourceEntry,
@@ -61,6 +63,7 @@ from exposure_scenario_mcp.models import (
     EnvelopeArchetypeInput,
     EnvelopeArchetypeResult,
     EnvelopeDriverAttribution,
+    EnvironmentalReleaseScenario,
     ExecutedValidationCheck,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
@@ -69,6 +72,7 @@ from exposure_scenario_mcp.models import (
     ExposureAssumptionRecord,
     ExposureEnvelopeSummary,
     ExposureScenario,
+    ExposureScenarioDefinition,
     ExposureScenarioRequest,
     ExternalValidationDataset,
     InhalationResidualAirReentryScenarioRequest,
@@ -92,6 +96,7 @@ from exposure_scenario_mcp.models import (
     ReleaseReadinessCheck,
     ReleaseReadinessReport,
     ReviewedSurfaceIndex,
+    RouteDoseEstimate,
     ScenarioComparisonRecord,
     ScenarioPackageProbabilityManifest,
     ScenarioPackageProbabilityPointDefinition,
@@ -166,8 +171,13 @@ from exposure_scenario_mcp.worker_tier2 import (
 )
 
 SCHEMA_MODELS = {
+    "chemicalIdentity.v1": ChemicalIdentity,
     "productUseProfile.v1": ProductUseProfile,
     "populationProfile.v1": PopulationProfile,
+    "exposureScenarioDefinition.v1": ExposureScenarioDefinition,
+    "routeDoseEstimate.v1": RouteDoseEstimate,
+    "environmentalReleaseScenario.v1": EnvironmentalReleaseScenario,
+    "concentrationSurface.v1": ConcentrationSurface,
     "exposureScenarioRequest.v1": ExposureScenarioRequest,
     "inhalationResidualAirReentryScenarioRequest.v1": InhalationResidualAirReentryScenarioRequest,
     "inhalationScenarioRequest.v1": InhalationScenarioRequest,
@@ -711,6 +721,19 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Decision note for keeping the current repository slug through v0.1.x.",
             ),
             ContractResourceEntry(
+                uri="docs://cross-mcp-contract-guide",
+                description=(
+                    "Guide to the shared suite-facing contracts published for sibling MCPs."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="docs://service-selection-guide",
+                description=(
+                    "Guide to routing questions and handoffs across Exposure, Fate, Dietary, "
+                    "PBPK, and ToxClaw."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="docs://worker-routing-guide",
                 description="Guide to the worker-task router and occupational escalation hooks.",
             ),
@@ -867,7 +890,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
 
 
 def algorithm_notes() -> str:
-    return """# Exposure Scenario MCP Algorithm Notes
+    return """# Direct-Use Exposure MCP Algorithm Notes
 
 ## Screening Plugin
 
@@ -1410,7 +1433,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
         defaults_version=manifest.defaults_version,
         status=status,
         summary=(
-            "The current Exposure Scenario MCP build satisfies its contract, regression, and "
+            "The current Direct-Use Exposure MCP build satisfies its contract, regression, and "
             "provenance gates for a deterministic external-dose release candidate, with "
             "declared limitations and remote-deployment cautions still visible."
         ),

@@ -59,8 +59,8 @@
     "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
     "sources": [
       "Benchmark population defaults mapped to EPA exposure-factor source families",
-      "Exposure Scenario MCP curated screening route-semantics defaults",
-      "Exposure Scenario MCP runtime",
+      "Direct-Use Exposure MCP curated screening route-semantics defaults",
+      "Direct-Use Exposure MCP runtime",
       "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults"
     ],
     "residualUncertainty": "upstream-exposure-scenario-assumptions",
@@ -69,7 +69,7 @@
     }
   },
   "uncertaintyRegister": {
-    "source": "Exposure Scenario MCP",
+    "source": "Direct-Use Exposure MCP",
     "scope": "upstream-external-exposure-context",
     "summary": "Exposure-scenario limitations remain upstream and must be synthesized with PBPK and NAM uncertainty downstream."
   },

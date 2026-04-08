@@ -1169,7 +1169,7 @@ def _product_amount_unit(value: ScalarValue | object) -> ProductAmountUnit | Non
 def _execution_algorithm_source() -> AssumptionSourceReference:
     return AssumptionSourceReference(
         source_id="worker_art_execution_surrogate_v1",
-        title="Exposure Scenario MCP worker ART-side execution surrogate",
+        title="Direct-Use Exposure MCP worker ART-side execution surrogate",
         locator=WORKER_ART_EXECUTION_GUIDANCE_RESOURCE,
         version="2026.04.07.v1",
     )
@@ -1519,7 +1519,7 @@ def _build_worker_inhalation_external_import_validation_summary(
         probabilisticEnablement="blocked",
         notes=[
             "This result was imported from an external occupational execution source rather "
-            "than re-solved inside Exposure Scenario MCP.",
+            "than re-solved inside Direct-Use Exposure MCP.",
             "Review the attached rawArtifacts and any external qualityNotes before using the "
             "normalized dose downstream.",
         ],
@@ -2459,7 +2459,7 @@ def _external_import_provenance(
             "Imports a normalized external ART-side execution result back into the governed "
             "worker inhalation execution schema.",
             "The imported result is preserved alongside screening-baseline comparison fields; "
-            "it is not independently re-solved inside Exposure Scenario MCP.",
+            "it is not independently re-solved inside Direct-Use Exposure MCP.",
         ],
     )
 
@@ -2593,7 +2593,7 @@ def build_worker_inhalation_tier2_bridge(
             severity=Severity.WARNING,
             message=(
                 "This package prepares a future occupational Tier 2 handoff only. "
-                "Exposure Scenario MCP does not execute ART, Stoffenmanager, or another "
+                "Direct-Use Exposure MCP does not execute ART, Stoffenmanager, or another "
                 "occupational Tier 2 solver."
             ),
         )
@@ -2709,7 +2709,7 @@ def ingest_worker_inhalation_tier2_task(
             code="worker_art_adapter_mapping_heuristic",
             severity=Severity.WARNING,
             message=(
-                "Generic Exposure Scenario MCP task fields are mapped into an ART-aligned "
+                "Generic Direct-Use Exposure MCP task fields are mapped into an ART-aligned "
                 "intake envelope using bounded, reviewable heuristics."
             ),
         ),
@@ -4222,7 +4222,7 @@ def import_worker_inhalation_art_execution_result(
             severity=Severity.INFO,
             message=(
                 "Imported an external ART-side worker inhalation result into the governed "
-                "Exposure Scenario MCP execution schema."
+                "Direct-Use Exposure MCP execution schema."
             ),
         )
     )
@@ -4687,7 +4687,7 @@ def import_worker_inhalation_art_execution_result(
                 code="worker_art_external_result_not_independently_verified",
                 severity=Severity.WARNING,
                 message=(
-                    "Exposure Scenario MCP normalized the external ART result but did not "
+                    "Direct-Use Exposure MCP normalized the external ART result but did not "
                     "independently re-run or verify the external occupational solver."
                 ),
             ),

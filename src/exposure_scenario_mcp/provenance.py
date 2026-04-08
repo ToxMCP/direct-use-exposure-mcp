@@ -28,7 +28,7 @@ from exposure_scenario_mcp.models import (
 
 SYSTEM_SOURCE = AssumptionSourceReference(
     source_id="exposure_scenario_mcp",
-    title="Exposure Scenario MCP runtime",
+    title="Direct-Use Exposure MCP runtime",
     locator="docs://algorithm-notes",
     version="0.1.0",
     hash_sha256=None,

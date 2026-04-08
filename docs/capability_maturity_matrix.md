@@ -3,7 +3,7 @@
 This matrix is the short-form answer to "how mature is each part of the released
 `0.1.0` surface?"
 
-The Exposure Scenario MCP is no longer only a small deterministic scenario builder.
+Direct-Use Exposure MCP is no longer only a small deterministic scenario builder.
 It is a governed exposure platform surface with a narrow core engine and several
 bounded adjacent layers:
 

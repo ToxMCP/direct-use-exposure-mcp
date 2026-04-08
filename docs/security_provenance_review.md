@@ -1,6 +1,6 @@
 # Security And Provenance Review
 
-The Exposure Scenario MCP publishes a machine-readable security and provenance review so
+Direct-Use Exposure MCP publishes a machine-readable security and provenance review so
 release decisions are tied to the live public surface rather than a static checklist.
 
 ## Review Intent

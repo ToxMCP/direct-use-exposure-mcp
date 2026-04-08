@@ -6,6 +6,7 @@ from importlib.metadata import PackageNotFoundError, version
 
 PACKAGE_NAME = "exposure-scenario-mcp"
 SERVER_NAME = "exposure_scenario_mcp"
+PRODUCT_NAME = "Direct-Use Exposure MCP"
 FALLBACK_VERSION = "0.1.0"
 
 

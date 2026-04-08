@@ -29,6 +29,11 @@ RELEASE_METADATA_PATH = REPO_ROOT / "docs" / "releases" / "v0.1.0.release_metada
 
 
 EXAMPLE_SCHEMA_MAP = {
+    "chemical_identity": "chemicalIdentity.v1",
+    "exposure_scenario_definition": "exposureScenarioDefinition.v1",
+    "route_dose_estimate": "routeDoseEstimate.v1",
+    "environmental_release_scenario": "environmentalReleaseScenario.v1",
+    "concentration_surface": "concentrationSurface.v1",
     "screening_dermal_request": "exposureScenarioRequest.v1",
     "screening_dermal_scenario": "exposureScenario.v1",
     "inhalation_request": "inhalationScenarioRequest.v1",
@@ -123,6 +128,11 @@ def test_contract_manifest_and_server_boot() -> None:
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
     assert len(manifest["tools"]) == 29
+    assert "chemicalIdentity.v1" in manifest["schemas"]
+    assert "exposureScenarioDefinition.v1" in manifest["schemas"]
+    assert "routeDoseEstimate.v1" in manifest["schemas"]
+    assert "environmentalReleaseScenario.v1" in manifest["schemas"]
+    assert "concentrationSurface.v1" in manifest["schemas"]
     assert "exposureScenario.v1" in manifest["schemas"]
     assert "inhalationTier1ScenarioRequest.v1" in manifest["schemas"]
     assert "consExpoEvidenceRecord.v1" in manifest["schemas"]
@@ -207,6 +217,11 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "releaseReadinessReport.v1" in manifest["schemas"]
     assert "securityProvenanceReviewReport.v1" in manifest["schemas"]
     assert "tierSemantics.v1" in manifest["schemas"]
+    assert "chemical_identity" in manifest["examples"]
+    assert "exposure_scenario_definition" in manifest["examples"]
+    assert "route_dose_estimate" in manifest["examples"]
+    assert "environmental_release_scenario" in manifest["examples"]
+    assert "concentration_surface" in manifest["examples"]
     assert "screening_dermal_scenario" in manifest["examples"]
     assert "exposure_envelope_summary" in manifest["examples"]
     assert "inhalation_tier1_request" in manifest["examples"]
@@ -268,6 +283,8 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://exposure-platform-architecture",
         "docs://capability-maturity-matrix",
         "docs://repository-slug-decision",
+        "docs://cross-mcp-contract-guide",
+        "docs://service-selection-guide",
         "docs://integrated-exposure-workflow-guide",
         "docs://worker-routing-guide",
         "docs://worker-tier2-bridge-guide",

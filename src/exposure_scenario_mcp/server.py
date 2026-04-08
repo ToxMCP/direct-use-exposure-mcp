@@ -1,4 +1,4 @@
-"""FastMCP server definition for Exposure Scenario MCP."""
+"""FastMCP server definition for Direct-Use Exposure MCP."""
 
 from __future__ import annotations
 

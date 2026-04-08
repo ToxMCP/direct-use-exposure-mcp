@@ -141,7 +141,7 @@ def route_worker_task(
                 ],
                 warnings=warnings,
                 limitations=[
-                    "The current Exposure Scenario MCP does not implement Tier 2 occupational "
+                    "The current Direct-Use Exposure MCP does not implement Tier 2 occupational "
                     "inhalation models such as ART or Stoffenmanager."
                 ],
                 rationale=(

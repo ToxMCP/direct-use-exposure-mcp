@@ -25,6 +25,7 @@ from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     capability_maturity_matrix_guide,
     conformance_report_markdown,
+    cross_mcp_contract_guide,
     defaults_curation_report_markdown,
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
@@ -39,6 +40,7 @@ from exposure_scenario_mcp.guidance import (
     repository_slug_decision_guide,
     result_status_semantics,
     security_provenance_review_markdown,
+    service_selection_guide,
     tier1_inhalation_parameter_guide,
     troubleshooting_guide,
     uncertainty_framework,
@@ -230,6 +232,18 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """Decision note explaining why the current repository slug remains in use."""
 
         return repository_slug_decision_guide()
+
+    @mcp.resource("docs://cross-mcp-contract-guide")
+    def docs_cross_mcp_contract_guide() -> str:
+        """Guide to the shared suite-facing contracts published by Direct-Use Exposure MCP."""
+
+        return cross_mcp_contract_guide()
+
+    @mcp.resource("docs://service-selection-guide")
+    def docs_service_selection_guide() -> str:
+        """Guide to routing questions and handoffs across the ToxMCP service boundaries."""
+
+        return service_selection_guide()
 
     @mcp.resource("docs://worker-routing-guide")
     def docs_worker_routing_guide() -> str:

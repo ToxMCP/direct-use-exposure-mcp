@@ -1,4 +1,4 @@
-"""CLI entry point for Exposure Scenario MCP."""
+"""CLI entry point for Direct-Use Exposure MCP."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from exposure_scenario_mcp.server import create_mcp_server
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run Exposure Scenario MCP.")
+    parser = argparse.ArgumentParser(description="Run Direct-Use Exposure MCP.")
     parser.add_argument(
         "--transport",
         default="stdio",

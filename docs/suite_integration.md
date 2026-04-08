@@ -1,13 +1,15 @@
 # Suite Integration
 
-Exposure Scenario MCP is intended to act as the external-dose engine inside the ToxMCP stack.
+Direct-Use Exposure MCP is intended to act as the external-dose engine inside the ToxMCP stack.
 
 See [exposure_platform_architecture.md](./exposure_platform_architecture.md) for the recommended
 multi-MCP architecture and phased build order across exposure, fate, dietary, and worker domains.
 
 ## Boundary
 
-- Exposure Scenario MCP owns external dose construction and refinement only.
+- Direct-Use Exposure MCP owns external dose construction and refinement only.
+- Direct-use oral and incidental oral stay inside Direct-Use Exposure MCP; diet-mediated oral
+  belongs in a sibling Dietary MCP.
 - Keep environmental release and multimedia fate in a sibling Fate MCP once those workflows are
   added; they should feed concentration surfaces into exposure workflows rather than blur the
   boundary inside this server.
@@ -18,9 +20,34 @@ multi-MCP architecture and phased build order across exposure, fate, dietary, an
 - PBPK MCP owns internal exposure, TK simulation, and downstream biological interpretation.
 - ToxClaw owns orchestration, line-of-evidence handling, refinement choice, and final reporting.
 
+## Published shared contracts
+
+Direct-Use Exposure MCP now publishes the suite-facing schema anchors that sibling services should
+build against instead of inventing parallel handoff shapes:
+
+- `chemicalIdentity.v1`
+- `productUseEvidenceRecord.v1`
+- `exposureScenarioDefinition.v1`
+- `routeDoseEstimate.v1`
+- `environmentalReleaseScenario.v1`
+- `concentrationSurface.v1`
+- `pbpkExternalImportBundle.v1`
+
+These contracts are published as machine-readable schemas through `schemas://{schema_name}` and are
+summarized in `docs://cross-mcp-contract-guide`.
+
+## Service selection
+
+- Consumer product use, direct-use oral, incidental oral, indoor aerosol, residual-air reentry,
+  and near-field worker screening -> Direct-Use Exposure MCP
+- Environmental release and multimedia concentration questions -> Fate MCP
+- Food-residue and dietary oral intake questions -> Dietary MCP
+- Internal dose and TK simulation -> PBPK MCP
+- Cross-service orchestration and final reporting -> ToxClaw
+
 ## Literature MCP (future/optional)
 
-- Exposure Scenario MCP should consume only reviewed, machine-readable evidence packs from a
+- Direct-Use Exposure MCP should consume only reviewed, machine-readable evidence packs from a
   Literature MCP, not raw extraction candidates.
 - Literature MCP should remain optional until the suite needs shared evidence registries or
   repeatable cross-repo review workflows.

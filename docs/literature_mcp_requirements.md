@@ -13,7 +13,7 @@ dossier can support.
 
 Near term, the lower-risk path is:
 
-- keep deterministic exposure math in Exposure Scenario MCP
+- keep deterministic exposure math in Direct-Use Exposure MCP
 - keep WoE/report orchestration in ToxClaw
 - continue curating evidence-linked defaults and validation datasets in versioned data packs
 - define the future Literature MCP interface now so later extraction/curation work has a clean
@@ -21,7 +21,7 @@ Near term, the lower-risk path is:
 
 ## Why a Separate Service Might Exist
 
-Exposure Scenario MCP already does three things well:
+Direct-Use Exposure MCP already does three things well:
 
 - resolve screening inputs into external-dose scenarios
 - publish provenance, uncertainty, and validation posture
@@ -32,7 +32,7 @@ parameter extraction, or evidence review workflow. Those concerns have a differe
 different quality controls, and different failure modes than dose calculation.
 
 A future Literature MCP would exist to own the evidence-curation layer that feeds multiple
-consumers, including Exposure Scenario MCP.
+consumers, including Direct-Use Exposure MCP.
 
 ## When Not to Build It
 
@@ -156,9 +156,9 @@ Each contract should preserve:
 - applicability domain and exclusion conditions
 - uncertainty type, if the source explicitly supports it
 
-## What Exposure Scenario MCP Would Need From It
+## What Direct-Use Exposure MCP Would Need From It
 
-Exposure Scenario MCP does not need a generic literature chatbot. It needs reviewed, machine-safe
+Direct-Use Exposure MCP does not need a generic literature chatbot. It needs reviewed, machine-safe
 inputs. The minimum import-ready payloads are:
 
 ### Defaults-pack feed
@@ -195,7 +195,7 @@ For executable or cited validation support, each dataset record needs:
 
 ## What ToxClaw Would Need From It
 
-ToxClaw would consume Literature MCP differently from Exposure Scenario MCP.
+ToxClaw would consume Literature MCP differently from Direct-Use Exposure MCP.
 Likely needs:
 
 - source summaries for problem formulation
@@ -239,7 +239,7 @@ If the suite eventually needs this service, build it in phases:
 ## Practical Recommendation for ToxMCP Now
 
 The suite should define Literature MCP as a future adjacent service, but continue shipping
-scientifically curated defaults and validation improvements directly through Exposure Scenario MCP
+scientifically curated defaults and validation improvements directly through Direct-Use Exposure MCP
 until at least one of these becomes true:
 
 - multiple repos need the same reviewed evidence registry
