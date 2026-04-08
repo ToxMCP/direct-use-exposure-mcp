@@ -1,0 +1,30 @@
+{
+  "schema_version": "workerTaskRoutingDecision.v1",
+  "route": "inhalation",
+  "scenario_class": "inhalation",
+  "worker_detected": true,
+  "detection_basis": [
+    "demographic_tag:occupational",
+    "demographic_tag:worker"
+  ],
+  "support_status": "supported_with_caveats",
+  "recommended_model_family": "inhalation_near_field_far_field_screening",
+  "recommended_tool": "exposure_build_inhalation_tier1_screening_scenario",
+  "target_mcp": "exposure_scenario_mcp",
+  "guidance_resource": "docs://worker-routing-guide",
+  "required_inputs": [
+    "source_distance_m",
+    "spray_duration_seconds",
+    "near_field_volume_m3",
+    "airflow_directionality",
+    "particle_size_regime"
+  ],
+  "warnings": [
+    "Worker-tagged spray tasks are currently routed to the shared Tier 1 inhalation screening tool because it is the strongest bounded path implemented in this MCP."
+  ],
+  "limitations": [
+    "The current Tier 1 inhalation path remains a deterministic NF/FF screening model and does not substitute for ART, measured workplace monitoring, or a validated occupational aerosol simulator."
+  ],
+  "rationale": "Spray tasks can already be represented by the current Tier 1 NF/FF screening contract, which is the strongest worker-relevant inhalation path implemented in this MCP.",
+  "next_step": "Call exposure_build_inhalation_tier1_screening_scenario and preserve tier_semantics, quality_flags, limitations, and any profile-alignment signals."
+}

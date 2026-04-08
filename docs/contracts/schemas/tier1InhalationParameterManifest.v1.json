@@ -116,6 +116,19 @@
           "title": "Productfamily",
           "type": "string"
         },
+        "productSubtype": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional narrower product-use subtype that this profile is tuned for.",
+          "title": "Productsubtype"
+        },
         "applicationMethod": {
           "description": "Application method supported by the profile.",
           "title": "Applicationmethod",

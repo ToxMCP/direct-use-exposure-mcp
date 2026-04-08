@@ -9,7 +9,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import CallToolResult, TextContent
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
-from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
+from exposure_scenario_mcp.benchmarks import load_benchmark_manifest, load_goldset_manifest
 from exposure_scenario_mcp.contracts import (
     algorithm_notes,
     archetype_library_manifest,
@@ -33,7 +33,11 @@ from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     conformance_report_markdown,
     defaults_curation_report_markdown,
+    exposure_platform_architecture_guide,
+    goldset_benchmark_guide,
+    inhalation_residual_air_reentry_guide,
     inhalation_tier_upgrade_guide,
+    integrated_exposure_workflow_guide,
     operator_guide,
     probability_bounds_guide,
     provenance_policy,
@@ -44,17 +48,41 @@ from exposure_scenario_mcp.guidance import (
     tier1_inhalation_parameter_guide,
     troubleshooting_guide,
     uncertainty_framework,
+    validation_coverage_report_markdown,
     validation_dossier_markdown,
     validation_framework,
     validation_reference_bands_guide,
+    validation_time_series_packs_guide,
+    worker_art_adapter_guide,
+    worker_art_execution_guide,
+    worker_art_external_exchange_guide,
+    worker_dermal_adapter_guide,
+    worker_dermal_bridge_guide,
+    worker_dermal_execution_guide,
+    worker_routing_guide,
+    worker_tier2_bridge_guide,
 )
 from exposure_scenario_mcp.integrations import (
+    ApplyProductUseEvidenceInput,
+    AssessProductUseEvidenceFitInput,
+    BuildProductUseEvidenceFromConsExpoInput,
+    IntegratedExposureWorkflowResult,
     PbpkExternalImportPackage,
+    ProductUseEvidenceFitReport,
+    ProductUseEvidenceReconciliationReport,
+    ProductUseEvidenceRecord,
+    ReconcileProductUseEvidenceInput,
+    RunIntegratedExposureWorkflowInput,
     ToxClawEvidenceBundle,
     ToxClawExposureRefinementBundle,
+    apply_product_use_evidence,
+    assess_product_use_evidence_fit,
     build_pbpk_external_import_package,
+    build_product_use_evidence_from_consexpo,
     build_toxclaw_evidence_bundle,
     build_toxclaw_refinement_bundle,
+    reconcile_product_use_evidence,
+    run_integrated_exposure_workflow,
     suite_integration_guide,
 )
 from exposure_scenario_mcp.models import (
@@ -73,6 +101,7 @@ from exposure_scenario_mcp.models import (
     ExposureEnvelopeSummary,
     ExposureScenario,
     ExposureScenarioRequest,
+    InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
     ParameterBoundsSummary,
@@ -80,9 +109,14 @@ from exposure_scenario_mcp.models import (
     ProbabilityBoundsProfileSummary,
     ScenarioComparisonRecord,
     ScenarioPackageProbabilitySummary,
+    WorkerTaskRoutingDecision,
+    WorkerTaskRoutingInput,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
+from exposure_scenario_mcp.plugins.inhalation import (
+    build_inhalation_residual_air_reentry_scenario,
+    build_inhalation_tier_1_screening_scenario,
+)
 from exposure_scenario_mcp.probability_bounds import (
     build_probability_bounds_from_profile,
     build_probability_bounds_from_scenario_package,
@@ -105,9 +139,39 @@ from exposure_scenario_mcp.uncertainty import (
     enrich_scenario_uncertainty,
 )
 from exposure_scenario_mcp.validation import (
+    build_validation_coverage_report,
     build_validation_dossier_report,
     validation_manifest,
     validation_reference_band_manifest,
+    validation_time_series_reference_manifest,
+)
+from exposure_scenario_mcp.worker_dermal import (
+    ExecuteWorkerDermalAbsorbedDoseRequest,
+    ExportWorkerDermalAbsorbedDoseBridgeRequest,
+    WorkerDermalAbsorbedDoseAdapterIngestResult,
+    WorkerDermalAbsorbedDoseAdapterRequest,
+    WorkerDermalAbsorbedDoseBridgePackage,
+    WorkerDermalAbsorbedDoseExecutionResult,
+    build_worker_dermal_absorbed_dose_bridge,
+    execute_worker_dermal_absorbed_dose_task,
+    ingest_worker_dermal_absorbed_dose_task,
+)
+from exposure_scenario_mcp.worker_routing import route_worker_task
+from exposure_scenario_mcp.worker_tier2 import (
+    ExecuteWorkerInhalationTier2Request,
+    ExportWorkerArtExecutionPackageRequest,
+    ExportWorkerInhalationTier2BridgeRequest,
+    ImportWorkerArtExecutionResultRequest,
+    WorkerArtExternalExecutionPackage,
+    WorkerInhalationTier2AdapterIngestResult,
+    WorkerInhalationTier2AdapterRequest,
+    WorkerInhalationTier2BridgePackage,
+    WorkerInhalationTier2ExecutionResult,
+    build_worker_inhalation_tier2_bridge,
+    execute_worker_inhalation_tier2_task,
+    export_worker_inhalation_art_execution_package,
+    import_worker_inhalation_art_execution_result,
+    ingest_worker_inhalation_tier2_task,
 )
 
 
@@ -183,6 +247,34 @@ def create_mcp_server() -> FastMCP:
             scenario = engine.build(params)
             return _success_result(
                 f"Built inhalation screening scenario {scenario.scenario_id}.",
+                scenario,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_inhalation_residual_air_reentry_scenario",
+        annotations={
+            "title": "Build Inhalation Residual-Air Reentry Scenario",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_build_inhalation_residual_air_reentry_scenario(
+        params: InhalationResidualAirReentryScenarioRequest,
+    ) -> Annotated[CallToolResult, ExposureScenario]:
+        """Build one deterministic residual-air reentry inhalation scenario."""
+
+        try:
+            scenario = build_inhalation_residual_air_reentry_scenario(
+                params,
+                defaults_registry,
+            )
+            scenario = enrich_scenario_uncertainty(engine, scenario)
+            return _success_result(
+                f"Built residual-air reentry inhalation scenario {scenario.scenario_id}.",
                 scenario,
             )
         except ExposureScenarioError as error:
@@ -378,6 +470,329 @@ def create_mcp_server() -> FastMCP:
             return _error_result(error)
 
     @mcp.tool(
+        name="exposure_assess_product_use_evidence_fit",
+        annotations={
+            "title": "Assess Product Use Evidence Fit",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_assess_product_use_evidence_fit(
+        params: AssessProductUseEvidenceFitInput,
+    ) -> Annotated[CallToolResult, ProductUseEvidenceFitReport]:
+        """Assess whether external product-use evidence fits the current request."""
+
+        try:
+            report = assess_product_use_evidence_fit(params.request, params.evidence)
+            return _success_result(
+                f"Assessed product-use evidence fit for {report.chemical_id}.",
+                report,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_apply_product_use_evidence",
+        annotations={
+            "title": "Apply Product Use Evidence",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_apply_product_use_evidence(
+        params: ApplyProductUseEvidenceInput,
+    ) -> Annotated[CallToolResult, ExposureScenarioRequest]:
+        """Apply external product-use evidence to a scenario request when it fits."""
+
+        try:
+            request = apply_product_use_evidence(
+                params.request,
+                params.evidence,
+                require_auto_apply_safe=params.require_auto_apply_safe,
+            )
+            return _success_result(
+                f"Applied product-use evidence to request for {request.chemical_id}.",
+                request,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_product_use_evidence_from_consexpo",
+        annotations={
+            "title": "Build Product Use Evidence From ConsExpo",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_build_product_use_evidence_from_consexpo(
+        params: BuildProductUseEvidenceFromConsExpoInput,
+    ) -> Annotated[CallToolResult, ProductUseEvidenceRecord]:
+        """Map a ConsExpo fact-sheet record into the generic evidence contract."""
+
+        try:
+            evidence = build_product_use_evidence_from_consexpo(params.evidence)
+            return _success_result(
+                f"Built product-use evidence from ConsExpo for {evidence.chemical_id}.",
+                evidence,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_reconcile_product_use_evidence",
+        annotations={
+            "title": "Reconcile Product Use Evidence",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_reconcile_product_use_evidence(
+        params: ReconcileProductUseEvidenceInput,
+    ) -> Annotated[CallToolResult, ProductUseEvidenceReconciliationReport]:
+        """Compare multiple evidence sources and build a merged request preview."""
+
+        try:
+            report = reconcile_product_use_evidence(
+                params.request,
+                params.evidence_records,
+                require_auto_apply_safe=params.require_auto_apply_safe,
+            )
+            return _success_result(
+                f"Reconciled product-use evidence for {report.chemical_id}.",
+                report,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_run_integrated_workflow",
+        annotations={
+            "title": "Run Integrated Exposure Workflow",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_run_integrated_workflow(
+        params: RunIntegratedExposureWorkflowInput,
+    ) -> Annotated[CallToolResult, IntegratedExposureWorkflowResult]:
+        """Run the local evidence-to-scenario-to-PBPK workflow in one audited response."""
+
+        try:
+            result = run_integrated_exposure_workflow(params, registry=defaults_registry)
+            return _success_result(
+                f"Ran integrated workflow for {result.chemical_id}.",
+                result,
+            )
+        except ExposureScenarioError as error:
+            return _error_result(error)
+
+    @mcp.tool(
+        name="exposure_route_worker_task",
+        annotations={
+            "title": "Route Worker Task",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_route_worker_task(
+        params: WorkerTaskRoutingInput,
+    ) -> Annotated[CallToolResult, WorkerTaskRoutingDecision]:
+        """Route a worker-tagged task to the best current MCP path or future adapter hook."""
+
+        decision = route_worker_task(params, defaults_registry)
+        return _success_result(
+            f"Routed worker task for route {decision.route.value}.",
+            decision,
+        )
+
+    @mcp.tool(
+        name="exposure_export_worker_inhalation_tier2_bridge",
+        annotations={
+            "title": "Export Worker Inhalation Tier 2 Bridge",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_export_worker_inhalation_tier2_bridge(
+        params: ExportWorkerInhalationTier2BridgeRequest,
+    ) -> Annotated[CallToolResult, WorkerInhalationTier2BridgePackage]:
+        """Export a normalized worker inhalation Tier 2 handoff package for a future adapter."""
+
+        package = build_worker_inhalation_tier2_bridge(params, registry=defaults_registry)
+        return _success_result(
+            "Exported worker inhalation Tier 2 bridge package.",
+            package,
+        )
+
+    @mcp.tool(
+        name="worker_ingest_inhalation_tier2_task",
+        annotations={
+            "title": "Ingest Worker Inhalation Tier 2 Task",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def worker_ingest_inhalation_tier2_task(
+        params: WorkerInhalationTier2AdapterRequest,
+    ) -> Annotated[CallToolResult, WorkerInhalationTier2AdapterIngestResult]:
+        """Ingest a worker Tier 2 bridge payload and normalize it into an ART-side intake."""
+
+        result = ingest_worker_inhalation_tier2_task(params, registry=defaults_registry)
+        return _success_result(
+            "Ingested worker inhalation Tier 2 task into an ART-side adapter envelope.",
+            result,
+        )
+
+    @mcp.tool(
+        name="worker_execute_inhalation_tier2_task",
+        annotations={
+            "title": "Execute Worker Inhalation Tier 2 Task",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def worker_execute_inhalation_tier2_task_tool(
+        params: ExecuteWorkerInhalationTier2Request,
+    ) -> Annotated[CallToolResult, WorkerInhalationTier2ExecutionResult]:
+        """Execute a bounded ART-aligned worker inhalation screening estimate."""
+
+        result = execute_worker_inhalation_tier2_task(params, registry=defaults_registry)
+        return _success_result(
+            "Executed worker inhalation Tier 2 task with the ART-aligned surrogate kernel.",
+            result,
+        )
+
+    @mcp.tool(
+        name="worker_export_inhalation_art_execution_package",
+        annotations={
+            "title": "Export Inhalation ART Execution Package",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def worker_export_inhalation_art_execution_package_tool(
+        params: ExportWorkerArtExecutionPackageRequest,
+    ) -> Annotated[CallToolResult, WorkerArtExternalExecutionPackage]:
+        """Export an ART-ready external execution package plus a result-import template."""
+
+        result = export_worker_inhalation_art_execution_package(
+            params,
+            registry=defaults_registry,
+        )
+        return _success_result(
+            "Exported worker inhalation ART external execution package.",
+            result,
+        )
+
+    @mcp.tool(
+        name="worker_import_inhalation_art_execution_result",
+        annotations={
+            "title": "Import Inhalation ART Execution Result",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def worker_import_inhalation_art_execution_result_tool(
+        params: ImportWorkerArtExecutionResultRequest,
+    ) -> Annotated[CallToolResult, WorkerInhalationTier2ExecutionResult]:
+        """Import a normalized external ART result into the governed worker execution schema."""
+
+        result = import_worker_inhalation_art_execution_result(
+            params,
+            registry=defaults_registry,
+        )
+        return _success_result(
+            "Imported external worker inhalation ART execution result.",
+            result,
+        )
+
+    @mcp.tool(
+        name="exposure_export_worker_dermal_absorbed_dose_bridge",
+        annotations={
+            "title": "Export Worker Dermal Absorbed-Dose Bridge",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def exposure_export_worker_dermal_absorbed_dose_bridge(
+        params: ExportWorkerDermalAbsorbedDoseBridgeRequest,
+    ) -> Annotated[CallToolResult, WorkerDermalAbsorbedDoseBridgePackage]:
+        """Export a normalized worker dermal absorbed-dose and PPE handoff package."""
+
+        package = build_worker_dermal_absorbed_dose_bridge(params, registry=defaults_registry)
+        return _success_result(
+            "Exported worker dermal absorbed-dose bridge package.",
+            package,
+        )
+
+    @mcp.tool(
+        name="worker_ingest_dermal_absorbed_dose_task",
+        annotations={
+            "title": "Ingest Worker Dermal Absorbed-Dose Task",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def worker_ingest_dermal_absorbed_dose_task(
+        params: WorkerDermalAbsorbedDoseAdapterRequest,
+    ) -> Annotated[CallToolResult, WorkerDermalAbsorbedDoseAdapterIngestResult]:
+        """Ingest a dermal absorbed-dose bridge payload into a PPE-aware adapter envelope."""
+
+        result = ingest_worker_dermal_absorbed_dose_task(params, registry=defaults_registry)
+        return _success_result(
+            "Ingested worker dermal absorbed-dose task into a PPE-aware adapter envelope.",
+            result,
+        )
+
+    @mcp.tool(
+        name="worker_execute_dermal_absorbed_dose_task",
+        annotations={
+            "title": "Execute Worker Dermal Absorbed-Dose Task",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    )
+    def worker_execute_dermal_absorbed_dose_task_tool(
+        params: ExecuteWorkerDermalAbsorbedDoseRequest,
+    ) -> Annotated[CallToolResult, WorkerDermalAbsorbedDoseExecutionResult]:
+        """Execute a bounded PPE-aware worker dermal absorbed-dose estimate."""
+
+        result = execute_worker_dermal_absorbed_dose_task(params, registry=defaults_registry)
+        return _success_result(
+            "Executed worker dermal absorbed-dose task with the PPE-aware screening kernel.",
+            result,
+        )
+
+    @mcp.tool(
         name="exposure_export_pbpk_scenario_input",
         annotations={
             "title": "Export PBPK Scenario Input",
@@ -418,10 +833,7 @@ def create_mcp_server() -> FastMCP:
 
         package = build_pbpk_external_import_package(params)
         return _success_result(
-            (
-                "Exported PBPK external-import template for "
-                f"scenario {params.scenario.scenario_id}."
-            ),
+            (f"Exported PBPK external-import template for scenario {params.scenario.scenario_id}."),
             package,
         )
 
@@ -442,10 +854,7 @@ def create_mcp_server() -> FastMCP:
 
         bundle = build_toxclaw_evidence_bundle(params)
         return _success_result(
-            (
-                "Exported ToxClaw evidence bundle for "
-                f"scenario {params.scenario.scenario_id}."
-            ),
+            (f"Exported ToxClaw evidence bundle for scenario {params.scenario.scenario_id}."),
             bundle,
         )
 
@@ -612,17 +1021,89 @@ def create_mcp_server() -> FastMCP:
 
         return inhalation_tier_upgrade_guide()
 
+    @mcp.resource("docs://inhalation-residual-air-reentry-guide")
+    def docs_inhalation_residual_air_reentry_guide() -> str:
+        """Guide to the residual-air reentry inhalation screening mode."""
+
+        return inhalation_residual_air_reentry_guide()
+
     @mcp.resource("docs://validation-framework")
     def docs_validation_framework() -> str:
         """Validation and benchmark posture for route and mechanism domains."""
 
         return validation_framework()
 
+    @mcp.resource("docs://goldset-benchmark-guide")
+    def docs_goldset_benchmark_guide() -> str:
+        """Human-readable guide to the externally anchored showcase goldset."""
+
+        return goldset_benchmark_guide()
+
     @mcp.resource("docs://suite-integration-guide")
     def docs_suite_integration_guide() -> str:
         """Boundary and integration guide for the ToxMCP suite."""
 
         return suite_integration_guide()
+
+    @mcp.resource("docs://integrated-exposure-workflow-guide")
+    def docs_integrated_exposure_workflow_guide() -> str:
+        """Guide to the evidence-to-scenario-to-PBPK workflow tool."""
+
+        return integrated_exposure_workflow_guide()
+
+    @mcp.resource("docs://exposure-platform-architecture")
+    def docs_exposure_platform_architecture() -> str:
+        """Architecture guide for splitting exposure, fate, dietary, and worker concerns."""
+
+        return exposure_platform_architecture_guide()
+
+    @mcp.resource("docs://worker-routing-guide")
+    def docs_worker_routing_guide() -> str:
+        """Guide to the current worker-task router and occupational escalation boundaries."""
+
+        return worker_routing_guide()
+
+    @mcp.resource("docs://worker-tier2-bridge-guide")
+    def docs_worker_tier2_bridge_guide() -> str:
+        """Guide to the worker inhalation Tier 2 bridge export and its current boundaries."""
+
+        return worker_tier2_bridge_guide()
+
+    @mcp.resource("docs://worker-art-adapter-guide")
+    def docs_worker_art_adapter_guide() -> str:
+        """Guide to the ART-side worker inhalation adapter ingest boundary."""
+
+        return worker_art_adapter_guide()
+
+    @mcp.resource("docs://worker-art-execution-guide")
+    def docs_worker_art_execution_guide() -> str:
+        """Guide to the executable ART-aligned worker inhalation screening kernel."""
+
+        return worker_art_execution_guide()
+
+    @mcp.resource("docs://worker-art-external-exchange-guide")
+    def docs_worker_art_external_exchange_guide() -> str:
+        """Guide to exporting ART execution packages and importing external ART results."""
+
+        return worker_art_external_exchange_guide()
+
+    @mcp.resource("docs://worker-dermal-bridge-guide")
+    def docs_worker_dermal_bridge_guide() -> str:
+        """Guide to the worker dermal absorbed-dose bridge export."""
+
+        return worker_dermal_bridge_guide()
+
+    @mcp.resource("docs://worker-dermal-adapter-guide")
+    def docs_worker_dermal_adapter_guide() -> str:
+        """Guide to the dermal absorbed-dose and PPE adapter ingest boundary."""
+
+        return worker_dermal_adapter_guide()
+
+    @mcp.resource("docs://worker-dermal-execution-guide")
+    def docs_worker_dermal_execution_guide() -> str:
+        """Guide to the executable worker dermal absorbed-dose screening kernel."""
+
+        return worker_dermal_execution_guide()
 
     @mcp.resource("docs://troubleshooting")
     def docs_troubleshooting() -> str:
@@ -666,6 +1147,12 @@ def create_mcp_server() -> FastMCP:
 
         return json.dumps(load_benchmark_manifest(), indent=2)
 
+    @mcp.resource("benchmarks://goldset")
+    def benchmarks_goldset_manifest() -> str:
+        """Machine-readable showcase goldset with external source anchors and challenge tags."""
+
+        return json.dumps(load_goldset_manifest(), indent=2)
+
     @mcp.resource("validation://manifest")
     def validation_manifest_resource() -> str:
         """Machine-readable validation and benchmark-domain metadata."""
@@ -681,11 +1168,24 @@ def create_mcp_server() -> FastMCP:
         )
         return json.dumps(payload, indent=2)
 
+    @mcp.resource("validation://coverage-report")
+    def validation_coverage_report_resource() -> str:
+        """Machine-readable validation coverage and trust report by route mechanism."""
+
+        payload = build_validation_coverage_report().model_dump(mode="json", by_alias=True)
+        return json.dumps(payload, indent=2)
+
     @mcp.resource("validation://reference-bands")
     def validation_reference_bands_resource() -> str:
         """Machine-readable executable validation reference-band manifest."""
 
         return json.dumps(validation_reference_band_manifest(), indent=2)
+
+    @mcp.resource("validation://time-series-packs")
+    def validation_time_series_packs_resource() -> str:
+        """Machine-readable executable validation time-series reference-pack manifest."""
+
+        return json.dumps(validation_time_series_reference_manifest(), indent=2)
 
     @mcp.resource("docs://validation-dossier")
     def docs_validation_dossier() -> str:
@@ -693,11 +1193,23 @@ def create_mcp_server() -> FastMCP:
 
         return validation_dossier_markdown()
 
+    @mcp.resource("docs://validation-coverage-report")
+    def docs_validation_coverage_report() -> str:
+        """Human-readable validation coverage and trust report."""
+
+        return validation_coverage_report_markdown()
+
     @mcp.resource("docs://validation-reference-bands")
     def docs_validation_reference_bands() -> str:
         """Human-readable executable validation reference-band guide."""
 
         return validation_reference_bands_guide()
+
+    @mcp.resource("docs://validation-time-series-packs")
+    def docs_validation_time_series_packs() -> str:
+        """Human-readable executable validation time-series reference-pack guide."""
+
+        return validation_time_series_packs_guide()
 
     @mcp.resource("release://readiness-report")
     def release_readiness_report() -> str:

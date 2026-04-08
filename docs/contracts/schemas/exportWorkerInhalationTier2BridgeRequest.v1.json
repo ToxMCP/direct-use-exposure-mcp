@@ -1,0 +1,683 @@
+{
+  "$defs": {
+    "AirflowDirectionality": {
+      "enum": [
+        "quiescent",
+        "cross_draft",
+        "source_to_breathing_zone",
+        "breathing_zone_to_source",
+        "general_room_mixing"
+      ],
+      "title": "AirflowDirectionality",
+      "type": "string"
+    },
+    "InhalationScenarioRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureScenarioRequest.v1",
+          "default": "exposureScenarioRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Requested exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "default": "inhalation",
+          "description": "Requested scenario class."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Product and use-context profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Population profile for the exposed cohort."
+        },
+        "assumption_overrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Additional explicit overrides for auditability.",
+          "title": "Assumption Overrides",
+          "type": "object"
+        },
+        "requestedTier": {
+          "$ref": "#/$defs/TierLevel",
+          "default": "tier_0",
+          "description": "Requested inhalation modeling tier. Tier 1 is reserved as a future contract hook and is not implemented in v0.1.0."
+        }
+      },
+      "required": [
+        "chemical_id",
+        "route",
+        "product_use_profile",
+        "population_profile"
+      ],
+      "title": "InhalationScenarioRequest",
+      "type": "object"
+    },
+    "InhalationTier1ScenarioRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "inhalationTier1ScenarioRequest.v1",
+          "default": "inhalationTier1ScenarioRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Requested exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "default": "inhalation",
+          "description": "Requested scenario class for the future Tier 1 inhalation family."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Product and use-context profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Population profile for the exposed cohort."
+        },
+        "assumption_overrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Additional explicit overrides for auditability.",
+          "title": "Assumption Overrides",
+          "type": "object"
+        },
+        "requestedTier": {
+          "const": "tier_1",
+          "default": "tier_1",
+          "description": "Tier 1 inhalation request surface for a future near-field/far-field screening model family.",
+          "title": "Requestedtier",
+          "type": "string"
+        },
+        "source_distance_m": {
+          "description": "Distance from the breathing zone to the active spray source.",
+          "exclusiveMinimum": 0.0,
+          "title": "Source Distance M",
+          "type": "number"
+        },
+        "spray_duration_seconds": {
+          "description": "Active spray emission duration for each use event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Spray Duration Seconds",
+          "type": "number"
+        },
+        "near_field_volume_m3": {
+          "description": "Local near-field control volume around the user.",
+          "exclusiveMinimum": 0.0,
+          "title": "Near Field Volume M3",
+          "type": "number"
+        },
+        "airflow_directionality": {
+          "$ref": "#/$defs/AirflowDirectionality",
+          "description": "Directional airflow context near the source and breathing zone."
+        },
+        "particle_size_regime": {
+          "$ref": "#/$defs/ParticleSizeRegime",
+          "description": "Spray droplet or aerosol size regime used for screening semantics."
+        }
+      },
+      "required": [
+        "chemical_id",
+        "route",
+        "product_use_profile",
+        "population_profile",
+        "source_distance_m",
+        "spray_duration_seconds",
+        "near_field_volume_m3",
+        "airflow_directionality",
+        "particle_size_regime"
+      ],
+      "title": "InhalationTier1ScenarioRequest",
+      "type": "object"
+    },
+    "ParticleSizeRegime": {
+      "enum": [
+        "fine_aerosol",
+        "mixed_spray",
+        "coarse_spray"
+      ],
+      "title": "ParticleSizeRegime",
+      "type": "string"
+    },
+    "PopulationProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "populationProfile.v1",
+          "default": "populationProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "population_group": {
+          "description": "Population group, for example adult or child.",
+          "title": "Population Group",
+          "type": "string"
+        },
+        "body_weight_kg": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Body weight in kilograms.",
+          "title": "Body Weight Kg"
+        },
+        "inhalation_rate_m3_per_hour": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inhalation rate for inhalation screening.",
+          "title": "Inhalation Rate M3 Per Hour"
+        },
+        "exposed_surface_area_cm2": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Exposed surface area for dermal scenarios.",
+          "title": "Exposed Surface Area Cm2"
+        },
+        "demographic_tags": {
+          "description": "Demographic descriptors for auditability.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Demographic Tags",
+          "type": "array"
+        },
+        "region": {
+          "default": "global",
+          "description": "Regional context for defaults or interpretation.",
+          "title": "Region",
+          "type": "string"
+        }
+      },
+      "required": [
+        "population_group"
+      ],
+      "title": "PopulationProfile",
+      "type": "object"
+    },
+    "ProductAmountUnit": {
+      "enum": [
+        "g",
+        "mL"
+      ],
+      "title": "ProductAmountUnit",
+      "type": "string"
+    },
+    "ProductUseProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseProfile.v1",
+          "default": "productUseProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "product_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional human-readable product label.",
+          "title": "Product Name"
+        },
+        "product_subtype": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional narrower product-use subtype such as indoor_surface_insecticide or surface_trigger_spray_disinfectant.",
+          "title": "Product Subtype"
+        },
+        "product_category": {
+          "description": "Product category or PUC-like category.",
+          "title": "Product Category",
+          "type": "string"
+        },
+        "physical_form": {
+          "description": "Physical form such as cream, liquid, spray, or gel.",
+          "title": "Physical Form",
+          "type": "string"
+        },
+        "application_method": {
+          "description": "How the product is applied, for example hand_application or trigger_spray.",
+          "title": "Application Method",
+          "type": "string"
+        },
+        "retention_type": {
+          "default": "leave_on",
+          "description": "Retention class such as leave_on or rinse_off.",
+          "title": "Retention Type",
+          "type": "string"
+        },
+        "concentration_fraction": {
+          "description": "Fraction of the target chemical in the product, 0-1.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Concentration Fraction",
+          "type": "number"
+        },
+        "use_amount_per_event": {
+          "description": "Product amount used per event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Amount Per Event",
+          "type": "number"
+        },
+        "use_amount_unit": {
+          "$ref": "#/$defs/ProductAmountUnit",
+          "description": "Unit for the use amount per event."
+        },
+        "use_events_per_day": {
+          "description": "Number of product-use events per day.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Events Per Day",
+          "type": "number"
+        },
+        "density_g_per_ml": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Density when the product amount is in mL.",
+          "title": "Density G Per Ml"
+        },
+        "transfer_efficiency": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Route modifier for external transfer.",
+          "title": "Transfer Efficiency"
+        },
+        "retention_factor": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Retention modifier for dermal screening.",
+          "title": "Retention Factor"
+        },
+        "ingestion_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass incidentally or directly ingested.",
+          "title": "Ingestion Fraction"
+        },
+        "aerosolized_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass released to air.",
+          "title": "Aerosolized Fraction"
+        },
+        "room_volume_m3": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Indoor room volume for inhalation screening.",
+          "title": "Room Volume M3"
+        },
+        "air_exchange_rate_per_hour": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Air exchange rate for inhalation screening.",
+          "title": "Air Exchange Rate Per Hour"
+        },
+        "exposure_duration_hours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration of exposure per event.",
+          "title": "Exposure Duration Hours"
+        }
+      },
+      "required": [
+        "product_category",
+        "physical_form",
+        "application_method",
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_amount_unit",
+        "use_events_per_day"
+      ],
+      "title": "ProductUseProfile",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "ScenarioClass": {
+      "enum": [
+        "screening",
+        "aggregate",
+        "inhalation",
+        "refined",
+        "population_distribution"
+      ],
+      "title": "ScenarioClass",
+      "type": "string"
+    },
+    "TierLevel": {
+      "enum": [
+        "tier_0",
+        "tier_1",
+        "tier_2",
+        "tier_3"
+      ],
+      "title": "TierLevel",
+      "type": "string"
+    },
+    "WorkerTier2ModelFamily": {
+      "enum": [
+        "art",
+        "stoffenmanager"
+      ],
+      "title": "WorkerTier2ModelFamily",
+      "type": "string"
+    },
+    "WorkerVentilationContext": {
+      "enum": [
+        "unknown",
+        "general_ventilation",
+        "enhanced_general_ventilation",
+        "local_exhaust",
+        "enclosed_process",
+        "outdoor"
+      ],
+      "title": "WorkerVentilationContext",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "exportWorkerInhalationTier2BridgeRequest.v1",
+      "default": "exportWorkerInhalationTier2BridgeRequest.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "baseRequest": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/InhalationScenarioRequest"
+        },
+        {
+          "$ref": "#/$defs/InhalationTier1ScenarioRequest"
+        }
+      ],
+      "description": "Worker inhalation request to convert into a Tier 2 bridge package.",
+      "title": "Baserequest"
+    },
+    "targetModelFamily": {
+      "$ref": "#/$defs/WorkerTier2ModelFamily",
+      "default": "art",
+      "description": "Preferred future occupational model family for the handoff."
+    },
+    "taskDescription": {
+      "default": "worker inhalation task requiring Tier 2 refinement",
+      "description": "Short description of the occupational inhalation task.",
+      "title": "Taskdescription",
+      "type": "string"
+    },
+    "workplaceSetting": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Short workplace-setting label for the future adapter.",
+      "title": "Workplacesetting"
+    },
+    "taskDurationHours": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Task duration for the Tier 2 bridge when different from event duration.",
+      "title": "Taskdurationhours"
+    },
+    "ventilationContext": {
+      "$ref": "#/$defs/WorkerVentilationContext",
+      "default": "unknown",
+      "description": "Ventilation or control state provided for the worker task."
+    },
+    "localControls": {
+      "description": "Engineering or administrative controls present during the task.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Localcontrols",
+      "type": "array"
+    },
+    "respiratoryProtection": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Respiratory protection state if known.",
+      "title": "Respiratoryprotection"
+    },
+    "emissionDescriptor": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Free-text description of the worker emission context.",
+      "title": "Emissiondescriptor"
+    },
+    "contextOfUse": {
+      "default": "worker-tier2-bridge",
+      "description": "Downstream orchestration context for the bridge package.",
+      "title": "Contextofuse",
+      "type": "string"
+    },
+    "notes": {
+      "description": "Additional worker bridge notes preserved in taskContext.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "baseRequest"
+  ],
+  "title": "ExportWorkerInhalationTier2BridgeRequest",
+  "type": "object"
+}

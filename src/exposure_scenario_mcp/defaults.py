@@ -95,6 +95,7 @@ class DefaultsRegistry:
         self,
         product_category: str | None = None,
         physical_form: str | None = None,
+        product_subtype: str | None = None,
     ) -> tuple[float, AssumptionSourceReference]:
         section = self.payload["conversion_defaults"]
         if "global" not in section:
@@ -111,6 +112,12 @@ class DefaultsRegistry:
             form_entry = section.get("physical_form_overrides", {}).get(physical_form.lower())
             if form_entry:
                 entry = form_entry
+        if product_subtype:
+            subtype_entry = section.get("product_subtype_overrides", {}).get(
+                product_subtype.lower()
+            )
+            if subtype_entry:
+                entry = subtype_entry
         return float(entry["density_g_per_ml"]), self._source(entry["source_id"])
 
     def population_defaults(
@@ -209,11 +216,20 @@ class DefaultsRegistry:
         self,
         application_method: str,
         product_category: str | None = None,
+        product_subtype: str | None = None,
     ) -> tuple[float, AssumptionSourceReference]:
         key = application_method.lower()
         values = self.payload["aerosolized_fraction_defaults"]
         if "global" in values:
             resolved = values["global"]
+            if product_subtype:
+                subtype_values = values.get("product_subtype_overrides", {}).get(
+                    product_subtype.lower(),
+                    {},
+                )
+                if key in subtype_values:
+                    entry = subtype_values[key]
+                    return float(entry["value"]), self._source(entry["source_id"])
             if product_category:
                 category_values = values.get("product_category_overrides", {}).get(
                     product_category.lower(),
@@ -233,7 +249,12 @@ class DefaultsRegistry:
         return float(entry["value"]), self._source(entry["source_id"])
 
     def room_defaults(
-        self, region: str = "global"
+        self,
+        region: str = "global",
+        *,
+        product_category: str | None = None,
+        product_subtype: str | None = None,
+        application_method: str | None = None,
     ) -> tuple[dict[str, float], dict[str, AssumptionSourceReference]]:
         entry = self.payload["room_defaults"]
         if "global" not in entry:
@@ -246,18 +267,45 @@ class DefaultsRegistry:
             return values, {name: source for name in values}
 
         global_entry = entry["global"]
-        override = entry.get("regional_overrides", {}).get(region.lower(), {})
+        region_key = region.lower()
+        candidates: list[dict[str, Any]] = [global_entry]
+
+        regional_override = entry.get("regional_overrides", {}).get(region_key, {})
+        if regional_override:
+            candidates.append(regional_override)
+
+        def append_selector_candidates(
+            selector_key: str,
+            selector_value: str | None,
+        ) -> None:
+            if not selector_value:
+                return
+            selector_entry = entry.get(selector_key, {}).get(selector_value.lower(), {})
+            if selector_entry:
+                candidates.append(selector_entry)
+                selector_region_entry = selector_entry.get("regional_overrides", {}).get(
+                    region_key,
+                    {},
+                )
+                if selector_region_entry:
+                    candidates.append(selector_region_entry)
+
+        append_selector_candidates("product_category_overrides", product_category)
+        append_selector_candidates("application_method_overrides", application_method)
+        append_selector_candidates("product_subtype_overrides", product_subtype)
 
         def resolve_value(name: str) -> float:
-            if name in override:
-                return float(override[name])
+            for candidate in reversed(candidates):
+                if name in candidate:
+                    return float(candidate[name])
             return float(global_entry[name])
 
         def resolve_source(name: str, source_field: str) -> AssumptionSourceReference:
-            if source_field in override:
-                return self._source(override[source_field])
-            if name in override and "source_id" in override:
-                return self._source(override["source_id"])
+            for candidate in reversed(candidates):
+                if source_field in candidate:
+                    return self._source(candidate[source_field])
+                if name in candidate and "source_id" in candidate:
+                    return self._source(candidate["source_id"])
             if source_field in global_entry:
                 return self._source(global_entry[source_field])
             return self._source(global_entry["source_id"])
@@ -279,6 +327,228 @@ class DefaultsRegistry:
             ),
         }
         return values, sources
+
+    def worker_dermal_body_zone_surface_area_cm2(
+        self, body_zone_profile: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = body_zone_profile.lower()
+        values = self.payload["worker_dermal_execution_defaults"]["body_zone_surface_area_cm2"]
+        ensure(
+            key in values,
+            "worker_dermal_body_zone_unsupported",
+            f"Worker dermal body-zone profile '{body_zone_profile}' is not supported.",
+            suggestion=f"Use one of: {', '.join(sorted(values))}.",
+        )
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_ppe_penetration_factor(
+        self, ppe_state: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = ppe_state.lower()
+        values = self.payload["worker_dermal_execution_defaults"]["ppe_penetration_factor"]
+        ensure(
+            key in values,
+            "worker_dermal_ppe_state_unsupported",
+            f"Worker dermal PPE state '{ppe_state}' is not supported.",
+            suggestion=f"Use one of: {', '.join(sorted(values))}.",
+        )
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_barrier_material_factor(
+        self, barrier_material: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = barrier_material.lower()
+        values = self.payload["worker_dermal_execution_defaults"]["barrier_material_factor"]
+        ensure(
+            key in values,
+            "worker_dermal_barrier_material_unsupported",
+            f"Worker dermal barrier material '{barrier_material}' is not supported.",
+            suggestion=f"Use one of: {', '.join(sorted(values))}.",
+        )
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_barrier_chemistry_factor(
+        self,
+        barrier_material: str,
+        *,
+        log_kow: float | None = None,
+        water_solubility_mg_per_l: float | None = None,
+    ) -> tuple[str, float, AssumptionSourceReference]:
+        profile = "generic"
+        if (
+            water_solubility_mg_per_l is not None
+            and water_solubility_mg_per_l >= 10000.0
+            and (log_kow is None or log_kow < 2.0)
+        ):
+            profile = "aqueous_polar"
+        elif (
+            log_kow is not None
+            and log_kow >= 4.0
+            and (water_solubility_mg_per_l is None or water_solubility_mg_per_l < 1000.0)
+        ):
+            profile = "hydrophobic_solvent_like"
+        elif log_kow is not None or water_solubility_mg_per_l is not None:
+            profile = "mixed_organic"
+
+        values = self.payload["worker_dermal_execution_defaults"]["barrier_chemistry_factor"]
+        profile_values = values.get(profile, values["generic"])
+        material_key = barrier_material.lower()
+        entry = profile_values.get(material_key, profile_values["unknown"])
+        return profile, float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_skin_condition_factor(
+        self, skin_condition: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = skin_condition.lower()
+        values = self.payload["worker_dermal_execution_defaults"]["skin_condition_factor"]
+        ensure(
+            key in values,
+            "worker_dermal_skin_condition_unsupported",
+            f"Worker dermal skin condition '{skin_condition}' is not supported.",
+            suggestion=f"Use one of: {', '.join(sorted(values))}.",
+        )
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_base_absorption_fraction(
+        self, physical_form: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = physical_form.lower()
+        values = self.payload["worker_dermal_execution_defaults"]["absorption_fraction_defaults"]
+        if key not in values:
+            key = "global"
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_contact_pattern_factor(
+        self, contact_pattern: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = contact_pattern.lower()
+        values = self.payload["worker_dermal_execution_defaults"]["contact_pattern_factor"]
+        ensure(
+            key in values,
+            "worker_dermal_contact_pattern_unsupported",
+            f"Worker dermal contact pattern '{contact_pattern}' is not supported.",
+            suggestion=f"Use one of: {', '.join(sorted(values))}.",
+        )
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_contact_duration_factor(
+        self, contact_duration_hours: float
+    ) -> tuple[float, AssumptionSourceReference]:
+        ensure(
+            contact_duration_hours > 0.0,
+            "worker_dermal_contact_duration_invalid",
+            "Worker dermal contact duration must be positive.",
+        )
+        entry = self.payload["worker_dermal_execution_defaults"]["contact_duration_scaling"]
+        reference_hours = float(entry["reference_hours"])
+        minimum_factor = float(entry["minimum_factor"])
+        maximum_factor = float(entry["maximum_factor"])
+        factor = min(max(contact_duration_hours / reference_hours, minimum_factor), maximum_factor)
+        return factor, self._source(entry["source_id"])
+
+    def _worker_dermal_threshold_factor(
+        self,
+        section_name: str,
+        value: float,
+    ) -> tuple[float, AssumptionSourceReference]:
+        section = self.payload["worker_dermal_execution_defaults"][section_name]
+        entry = section["default"]
+        for candidate in section.get("thresholds", []):
+            minimum = float(candidate["minimum"])
+            if value >= minimum:
+                entry = candidate
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_log_kow_factor(
+        self, log_kow: float
+    ) -> tuple[float, AssumptionSourceReference]:
+        return self._worker_dermal_threshold_factor("log_kow_factor", log_kow)
+
+    def worker_dermal_molecular_weight_factor(
+        self, molecular_weight_g_per_mol: float
+    ) -> tuple[float, AssumptionSourceReference]:
+        return self._worker_dermal_threshold_factor(
+            "molecular_weight_factor",
+            molecular_weight_g_per_mol,
+        )
+
+    def worker_dermal_water_solubility_factor(
+        self, water_solubility_mg_per_l: float
+    ) -> tuple[float, AssumptionSourceReference]:
+        return self._worker_dermal_threshold_factor(
+            "water_solubility_factor",
+            water_solubility_mg_per_l,
+        )
+
+    def worker_dermal_vapor_pressure_factor(
+        self, vapor_pressure_mmhg: float
+    ) -> tuple[float, AssumptionSourceReference]:
+        return self._worker_dermal_threshold_factor(
+            "vapor_pressure_factor",
+            vapor_pressure_mmhg,
+        )
+
+    def worker_dermal_chemical_context_factor_bounds(
+        self,
+    ) -> tuple[tuple[float, float], AssumptionSourceReference]:
+        entry = self.payload["worker_dermal_execution_defaults"]["chemical_context_factor_bounds"]
+        return (
+            (float(entry["minimum_factor"]), float(entry["maximum_factor"])),
+            self._source(entry["source_id"]),
+        )
+
+    def worker_inhalation_control_profile_factor(
+        self, control_profile: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = control_profile.lower()
+        values = self.payload["worker_inhalation_execution_defaults"]["control_profile_factor"]
+        ensure(
+            key in values,
+            "worker_inhalation_control_profile_unsupported",
+            f"Worker inhalation control profile '{control_profile}' is not supported.",
+            suggestion=f"Use one of: {', '.join(sorted(values))}.",
+        )
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_inhalation_respiratory_protection_factor(
+        self, respiratory_protection: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = respiratory_protection.lower()
+        values = self.payload["worker_inhalation_execution_defaults"][
+            "respiratory_protection_factor"
+        ]
+        if key not in values and "respirator" in key:
+            key = "generic_respirator"
+        ensure(
+            key in values,
+            "worker_inhalation_respiratory_protection_unsupported",
+            (
+                "Worker inhalation respiratory protection state "
+                f"'{respiratory_protection}' is not supported."
+            ),
+            suggestion=f"Use one of: {', '.join(sorted(values))}.",
+        )
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_inhalation_vapor_release_fraction(
+        self, emission_profile: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = emission_profile.lower()
+        values = self.payload["worker_inhalation_execution_defaults"][
+            "vapor_release_fraction_defaults"
+        ]
+        if key not in values:
+            key = "generic_inhalation_release_profile"
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
 
 
 def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
@@ -326,6 +596,13 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  should be replaced with product-family packs when curated density data are",
             "  available.",
             "",
+            "### Heuristic Pest-Control Aerosol Density Bridge 2026",
+            "",
+            "- `heuristic_consexpo_pest_control_aerosol_density_bridge_2026` is an explicit",
+            "  interim density branch for subtype-specific pest-control aerosol scenarios such",
+            "  as `air_space_insecticide`, where solvent-propellant style product families are",
+            "  not well represented by the generic liquid screening density.",
+            "",
             "### Heuristic Retention Defaults",
             "",
             "- `heuristic_retention_defaults_v1` now covers only the residual surface-contact",
@@ -350,6 +627,72 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "",
             "- `heuristic_transfer_efficiency_defaults_v1` now covers only the residual",
             "  fallback transfer-efficiency benchmarks for wiping and pouring contexts.",
+            "",
+            "### Worker Dermal Body-Zone Area Heuristics 2026",
+            "",
+            "- `worker_dermal_body_zone_area_heuristics_2026` provides bounded body-zone area",
+            "  anchors for worker dermal absorbed-dose execution when callers do not supply an",
+            "  explicit exposed surface area. These are not intended to replace task-specific",
+            "  patch or wipe measurements.",
+            "",
+            "### Worker Dermal PPE Penetration Heuristics 2026",
+            "",
+            "- `worker_dermal_ppe_penetration_heuristics_2026` provides generic residual",
+            "  penetration factors for work gloves, chemical-resistant gloves, protective",
+            "  clothing, and combined barriers. These are screening barrier modifiers, not",
+            "  glove-breakthrough kinetics or material-specific permeation data.",
+            "",
+            "### Worker Dermal Barrier-Material Heuristics 2026",
+            "",
+            "- `worker_dermal_barrier_material_heuristics_2026` adds bounded material-specific",
+            "  modifiers for nitrile, latex, neoprene, butyl, PVC, laminate, and textile",
+            "  barriers. These refine the residual penetration factor but still do not model",
+            "  breakthrough timing, degradation, or certification performance.",
+            "- The same source family now also carries bounded barrier-chemistry interaction",
+            "  profiles so solvent-like versus aqueous contexts can refine the effective",
+            "  barrier assumption without claiming certified glove permeation data.",
+            "",
+            "### Worker Dermal Absorption Fraction Heuristics 2026",
+            "",
+            "- `worker_dermal_absorption_fraction_heuristics_2026` provides bounded physical-",
+            "  form screening anchors for translating skin-boundary mass into absorbed dermal",
+            "  mass when no chemical-specific dermal permeability or absorption dataset is",
+            "  available.",
+            "",
+            "### Worker Dermal Physchem Modifier Heuristics 2026",
+            "",
+            "- `worker_dermal_physchem_modifier_heuristics_2026` adds bounded modifiers from",
+            "  caller-supplied `logKow`, molecular weight, and water solubility so worker",
+            "  dermal execution can be chemistry-aware without claiming a true permeation",
+            "  model.",
+            "- The same source family now includes a bounded volatility modifier from vapor",
+            "  pressure so high-volatility liquid contacts do not silently inherit the same",
+            "  absorbed-fraction assumption as persistent residues.",
+            "",
+            "### Worker Dermal Contact Duration Scaling Heuristics 2026",
+            "",
+            "- `worker_dermal_contact_duration_scaling_heuristics_2026` provides a saturating",
+            "  duration adjustment for absorbed-dose screening so very short contacts do not",
+            "  silently inherit full-shift absorption semantics.",
+            "",
+            "### Worker Inhalation Control-Factor Heuristics 2026",
+            "",
+            "- `worker_inhalation_control_factor_heuristics_2026` provides bounded workplace",
+            "  control-profile modifiers for the executable worker inhalation surrogate layer.",
+            "  These factors are intended for transparent screening refinement, not as",
+            "  substitutes for ART determinants or measured control efficiency.",
+            "",
+            "### Worker Inhalation Respiratory-Protection Heuristics 2026",
+            "",
+            "- `worker_inhalation_rpe_factor_heuristics_2026` provides residual inhalation",
+            "  intake fractions for broad respiratory-protection states. They are screening",
+            "  intake modifiers, not assigned protection factors for a compliance program.",
+            "",
+            "### Worker Inhalation Vapor-Release Heuristics 2026",
+            "",
+            "- `worker_inhalation_vapor_release_fraction_heuristics_2026` provides bounded",
+            "  non-spray release fractions for worker inhalation execution when the current",
+            "  task is vapor-generating and no direct spray airborne-fraction default applies.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",
@@ -389,6 +732,13 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  which sets a default airborne fraction of `0.2` for cleaning sprays used toward",
             "  surfaces.",
             "",
+            "### RIVM Disinfectant Trigger-Spray Airborne Fraction Defaults 2006",
+            "",
+            "- `rivm_disinfectant_trigger_spray_airborne_fraction_defaults_2006` maps the",
+            "  RIVM Disinfectant Products Fact Sheet surface trigger-spray default onto the MCP",
+            "  inhalation screening abstraction for `disinfectant` contexts. The current branch",
+            "  uses `trigger_spray=0.2` for short surface-spray tasks.",
+            "",
             "### RIVM Cosmetics Sprays Airborne Fraction Defaults 2025",
             "",
             "- `rivm_cosmetics_sprays_airborne_fraction_defaults_2025` maps RIVM Cosmetics",
@@ -396,6 +746,23 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  for `personal_care` contexts. The current curated anchors are `pump_spray=0.2`",
             "  and `aerosol_spray=0.9`, reflecting product-family screening defaults for",
             "  cosmetic pump and aerosol sprays rather than a universal spray model.",
+            "",
+            "### Heuristic Pest-Control Trigger-Spray Airborne Fraction Bridge 2026",
+            "",
+            "- `heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026`",
+            "  is an explicit interim bridge for generic `pest_control` and `pesticide`",
+            "  trigger-spray scenarios. The current `0.15` branch centers the RIVM ConsExpo",
+            "  spray-family evidence between the `0.2` plant-spray trigger-spray family and the",
+            "  `0.1` crawling-insect trigger-spray family, and keeps the branch heuristic until",
+            "  broader use-subtype-specific packs are published.",
+            "",
+            "### Heuristic Pest-Control Aerosol Airborne Fraction Bridge 2026",
+            "",
+            "- `heuristic_consexpo_pest_control_aerosol_airborne_fraction_bridge_2026` is an",
+            "  explicit interim bridge for `air_space_insecticide` aerosol scenarios. The",
+            "  current `aerosol_spray=1.0` branch treats the emitted active mass as a whole-room",
+            "  airborne release boundary for screening, while keeping the pack heuristic until a",
+            "  richer aerosol-use determinant set is published.",
             "",
             "### Heuristic Spray Airborne Fraction Defaults",
             "",
@@ -415,17 +782,30 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  duration fallback for short room-release scenarios. This remains heuristic because",
             "  duration is strongly use-context dependent even when the room geometry is known.",
             "",
+            "### Heuristic Pest-Control Air-Space Room Defaults Bridge 2026",
+            "",
+            "- `heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026` provides",
+            "  subtype-specific whole-room anchors for `air_space_insecticide` scenarios, using",
+            "  a larger room volume and longer post-application duration than the default short",
+            "  surface-spray screening room branch.",
+            "",
             "### ECHA Consumer Inhalation Room Defaults",
             "",
             "- `echa_consumer_inhalation_room_defaults` is used only for EU-region inhalation room",
             "  defaults, where a higher ventilation benchmark is appropriate for consumer",
             "  spray-style screening than the generic global fallback.",
             "",
-            "- Density resolution follows `global -> product category -> physical form`, so form-",
-            "  specific benchmarks can override broad category defaults when both are present.",
-            "- Transfer efficiency and aerosolized fraction use method-specific global defaults,",
-            "  with product-category method overrides applied only where the defaults pack",
-            "  declares them explicitly.",
+            "- Density resolution follows `global -> product category -> physical form ->",
+            "  product_subtype`, so subtype-specific screening packs can override broad family",
+            "  and form defaults when they are available.",
+            "- Transfer efficiency uses method-specific global defaults with product-category",
+            "  overrides applied only where the defaults pack declares them explicitly.",
+            "- Aerosolized fraction resolves in the order `product_subtype -> product category",
+            "  -> global` for each application method, so subtype-specific ConsExpo branches can",
+            "  override broad family defaults without changing the caller-supplied scenario class.",
+            "- Inhalation room defaults resolve in the order `global -> region -> product",
+            "  category -> application method -> product_subtype`, with selector-specific",
+            "  regional branches taking precedence when a defaults pack publishes them.",
         ]
     )
     return "\n".join(lines)
@@ -545,6 +925,17 @@ def build_defaults_curation_report(
             source_id=entry["source_id"],
             applicability={"physical_form": physical_form},
         )
+    for product_subtype, entry in (
+        conversion_defaults.get("product_subtype_overrides", {}).items()
+    ):
+        _append_entry(
+            entries,
+            active_registry,
+            parameter_name="density_g_per_ml",
+            value=entry["density_g_per_ml"],
+            source_id=entry["source_id"],
+            applicability={"product_subtype": product_subtype},
+        )
 
     def append_method_family(
         section_name: str,
@@ -573,6 +964,16 @@ def build_defaults_curation_report(
                     value=entry["value"],
                     source_id=entry["source_id"],
                     applicability={"product_category": category, selector_key: selector_value},
+                )
+        for subtype, subtype_entries in section.get("product_subtype_overrides", {}).items():
+            for selector_value, entry in subtype_entries.items():
+                _append_entry(
+                    entries,
+                    active_registry,
+                    parameter_name=parameter_name,
+                    value=entry["value"],
+                    source_id=entry["source_id"],
+                    applicability={"product_subtype": subtype, selector_key: selector_value},
                 )
 
     append_method_family("retention_factor_defaults", "retention_factor", "retention_type")
@@ -613,23 +1014,55 @@ def build_defaults_curation_report(
                 value=room_global[parameter_name],
                 source_id=room_global[source_field],
             )
-    for region, entry in room_defaults.get("regional_overrides", {}).items():
+    def append_room_selector_entry(
+        selector_key: str,
+        selector_value: str,
+        selector_entry: dict[str, Any],
+    ) -> None:
         for parameter_name, source_field in (
             ("room_volume_m3", "room_volume_source_id"),
             ("air_exchange_rate_per_hour", "air_exchange_rate_source_id"),
             ("exposure_duration_hours", "exposure_duration_source_id"),
         ):
-            if parameter_name not in entry:
+            if parameter_name not in selector_entry:
                 continue
-            source_id = entry.get(source_field, entry.get("source_id"))
+            source_id = selector_entry.get(source_field, selector_entry.get("source_id"))
             _append_entry(
                 entries,
                 active_registry,
                 parameter_name=parameter_name,
-                value=entry[parameter_name],
+                value=selector_entry[parameter_name],
                 source_id=source_id,
-                applicability={"region": region},
+                applicability={selector_key: selector_value},
             )
+        for region, regional_entry in selector_entry.get("regional_overrides", {}).items():
+            for parameter_name, source_field in (
+                ("room_volume_m3", "room_volume_source_id"),
+                ("air_exchange_rate_per_hour", "air_exchange_rate_source_id"),
+                ("exposure_duration_hours", "exposure_duration_source_id"),
+            ):
+                if parameter_name not in regional_entry:
+                    continue
+                source_id = regional_entry.get(source_field, regional_entry.get("source_id"))
+                _append_entry(
+                    entries,
+                    active_registry,
+                    parameter_name=parameter_name,
+                    value=regional_entry[parameter_name],
+                    source_id=source_id,
+                    applicability={selector_key: selector_value, "region": region},
+                )
+
+    for region, entry in room_defaults.get("regional_overrides", {}).items():
+        append_room_selector_entry("region", region, entry)
+    for selector_key in (
+        "product_category_overrides",
+        "application_method_overrides",
+        "product_subtype_overrides",
+    ):
+        selector_name = selector_key.removesuffix("_overrides")
+        for selector_value, selector_entry in room_defaults.get(selector_key, {}).items():
+            append_room_selector_entry(selector_name, selector_value, selector_entry)
 
     curated_count = sum(
         1 for item in entries if item.curation_status == DefaultsCurationStatus.CURATED

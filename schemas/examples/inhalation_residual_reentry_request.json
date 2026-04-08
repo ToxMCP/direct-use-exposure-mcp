@@ -1,0 +1,42 @@
+{
+  "schema_version": "exposureScenarioRequest.v1",
+  "chemical_id": "DTXSID8020230",
+  "chemical_name": "Example Insecticide B",
+  "route": "inhalation",
+  "scenario_class": "inhalation",
+  "product_use_profile": {
+    "schema_version": "productUseProfile.v1",
+    "product_name": "Example Indoor Surface Insecticide",
+    "product_subtype": "indoor_surface_insecticide",
+    "product_category": "pesticide",
+    "physical_form": "spray",
+    "application_method": "residual_air_reentry",
+    "retention_type": "surface_contact",
+    "concentration_fraction": 0.005,
+    "use_amount_per_event": 20.0,
+    "use_amount_unit": "mL",
+    "use_events_per_day": 1.0,
+    "density_g_per_ml": null,
+    "transfer_efficiency": null,
+    "retention_factor": null,
+    "ingestion_fraction": null,
+    "aerosolized_fraction": null,
+    "room_volume_m3": 30.0,
+    "air_exchange_rate_per_hour": 0.5,
+    "exposure_duration_hours": 4.0
+  },
+  "population_profile": {
+    "schema_version": "populationProfile.v1",
+    "population_group": "adult",
+    "body_weight_kg": 80.0,
+    "inhalation_rate_m3_per_hour": 0.83,
+    "exposed_surface_area_cm2": null,
+    "demographic_tags": [],
+    "region": "EU"
+  },
+  "assumption_overrides": {},
+  "requestedTier": "tier_0",
+  "airConcentrationAtReentryStartMgPerM3": 0.08,
+  "additionalDecayRatePerHour": 0.03,
+  "postApplicationDelayHours": 4.0
+}

@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "WorkerVentilationContext": {
+      "enum": [
+        "unknown",
+        "general_ventilation",
+        "enhanced_general_ventilation",
+        "local_exhaust",
+        "enclosed_process",
+        "outdoor"
+      ],
+      "title": "WorkerVentilationContext",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerInhalationTier2TaskContext.v1",
+      "default": "workerInhalationTier2TaskContext.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_description": {
+      "description": "Short description of the workplace task.",
+      "title": "Task Description",
+      "type": "string"
+    },
+    "workplace_setting": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Short workplace-setting label such as janitorial closet or production line.",
+      "title": "Workplace Setting"
+    },
+    "task_duration_hours": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Task duration relevant to the future Tier 2 worker model.",
+      "title": "Task Duration Hours"
+    },
+    "ventilation_context": {
+      "$ref": "#/$defs/WorkerVentilationContext",
+      "default": "unknown",
+      "description": "Ventilation/control state declared for the worker task."
+    },
+    "local_controls": {
+      "description": "Engineering or administrative controls explicitly present during the task.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Local Controls",
+      "type": "array"
+    },
+    "respiratory_protection": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Respiratory protection state if explicitly known.",
+      "title": "Respiratory Protection"
+    },
+    "emission_descriptor": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Short free-text description of the emitted mist, vapor, or aerosol context.",
+      "title": "Emission Descriptor"
+    },
+    "notes": {
+      "description": "Additional worker-task notes preserved for adapter review.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "task_description"
+  ],
+  "title": "WorkerInhalationTier2TaskContext",
+  "type": "object"
+}

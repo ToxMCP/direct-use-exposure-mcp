@@ -7,6 +7,7 @@
   "product_use_profile": {
     "schema_version": "productUseProfile.v1",
     "product_name": "Example Hand Cream",
+    "product_subtype": null,
     "product_category": "personal_care",
     "physical_form": "cream",
     "application_method": "hand_application",
@@ -37,6 +38,15 @@
     "region": "EU"
   },
   "assumption_overrides": {
+    "external_product_use_source_name": "EPA CompTox",
+    "external_product_use_source_kind": "comptox",
+    "external_product_use_review_status": "reviewed",
+    "external_product_use_casrn": "123-45-6",
+    "external_product_use_primary_evidence": "CompTox:mock-record-001",
+    "external_product_use_jurisdictions": "US",
+    "external_product_use_categories": "personal_care,household_cleaner",
+    "external_product_use_physchem_vapor_pressure_pa": 150.0,
+    "external_product_use_physchem_water_solubility_mg_l": 1200.0,
     "comptox_casrn": "123-45-6",
     "comptox_primary_evidence": "CompTox:mock-record-001"
   }

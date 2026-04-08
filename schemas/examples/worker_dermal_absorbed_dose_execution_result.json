@@ -1,0 +1,1004 @@
+{
+  "schema_version": "workerDermalAbsorbedDoseExecutionResult.v1",
+  "supportedByAdapter": true,
+  "readyForExecution": true,
+  "manualReviewRequired": false,
+  "resolvedAdapter": "worker_dermal_absorption_ppe_adapter",
+  "targetModelFamily": "dermal_absorption_ppe",
+  "chemicalId": "DTXSID7020182",
+  "chemicalName": "Example Solvent A",
+  "route": "dermal",
+  "scenarioClass": "refined",
+  "externalDose": {
+    "metric": "normalized_external_skin_dose",
+    "value": 0.8,
+    "unit": "mg/kg-day"
+  },
+  "absorbedDose": {
+    "metric": "normalized_absorbed_dose",
+    "value": 0.0108,
+    "unit": "mg/kg-day"
+  },
+  "productUseProfile": {
+    "schema_version": "productUseProfile.v1",
+    "product_name": "Example Workplace Wipe Cleaner",
+    "product_subtype": null,
+    "product_category": "household_cleaner",
+    "physical_form": "liquid",
+    "application_method": "wipe",
+    "retention_type": "surface_contact",
+    "concentration_fraction": 0.02,
+    "use_amount_per_event": 10.0,
+    "use_amount_unit": "g",
+    "use_events_per_day": 3.0,
+    "density_g_per_ml": null,
+    "transfer_efficiency": null,
+    "retention_factor": null,
+    "ingestion_fraction": null,
+    "aerosolized_fraction": null,
+    "room_volume_m3": null,
+    "air_exchange_rate_per_hour": null,
+    "exposure_duration_hours": 0.75
+  },
+  "populationProfile": {
+    "schema_version": "populationProfile.v1",
+    "population_group": "adult",
+    "body_weight_kg": 75.0,
+    "inhalation_rate_m3_per_hour": null,
+    "exposed_surface_area_cm2": 840.0,
+    "demographic_tags": [
+      "worker",
+      "occupational"
+    ],
+    "region": "EU"
+  },
+  "taskContext": {
+    "schema_version": "workerDermalTaskContext.v1",
+    "taskDescription": "Worker wet-wipe cleaning task with gloved hand contact",
+    "workplaceSetting": "custodial closet",
+    "contactDurationHours": 0.75,
+    "contactPattern": "surface_transfer",
+    "exposedBodyAreas": [
+      "hands"
+    ],
+    "ppeState": "work_gloves",
+    "barrierMaterial": "unknown",
+    "controlMeasures": [
+      "task segregation",
+      "prompt hand washing"
+    ],
+    "surfaceLoadingContext": "wet cleaning cloth contact with surface residue transfer",
+    "skinCondition": "unknown",
+    "notes": [
+      "Illustrative worker dermal bridge package for a future absorbed-dose workflow."
+    ]
+  },
+  "chemicalContext": null,
+  "dermalTaskEnvelope": {
+    "schema_version": "workerDermalAbsorbedDoseTaskEnvelope.v1",
+    "adapterName": "worker_dermal_absorption_ppe_adapter",
+    "adapterVersion": "0.1.0",
+    "contactProfile": "surface_transfer_contact_profile",
+    "ppeProfile": "general_work_glove_barrier_profile",
+    "bodyZoneProfile": "hands_only_body_zone",
+    "determinantTemplateMatch": {
+      "schema_version": "workerDermalDeterminantTemplateMatch.v1",
+      "templateId": "janitorial_wet_wipe_gloved_hands_v1",
+      "templateLabel": "Janitorial Wet-Wipe Contact with Gloved Hands",
+      "alignmentStatus": "aligned",
+      "matchScore": 1.0,
+      "matchBasis": [
+        "productCategory=`household_cleaner` matched the template family.",
+        "applicationMethod=`wipe` matched the contact mode.",
+        "physicalForm=`liquid` matched the template form.",
+        "contactPattern=`surface_transfer` matched the template contact mode.",
+        "ppeState=`work_gloves` matched the template barrier state.",
+        "Body-area selections matched the template contact zone.",
+        "Task text or workplace context matched the template family."
+      ],
+      "determinantRecommendations": {
+        "dermalTaskFamily": "janitorial_wet_wipe_gloved_hands",
+        "contactMechanism": "wet_surface_secondary_transfer",
+        "ppeAssumption": "gloved_hand_contact",
+        "absorptionContext": "aqueous_surface_residue_contact",
+        "contactProfile": "surface_transfer_contact_profile",
+        "ppeProfile": "general_work_glove_barrier_profile",
+        "bodyZoneProfile": "hands_only_body_zone"
+      },
+      "sourceBasis": [
+        "worker_dermal_template_pack_2026_v1",
+        "rivm_wet_cloth_dermal_contact_loading_2018"
+      ],
+      "reviewNotes": []
+    },
+    "chemicalContext": null,
+    "taskSummary": [
+      "Matched determinant template=`janitorial_wet_wipe_gloved_hands_v1` with alignmentStatus=`aligned`.",
+      "Mapped contactPattern=`surface_transfer` and ppeState=`work_gloves` to contactProfile=`surface_transfer_contact_profile` and ppeProfile=`general_work_glove_barrier_profile`.",
+      "Mapped exposedBodyAreas to bodyZoneProfile=`hands_only_body_zone`.",
+      "Preserved barrierMaterial=`unknown` for downstream absorbed-dose execution."
+    ],
+    "dermalInputs": {
+      "substanceName": "Example Solvent A",
+      "chemicalId": "DTXSID7020182",
+      "productCategory": "household_cleaner",
+      "productSubtype": null,
+      "applicationMethod": "wipe",
+      "physicalForm": "liquid",
+      "concentrationFraction": 0.02,
+      "useAmountPerEvent": 10.0,
+      "useAmountUnit": "g",
+      "useEventsPerDay": 3.0,
+      "eventDurationHours": 0.75,
+      "contactDurationHours": 0.75,
+      "contactPattern": "surface_transfer",
+      "exposedBodyAreas": [
+        "hands"
+      ],
+      "ppeState": "work_gloves",
+      "barrierMaterial": "unknown",
+      "controlMeasures": [
+        "task segregation",
+        "prompt hand washing"
+      ],
+      "surfaceLoadingContext": "wet cleaning cloth contact with surface residue transfer",
+      "skinCondition": "unknown",
+      "transferEfficiency": null,
+      "retentionFactor": null,
+      "exposedSurfaceAreaCm2": 840.0,
+      "bodyWeightKg": 75.0,
+      "region": "EU",
+      "templateAlignmentStatus": "aligned"
+    },
+    "screeningHandoffSummary": {
+      "workerRoutingSupportStatus": "future_adapter_recommended",
+      "sourceRequestSchema": "exposureScenarioRequest.v1",
+      "templateCatalogVersion": "2026.04.07.v1"
+    }
+  },
+  "executionOverrides": {
+    "schema_version": "workerDermalAbsorbedDoseExecutionOverrides.v1",
+    "externalSkinMassMgPerDay": null,
+    "bodyZoneSurfaceAreaCm2": null,
+    "ppePenetrationFactor": 0.3,
+    "dermalAbsorptionFraction": null,
+    "contactDurationFactor": null
+  },
+  "routeMetrics": {
+    "templateId": "janitorial_wet_wipe_gloved_hands_v1",
+    "templateAlignmentStatus": "aligned",
+    "bodyZoneProfile": "hands_only_body_zone",
+    "contactProfile": "surface_transfer_contact_profile",
+    "ppeProfile": "general_work_glove_barrier_profile",
+    "externalSkinMassMgPerDay": 60.0,
+    "protectedExternalSkinMassMgPerDay": 18.0,
+    "absorbedMassMgPerDay": 0.81,
+    "bodyZoneSurfaceAreaCm2": 840.0,
+    "surfaceLoadingMgPerCm2Day": 0.07142857,
+    "absorbedLoadingMgPerCm2Day": 0.00096429,
+    "ppePenetrationFactor": 0.3,
+    "dermalAbsorptionFraction": 0.045,
+    "baseDermalAbsorptionFraction": 0.1,
+    "contactPatternFactor": 0.6,
+    "contactDurationFactor": 0.75,
+    "skinConditionFactor": 1.0,
+    "chemicalContextFactor": 1.0
+  },
+  "assumptions": [
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "body_weight_kg",
+      "value": 75.0,
+      "unit": "kg",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Body weight was carried through the dermal adapter request.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "use_amount_per_event",
+      "value": 10.0,
+      "unit": "g/event",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Use amount per event was carried through the dermal adapter request.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "concentration_fraction",
+      "value": 0.02,
+      "unit": "fraction",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Concentration fraction was carried through the dermal adapter request.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "use_events_per_day",
+      "value": 3.0,
+      "unit": "events/day",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Use frequency was carried through the dermal adapter request.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "retention_factor",
+      "value": 0.2,
+      "unit": "fraction",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "rivm_cleaning_surface_contact_retention_defaults_2018",
+        "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening surface-contact retention",
+        "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
+        "version": "RIVM report 2016-0179 / 2018",
+        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+      },
+      "confidence": "curated_default",
+      "default_applied": true,
+      "rationale": "Retention factor defaulted from the shared dermal screening defaults because the dermal adapter request did not carry an explicit value.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "transfer_efficiency",
+      "value": 0.5,
+      "unit": "fraction",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "rivm_cleaning_wet_cloth_transfer_defaults_2018",
+        "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening transfer efficiency",
+        "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
+        "version": "RIVM report 2016-0179 / 2018",
+        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+      },
+      "confidence": "curated_default",
+      "default_applied": true,
+      "rationale": "Transfer efficiency defaulted from the shared dermal screening defaults because the dermal adapter request did not carry an explicit value.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "chemical_mass_mg_per_event",
+      "value": 200.0,
+      "unit": "mg/event",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Chemical mass per event was derived from product mass per event and concentration fraction.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "external_skin_mass_mg_per_day",
+      "value": 60.0,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "External skin mass per day was derived from chemical mass per event, use frequency, retention factor, and transfer efficiency.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "body_zone_surface_area_cm2",
+      "value": 840.0,
+      "unit": "cm2",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Exposed surface area was carried through the dermal adapter request.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "ppe_penetration_factor",
+      "value": 0.3,
+      "unit": "fraction",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "PPE penetration factor was supplied as an execution override.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "base_dermal_absorption_fraction",
+      "value": 0.1,
+      "unit": "fraction",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026",
+        "title": "Exposure Scenario MCP heuristic worker dermal absorption-fraction defaults",
+        "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
+        "version": "2026.04.07.v1",
+        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+      },
+      "confidence": "heuristic_default",
+      "default_applied": true,
+      "rationale": "Base dermal absorption fraction defaulted from the worker dermal execution physical-form heuristic pack.",
+      "governance": {
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "contact_pattern_factor",
+      "value": 0.6,
+      "unit": "factor",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026",
+        "title": "Exposure Scenario MCP heuristic worker dermal absorption-fraction defaults",
+        "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
+        "version": "2026.04.07.v1",
+        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+      },
+      "confidence": "heuristic_default",
+      "default_applied": true,
+      "rationale": "Contact-pattern factor defaulted from the worker dermal execution contact-pattern heuristic pack.",
+      "governance": {
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "contact_duration_factor",
+      "value": 0.75,
+      "unit": "factor",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "worker_dermal_contact_duration_scaling_heuristics_2026",
+        "title": "Exposure Scenario MCP heuristic worker dermal contact-duration scaling defaults",
+        "locator": "docs://defaults-evidence-map#worker-dermal-contact-duration-scaling-heuristics-2026",
+        "version": "2026.04.07.v1",
+        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+      },
+      "confidence": "heuristic_default",
+      "default_applied": true,
+      "rationale": "Contact-duration factor defaulted from the worker dermal execution duration-scaling heuristic pack.",
+      "governance": {
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "skin_condition_factor",
+      "value": 1.0,
+      "unit": "factor",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026",
+        "title": "Exposure Scenario MCP heuristic worker dermal absorption-fraction defaults",
+        "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
+        "version": "2026.04.07.v1",
+        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+      },
+      "confidence": "heuristic_default",
+      "default_applied": true,
+      "rationale": "Skin-condition factor defaulted from the worker dermal execution heuristic pack.",
+      "governance": {
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "dermal_absorption_fraction",
+      "value": 0.045,
+      "unit": "fraction",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Effective dermal absorption fraction was derived from the base physical-form fraction, contact-pattern factor, contact-duration factor, skin-condition factor, and any bounded chemical-context modifier.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "protected_external_skin_mass_mg_per_day",
+      "value": 18.0,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Protected external skin mass per day was derived by applying the PPE penetration factor to the skin-boundary external mass.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "absorbed_mass_mg_per_day",
+      "value": 0.81,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Absorbed dermal mass per day was derived by applying the effective dermal absorption fraction to the PPE-adjusted skin-boundary mass.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "normalized_external_dose_mg_per_kg_day",
+      "value": 0.8,
+      "unit": "mg/kg-day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Normalized external dermal dose was derived from external skin mass and body weight.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "normalized_absorbed_dose_mg_per_kg_day",
+      "value": 0.0108,
+      "unit": "mg/kg-day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Exposure Scenario MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Normalized absorbed dermal dose was derived from absorbed dermal mass and body weight.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    }
+  ],
+  "qualityFlags": [
+    {
+      "code": "worker_dermal_adapter_request_ingested",
+      "severity": "info",
+      "message": "Worker dermal absorbed-dose adapter request was ingested and normalized into a dermal/PPE intake envelope."
+    },
+    {
+      "code": "worker_dermal_execution_chemical_context_generic",
+      "severity": "info",
+      "message": "Worker dermal execution used generic absorption heuristics because no chemicalContext descriptors were supplied."
+    },
+    {
+      "code": "worker_dermal_execution_completed",
+      "severity": "info",
+      "message": "Worker dermal absorbed-dose execution completed using the PPE-aware screening kernel."
+    }
+  ],
+  "limitations": [
+    {
+      "code": "worker_dermal_adapter_no_solver",
+      "severity": "warning",
+      "message": "This ingest step does not execute a dermal absorption solver, glove breakthrough model, or compliance-ready occupational assessment."
+    },
+    {
+      "code": "worker_dermal_adapter_mapping_heuristic",
+      "severity": "warning",
+      "message": "The current ingest path maps screening task fields into a structured occupational dermal envelope, but determinant selection remains packaged or heuristic unless later overridden."
+    },
+    {
+      "code": "worker_dermal_execution_generic_absorption",
+      "severity": "warning",
+      "message": "The execution kernel uses generic physical-form and contact-pattern absorption factors rather than chemical-specific dermal permeability data."
+    },
+    {
+      "code": "worker_dermal_execution_generic_ppe",
+      "severity": "warning",
+      "message": "PPE effects are represented as residual penetration factors and do not capture glove material selection, breakthrough timing, or degradation."
+    },
+    {
+      "code": "worker_dermal_execution_not_compliance_ready",
+      "severity": "warning",
+      "message": "Treat this as a PPE-aware absorbed-dose screening estimate for worker scenario refinement, not as a compliance-ready occupational assessment."
+    }
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "worker.dermal_absorbed_dose_execution.v1",
+    "plugin_id": "worker_dermal_absorbed_dose_execution",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.04.07.v18",
+    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Execution starts from screening-style skin-boundary mass semantics and then applies PPE penetration and generic dermal absorption factors.",
+      "The current kernel is PPE-aware and absorbed-dose-aware, but it is not a chemical-specific permeability model or glove-breakthrough simulator."
+    ]
+  },
+  "fitForPurpose": {
+    "label": "worker_dermal_absorbed_dose_screening",
+    "suitable_for": [
+      "PPE-aware occupational dermal scoping",
+      "worker dermal absorbed-dose screening",
+      "PBPK-ready dermal dose handoff after expert review"
+    ],
+    "not_suitable_for": [
+      "chemical-specific skin permeation prediction",
+      "glove-breakthrough timing analysis",
+      "occupational compliance determination"
+    ]
+  },
+  "tierSemantics": {
+    "tier_claimed": "tier_1",
+    "tier_earned": "tier_1",
+    "tier_rationale": "Worker dermal execution reuses deterministic skin-boundary loading semantics and adds bounded PPE and absorption factors.",
+    "assumption_checks_passed": true,
+    "required_caveats": [
+      "Interpret the external dose as skin-boundary worker dermal loading after the current task assumptions.",
+      "Interpret the absorbed dose as a PPE-aware screening estimate that still relies on generic absorption and barrier factors."
+    ],
+    "forbidden_interpretations": [
+      "Do not treat the absorbed dose as a chemical-specific permeability result.",
+      "Do not treat the PPE factor as glove-breakthrough or certified protection data.",
+      "Do not use this output as a final occupational compliance determination."
+    ]
+  },
+  "validationSummary": {
+    "validationStatus": "benchmark_regression",
+    "routeMechanism": "worker_dermal_absorbed_dose_screening",
+    "benchmarkCaseIds": [
+      "worker_dermal_wet_wipe_gloved_hands_execution"
+    ],
+    "externalDatasetIds": [
+      "rivm_wet_cloth_dermal_contact_loading_2018"
+    ],
+    "evidenceReadiness": "benchmark_plus_external_candidates",
+    "heuristicAssumptionNames": [
+      "base_dermal_absorption_fraction",
+      "contact_duration_factor",
+      "contact_pattern_factor",
+      "skin_condition_factor"
+    ],
+    "validationGapIds": [
+      "worker_dermal_external_validation_partial_only",
+      "worker_dermal_execution_not_chemical_specific"
+    ],
+    "executedValidationChecks": [
+      {
+        "checkId": "worker_dermal_wet_wipe_gloved_hands_execution_external_dose_benchmark_2026",
+        "title": "Worker dermal external dose vs benchmark `worker_dermal_wet_wipe_gloved_hands_execution`",
+        "referenceDatasetId": "worker_dermal_wet_wipe_gloved_hands_execution",
+        "status": "pass",
+        "comparedMetric": "normalized_external_skin_dose",
+        "observedValue": 0.8,
+        "referenceLower": 0.76,
+        "referenceUpper": 0.84,
+        "unit": "mg/kg-day",
+        "note": "Compares the current result against the packaged worker dermal benchmark `worker_dermal_wet_wipe_gloved_hands_execution` with a +/-5% acceptance band."
+      },
+      {
+        "checkId": "worker_dermal_wet_wipe_gloved_hands_execution_absorbed_dose_benchmark_2026",
+        "title": "Worker dermal absorbed dose vs benchmark `worker_dermal_wet_wipe_gloved_hands_execution`",
+        "referenceDatasetId": "worker_dermal_wet_wipe_gloved_hands_execution",
+        "status": "pass",
+        "comparedMetric": "normalized_absorbed_dose",
+        "observedValue": 0.0108,
+        "referenceLower": 0.01026,
+        "referenceUpper": 0.01134,
+        "unit": "mg/kg-day",
+        "note": "Checks the PPE-aware absorbed-dose output against the packaged worker dermal benchmark `worker_dermal_wet_wipe_gloved_hands_execution`."
+      },
+      {
+        "checkId": "worker_dermal_wet_wipe_gloved_hands_execution_external_skin_mass_benchmark_2026",
+        "title": "Worker dermal external skin mass vs benchmark `worker_dermal_wet_wipe_gloved_hands_execution`",
+        "referenceDatasetId": "worker_dermal_wet_wipe_gloved_hands_execution",
+        "status": "pass",
+        "comparedMetric": "external_skin_mass_mg_per_day",
+        "observedValue": 60.0,
+        "referenceLower": 57.0,
+        "referenceUpper": 63.0,
+        "unit": "mg/day",
+        "note": "Checks the skin-boundary worker dermal mass against the packaged worker dermal benchmark `worker_dermal_wet_wipe_gloved_hands_execution`."
+      }
+    ],
+    "highestSupportedUncertaintyTier": "tier_b",
+    "probabilisticEnablement": "blocked",
+    "notes": [
+      "Worker dermal validation is currently benchmark-regressed against packaged PPE-aware screening cases, not a chemical-specific permeability model.",
+      "Source-backed external loading anchors are attached for household-cleaner wipe tasks and for worker biocidal spray/foam dermal tasks when the product family matches.",
+      "Executable checks run only when the task matches a governed wet-wipe or study-like handheld biocidal spray benchmark pattern."
+    ]
+  },
+  "interpretationNotes": [
+    "Execution starts from the skin-boundary external mass implied by the screening-style product-use inputs or an explicit external mass override.",
+    "PPE is represented as a residual penetration factor before absorption is applied.",
+    "Absorption is driven by bounded physical-form, contact-pattern, duration, and skin-condition modifiers unless the caller overrides it explicitly."
+  ]
+}

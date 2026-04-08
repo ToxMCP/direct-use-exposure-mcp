@@ -1,0 +1,77 @@
+{
+  "schema_version": "productUseEvidenceFitReport.v1",
+  "chemical_id": "DTXSID7020182",
+  "evidence_source_name": "EU product-use dossier example",
+  "evidence_source_kind": "regulatory_dossier",
+  "request_region": "EU",
+  "compatible": true,
+  "auto_apply_safe": false,
+  "recommendation": "accept_with_review",
+  "matched_fields": [
+    "region",
+    "physical_form",
+    "application_method",
+    "retention_type"
+  ],
+  "suggested_updates": [
+    "assumption_overrides.external_product_use_source_name",
+    "product_use_profile.density_g_per_ml",
+    "product_use_profile.product_category",
+    "product_use_profile.product_subtype"
+  ],
+  "warnings": [
+    "Request product_category `household_cleaner` is not listed in the evidence categories ['pesticide']; the first evidence category is suggested instead."
+  ],
+  "blocking_issues": [],
+  "suggested_request": {
+    "schema_version": "exposureScenarioRequest.v1",
+    "chemical_id": "DTXSID7020182",
+    "chemical_name": "Example Solvent A",
+    "route": "inhalation",
+    "scenario_class": "inhalation",
+    "product_use_profile": {
+      "schema_version": "productUseProfile.v1",
+      "product_name": "Example Trigger Spray",
+      "product_subtype": "indoor_surface_insecticide",
+      "product_category": "pesticide",
+      "physical_form": "spray",
+      "application_method": "trigger_spray",
+      "retention_type": "surface_contact",
+      "concentration_fraction": 0.05,
+      "use_amount_per_event": 12.0,
+      "use_amount_unit": "mL",
+      "use_events_per_day": 1.0,
+      "density_g_per_ml": 1.08,
+      "transfer_efficiency": null,
+      "retention_factor": null,
+      "ingestion_fraction": null,
+      "aerosolized_fraction": null,
+      "room_volume_m3": 25.0,
+      "air_exchange_rate_per_hour": null,
+      "exposure_duration_hours": null
+    },
+    "population_profile": {
+      "schema_version": "populationProfile.v1",
+      "population_group": "adult",
+      "body_weight_kg": 68.0,
+      "inhalation_rate_m3_per_hour": 0.9,
+      "exposed_surface_area_cm2": null,
+      "demographic_tags": [],
+      "region": "EU"
+    },
+    "assumption_overrides": {
+      "external_product_use_source_name": "EU product-use dossier example",
+      "external_product_use_source_kind": "regulatory_dossier",
+      "external_product_use_review_status": "reviewed",
+      "external_product_use_source_record_id": "EU-DOSSIER-001",
+      "external_product_use_source_locator": "https://example.org/eu-dossier/001",
+      "external_product_use_casrn": "123-45-6",
+      "external_product_use_primary_evidence": "EU-Dossier:mock-001",
+      "external_product_use_region_scopes": "EU",
+      "external_product_use_jurisdictions": "EU",
+      "external_product_use_categories": "pesticide",
+      "external_product_use_subtype": "indoor_surface_insecticide",
+      "external_product_use_physchem_density_g_per_ml": 1.08
+    }
+  }
+}

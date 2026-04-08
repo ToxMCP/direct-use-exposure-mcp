@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerInhalationTier2ExecutionOverrides.v1",
+      "default": "workerInhalationTier2ExecutionOverrides.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "controlFactor": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Controlfactor"
+    },
+    "respiratoryProtectionFactor": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Respiratoryprotectionfactor"
+    },
+    "vaporReleaseFraction": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Vaporreleasefraction"
+    }
+  },
+  "title": "WorkerInhalationTier2ExecutionOverrides",
+  "type": "object"
+}

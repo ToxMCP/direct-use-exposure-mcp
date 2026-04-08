@@ -19,6 +19,7 @@ from exposure_scenario_mcp.models import (
     EvidenceBasis,
     EvidenceGrade,
     ExposureScenarioRequest,
+    InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
     ParameterBoundInput,
@@ -32,6 +33,7 @@ from exposure_scenario_mcp.models import (
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.plugins.inhalation import (
+    build_inhalation_residual_air_reentry_scenario,
     build_inhalation_tier_1_screening_scenario,
 )
 from exposure_scenario_mcp.probability_bounds import (
@@ -274,10 +276,483 @@ def test_inhalation_screening_defaults_and_dose() -> None:
     assert "tier0_spray_external_validation_partial_only" in (
         scenario.validation_summary.validation_gap_ids
     )
+
+
+def test_air_space_insecticide_aerosol_executes_validation_check() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID127",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="air_space_insecticide",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=0.65,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+    assert scenario.validation_summary.route_mechanism == "inhalation_well_mixed_spray"
+    assert "household_mosquito_aerosol_indoor_air_2001" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "air_space_insecticide_aerosol_concentration_2001"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(0.16983716, rel=1e-6)
+    assert checks[0].reference_dataset_id == "household_mosquito_aerosol_indoor_air_2001"
     assert any(
         item.entry_id == "limitation-breathing_zone_not_modeled"
         for item in scenario.uncertainty_register
     )
+
+
+def test_air_space_insecticide_aerosol_executes_0p75h_time_series_check() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID127",
+        chemical_name="Benchmark Pyrethroid A",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="air_space_insecticide",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=0.5059327,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=58.0,
+            air_exchange_rate_per_hour=0.96,
+            exposure_duration_hours=0.75,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "air_space_insecticide_aerosol_0p75h_concentration_2001"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(0.16983716, rel=1e-6)
+    assert scenario.route_metrics["air_concentration_at_event_end_mg_per_m3"] == pytest.approx(
+        0.16983716, rel=1e-6
+    )
+
+
+def test_air_space_insecticide_aerosol_executes_6h_time_series_check() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID127",
+        chemical_name="Benchmark Pyrethroid A",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="air_space_insecticide",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=0.5059327,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=58.0,
+            air_exchange_rate_per_hour=0.96,
+            exposure_duration_hours=6.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "air_space_insecticide_aerosol_6h_concentration_2001"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(0.00109948, rel=1e-6)
+    assert scenario.route_metrics["air_concentration_at_event_end_mg_per_m3"] == pytest.approx(
+        0.00109948, rel=1e-6
+    )
+
+
+def test_household_cleaner_trigger_spray_executes_airborne_fraction_check() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+    assert "cleaning_trigger_spray_airborne_mass_fraction_2019" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    assert "spray_cleaning_disinfection_decay_half_life_2023" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    check_ids = {item.check_id for item in checks}
+    assert {
+        "cleaning_trigger_spray_airborne_fraction_2019",
+        "trigger_spray_aerosol_decay_half_life_2023",
+    } <= check_ids
+    airborne = next(
+        item for item in checks if item.check_id == "cleaning_trigger_spray_airborne_fraction_2019"
+    )
+    assert airborne.status.value == "pass"
+    assert airborne.observed_value == pytest.approx(0.2, rel=1e-6)
+    assert airborne.reference_dataset_id == "cleaning_trigger_spray_airborne_mass_fraction_2019"
+    half_life = next(
+        item for item in checks if item.check_id == "trigger_spray_aerosol_decay_half_life_2023"
+    )
+    assert half_life.status.value == "pass"
+    assert half_life.observed_value == pytest.approx(0.34657359, rel=1e-6)
+    assert half_life.reference_dataset_id == "spray_cleaning_disinfection_decay_half_life_2023"
+
+
+def test_tier1_disinfectant_trigger_spray_executes_external_dose_check() -> None:
+    engine = build_engine()
+    request = InhalationTier1ScenarioRequest(
+        chemical_id="PM_DISINFECTANT_SPRAY_2015",
+        chemical_name="Consumer Disinfectant Spray Particulate",
+        route=Route.INHALATION,
+        scenario_class=ScenarioClass.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="disinfectant",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.004,
+            use_amount_per_event=5.0,
+            use_amount_unit="mL",
+            use_events_per_day=1.0,
+            room_volume_m3=40.0,
+            air_exchange_rate_per_hour=1.0,
+            exposure_duration_hours=1.0 / 60.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            inhalation_rate_m3_per_hour=1.0,
+            region="EU",
+        ),
+        assumption_overrides={},
+        source_distance_m=0.35,
+        spray_duration_seconds=60.0,
+        near_field_volume_m3=3.0,
+        airflow_directionality="cross_draft",
+        particle_size_regime="coarse_spray",
+    )
+
+    scenario = enrich_scenario_uncertainty(
+        engine,
+        build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load()),
+    )
+    assert "consumer_disinfectant_trigger_spray_inhalation_2015" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "consumer_disinfectant_trigger_spray_inhaled_dose_2015"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(0.00107494, rel=1e-6)
+    assert checks[0].reference_dataset_id == "consumer_disinfectant_trigger_spray_inhalation_2015"
+
+
+def test_medicinal_liquid_direct_oral_executes_delivered_dose_check() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID126",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="medicinal_liquid",
+            physical_form="liquid",
+            application_method="direct_oral",
+            retention_type="leave_on",
+            concentration_fraction=0.125,
+            use_amount_per_event=9,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="child",
+            body_weight_kg=15,
+            region="global",
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert "vigabatrin_ready_to_use_dosing_accuracy_2025" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "medicinal_liquid_direct_oral_delivered_mass_2025"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(1125.0, rel=1e-6)
+    assert checks[0].reference_dataset_id == "vigabatrin_ready_to_use_dosing_accuracy_2025"
+
+
+def test_indoor_surface_insecticide_trigger_spray_does_not_borrow_reentry_candidates() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.005,
+            use_amount_per_event=20,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=80,
+            inhalation_rate_m3_per_hour=0.83,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert scenario.validation_summary.route_mechanism == "inhalation_well_mixed_spray"
+    assert scenario.validation_summary.evidence_readiness.value == "benchmark_only"
+    assert "household_mosquito_aerosol_indoor_air_2001" not in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    assert "chlorpyrifos_broadcast_residential_air_1990" not in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    assert "diazinon_office_postapplication_air_1990" not in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    assert "diazinon_indoor_air_monitoring_home_use_2008" not in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    assert scenario.validation_summary.executed_validation_checks == []
+
+
+def test_residual_air_reentry_executes_chlorpyrifos_anchor_check() -> None:
+    engine = build_engine()
+    request = InhalationResidualAirReentryScenarioRequest(
+        chemical_id="DTXSID9020412",
+        chemical_name="Chlorpyrifos",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="residual_air_reentry",
+            retention_type="surface_contact",
+            concentration_fraction=0.005,
+            use_amount_per_event=20,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=30,
+            air_exchange_rate_per_hour=0.5,
+            exposure_duration_hours=4.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=80,
+            inhalation_rate_m3_per_hour=0.83,
+            region="EU",
+        ),
+        air_concentration_at_reentry_start_mg_per_m3=0.08,
+        additional_decay_rate_per_hour=0.03,
+        post_application_delay_hours=4.0,
+    )
+
+    scenario = enrich_scenario_uncertainty(
+        engine,
+        build_inhalation_residual_air_reentry_scenario(
+            request,
+            DefaultsRegistry.load(),
+        ),
+    )
+
+    assert scenario.validation_summary.route_mechanism == "inhalation_residual_air_reentry"
+    assert scenario.validation_summary.validation_status.value == "benchmark_regression"
+    assert scenario.validation_summary.evidence_readiness.value == (
+        "benchmark_plus_external_candidates"
+    )
+    assert {
+        "chlorpyrifos_broadcast_residential_air_1990",
+        "diazinon_office_postapplication_air_1990",
+        "diazinon_indoor_air_monitoring_home_use_2008",
+    } <= set(scenario.validation_summary.external_dataset_ids)
+    assert "residual_air_reentry_validation_narrow_anchor_only" in (
+        scenario.validation_summary.validation_gap_ids
+    )
+    assert len(scenario.validation_summary.executed_validation_checks) == 1
+    assert scenario.validation_summary.executed_validation_checks[0].check_id == (
+        "chlorpyrifos_residual_air_reentry_start_concentration_1990"
+    )
+    assert scenario.validation_summary.executed_validation_checks[0].status.value == "pass"
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        0.03320635,
+        rel=1e-6,
+    )
+    assert scenario.route_metrics["air_concentration_at_reentry_end_mg_per_m3"] == pytest.approx(
+        0.00960253,
+        rel=1e-6,
+    )
+    assert scenario.external_dose.value == pytest.approx(0.00137806, rel=1e-6)
+    assert any(item.code == "treated_surface_emission_not_modeled" for item in scenario.limitations)
+
+
+def test_residual_air_reentry_executes_sparse_time_series_check_at_24_hours() -> None:
+    engine = build_engine()
+    request = InhalationResidualAirReentryScenarioRequest(
+        chemical_id="DTXSID9020412",
+        chemical_name="Chlorpyrifos",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="residual_air_reentry",
+            retention_type="surface_contact",
+            concentration_fraction=0.005,
+            use_amount_per_event=20,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=30,
+            air_exchange_rate_per_hour=0.02,
+            exposure_duration_hours=20.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=80,
+            inhalation_rate_m3_per_hour=0.83,
+            region="EU",
+        ),
+        air_concentration_at_reentry_start_mg_per_m3=0.08,
+        additional_decay_rate_per_hour=0.02904146,
+        post_application_delay_hours=4.0,
+    )
+
+    scenario = enrich_scenario_uncertainty(
+        engine,
+        build_inhalation_residual_air_reentry_scenario(
+            request,
+            DefaultsRegistry.load(),
+        ),
+    )
+
+    check_ids = {item.check_id for item in scenario.validation_summary.executed_validation_checks}
+    assert {
+        "chlorpyrifos_residual_air_reentry_start_concentration_1990",
+        "chlorpyrifos_residual_air_reentry_24h_concentration_1990",
+    } <= check_ids
+    checks_by_id = {
+        item.check_id: item for item in scenario.validation_summary.executed_validation_checks
+    }
+    assert (
+        checks_by_id["chlorpyrifos_residual_air_reentry_24h_concentration_1990"].status.value
+        == "pass"
+    )
+    assert scenario.route_metrics["air_concentration_at_reentry_end_mg_per_m3"] == pytest.approx(
+        0.03,
+        rel=1e-6,
+    )
+    assert scenario.external_dose.value == pytest.approx(0.01057778, rel=1e-6)
+
+
+def test_residual_air_reentry_executes_diazinon_time_series_checks() -> None:
+    engine = build_engine()
+    request = InhalationResidualAirReentryScenarioRequest(
+        chemical_id="DTXSID9020407",
+        chemical_name="Diazinon",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="residual_air_reentry",
+            retention_type="surface_contact",
+            concentration_fraction=0.01,
+            use_amount_per_event=20,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=30,
+            air_exchange_rate_per_hour=0.01,
+            exposure_duration_hours=24.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=80,
+            inhalation_rate_m3_per_hour=0.83,
+            region="EU",
+        ),
+        air_concentration_at_reentry_start_mg_per_m3=0.125,
+        additional_decay_rate_per_hour=0.02575091,
+        post_application_delay_hours=24.0,
+    )
+
+    scenario = enrich_scenario_uncertainty(
+        engine,
+        build_inhalation_residual_air_reentry_scenario(
+            request,
+            DefaultsRegistry.load(),
+        ),
+    )
+
+    check_ids = {item.check_id for item in scenario.validation_summary.executed_validation_checks}
+    assert {
+        "diazinon_residual_air_reentry_24h_concentration_1990",
+        "diazinon_residual_air_reentry_48h_concentration_1990",
+    } <= check_ids
+    assert "chlorpyrifos_residual_air_reentry_start_concentration_1990" not in check_ids
+    assert scenario.route_metrics["air_concentration_at_reentry_end_mg_per_m3"] == pytest.approx(
+        0.053,
+        rel=1e-6,
+    )
+    assert scenario.external_dose.value == pytest.approx(0.02089457, rel=1e-6)
 
 
 def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
@@ -530,6 +1005,314 @@ def test_global_inhalation_room_defaults_split_room_and_duration_sources() -> No
         5.18363559, rel=1e-6
     )
     assert scenario.external_dose.value == pytest.approx(0.03430347, rel=1e-6)
+
+
+def test_disinfectant_trigger_spray_uses_consexpo_airborne_fraction_branch() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="disinfectant",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="global",
+        ),
+    )
+
+    scenario = engine.build(request)
+    aerosolized_fraction = next(
+        item for item in scenario.assumptions if item.name == "aerosolized_fraction"
+    )
+
+    assert aerosolized_fraction.value == pytest.approx(0.2, rel=1e-6)
+    assert aerosolized_fraction.source.source_id == (
+        "rivm_disinfectant_trigger_spray_airborne_fraction_defaults_2006"
+    )
+
+
+def test_pesticide_trigger_spray_uses_explicit_consexpo_bridge_branch() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="global",
+        ),
+    )
+
+    scenario = engine.build(request)
+    assumptions = {item.name: item for item in scenario.assumptions}
+
+    assert assumptions["aerosolized_fraction"].value == pytest.approx(0.15, rel=1e-6)
+    assert assumptions["aerosolized_fraction"].source.source_id == (
+        "heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026"
+    )
+    assert assumptions["aerosolized_fraction"].governance.applicability_domain == {
+        "product_category": "pesticide",
+        "physical_form": "spray",
+        "application_method": "trigger_spray",
+    }
+    subtype_flag = next(
+        item
+        for item in scenario.quality_flags
+        if item.code == "product_subtype_missing_for_spray_family"
+    )
+    assert subtype_flag.severity.value == "warning"
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        3.88772669, rel=1e-6
+    )
+    assert scenario.external_dose.value == pytest.approx(0.0257276, rel=1e-6)
+
+
+def test_pesticide_trigger_spray_subtype_uses_subtype_branch_without_gap_warning() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="global",
+        ),
+    )
+
+    scenario = engine.build(request)
+    assumptions = {item.name: item for item in scenario.assumptions}
+
+    assert assumptions["aerosolized_fraction"].value == pytest.approx(0.15, rel=1e-6)
+    assert assumptions["aerosolized_fraction"].governance.applicability_domain == {
+        "product_category": "pesticide",
+        "product_subtype": "indoor_surface_insecticide",
+        "physical_form": "spray",
+        "application_method": "trigger_spray",
+    }
+    assert not any(
+        item.code == "product_subtype_missing_for_spray_family"
+        for item in scenario.quality_flags
+    )
+
+
+def test_air_space_pesticide_aerosol_subtype_uses_consexpo_branches() -> None:
+    engine = build_engine()
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="air_space_insecticide",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+    assumptions = {item.name: item for item in scenario.assumptions}
+
+    assert assumptions["density_g_per_ml"].value == pytest.approx(0.8, rel=1e-6)
+    assert assumptions["density_g_per_ml"].source.source_id == (
+        "heuristic_consexpo_pest_control_aerosol_density_bridge_2026"
+    )
+    assert assumptions["aerosolized_fraction"].value == pytest.approx(1.0, rel=1e-6)
+    assert assumptions["aerosolized_fraction"].source.source_id == (
+        "heuristic_consexpo_pest_control_aerosol_airborne_fraction_bridge_2026"
+    )
+    assert assumptions["room_volume_m3"].value == pytest.approx(58.0, rel=1e-6)
+    assert assumptions["air_exchange_rate_per_hour"].value == pytest.approx(0.6, rel=1e-6)
+    assert assumptions["exposure_duration_hours"].value == pytest.approx(4.0, rel=1e-6)
+    assert assumptions["room_volume_m3"].source.source_id == (
+        "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026"
+    )
+    assert assumptions["air_exchange_rate_per_hour"].source.source_id == (
+        "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026"
+    )
+    assert assumptions["exposure_duration_hours"].source.source_id == (
+        "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026"
+    )
+    assert assumptions["aerosolized_fraction"].governance.applicability_domain == {
+        "product_category": "pesticide",
+        "product_subtype": "air_space_insecticide",
+        "physical_form": "spray",
+        "application_method": "aerosol_spray",
+    }
+    assert not any(
+        item.code == "product_subtype_missing_for_spray_family"
+        for item in scenario.quality_flags
+    )
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
+        3.13545533, rel=1e-6
+    )
+    assert scenario.external_dose.value == pytest.approx(0.16599469, rel=1e-6)
+
+
+def test_inhalation_tier_1_matches_pesticide_subtype_profile() -> None:
+    request = InhalationTier1ScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=20,
+            exposure_duration_hours=0.5,
+            air_exchange_rate_per_hour=0.6,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+        source_distance_m=0.35,
+        spray_duration_seconds=240.0,
+        near_field_volume_m3=2.0,
+        airflow_directionality=AirflowDirectionality.CROSS_DRAFT,
+        particle_size_regime=ParticleSizeRegime.COARSE_SPRAY,
+    )
+
+    scenario = build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load())
+
+    assert scenario.route_metrics["tier1_product_profile_id"] == (
+        "pest_control_indoor_surface_trigger_spray_tier1"
+    )
+    assert scenario.route_metrics["tier1_profile_alignment_status"] == "aligned"
+    assert scenario.route_metrics["tier1_profile_divergence_count"] == 0
+    assert any(
+        "pest_control_indoor_surface_trigger_spray_tier1" in note
+        for note in scenario.interpretation_notes
+    )
+
+
+def test_inhalation_tier_1_matches_targeted_spot_pesticide_profile() -> None:
+    request = InhalationTier1ScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="targeted_spot_insecticide",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=20,
+            exposure_duration_hours=0.5,
+            air_exchange_rate_per_hour=0.6,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+        source_distance_m=0.35,
+        spray_duration_seconds=360.0,
+        near_field_volume_m3=2.0,
+        airflow_directionality=AirflowDirectionality.CROSS_DRAFT,
+        particle_size_regime=ParticleSizeRegime.COARSE_SPRAY,
+    )
+
+    scenario = build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load())
+
+    assert scenario.route_metrics["tier1_product_profile_id"] == (
+        "pest_control_targeted_spot_trigger_spray_tier1"
+    )
+    assert scenario.route_metrics["tier1_profile_alignment_status"] == "aligned"
+    assert scenario.route_metrics["tier1_profile_divergence_count"] == 0
+
+
+def test_inhalation_tier_1_matches_air_space_pesticide_profile() -> None:
+    request = InhalationTier1ScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="air_space_insecticide",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=58,
+            exposure_duration_hours=4.0,
+            air_exchange_rate_per_hour=0.6,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+        source_distance_m=0.6,
+        spray_duration_seconds=20.0,
+        near_field_volume_m3=3.0,
+        airflow_directionality=AirflowDirectionality.GENERAL_ROOM_MIXING,
+        particle_size_regime=ParticleSizeRegime.FINE_AEROSOL,
+    )
+
+    scenario = build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load())
+
+    assert scenario.route_metrics["tier1_product_profile_id"] == (
+        "pest_control_air_space_aerosol_tier1"
+    )
+    assert scenario.route_metrics["tier1_profile_alignment_status"] == "aligned"
+    assert scenario.route_metrics["tier1_profile_divergence_count"] == 0
 
 
 def test_volume_based_cream_uses_physical_form_density_override() -> None:

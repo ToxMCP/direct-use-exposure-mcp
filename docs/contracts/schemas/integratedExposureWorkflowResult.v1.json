@@ -1,0 +1,3118 @@
+{
+  "$defs": {
+    "AirflowDirectionality": {
+      "enum": [
+        "quiescent",
+        "cross_draft",
+        "source_to_breathing_zone",
+        "breathing_zone_to_source",
+        "general_room_mixing"
+      ],
+      "title": "AirflowDirectionality",
+      "type": "string"
+    },
+    "ApplicabilityStatus": {
+      "enum": [
+        "user_asserted",
+        "in_domain",
+        "screening_extrapolation",
+        "derived"
+      ],
+      "title": "ApplicabilityStatus",
+      "type": "string"
+    },
+    "AssumptionGovernance": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_grade": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceGrade"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ordinal evidence grade for defaults or curated source families, where grade_4 is strongest and grade_1 is heuristic."
+        },
+        "evidence_basis": {
+          "$ref": "#/$defs/EvidenceBasis",
+          "description": "Whether the value was explicit input, curated default, heuristic, or derived."
+        },
+        "default_visibility": {
+          "$ref": "#/$defs/DefaultVisibility",
+          "description": "Whether the assumption can remain silently traceable, must warn, or would block."
+        },
+        "applicability_status": {
+          "$ref": "#/$defs/ApplicabilityStatus",
+          "description": "Whether the parameter is in-domain, user-asserted, or a screening extrapolation."
+        },
+        "uncertainty_types": {
+          "description": "Primary uncertainty families attached to the parameter.",
+          "items": {
+            "$ref": "#/$defs/UncertaintyType"
+          },
+          "title": "Uncertainty Types",
+          "type": "array"
+        },
+        "applicability_domain": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Structured scenario context that describes where this value is intended to apply.",
+          "title": "Applicability Domain",
+          "type": "object"
+        }
+      },
+      "required": [
+        "evidence_basis",
+        "default_visibility",
+        "applicability_status"
+      ],
+      "title": "AssumptionGovernance",
+      "type": "object"
+    },
+    "AssumptionSourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "description": "Stable identifier for the source.",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "title": {
+          "description": "Human-readable source title.",
+          "title": "Title",
+          "type": "string"
+        },
+        "locator": {
+          "description": "URL, file path, or logical locator.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "version": {
+          "description": "Version or effective date for the source.",
+          "title": "Version",
+          "type": "string"
+        },
+        "hash_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Content hash when available.",
+          "title": "Hash Sha256"
+        }
+      },
+      "required": [
+        "source_id",
+        "title",
+        "locator",
+        "version"
+      ],
+      "title": "AssumptionSourceReference",
+      "type": "object"
+    },
+    "BiasDirection": {
+      "enum": [
+        "likely_overestimate",
+        "likely_underestimate",
+        "bidirectional",
+        "unknown"
+      ],
+      "title": "BiasDirection",
+      "type": "string"
+    },
+    "DefaultVisibility": {
+      "enum": [
+        "silent_traceable",
+        "warn",
+        "block"
+      ],
+      "title": "DefaultVisibility",
+      "type": "string"
+    },
+    "DependencyDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "dependencyId": {
+          "title": "Dependencyid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "relationshipType": {
+          "$ref": "#/$defs/DependencyRelationship"
+        },
+        "assumptionNames": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptionnames",
+          "type": "array"
+        },
+        "handlingStrategy": {
+          "$ref": "#/$defs/DependencyHandlingStrategy"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependencyId",
+        "title",
+        "relationshipType",
+        "handlingStrategy",
+        "note"
+      ],
+      "title": "DependencyDescriptor",
+      "type": "object"
+    },
+    "DependencyHandlingStrategy": {
+      "enum": [
+        "scenario_packaged",
+        "conditional_model_required",
+        "joint_model_required",
+        "not_quantified"
+      ],
+      "title": "DependencyHandlingStrategy",
+      "type": "string"
+    },
+    "DependencyRelationship": {
+      "enum": [
+        "structural",
+        "physiological",
+        "behavioral",
+        "mechanistic",
+        "scenario_package"
+      ],
+      "title": "DependencyRelationship",
+      "type": "string"
+    },
+    "DoseUnit": {
+      "enum": [
+        "mg/day",
+        "mg/event",
+        "mg/kg-day",
+        "mg/m3"
+      ],
+      "title": "DoseUnit",
+      "type": "string"
+    },
+    "EvidenceBasis": {
+      "enum": [
+        "explicit_input",
+        "curated_default",
+        "heuristic_default",
+        "derived"
+      ],
+      "title": "EvidenceBasis",
+      "type": "string"
+    },
+    "EvidenceGrade": {
+      "enum": [
+        "grade_4",
+        "grade_3",
+        "grade_2",
+        "grade_1"
+      ],
+      "title": "EvidenceGrade",
+      "type": "string"
+    },
+    "ExecutedValidationCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "checkId": {
+          "title": "Checkid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "referenceDatasetId": {
+          "title": "Referencedatasetid",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ValidationCheckStatus"
+        },
+        "comparedMetric": {
+          "title": "Comparedmetric",
+          "type": "string"
+        },
+        "observedValue": {
+          "title": "Observedvalue",
+          "type": "number"
+        },
+        "referenceLower": {
+          "title": "Referencelower",
+          "type": "number"
+        },
+        "referenceUpper": {
+          "title": "Referenceupper",
+          "type": "number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "checkId",
+        "title",
+        "referenceDatasetId",
+        "status",
+        "comparedMetric",
+        "observedValue",
+        "referenceLower",
+        "referenceUpper",
+        "unit",
+        "note"
+      ],
+      "title": "ExecutedValidationCheck",
+      "type": "object"
+    },
+    "ExposureAssumptionRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureAssumptionRecord.v1",
+          "default": "exposureAssumptionRecord.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "name": {
+          "description": "Stable parameter name used by the engine.",
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The resolved assumption value.",
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Resolved unit, if applicable.",
+          "title": "Unit"
+        },
+        "source_kind": {
+          "$ref": "#/$defs/SourceKind",
+          "description": "Whether the value was user supplied, defaulted, or derived."
+        },
+        "source": {
+          "$ref": "#/$defs/AssumptionSourceReference",
+          "description": "Source reference for the assumption."
+        },
+        "confidence": {
+          "description": "Human-readable confidence label.",
+          "title": "Confidence",
+          "type": "string"
+        },
+        "default_applied": {
+          "description": "Whether a default value was applied.",
+          "title": "Default Applied",
+          "type": "boolean"
+        },
+        "rationale": {
+          "description": "Why this assumption was used.",
+          "title": "Rationale",
+          "type": "string"
+        },
+        "governance": {
+          "$ref": "#/$defs/AssumptionGovernance",
+          "description": "Scientific-governance metadata for defaulting, applicability, and uncertainty."
+        }
+      },
+      "required": [
+        "name",
+        "value",
+        "source_kind",
+        "source",
+        "confidence",
+        "default_applied",
+        "rationale",
+        "governance"
+      ],
+      "title": "ExposureAssumptionRecord",
+      "type": "object"
+    },
+    "ExposureScenario": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureScenario.v1",
+          "default": "exposureScenario.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "scenario_id": {
+          "description": "Stable scenario identifier.",
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "description": "Scenario class tag."
+        },
+        "external_dose": {
+          "$ref": "#/$defs/ScenarioDose",
+          "description": "Primary normalized external dose estimate."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Resolved product-use profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Resolved population profile."
+        },
+        "route_metrics": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Route-specific metrics.",
+          "title": "Route Metrics",
+          "type": "object"
+        },
+        "assumptions": {
+          "description": "Explicit parameter ledger.",
+          "items": {
+            "$ref": "#/$defs/ExposureAssumptionRecord"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceBundle",
+          "description": "Calculation provenance."
+        },
+        "limitations": {
+          "description": "Explicit limitations.",
+          "items": {
+            "$ref": "#/$defs/LimitationNote"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "quality_flags": {
+          "description": "Quality flags and warnings.",
+          "items": {
+            "$ref": "#/$defs/QualityFlag"
+          },
+          "title": "Quality Flags",
+          "type": "array"
+        },
+        "fit_for_purpose": {
+          "$ref": "#/$defs/FitForPurpose",
+          "description": "Fit-for-purpose metadata."
+        },
+        "tier_semantics": {
+          "$ref": "#/$defs/TierSemantics",
+          "description": "Tier and interpretation-boundary semantics for the active model."
+        },
+        "uncertaintyTier": {
+          "$ref": "#/$defs/UncertaintyTier",
+          "default": "tier_a",
+          "description": "Current uncertainty-governance tier for this output."
+        },
+        "uncertaintyRegister": {
+          "description": "Qualitative or bounded uncertainty entries attached to the scenario.",
+          "items": {
+            "$ref": "#/$defs/UncertaintyRegisterEntry"
+          },
+          "title": "Uncertaintyregister",
+          "type": "array"
+        },
+        "sensitivityRanking": {
+          "description": "Deterministic one-at-a-time sensitivity ranking for the primary dose metric.",
+          "items": {
+            "$ref": "#/$defs/SensitivityRankingEntry"
+          },
+          "title": "Sensitivityranking",
+          "type": "array"
+        },
+        "dependencyMetadata": {
+          "description": "Known dependence structures that matter for later uncertainty work.",
+          "items": {
+            "$ref": "#/$defs/DependencyDescriptor"
+          },
+          "title": "Dependencymetadata",
+          "type": "array"
+        },
+        "validationSummary": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ValidationSummary"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Current validation posture for the route and mechanism represented."
+        },
+        "interpretation_notes": {
+          "description": "Human-readable scenario notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Interpretation Notes",
+          "type": "array"
+        },
+        "tierUpgradeAdvisories": {
+          "description": "Machine-readable upgrade hooks for later tier implementations.",
+          "items": {
+            "$ref": "#/$defs/TierUpgradeAdvisory"
+          },
+          "title": "Tierupgradeadvisories",
+          "type": "array"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "chemical_id",
+        "route",
+        "scenario_class",
+        "external_dose",
+        "product_use_profile",
+        "population_profile",
+        "provenance",
+        "fit_for_purpose",
+        "tier_semantics"
+      ],
+      "title": "ExposureScenario",
+      "type": "object"
+    },
+    "ExposureScenarioRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureScenarioRequest.v1",
+          "default": "exposureScenarioRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Requested exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "default": "screening",
+          "description": "Requested scenario class."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Product and use-context profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Population profile for the exposed cohort."
+        },
+        "assumption_overrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Additional explicit overrides for auditability.",
+          "title": "Assumption Overrides",
+          "type": "object"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "route",
+        "product_use_profile",
+        "population_profile"
+      ],
+      "title": "ExposureScenarioRequest",
+      "type": "object"
+    },
+    "FitForPurpose": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "High-level fit-for-purpose label.",
+          "title": "Label",
+          "type": "string"
+        },
+        "suitable_for": {
+          "description": "Appropriate use cases.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Suitable For",
+          "type": "array"
+        },
+        "not_suitable_for": {
+          "description": "Known exclusions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Not Suitable For",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "FitForPurpose",
+      "type": "object"
+    },
+    "InhalationScenarioRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureScenarioRequest.v1",
+          "default": "exposureScenarioRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Requested exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "default": "inhalation",
+          "description": "Requested scenario class."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Product and use-context profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Population profile for the exposed cohort."
+        },
+        "assumption_overrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Additional explicit overrides for auditability.",
+          "title": "Assumption Overrides",
+          "type": "object"
+        },
+        "requestedTier": {
+          "$ref": "#/$defs/TierLevel",
+          "default": "tier_0",
+          "description": "Requested inhalation modeling tier. Tier 1 is reserved as a future contract hook and is not implemented in v0.1.0."
+        }
+      },
+      "required": [
+        "chemical_id",
+        "route",
+        "product_use_profile",
+        "population_profile"
+      ],
+      "title": "InhalationScenarioRequest",
+      "type": "object"
+    },
+    "InhalationTier1ScenarioRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "inhalationTier1ScenarioRequest.v1",
+          "default": "inhalationTier1ScenarioRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Requested exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "default": "inhalation",
+          "description": "Requested scenario class for the future Tier 1 inhalation family."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Product and use-context profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Population profile for the exposed cohort."
+        },
+        "assumption_overrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Additional explicit overrides for auditability.",
+          "title": "Assumption Overrides",
+          "type": "object"
+        },
+        "requestedTier": {
+          "const": "tier_1",
+          "default": "tier_1",
+          "description": "Tier 1 inhalation request surface for a future near-field/far-field screening model family.",
+          "title": "Requestedtier",
+          "type": "string"
+        },
+        "source_distance_m": {
+          "description": "Distance from the breathing zone to the active spray source.",
+          "exclusiveMinimum": 0.0,
+          "title": "Source Distance M",
+          "type": "number"
+        },
+        "spray_duration_seconds": {
+          "description": "Active spray emission duration for each use event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Spray Duration Seconds",
+          "type": "number"
+        },
+        "near_field_volume_m3": {
+          "description": "Local near-field control volume around the user.",
+          "exclusiveMinimum": 0.0,
+          "title": "Near Field Volume M3",
+          "type": "number"
+        },
+        "airflow_directionality": {
+          "$ref": "#/$defs/AirflowDirectionality",
+          "description": "Directional airflow context near the source and breathing zone."
+        },
+        "particle_size_regime": {
+          "$ref": "#/$defs/ParticleSizeRegime",
+          "description": "Spray droplet or aerosol size regime used for screening semantics."
+        }
+      },
+      "required": [
+        "chemical_id",
+        "route",
+        "product_use_profile",
+        "population_profile",
+        "source_distance_m",
+        "spray_duration_seconds",
+        "near_field_volume_m3",
+        "airflow_directionality",
+        "particle_size_regime"
+      ],
+      "title": "InhalationTier1ScenarioRequest",
+      "type": "object"
+    },
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "ParticleSizeRegime": {
+      "enum": [
+        "fine_aerosol",
+        "mixed_spray",
+        "coarse_spray"
+      ],
+      "title": "ParticleSizeRegime",
+      "type": "string"
+    },
+    "PbpkCompatibilityReport": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "pbpkCompatibilityReport.v1",
+          "default": "pbpkCompatibilityReport.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_scenario_id": {
+          "description": "Source scenario identifier.",
+          "title": "Source Scenario Id",
+          "type": "string"
+        },
+        "compatible": {
+          "description": "Whether the object is PBPK-compatible.",
+          "title": "Compatible",
+          "type": "boolean"
+        },
+        "target_tool": {
+          "const": "ingest_external_pbpk_bundle",
+          "default": "ingest_external_pbpk_bundle",
+          "description": "PBPK MCP tool evaluated for downstream readiness.",
+          "title": "Target Tool",
+          "type": "string"
+        },
+        "checked_route": {
+          "$ref": "#/$defs/Route",
+          "description": "Route checked for compatibility."
+        },
+        "checked_dose_unit": {
+          "description": "Dose unit checked for compatibility.",
+          "title": "Checked Dose Unit",
+          "type": "string"
+        },
+        "ready_for_external_pbpk_import": {
+          "description": "Whether the scenario alone contains enough data to populate the PBPK external-import path without additional PBPK execution outputs.",
+          "title": "Ready For External Pbpk Import",
+          "type": "boolean"
+        },
+        "supported_pbpk_objects": {
+          "description": "Published PBPK object families this scenario can prefill or support.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Supported Pbpk Objects",
+          "type": "array"
+        },
+        "missing_external_bundle_fields": {
+          "description": "PBPK external-import fields still missing for a richer downstream handoff.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing External Bundle Fields",
+          "type": "array"
+        },
+        "checked_fields": {
+          "description": "Fields explicitly checked during compatibility validation.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Checked Fields",
+          "type": "array"
+        },
+        "issues": {
+          "description": "Compatibility issues or warnings.",
+          "items": {
+            "$ref": "#/$defs/LimitationNote"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "recommended_next_steps": {
+          "description": "Concrete actions to strengthen the PBPK handoff.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Recommended Next Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_scenario_id",
+        "compatible",
+        "checked_route",
+        "checked_dose_unit",
+        "ready_for_external_pbpk_import"
+      ],
+      "title": "PbpkCompatibilityReport",
+      "type": "object"
+    },
+    "PbpkExternalArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
+        },
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "checksum": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checksum"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        }
+      },
+      "required": [
+        "type",
+        "path"
+      ],
+      "title": "PbpkExternalArtifact",
+      "type": "object"
+    },
+    "PbpkExternalImportBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "pbpkExternalImportBundle.v1",
+          "default": "pbpkExternalImportBundle.v1",
+          "title": "Schemaversion",
+          "type": "string"
+        },
+        "sourcePlatform": {
+          "title": "Sourceplatform",
+          "type": "string"
+        },
+        "sourceVersion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourceversion"
+        },
+        "modelName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Modelname"
+        },
+        "modelType": {
+          "title": "Modeltype",
+          "type": "string"
+        },
+        "executionDate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Executiondate"
+        },
+        "runId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Runid"
+        },
+        "operator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator"
+        },
+        "sponsor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sponsor"
+        },
+        "rawArtifacts": {
+          "items": {
+            "$ref": "#/$defs/PbpkExternalArtifact"
+          },
+          "title": "Rawartifacts",
+          "type": "array"
+        },
+        "assessmentContext": {
+          "additionalProperties": true,
+          "title": "Assessmentcontext",
+          "type": "object"
+        },
+        "chemicalIdentity": {
+          "additionalProperties": true,
+          "title": "Chemicalidentity",
+          "type": "object"
+        },
+        "supportingHandoffs": {
+          "additionalProperties": true,
+          "title": "Supportinghandoffs",
+          "type": "object"
+        },
+        "internalExposure": {
+          "additionalProperties": true,
+          "title": "Internalexposure",
+          "type": "object"
+        },
+        "qualification": {
+          "additionalProperties": true,
+          "title": "Qualification",
+          "type": "object"
+        },
+        "uncertainty": {
+          "additionalProperties": true,
+          "title": "Uncertainty",
+          "type": "object"
+        },
+        "uncertaintyRegister": {
+          "additionalProperties": true,
+          "title": "Uncertaintyregister",
+          "type": "object"
+        },
+        "pod": {
+          "additionalProperties": true,
+          "title": "Pod",
+          "type": "object"
+        },
+        "trueDoseAdjustment": {
+          "additionalProperties": true,
+          "title": "Truedoseadjustment",
+          "type": "object"
+        },
+        "comparisonMetric": {
+          "default": "cmax",
+          "title": "Comparisonmetric",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourcePlatform",
+        "modelType"
+      ],
+      "title": "PbpkExternalImportBundle",
+      "type": "object"
+    },
+    "PbpkExternalImportPackage": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "pbpkExternalImportPackage.v1",
+          "default": "pbpkExternalImportPackage.v1",
+          "title": "Schemaversion",
+          "type": "string"
+        },
+        "ingestToolName": {
+          "const": "ingest_external_pbpk_bundle",
+          "default": "ingest_external_pbpk_bundle",
+          "title": "Ingesttoolname",
+          "type": "string"
+        },
+        "bundle": {
+          "$ref": "#/$defs/PbpkExternalImportBundle"
+        },
+        "requestPayload": {
+          "$ref": "#/$defs/PbpkExternalImportRequest"
+        },
+        "toolCall": {
+          "$ref": "#/$defs/PbpkExternalImportToolCall"
+        },
+        "toxclawModuleParams": {
+          "$ref": "#/$defs/ToxClawPbpkModuleParams"
+        },
+        "compatibilityReport": {
+          "$ref": "#/$defs/PbpkCompatibilityReport"
+        }
+      },
+      "required": [
+        "bundle",
+        "requestPayload",
+        "toolCall",
+        "toxclawModuleParams",
+        "compatibilityReport"
+      ],
+      "title": "PbpkExternalImportPackage",
+      "type": "object"
+    },
+    "PbpkExternalImportRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "sourcePlatform": {
+          "title": "Sourceplatform",
+          "type": "string"
+        },
+        "sourceVersion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourceversion"
+        },
+        "modelName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Modelname"
+        },
+        "modelType": {
+          "title": "Modeltype",
+          "type": "string"
+        },
+        "executionDate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Executiondate"
+        },
+        "runId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Runid"
+        },
+        "operator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator"
+        },
+        "sponsor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sponsor"
+        },
+        "rawArtifacts": {
+          "items": {
+            "$ref": "#/$defs/PbpkExternalArtifact"
+          },
+          "title": "Rawartifacts",
+          "type": "array"
+        },
+        "assessmentContext": {
+          "additionalProperties": true,
+          "title": "Assessmentcontext",
+          "type": "object"
+        },
+        "internalExposure": {
+          "additionalProperties": true,
+          "title": "Internalexposure",
+          "type": "object"
+        },
+        "qualification": {
+          "additionalProperties": true,
+          "title": "Qualification",
+          "type": "object"
+        },
+        "uncertainty": {
+          "additionalProperties": true,
+          "title": "Uncertainty",
+          "type": "object"
+        },
+        "uncertaintyRegister": {
+          "additionalProperties": true,
+          "title": "Uncertaintyregister",
+          "type": "object"
+        },
+        "pod": {
+          "additionalProperties": true,
+          "title": "Pod",
+          "type": "object"
+        },
+        "trueDoseAdjustment": {
+          "additionalProperties": true,
+          "title": "Truedoseadjustment",
+          "type": "object"
+        },
+        "comparisonMetric": {
+          "default": "cmax",
+          "title": "Comparisonmetric",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourcePlatform",
+        "modelType"
+      ],
+      "title": "PbpkExternalImportRequest",
+      "type": "object"
+    },
+    "PbpkExternalImportToolCall": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "pbpkExternalImportToolCall.v1",
+          "default": "pbpkExternalImportToolCall.v1",
+          "title": "Schemaversion",
+          "type": "string"
+        },
+        "toolName": {
+          "const": "ingest_external_pbpk_bundle",
+          "default": "ingest_external_pbpk_bundle",
+          "title": "Toolname",
+          "type": "string"
+        },
+        "arguments": {
+          "$ref": "#/$defs/PbpkExternalImportRequest"
+        }
+      },
+      "required": [
+        "arguments"
+      ],
+      "title": "PbpkExternalImportToolCall",
+      "type": "object"
+    },
+    "PbpkPopulationContext": {
+      "additionalProperties": false,
+      "properties": {
+        "population_group": {
+          "description": "Population group label.",
+          "title": "Population Group",
+          "type": "string"
+        },
+        "body_weight_kg": {
+          "description": "Resolved body weight.",
+          "title": "Body Weight Kg",
+          "type": "number"
+        },
+        "inhalation_rate_m3_per_hour": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Resolved inhalation rate if relevant.",
+          "title": "Inhalation Rate M3 Per Hour"
+        },
+        "region": {
+          "description": "Population region.",
+          "title": "Region",
+          "type": "string"
+        }
+      },
+      "required": [
+        "population_group",
+        "body_weight_kg",
+        "region"
+      ],
+      "title": "PbpkPopulationContext",
+      "type": "object"
+    },
+    "PbpkScenarioInput": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "pbpkScenarioInput.v1",
+          "default": "pbpkScenarioInput.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_scenario_id": {
+          "description": "Source scenario identifier.",
+          "title": "Source Scenario Id",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Route for the PBPK handoff."
+        },
+        "dose_magnitude": {
+          "description": "Primary dose magnitude for PBPK.",
+          "title": "Dose Magnitude",
+          "type": "number"
+        },
+        "dose_unit": {
+          "$ref": "#/$defs/DoseUnit",
+          "description": "Canonical dose unit."
+        },
+        "dose_metric": {
+          "description": "Dose metric label.",
+          "title": "Dose Metric",
+          "type": "string"
+        },
+        "events_per_day": {
+          "description": "Daily frequency implied by the source scenario.",
+          "exclusiveMinimum": 0.0,
+          "title": "Events Per Day",
+          "type": "number"
+        },
+        "event_duration_hours": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Per-event duration if available.",
+          "title": "Event Duration Hours"
+        },
+        "timing_pattern": {
+          "description": "Human-readable timing semantics.",
+          "title": "Timing Pattern",
+          "type": "string"
+        },
+        "population_context": {
+          "$ref": "#/$defs/PbpkPopulationContext",
+          "description": "Resolved population context."
+        },
+        "supporting_assumption_names": {
+          "description": "Names of assumptions backing the handoff.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Supporting Assumption Names",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceBundle",
+          "description": "Export provenance."
+        },
+        "limitations": {
+          "description": "PBPK export limitations.",
+          "items": {
+            "$ref": "#/$defs/LimitationNote"
+          },
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_scenario_id",
+        "chemical_id",
+        "route",
+        "dose_magnitude",
+        "dose_unit",
+        "dose_metric",
+        "events_per_day",
+        "timing_pattern",
+        "population_context",
+        "provenance"
+      ],
+      "title": "PbpkScenarioInput",
+      "type": "object"
+    },
+    "PopulationProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "populationProfile.v1",
+          "default": "populationProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "population_group": {
+          "description": "Population group, for example adult or child.",
+          "title": "Population Group",
+          "type": "string"
+        },
+        "body_weight_kg": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Body weight in kilograms.",
+          "title": "Body Weight Kg"
+        },
+        "inhalation_rate_m3_per_hour": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inhalation rate for inhalation screening.",
+          "title": "Inhalation Rate M3 Per Hour"
+        },
+        "exposed_surface_area_cm2": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Exposed surface area for dermal scenarios.",
+          "title": "Exposed Surface Area Cm2"
+        },
+        "demographic_tags": {
+          "description": "Demographic descriptors for auditability.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Demographic Tags",
+          "type": "array"
+        },
+        "region": {
+          "default": "global",
+          "description": "Regional context for defaults or interpretation.",
+          "title": "Region",
+          "type": "string"
+        }
+      },
+      "required": [
+        "population_group"
+      ],
+      "title": "PopulationProfile",
+      "type": "object"
+    },
+    "ProductAmountUnit": {
+      "enum": [
+        "g",
+        "mL"
+      ],
+      "title": "ProductAmountUnit",
+      "type": "string"
+    },
+    "ProductUseEvidenceFitReport": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseEvidenceFitReport.v1",
+          "default": "productUseEvidenceFitReport.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Chemical identifier shared by the request and fit.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "evidence_source_name": {
+          "description": "Human-readable evidence-source label.",
+          "title": "Evidence Source Name",
+          "type": "string"
+        },
+        "evidence_source_kind": {
+          "description": "Evidence-source kind copied into the fit.",
+          "title": "Evidence Source Kind",
+          "type": "string"
+        },
+        "request_region": {
+          "description": "Region declared on the scenario request.",
+          "title": "Request Region",
+          "type": "string"
+        },
+        "compatible": {
+          "description": "Whether the evidence can be used at all.",
+          "title": "Compatible",
+          "type": "boolean"
+        },
+        "auto_apply_safe": {
+          "description": "Whether the evidence can be applied without human review warnings.",
+          "title": "Auto Apply Safe",
+          "type": "boolean"
+        },
+        "recommendation": {
+          "description": "High-level recommendation for orchestrators.",
+          "enum": [
+            "accept",
+            "accept_with_review",
+            "manual_review",
+            "reject"
+          ],
+          "title": "Recommendation",
+          "type": "string"
+        },
+        "matched_fields": {
+          "description": "Request fields already aligned with the evidence record.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Matched Fields",
+          "type": "array"
+        },
+        "suggested_updates": {
+          "description": "Request fields the evidence record would update or annotate.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Suggested Updates",
+          "type": "array"
+        },
+        "warnings": {
+          "description": "Non-blocking reasons to review the evidence before using it.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "blocking_issues": {
+          "description": "Reasons the evidence should not be applied automatically.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Blocking Issues",
+          "type": "array"
+        },
+        "suggested_request": {
+          "$ref": "#/$defs/ExposureScenarioRequest",
+          "description": "Request preview after applying additive evidence-driven enrichment."
+        }
+      },
+      "required": [
+        "chemical_id",
+        "evidence_source_name",
+        "evidence_source_kind",
+        "request_region",
+        "compatible",
+        "auto_apply_safe",
+        "recommendation",
+        "suggested_request"
+      ],
+      "title": "ProductUseEvidenceFitReport",
+      "type": "object"
+    },
+    "ProductUseEvidenceReconciliationReport": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseEvidenceReconciliationReport.v1",
+          "default": "productUseEvidenceReconciliationReport.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Chemical identifier shared by the request and evidence.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "request_region": {
+          "description": "Region declared on the original scenario request.",
+          "title": "Request Region",
+          "type": "string"
+        },
+        "consideredSources": {
+          "description": "All evidence sources considered during reconciliation.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Consideredsources",
+          "type": "array"
+        },
+        "compatibleSources": {
+          "description": "Compatible evidence sources after fit assessment.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Compatiblesources",
+          "type": "array"
+        },
+        "recommendedSourceName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Primary evidence source selected for the merged request preview.",
+          "title": "Recommendedsourcename"
+        },
+        "recommendedSourceKind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Kind of the primary evidence source selected for the merged request preview.",
+          "title": "Recommendedsourcekind"
+        },
+        "recommendation": {
+          "description": "High-level reconciliation recommendation for orchestrators.",
+          "enum": [
+            "apply",
+            "apply_with_review",
+            "manual_review",
+            "reject"
+          ],
+          "title": "Recommendation",
+          "type": "string"
+        },
+        "manualReviewRequired": {
+          "description": "Whether a human should review the reconciliation result before use.",
+          "title": "Manualreviewrequired",
+          "type": "boolean"
+        },
+        "conflicts": {
+          "description": "Cross-source conflicts that remain after compatibility filtering.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflicts",
+          "type": "array"
+        },
+        "rationale": {
+          "description": "Short explanation of why the primary source was selected.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Rationale",
+          "type": "array"
+        },
+        "fieldSources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Which source supplied each additive field in the merged request preview.",
+          "title": "Fieldsources",
+          "type": "object"
+        },
+        "fitReports": {
+          "description": "Per-source fit reports against the original request.",
+          "items": {
+            "$ref": "#/$defs/ProductUseEvidenceFitReport"
+          },
+          "title": "Fitreports",
+          "type": "array"
+        },
+        "mergedRequest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExposureScenarioRequest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Merged request preview using the selected evidence strategy."
+        }
+      },
+      "required": [
+        "chemical_id",
+        "request_region",
+        "recommendation",
+        "manualReviewRequired"
+      ],
+      "title": "ProductUseEvidenceReconciliationReport",
+      "type": "object"
+    },
+    "ProductUseEvidenceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseEvidenceRecord.v1",
+          "default": "productUseEvidenceRecord.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier shared with the request.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "preferred_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred chemical name when the evidence source also carries identity data.",
+          "title": "Preferred Name"
+        },
+        "casrn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "CAS Registry Number when known.",
+          "title": "Casrn"
+        },
+        "source_name": {
+          "description": "Human-readable evidence-source label.",
+          "title": "Source Name",
+          "type": "string"
+        },
+        "source_kind": {
+          "default": "other",
+          "description": "What kind of upstream source produced the product-use evidence.",
+          "enum": [
+            "comptox",
+            "consexpo",
+            "regulatory_dossier",
+            "literature_pack",
+            "user_upload",
+            "other"
+          ],
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "review_status": {
+          "default": "provisional",
+          "description": "Whether the evidence has been reviewed for downstream use.",
+          "enum": [
+            "reviewed",
+            "provisional",
+            "unreviewed"
+          ],
+          "title": "Review Status",
+          "type": "string"
+        },
+        "source_record_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional upstream record identifier such as a dossier or registry ID.",
+          "title": "Source Record Id"
+        },
+        "source_locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional URL or logical locator for the upstream record.",
+          "title": "Source Locator"
+        },
+        "product_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional product label or family name carried by the evidence source.",
+          "title": "Product Name"
+        },
+        "product_subtype": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional narrower product-use subtype carried by the evidence source.",
+          "title": "Product Subtype"
+        },
+        "product_use_categories": {
+          "description": "Candidate product-use categories supported by the evidence source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Product Use Categories",
+          "type": "array"
+        },
+        "physical_forms": {
+          "description": "Physical forms supported by the evidence source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Physical Forms",
+          "type": "array"
+        },
+        "application_methods": {
+          "description": "Application methods supported by the evidence source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Application Methods",
+          "type": "array"
+        },
+        "retention_types": {
+          "description": "Retention or contact semantics supported by the evidence source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Retention Types",
+          "type": "array"
+        },
+        "region_scopes": {
+          "description": "Regions where the product-use evidence is considered applicable.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Region Scopes",
+          "type": "array"
+        },
+        "jurisdictions": {
+          "description": "Jurisdictions or regulatory programs that back the evidence source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "physchem_summary": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Optional physicochemical context preserved for downstream review.",
+          "title": "Physchem Summary",
+          "type": "object"
+        },
+        "evidence_sources": {
+          "description": "Stable upstream evidence references backing the record.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Sources",
+          "type": "array"
+        },
+        "notes": {
+          "description": "Additional applicability or review notes preserved verbatim.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "source_name"
+      ],
+      "title": "ProductUseEvidenceRecord",
+      "type": "object"
+    },
+    "ProductUseProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseProfile.v1",
+          "default": "productUseProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "product_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional human-readable product label.",
+          "title": "Product Name"
+        },
+        "product_subtype": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional narrower product-use subtype such as indoor_surface_insecticide or surface_trigger_spray_disinfectant.",
+          "title": "Product Subtype"
+        },
+        "product_category": {
+          "description": "Product category or PUC-like category.",
+          "title": "Product Category",
+          "type": "string"
+        },
+        "physical_form": {
+          "description": "Physical form such as cream, liquid, spray, or gel.",
+          "title": "Physical Form",
+          "type": "string"
+        },
+        "application_method": {
+          "description": "How the product is applied, for example hand_application or trigger_spray.",
+          "title": "Application Method",
+          "type": "string"
+        },
+        "retention_type": {
+          "default": "leave_on",
+          "description": "Retention class such as leave_on or rinse_off.",
+          "title": "Retention Type",
+          "type": "string"
+        },
+        "concentration_fraction": {
+          "description": "Fraction of the target chemical in the product, 0-1.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Concentration Fraction",
+          "type": "number"
+        },
+        "use_amount_per_event": {
+          "description": "Product amount used per event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Amount Per Event",
+          "type": "number"
+        },
+        "use_amount_unit": {
+          "$ref": "#/$defs/ProductAmountUnit",
+          "description": "Unit for the use amount per event."
+        },
+        "use_events_per_day": {
+          "description": "Number of product-use events per day.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Events Per Day",
+          "type": "number"
+        },
+        "density_g_per_ml": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Density when the product amount is in mL.",
+          "title": "Density G Per Ml"
+        },
+        "transfer_efficiency": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Route modifier for external transfer.",
+          "title": "Transfer Efficiency"
+        },
+        "retention_factor": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Retention modifier for dermal screening.",
+          "title": "Retention Factor"
+        },
+        "ingestion_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass incidentally or directly ingested.",
+          "title": "Ingestion Fraction"
+        },
+        "aerosolized_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass released to air.",
+          "title": "Aerosolized Fraction"
+        },
+        "room_volume_m3": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Indoor room volume for inhalation screening.",
+          "title": "Room Volume M3"
+        },
+        "air_exchange_rate_per_hour": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Air exchange rate for inhalation screening.",
+          "title": "Air Exchange Rate Per Hour"
+        },
+        "exposure_duration_hours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration of exposure per event.",
+          "title": "Exposure Duration Hours"
+        }
+      },
+      "required": [
+        "product_category",
+        "physical_form",
+        "application_method",
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_amount_unit",
+        "use_events_per_day"
+      ],
+      "title": "ProductUseProfile",
+      "type": "object"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "QualityFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable quality flag code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "info",
+          "description": "Quality signal severity."
+        },
+        "message": {
+          "description": "Human-readable quality message.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "QualityFlag",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "ScenarioClass": {
+      "enum": [
+        "screening",
+        "aggregate",
+        "inhalation",
+        "refined",
+        "population_distribution"
+      ],
+      "title": "ScenarioClass",
+      "type": "string"
+    },
+    "ScenarioDose": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "description": "Dose metric label.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "description": "Numeric value for the dose metric.",
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/DoseUnit",
+          "description": "Canonical dose unit."
+        }
+      },
+      "required": [
+        "metric",
+        "value",
+        "unit"
+      ],
+      "title": "ScenarioDose",
+      "type": "object"
+    },
+    "SensitivityDirection": {
+      "enum": [
+        "positive",
+        "negative",
+        "neutral"
+      ],
+      "title": "SensitivityDirection",
+      "type": "string"
+    },
+    "SensitivityRankingEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "parameterName": {
+          "title": "Parametername",
+          "type": "string"
+        },
+        "sourceKind": {
+          "$ref": "#/$defs/SourceKind"
+        },
+        "baselineValue": {
+          "title": "Baselinevalue",
+          "type": "number"
+        },
+        "perturbedValue": {
+          "title": "Perturbedvalue",
+          "type": "number"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "perturbationFraction": {
+          "title": "Perturbationfraction",
+          "type": "number"
+        },
+        "responseMetric": {
+          "title": "Responsemetric",
+          "type": "string"
+        },
+        "absoluteDelta": {
+          "title": "Absolutedelta",
+          "type": "number"
+        },
+        "percentDelta": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Percentdelta"
+        },
+        "elasticity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Elasticity"
+        },
+        "direction": {
+          "$ref": "#/$defs/SensitivityDirection"
+        }
+      },
+      "required": [
+        "parameterName",
+        "sourceKind",
+        "baselineValue",
+        "perturbedValue",
+        "perturbationFraction",
+        "responseMetric",
+        "absoluteDelta",
+        "direction"
+      ],
+      "title": "SensitivityRankingEntry",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "SourceKind": {
+      "enum": [
+        "user_input",
+        "default_registry",
+        "derived",
+        "system"
+      ],
+      "title": "SourceKind",
+      "type": "string"
+    },
+    "TierLevel": {
+      "enum": [
+        "tier_0",
+        "tier_1",
+        "tier_2",
+        "tier_3"
+      ],
+      "title": "TierLevel",
+      "type": "string"
+    },
+    "TierSemantics": {
+      "additionalProperties": false,
+      "properties": {
+        "tier_claimed": {
+          "$ref": "#/$defs/TierLevel",
+          "description": "Tier family implemented by the active model."
+        },
+        "tier_earned": {
+          "$ref": "#/$defs/TierLevel",
+          "description": "Tier earned after the current checks and defaults."
+        },
+        "tier_rationale": {
+          "description": "Short rationale for the current tier assignment.",
+          "title": "Tier Rationale",
+          "type": "string"
+        },
+        "assumption_checks_passed": {
+          "description": "Whether the minimum checks for the earned tier passed.",
+          "title": "Assumption Checks Passed",
+          "type": "boolean"
+        },
+        "required_caveats": {
+          "description": "Caveats that should stay attached to interpretation of the result.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Caveats",
+          "type": "array"
+        },
+        "forbidden_interpretations": {
+          "description": "Interpretations that the result must not support at the current tier.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Interpretations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "tier_claimed",
+        "tier_earned",
+        "tier_rationale",
+        "assumption_checks_passed"
+      ],
+      "title": "TierSemantics",
+      "type": "object"
+    },
+    "TierUpgradeAdvisory": {
+      "additionalProperties": false,
+      "properties": {
+        "advisoryId": {
+          "title": "Advisoryid",
+          "type": "string"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Route for which the tier upgrade applies."
+        },
+        "currentTier": {
+          "$ref": "#/$defs/TierLevel"
+        },
+        "targetTier": {
+          "$ref": "#/$defs/TierLevel"
+        },
+        "status": {
+          "$ref": "#/$defs/TierUpgradeStatus",
+          "description": "Current upgrade availability status."
+        },
+        "recommendedModelFamily": {
+          "title": "Recommendedmodelfamily",
+          "type": "string"
+        },
+        "triggerCodes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Triggercodes",
+          "type": "array"
+        },
+        "requiredInputs": {
+          "items": {
+            "$ref": "#/$defs/TierUpgradeInputRequirement"
+          },
+          "title": "Requiredinputs",
+          "type": "array"
+        },
+        "blockingGaps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Blockinggaps",
+          "type": "array"
+        },
+        "guidanceResource": {
+          "title": "Guidanceresource",
+          "type": "string"
+        },
+        "rationale": {
+          "description": "Why the upgrade is recommended or blocked.",
+          "title": "Rationale",
+          "type": "string"
+        }
+      },
+      "required": [
+        "advisoryId",
+        "route",
+        "currentTier",
+        "targetTier",
+        "status",
+        "recommendedModelFamily",
+        "guidanceResource",
+        "rationale"
+      ],
+      "title": "TierUpgradeAdvisory",
+      "type": "object"
+    },
+    "TierUpgradeInputRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "fieldName": {
+          "title": "Fieldname",
+          "type": "string"
+        },
+        "description": {
+          "description": "What the future field is expected to capture.",
+          "title": "Description",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Why the field matters for the requested tier.",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fieldName",
+        "description",
+        "reason"
+      ],
+      "title": "TierUpgradeInputRequirement",
+      "type": "object"
+    },
+    "TierUpgradeStatus": {
+      "enum": [
+        "recommended_not_implemented",
+        "requested_not_implemented"
+      ],
+      "title": "TierUpgradeStatus",
+      "type": "string"
+    },
+    "ToxClawPbpkModuleParams": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "toxclawPbpkModuleParams.v1",
+          "default": "toxclawPbpkModuleParams.v1",
+          "title": "Schemaversion",
+          "type": "string"
+        },
+        "ingestToolName": {
+          "const": "ingest_external_pbpk_bundle",
+          "default": "ingest_external_pbpk_bundle",
+          "title": "Ingesttoolname",
+          "type": "string"
+        },
+        "arguments": {
+          "$ref": "#/$defs/PbpkExternalImportRequest"
+        },
+        "chemicalIdentity": {
+          "additionalProperties": true,
+          "title": "Chemicalidentity",
+          "type": "object"
+        },
+        "supportingHandoffs": {
+          "additionalProperties": true,
+          "title": "Supportinghandoffs",
+          "type": "object"
+        }
+      },
+      "required": [
+        "arguments"
+      ],
+      "title": "ToxClawPbpkModuleParams",
+      "type": "object"
+    },
+    "UncertaintyQuantificationStatus": {
+      "enum": [
+        "qualitative_only",
+        "bounded",
+        "probability_bounds",
+        "probabilistic"
+      ],
+      "title": "UncertaintyQuantificationStatus",
+      "type": "string"
+    },
+    "UncertaintyRegisterEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "entryId": {
+          "title": "Entryid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "uncertaintyTypes": {
+          "items": {
+            "$ref": "#/$defs/UncertaintyType"
+          },
+          "title": "Uncertaintytypes",
+          "type": "array"
+        },
+        "relatedAssumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Relatedassumptions",
+          "type": "array"
+        },
+        "quantificationStatus": {
+          "$ref": "#/$defs/UncertaintyQuantificationStatus"
+        },
+        "biasDirection": {
+          "$ref": "#/$defs/BiasDirection"
+        },
+        "impactLevel": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "Impactlevel",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommendation"
+        }
+      },
+      "required": [
+        "entryId",
+        "title",
+        "quantificationStatus",
+        "biasDirection",
+        "impactLevel",
+        "summary"
+      ],
+      "title": "UncertaintyRegisterEntry",
+      "type": "object"
+    },
+    "UncertaintyTier": {
+      "enum": [
+        "tier_a",
+        "tier_b",
+        "tier_c",
+        "tier_d",
+        "tier_e"
+      ],
+      "title": "UncertaintyTier",
+      "type": "string"
+    },
+    "UncertaintyType": {
+      "enum": [
+        "variability",
+        "parameter_uncertainty",
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "title": "UncertaintyType",
+      "type": "string"
+    },
+    "ValidationCheckStatus": {
+      "enum": [
+        "pass",
+        "warning",
+        "out_of_domain"
+      ],
+      "title": "ValidationCheckStatus",
+      "type": "string"
+    },
+    "ValidationEvidenceReadiness": {
+      "enum": [
+        "benchmark_only",
+        "benchmark_plus_external_candidates",
+        "external_candidates_only",
+        "external_partial",
+        "calibrated"
+      ],
+      "title": "ValidationEvidenceReadiness",
+      "type": "string"
+    },
+    "ValidationStatus": {
+      "enum": [
+        "verification_only",
+        "benchmark_regression",
+        "external_validation_partial",
+        "calibrated"
+      ],
+      "title": "ValidationStatus",
+      "type": "string"
+    },
+    "ValidationSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "validationStatus": {
+          "$ref": "#/$defs/ValidationStatus"
+        },
+        "routeMechanism": {
+          "title": "Routemechanism",
+          "type": "string"
+        },
+        "benchmarkCaseIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Benchmarkcaseids",
+          "type": "array"
+        },
+        "externalDatasetIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Externaldatasetids",
+          "type": "array"
+        },
+        "evidenceReadiness": {
+          "$ref": "#/$defs/ValidationEvidenceReadiness"
+        },
+        "heuristicAssumptionNames": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Heuristicassumptionnames",
+          "type": "array"
+        },
+        "validationGapIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Validationgapids",
+          "type": "array"
+        },
+        "executedValidationChecks": {
+          "items": {
+            "$ref": "#/$defs/ExecutedValidationCheck"
+          },
+          "title": "Executedvalidationchecks",
+          "type": "array"
+        },
+        "highestSupportedUncertaintyTier": {
+          "$ref": "#/$defs/UncertaintyTier"
+        },
+        "probabilisticEnablement": {
+          "enum": [
+            "blocked",
+            "gated",
+            "enabled"
+          ],
+          "title": "Probabilisticenablement",
+          "type": "string"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "validationStatus",
+        "routeMechanism",
+        "evidenceReadiness",
+        "highestSupportedUncertaintyTier",
+        "probabilisticEnablement"
+      ],
+      "title": "ValidationSummary",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "integratedExposureWorkflowResult.v1",
+      "default": "integratedExposureWorkflowResult.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "chemicalId": {
+      "title": "Chemicalid",
+      "type": "string"
+    },
+    "sourceRequest": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExposureScenarioRequest"
+        },
+        {
+          "$ref": "#/$defs/InhalationScenarioRequest"
+        },
+        {
+          "$ref": "#/$defs/InhalationTier1ScenarioRequest"
+        }
+      ],
+      "title": "Sourcerequest"
+    },
+    "effectiveRequest": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExposureScenarioRequest"
+        },
+        {
+          "$ref": "#/$defs/InhalationScenarioRequest"
+        },
+        {
+          "$ref": "#/$defs/InhalationTier1ScenarioRequest"
+        }
+      ],
+      "title": "Effectiverequest"
+    },
+    "evidenceStrategy": {
+      "enum": [
+        "source_request_only",
+        "reconciled_evidence_applied",
+        "reconciled_evidence_applied_with_review",
+        "evidence_rejected_source_request_retained"
+      ],
+      "title": "Evidencestrategy",
+      "type": "string"
+    },
+    "normalizedEvidenceRecords": {
+      "items": {
+        "$ref": "#/$defs/ProductUseEvidenceRecord"
+      },
+      "title": "Normalizedevidencerecords",
+      "type": "array"
+    },
+    "reconciliationReport": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ProductUseEvidenceReconciliationReport"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "selectedEvidenceSourceName": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Selectedevidencesourcename"
+    },
+    "selectedEvidenceSourceKind": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Selectedevidencesourcekind"
+    },
+    "manualReviewRequired": {
+      "title": "Manualreviewrequired",
+      "type": "boolean"
+    },
+    "scenario": {
+      "$ref": "#/$defs/ExposureScenario"
+    },
+    "pbpkCompatibilityReport": {
+      "$ref": "#/$defs/PbpkCompatibilityReport"
+    },
+    "pbpkScenarioInput": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PbpkScenarioInput"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "pbpkExternalImportPackage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PbpkExternalImportPackage"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "workflowNotes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Workflownotes",
+      "type": "array"
+    },
+    "qualityFlags": {
+      "items": {
+        "$ref": "#/$defs/QualityFlag"
+      },
+      "title": "Qualityflags",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle"
+    }
+  },
+  "required": [
+    "chemicalId",
+    "sourceRequest",
+    "effectiveRequest",
+    "evidenceStrategy",
+    "manualReviewRequired",
+    "scenario",
+    "pbpkCompatibilityReport",
+    "provenance"
+  ],
+  "title": "IntegratedExposureWorkflowResult",
+  "type": "object"
+}

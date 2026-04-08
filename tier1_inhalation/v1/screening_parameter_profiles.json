@@ -1,10 +1,11 @@
 {
-  "profile_version": "2026.03.25.v2",
+  "profile_version": "2026.04.07.v5",
   "notes": [
     "This pack publishes governed screening parameters for the Tier 1 near-field/far-field inhalation model.",
     "The airflow and particle mappings remain deterministic screening heuristics and are not a calibrated aerosol transport model.",
     "Product-family profiles are recommendation packs for common spray contexts and are not substitutes for scenario-specific evidence.",
-    "Product-family profile provenance is split between household-cleaner and personal-care screening packs so downstream review can keep those recommendations distinct."
+    "Product-family profile provenance is split between household-cleaner, personal-care, disinfectant, and pest-control screening packs so downstream review can keep those recommendations distinct.",
+    "Subtype-specific profiles are optional overlays. They only activate when the caller or evidence reconciliation supplies a product_subtype."
   ],
   "sources": [
     {
@@ -24,6 +25,18 @@
       "title": "Exposure Scenario MCP Tier 1 NF/FF personal-care screening profile pack",
       "locator": "docs://tier1-inhalation-parameter-guide#personal-care-profiles",
       "version": "2026.03.25.v1"
+    },
+    {
+      "source_id": "benchmark_tier1_nf_ff_disinfectant_profiles_v1",
+      "title": "Exposure Scenario MCP Tier 1 NF/FF disinfectant screening profile pack",
+      "locator": "docs://tier1-inhalation-parameter-guide#disinfectant-profiles",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "benchmark_tier1_nf_ff_pest_control_profiles_v1",
+      "title": "Exposure Scenario MCP Tier 1 NF/FF pest-control screening profile pack",
+      "locator": "docs://tier1-inhalation-parameter-guide#pest-control-profiles",
+      "version": "2026.04.07.v1"
     }
   ],
   "directionality_profiles": [
@@ -130,6 +143,76 @@
       "defaultSprayDurationSeconds": 5.0,
       "sourceId": "benchmark_tier1_nf_ff_personal_care_profiles_v1",
       "note": "Benchmark Tier 1 profile for hand-actuated personal-care pump sprays used close to the face or upper torso."
+    },
+    {
+      "profileId": "disinfectant_surface_trigger_spray_tier1",
+      "label": "Disinfectant surface trigger spray Tier 1 profile",
+      "productFamily": "disinfectant",
+      "productSubtype": "surface_trigger_spray_disinfectant",
+      "applicationMethod": "trigger_spray",
+      "recommendedAirflowDirectionality": "general_room_mixing",
+      "recommendedParticleSizeRegime": "coarse_spray",
+      "recommendedNearFieldVolumeM3": 1.0,
+      "defaultSourceDistanceM": 0.35,
+      "defaultSprayDurationSeconds": 80.0,
+      "sourceId": "benchmark_tier1_nf_ff_disinfectant_profiles_v1",
+      "note": "Subtype-aware Tier 1 profile for short surface trigger-spray disinfectant tasks, aligned to the ConsExpo personal-volume treatment."
+    },
+    {
+      "profileId": "pest_control_indoor_surface_trigger_spray_tier1",
+      "label": "Pest-control indoor surface trigger spray Tier 1 profile",
+      "productFamily": "pesticide",
+      "productSubtype": "indoor_surface_insecticide",
+      "applicationMethod": "trigger_spray",
+      "recommendedAirflowDirectionality": "cross_draft",
+      "recommendedParticleSizeRegime": "coarse_spray",
+      "recommendedNearFieldVolumeM3": 2.0,
+      "defaultSourceDistanceM": 0.35,
+      "defaultSprayDurationSeconds": 240.0,
+      "sourceId": "benchmark_tier1_nf_ff_pest_control_profiles_v1",
+      "note": "Subtype-aware Tier 1 profile for indoor surface insecticide sprays, using a longer active-spray anchor than household-cleaner trigger sprays."
+    },
+    {
+      "profileId": "pest_control_targeted_spot_trigger_spray_tier1",
+      "label": "Pest-control targeted spot trigger spray Tier 1 profile",
+      "productFamily": "pesticide",
+      "productSubtype": "targeted_spot_insecticide",
+      "applicationMethod": "trigger_spray",
+      "recommendedAirflowDirectionality": "cross_draft",
+      "recommendedParticleSizeRegime": "coarse_spray",
+      "recommendedNearFieldVolumeM3": 2.0,
+      "defaultSourceDistanceM": 0.35,
+      "defaultSprayDurationSeconds": 360.0,
+      "sourceId": "benchmark_tier1_nf_ff_pest_control_profiles_v1",
+      "note": "Subtype-aware Tier 1 profile for targeted spot insecticide sprays, preserving the longer active-spray duration used in the ConsExpo targeted-spot scenario family."
+    },
+    {
+      "profileId": "pest_control_crack_crevice_trigger_spray_tier1",
+      "label": "Pest-control crack and crevice trigger spray Tier 1 profile",
+      "productFamily": "pesticide",
+      "productSubtype": "crack_and_crevice_insecticide",
+      "applicationMethod": "trigger_spray",
+      "recommendedAirflowDirectionality": "cross_draft",
+      "recommendedParticleSizeRegime": "coarse_spray",
+      "recommendedNearFieldVolumeM3": 2.0,
+      "defaultSourceDistanceM": 0.35,
+      "defaultSprayDurationSeconds": 240.0,
+      "sourceId": "benchmark_tier1_nf_ff_pest_control_profiles_v1",
+      "note": "Subtype-aware Tier 1 profile for crack-and-crevice insecticide sprays, aligned to the shorter crevice-treatment duration in the ConsExpo scenario family."
+    },
+    {
+      "profileId": "pest_control_air_space_aerosol_tier1",
+      "label": "Pest-control air-space aerosol Tier 1 profile",
+      "productFamily": "pesticide",
+      "productSubtype": "air_space_insecticide",
+      "applicationMethod": "aerosol_spray",
+      "recommendedAirflowDirectionality": "general_room_mixing",
+      "recommendedParticleSizeRegime": "fine_aerosol",
+      "recommendedNearFieldVolumeM3": 3.0,
+      "defaultSourceDistanceM": 0.6,
+      "defaultSprayDurationSeconds": 20.0,
+      "sourceId": "benchmark_tier1_nf_ff_pest_control_profiles_v1",
+      "note": "Subtype-aware Tier 1 profile for air-space insecticide aerosols, using a whole-room aerosol screening anchor rather than a short coarse-spray surface-treatment profile."
     }
   ]
 }

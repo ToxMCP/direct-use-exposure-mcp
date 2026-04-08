@@ -83,12 +83,20 @@ The design is intentionally narrow:
 - Machine-actionable Tier 1 inhalation upgrade advisories for spray scenarios
 - Packaged Tier 1 inhalation airflow, particle, and product-family screening profiles
 - Curated RIVM-backed dermal contact defaults plus product-family spray airborne-fraction defaults for personal-care and household-cleaner contexts
+- Evidence reconciliation across CompTox, ConsExpo, and reviewed user-supplied product-use records
+- Integrated evidence-to-scenario-to-PBPK workflow execution as one audited MCP response
 - Simple additive aggregate exposure summaries
 - Scenario comparison and refinement deltas
 - ToxClaw evidence export and refinement-bundle export
 - PBPK scenario export plus exact external-import payload packaging
 - Published JSON schemas, examples, contract manifest, and release metadata
 - Release-readiness, result-status, troubleshooting, and provenance resources
+- Published architecture guidance for splitting exposure, fate, dietary, and worker domains
+- Worker-task routing guidance plus a deterministic router for current MCP vs future occupational adapter paths
+- Worker inhalation Tier 2 bridge export for future ART-style occupational adapter handoff
+- Worker inhalation Tier 2 execution plus governed ART external exchange packages and imports
+- Worker dermal absorbed-dose and PPE bridge export, adapter-ingest boundary, and bounded execution kernel
+- Validation dossier, validation coverage report, executable reference bands, executable time-series packs, and showcase goldset resources
 - Assumption-level evidence/applicability governance and explicit Tier-0 interpretation bounds
 
 ## Why this project exists
@@ -116,12 +124,22 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 | `Tier C probability bounds` | Publishes packaged single-driver probability-bounds profiles with curated driver taxonomy and evaluates their support points without Monte Carlo or joint-distribution claims. |
 | `Tier C scenario packages` | Publishes dependency-aware packaged scenario states with cumulative probability bounds, curated package taxonomy, and preserved coupled drivers without Monte Carlo claims, including governed Tier 1 NF/FF archetype-backed packages for selected spray contexts. |
 | `Tier 1 inhalation screening` | Publishes machine-actionable upgrade advisories for spray inhalation scenarios, preserves the `requestedTier` routing hook on Tier 0 requests, ships a deterministic Tier 1 NF/FF screening tool, exposes packaged airflow, particle, and product-family screening profiles through a machine-readable manifest, and warns when caller geometry or regime inputs diverge materially from matched profile anchors. |
+| `Residual-air reentry inhalation` | Builds post-application room-air screening scenarios from a concentration at reentry start plus bounded first-order decay, keeping reentry screening separate from application-plume semantics. |
+| `Evidence reconciliation and workflow` | Normalizes CompTox, ConsExpo, and user-reviewed evidence into a shared product-use contract, ranks fit, builds merged requests, and can run an audited evidence-to-scenario-to-PBPK workflow in one response. |
+| `Worker task routing` | Routes worker-tagged tasks to the strongest current MCP path, emits worker-specific scenario guardrails when the shared screening engines are reused, and points higher-tier occupational cases toward future adapter hooks. |
+| `Worker Tier 2 bridge` | Exports a typed worker inhalation handoff package, compatibility checklist, and future adapter tool-call envelope for ART-style Tier 2 refinement without pretending the occupational solver already exists. |
+| `Worker Tier 2 execution` | Executes a governed control-aware worker inhalation surrogate, supports deterministic benchmark regression, and preserves comparability with external ART imports without claiming a native ART solver run. |
+| `Worker ART external exchange` | Exports normalized external ART execution packages and imports reviewed external results or runner artifacts through a bounded, provenance-preserving adapter surface. |
+| `Worker dermal absorbed-dose execution` | Exports and ingests dermal absorbed-dose/PPE handoffs, then executes a bounded dermal kernel with material-aware and physchem-aware modifiers while keeping glove breakthrough and full permeation modeling explicitly out of scope. |
 | `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
 | `Refinement workflow support` | Emits comparison/refinement bundles with explicit `refine_exposure` semantics and workflow hooks. |
 | `Validation dossier` | Publishes a typed validation dossier with benchmark domains, cited external validation datasets, heuristic-source families, and open evidence gaps, and threads evidence-readiness, executed validation checks, and gap IDs into every scenario-level `validationSummary`. |
+| `Validation coverage report` | Publishes a typed cross-domain trust summary over benchmark cases, external datasets, executable bands, time-series packs, and goldset mappings so validation posture is explicit instead of inferred. |
 | `Executable validation bands` | Publishes a typed, versioned manifest for the narrow executable reference bands used by `validationSummary.executedValidationChecks`, so screening acceptance anchors are data-driven rather than hardcoded. |
+| `Executable time-series packs` | Publishes sparse governed time-series anchors for domains like residual-air reentry and air-space aerosol decay, so time-resolved validation is versioned and machine-readable. |
+| `Goldset showcase corpus` | Publishes a separate, source-backed showcase set for recognizable cases while keeping the deterministic regression fixture stable and auditable. |
 | `Curated dermal contact packs` | Replaces the highest-volume transfer and surface-contact-retention heuristics with RIVM-backed screening defaults for `personal_care` hand application and `household_cleaner` wipe contact while preserving explicit applicability domains and remaining evidence gaps. |
 | `Defaults curation report` | Publishes a typed branch-level report showing which defaults paths are curated, route-semantic, or still heuristic, so downstream clients can target the strongest scenario branches deliberately. |
 | `Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
@@ -155,9 +173,27 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `exposure_build_probability_bounds_from_profile`
 - `exposure_build_probability_bounds_from_scenario_package`
 - `exposure_build_inhalation_screening_scenario`
+- `exposure_build_inhalation_residual_air_reentry_scenario`
 - `exposure_build_inhalation_tier1_screening_scenario`
 - `exposure_build_aggregate_exposure_scenario`
 - `exposure_compare_exposure_scenarios`
+
+### Evidence fit and enrichment
+
+- `exposure_build_product_use_evidence_from_consexpo`
+- `exposure_assess_product_use_evidence_fit`
+- `exposure_apply_product_use_evidence`
+- `exposure_reconcile_product_use_evidence`
+- `exposure_run_integrated_workflow`
+- `exposure_route_worker_task`
+- `exposure_export_worker_inhalation_tier2_bridge`
+- `worker_ingest_inhalation_tier2_task`
+- `worker_execute_inhalation_tier2_task`
+- `worker_export_inhalation_art_execution_package`
+- `worker_import_inhalation_art_execution_result`
+- `exposure_export_worker_dermal_absorbed_dose_bridge`
+- `worker_ingest_dermal_absorbed_dose_task`
+- `worker_execute_dermal_absorbed_dose_task`
 
 ### Handoff export
 
@@ -180,9 +216,12 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `probability-bounds://manifest`
 - `scenario-probability://manifest`
 - `benchmarks://manifest`
+- `benchmarks://goldset`
 - `validation://manifest`
 - `validation://dossier-report`
+- `validation://coverage-report`
 - `validation://reference-bands`
+- `validation://time-series-packs`
 
 ### Operator and scientific documentation
 
@@ -191,6 +230,7 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `docs://probability-bounds-guide`
 - `docs://tier1-inhalation-parameter-guide`
 - `docs://inhalation-tier-upgrade-guide`
+- `docs://inhalation-residual-air-reentry-guide`
 - `docs://defaults-evidence-map`
 - `docs://defaults-curation-report`
 - `docs://operator-guide`
@@ -199,8 +239,21 @@ Exposure Scenario MCP gives the suite a dedicated exposure layer that is:
 - `docs://uncertainty-framework`
 - `docs://validation-framework`
 - `docs://validation-dossier`
+- `docs://validation-coverage-report`
 - `docs://validation-reference-bands`
+- `docs://validation-time-series-packs`
+- `docs://goldset-benchmark-guide`
 - `docs://suite-integration-guide`
+- `docs://integrated-exposure-workflow-guide`
+- `docs://exposure-platform-architecture`
+- `docs://worker-routing-guide`
+- `docs://worker-tier2-bridge-guide`
+- `docs://worker-art-adapter-guide`
+- `docs://worker-art-execution-guide`
+- `docs://worker-art-external-exchange-guide`
+- `docs://worker-dermal-bridge-guide`
+- `docs://worker-dermal-adapter-guide`
+- `docs://worker-dermal-execution-guide`
 - `docs://troubleshooting`
 
 ### Release and review artifacts
@@ -233,8 +286,16 @@ uv run exposure-scenario-mcp --transport stdio
 Run over Streamable HTTP:
 
 ```bash
-uv run exposure-scenario-mcp --transport streamable-http
+uv run exposure-scenario-mcp --transport streamable-http --host 127.0.0.1 --port 8001
 ```
+
+Current published surface from `docs/contracts/contract_manifest.json`:
+
+- `29` tools
+- `53` resources
+- `2` prompts
+- `132` schemas
+- `62` examples
 
 ## Release verification
 
@@ -255,7 +316,7 @@ Current published package version: `0.1.0`
 - `schemas/` - generated schemas and examples
 - `docs/contracts/` - published schemas and contract manifest mirrors
 - `docs/releases/` - release notes and release metadata
-- `docs/` - operator, troubleshooting, provenance, readiness, suite integration, and adjacent-service design notes
+- `docs/` - operator, troubleshooting, provenance, readiness, suite integration, architecture, and adjacent-service design notes
 - `evals/` - read-only evaluation bundle
 - `tests/` - runtime, contract, integration, and release-artifact tests
 
@@ -266,6 +327,8 @@ The current `v0.1.0` release is intentionally honest about what it does not do:
 - It is deterministic-first and does not ship a probabilistic population engine.
 - It does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.
 - Some screening factors still resolve from heuristic defaults packs and should be treated as screening-level assumptions.
+- Worker inhalation Tier 2 execution is a governed surrogate plus external ART exchange boundary, not a native ART solver.
+- Worker dermal execution is bounded and chemistry/material aware, but it is not a full glove-breakthrough or chemical-specific permeation engine.
 - Remote `streamable-http` deployment still requires external authentication and origin hardening.
 - PBPK request alignment should be re-validated whenever PBPK MCP changes its published contract version.
 

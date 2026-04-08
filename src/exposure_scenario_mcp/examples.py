@@ -7,12 +7,21 @@ from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.integrations import (
     CompToxChemicalRecord,
+    ConsExpoEvidenceRecord,
+    ProductUseEvidenceRecord,
+    RunIntegratedExposureWorkflowInput,
     apply_comptox_enrichment,
+    apply_product_use_evidence,
+    assess_product_use_evidence_fit,
     build_pbpk_external_import_package,
+    build_product_use_evidence_from_comptox,
+    build_product_use_evidence_from_consexpo,
     build_toxclaw_evidence_bundle,
     build_toxclaw_evidence_envelope,
     build_toxclaw_refinement_bundle,
     check_pbpk_compatibility,
+    reconcile_product_use_evidence,
+    run_integrated_exposure_workflow,
 )
 from exposure_scenario_mcp.models import (
     BuildAggregateExposureScenarioInput,
@@ -29,6 +38,7 @@ from exposure_scenario_mcp.models import (
     ExportToxClawRefinementBundleRequest,
     ExposureEnvelopeSummary,
     ExposureScenarioRequest,
+    InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
     ParameterBoundInput,
@@ -39,9 +49,14 @@ from exposure_scenario_mcp.models import (
     Route,
     ScenarioClass,
     ScenarioPackageProbabilitySummary,
+    TierLevel,
+    WorkerTaskRoutingInput,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
+from exposure_scenario_mcp.plugins.inhalation import (
+    build_inhalation_residual_air_reentry_scenario,
+    build_inhalation_tier_1_screening_scenario,
+)
 from exposure_scenario_mcp.probability_bounds import (
     build_probability_bounds_from_profile,
     build_probability_bounds_from_scenario_package,
@@ -62,12 +77,39 @@ from exposure_scenario_mcp.uncertainty import (
     build_parameter_bounds_summary,
     enrich_scenario_uncertainty,
 )
+from exposure_scenario_mcp.worker_dermal import (
+    ExecuteWorkerDermalAbsorbedDoseRequest,
+    ExportWorkerDermalAbsorbedDoseBridgeRequest,
+    WorkerDermalAbsorbedDoseExecutionOverrides,
+    WorkerDermalContactPattern,
+    WorkerDermalPpeState,
+    build_worker_dermal_absorbed_dose_bridge,
+    execute_worker_dermal_absorbed_dose_task,
+    ingest_worker_dermal_absorbed_dose_task,
+)
+from exposure_scenario_mcp.worker_routing import route_worker_task
+from exposure_scenario_mcp.worker_tier2 import (
+    ExecuteWorkerInhalationTier2Request,
+    ExportWorkerArtExecutionPackageRequest,
+    ExportWorkerInhalationTier2BridgeRequest,
+    ImportWorkerArtExecutionResultRequest,
+    WorkerArtArtifactAdapterId,
+    WorkerArtExternalArtifact,
+    WorkerArtExternalExecutionResult,
+    WorkerInhalationTier2ExecutionOverrides,
+    build_worker_inhalation_tier2_bridge,
+    execute_worker_inhalation_tier2_task,
+    export_worker_inhalation_art_execution_package,
+    import_worker_inhalation_art_execution_result,
+    ingest_worker_inhalation_tier2_task,
+)
 
 EXAMPLE_GENERATED_AT = "2026-03-24T00:00:00+00:00"
 EXAMPLE_IDS = {
     "screening_dermal_scenario": "exp-example-dermal-001",
     "screening_dermal_refined_scenario": "exp-example-dermal-refined-001",
     "inhalation_scenario": "inh-example-room-001",
+    "inhalation_residual_reentry_scenario": "inh-example-reentry-001",
     "inhalation_tier1_scenario": "inh-tier1-example-001",
     "aggregate_summary": "agg-example-couse-001",
     "envelope_summary": "env-example-dermal-001",
@@ -96,6 +138,7 @@ EXAMPLE_IDS = {
         "inh-tier1-example-package-typical-001"
     ),
     "tier1_scenario_package_probability_high_scenario": "inh-tier1-example-package-high-001",
+    "integrated_workflow_scenario": "inh-example-integrated-001",
 }
 
 
@@ -134,6 +177,48 @@ def _freeze_pbpk_input(pbpk_input):
     return pbpk_input.model_copy(
         update={"provenance": _freeze_provenance(pbpk_input.provenance)},
         deep=True,
+    )
+
+
+def _replace_nested_string(value, target: str, replacement: str):
+    if isinstance(value, dict):
+        return {
+            key: _replace_nested_string(item, target, replacement)
+            for key, item in value.items()
+        }
+    if isinstance(value, list):
+        return [_replace_nested_string(item, target, replacement) for item in value]
+    if isinstance(value, str):
+        return value.replace(target, replacement)
+    return value
+
+
+def _replace_nested_exact_string(value, target: str, replacement: str):
+    if isinstance(value, dict):
+        return {
+            key: _replace_nested_exact_string(item, target, replacement)
+            for key, item in value.items()
+        }
+    if isinstance(value, list):
+        return [_replace_nested_exact_string(item, target, replacement) for item in value]
+    if isinstance(value, str):
+        return replacement if value == target else value
+    return value
+
+
+def _freeze_integrated_workflow_result(result) -> dict:
+    frozen = result.model_dump(mode="json", by_alias=True)
+    source_scenario_id = frozen["scenario"]["scenario_id"]
+    source_generated_at = frozen["scenario"]["provenance"]["generated_at"]
+    frozen = _replace_nested_string(
+        frozen,
+        source_scenario_id,
+        EXAMPLE_IDS["integrated_workflow_scenario"],
+    )
+    return _replace_nested_exact_string(
+        frozen,
+        source_generated_at,
+        EXAMPLE_GENERATED_AT,
     )
 
 
@@ -342,6 +427,46 @@ def build_examples() -> dict[str, dict]:
     inhalation_scenario = _freeze_scenario(
         engine.build(inhalation_request),
         EXAMPLE_IDS["inhalation_scenario"],
+    )
+    inhalation_residual_reentry_request = InhalationResidualAirReentryScenarioRequest(
+        chemical_id="DTXSID8020230",
+        chemical_name="Example Insecticide B",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Indoor Surface Insecticide",
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="residual_air_reentry",
+            retention_type="surface_contact",
+            concentration_fraction=0.005,
+            use_amount_per_event=20,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=30,
+            air_exchange_rate_per_hour=0.5,
+            exposure_duration_hours=4.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=80,
+            inhalation_rate_m3_per_hour=0.83,
+            region="EU",
+        ),
+        air_concentration_at_reentry_start_mg_per_m3=0.08,
+        additional_decay_rate_per_hour=0.03,
+        post_application_delay_hours=4.0,
+    )
+    inhalation_residual_reentry_scenario = _freeze_scenario(
+        enrich_scenario_uncertainty(
+            engine,
+            build_inhalation_residual_air_reentry_scenario(
+                inhalation_residual_reentry_request,
+                defaults_registry,
+                generated_at=EXAMPLE_GENERATED_AT,
+            ),
+        ),
+        EXAMPLE_IDS["inhalation_residual_reentry_scenario"],
     )
     inhalation_tier1_request = InhalationTier1ScenarioRequest(
         chemical_id="DTXSID7020182",
@@ -611,6 +736,301 @@ def build_examples() -> dict[str, dict]:
         evidence_sources=["CompTox:mock-record-001"],
     )
     comp_tox_enriched_request = apply_comptox_enrichment(dermal_request, comp_tox_record)
+    comp_tox_product_use_evidence = build_product_use_evidence_from_comptox(comp_tox_record)
+    cons_expo_evidence_record = ConsExpoEvidenceRecord(
+        chemical_id="DTXSID7020182",
+        preferred_name="Example Solvent A",
+        casrn="123-45-6",
+        factSheetId="pest_control_products_fact_sheet_2006",
+        factSheetTitle="ConsExpo Pest Control Products Fact Sheet",
+        factSheetVersion="RIVM report 320005002 / 2006",
+        factSheetLocator="https://www.rivm.nl/bibliotheek/rapporten/320005002.pdf",
+        productGroup="pest_control_products",
+        productSubgroup="Indoor trigger spray insecticide",
+        modelFamily="spray",
+        supportedRoutes=[Route.DERMAL, Route.INHALATION],
+        physical_forms=["spray"],
+        application_methods=["trigger_spray"],
+        retention_types=["surface_contact"],
+        physchem_summary={"density_g_per_ml": 1.08},
+        evidence_sources=["ConsExpo:pest_control_products_fact_sheet_2006"],
+        notes=["Illustrative ConsExpo pest-control evidence mapped into the generic contract."],
+    )
+    cons_expo_product_use_evidence = build_product_use_evidence_from_consexpo(
+        cons_expo_evidence_record
+    )
+    product_use_evidence_record = ProductUseEvidenceRecord(
+        chemical_id="DTXSID7020182",
+        preferred_name="Example Solvent A",
+        casrn="123-45-6",
+        source_name="EU product-use dossier example",
+        source_kind="regulatory_dossier",
+        review_status="reviewed",
+        source_record_id="EU-DOSSIER-001",
+        source_locator="https://example.org/eu-dossier/001",
+        product_name="Example Surface Spray",
+        product_subtype="indoor_surface_insecticide",
+        product_use_categories=["pesticide"],
+        physical_forms=["spray"],
+        application_methods=["trigger_spray"],
+        retention_types=["surface_contact"],
+        region_scopes=["EU"],
+        jurisdictions=["EU"],
+        physchem_summary={"density_g_per_ml": 1.08},
+        evidence_sources=["EU-Dossier:mock-001"],
+        notes=["Illustrative region-specific product-use evidence for a spray pesticide."],
+    )
+    product_use_fit_report = assess_product_use_evidence_fit(
+        inhalation_request,
+        product_use_evidence_record,
+    )
+    product_use_enriched_request = apply_product_use_evidence(
+        inhalation_request,
+        product_use_evidence_record,
+    )
+    product_use_reconciliation_report = reconcile_product_use_evidence(
+        inhalation_request,
+        [
+            comp_tox_product_use_evidence,
+            cons_expo_product_use_evidence,
+            product_use_evidence_record,
+        ],
+    )
+    integrated_exposure_workflow_request = RunIntegratedExposureWorkflowInput(
+        request=inhalation_request,
+        comp_tox_record=comp_tox_record,
+        cons_expo_records=[cons_expo_evidence_record],
+        evidence_records=[product_use_evidence_record],
+        pbpk_regimen_name="screening_daily_use",
+        pbpk_context_of_use="screening-brief",
+    )
+    integrated_exposure_workflow_result = run_integrated_exposure_workflow(
+        integrated_exposure_workflow_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
+    worker_task_routing_request = WorkerTaskRoutingInput(
+        chemical_id="DTXSID7020182",
+        route=Route.INHALATION,
+        scenario_class=ScenarioClass.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Workplace Disinfectant Spray",
+            product_category="disinfectant",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.03,
+            use_amount_per_event=15,
+            use_amount_unit="mL",
+            use_events_per_day=2,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=75,
+            inhalation_rate_m3_per_hour=1.1,
+            demographic_tags=["worker", "occupational"],
+            region="EU",
+        ),
+        requested_tier=TierLevel.TIER_1,
+    )
+    worker_task_routing_decision = route_worker_task(worker_task_routing_request, defaults_registry)
+    worker_inhalation_tier2_bridge_request = ExportWorkerInhalationTier2BridgeRequest(
+        base_request=InhalationTier1ScenarioRequest(
+            chemical_id="DTXSID7020182",
+            chemical_name="Example Solvent A",
+            route=Route.INHALATION,
+            product_use_profile=ProductUseProfile(
+                product_name="Example Workplace Disinfectant Spray",
+                product_category="disinfectant",
+                physical_form="spray",
+                application_method="trigger_spray",
+                retention_type="surface_contact",
+                concentration_fraction=0.03,
+                use_amount_per_event=15,
+                use_amount_unit="mL",
+                use_events_per_day=2,
+                room_volume_m3=35,
+                air_exchange_rate_per_hour=2.0,
+                exposure_duration_hours=0.5,
+            ),
+            population_profile=PopulationProfile(
+                population_group="adult",
+                body_weight_kg=75,
+                inhalation_rate_m3_per_hour=1.1,
+                demographic_tags=["worker", "occupational"],
+                region="EU",
+            ),
+            source_distance_m=0.35,
+            spray_duration_seconds=10.0,
+            near_field_volume_m3=2.0,
+            airflow_directionality="cross_draft",
+            particle_size_regime="coarse_spray",
+        ),
+        target_model_family="art",
+        task_description="Worker trigger-spray disinfection task needing Tier 2 refinement",
+        workplace_setting="janitorial closet",
+        task_duration_hours=0.5,
+        ventilation_context="general_ventilation",
+        local_controls=["general ventilation", "task segregation"],
+        respiratory_protection="none",
+        emission_descriptor="short trigger-spray cleaning mist near the breathing zone",
+        context_of_use="worker-tier2-bridge",
+        notes=["Illustrative worker inhalation bridge package for a future ART-style adapter."],
+    )
+    worker_inhalation_tier2_bridge_package = build_worker_inhalation_tier2_bridge(
+        worker_inhalation_tier2_bridge_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
+    worker_inhalation_tier2_adapter_request = (
+        worker_inhalation_tier2_bridge_package.tool_call.arguments
+    )
+    worker_inhalation_tier2_adapter_ingest_result = ingest_worker_inhalation_tier2_task(
+        worker_inhalation_tier2_adapter_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
+    worker_inhalation_tier2_execution_request = ExecuteWorkerInhalationTier2Request(
+        adapter_request=worker_inhalation_tier2_adapter_request,
+        execution_overrides=WorkerInhalationTier2ExecutionOverrides(
+            control_factor=0.7,
+            respiratory_protection_factor=0.5,
+        ),
+        context_of_use="worker-art-execution",
+    )
+    worker_inhalation_tier2_execution_result = execute_worker_inhalation_tier2_task(
+        worker_inhalation_tier2_execution_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
+    worker_art_execution_package_request = ExportWorkerArtExecutionPackageRequest(
+        adapter_request=worker_inhalation_tier2_adapter_request,
+        context_of_use="worker-art-external-exchange",
+    )
+    worker_art_execution_package = export_worker_inhalation_art_execution_package(
+        worker_art_execution_package_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
+    worker_art_external_result = WorkerArtExternalExecutionResult(
+        source_system="ART",
+        source_run_id="art-run-001",
+        model_version="ART-1.5.0",
+        result_status="completed",
+        breathing_zone_concentration_mg_per_m3=0.72,
+        inhaled_mass_mg_per_day=1.575,
+        normalized_external_dose_mg_per_kg_day=0.021,
+        determinant_snapshot={
+            "workplaceSettingType": "janitorial_closet_or_small_room",
+            "ventilationDeterminant": "general_ventilation",
+            "taskFamily": "janitorial_disinfectant_trigger_spray",
+        },
+        quality_notes=[],
+        raw_artifacts=[
+            WorkerArtExternalArtifact(
+                label="ART run summary",
+                locator="artifact://art-run-001/summary.json",
+                media_type="application/json",
+                adapter_hint=WorkerArtArtifactAdapterId.EXECUTION_REPORT_JSON_V1,
+                content_json={
+                    "schemaVersion": "artWorkerExecutionReport.v1",
+                    "run": {
+                        "id": "art-run-001",
+                        "modelVersion": "ART-1.5.0"
+                    },
+                    "task": {
+                        "durationHours": 0.5
+                    },
+                    "results": {
+                        "status": "completed",
+                        "taskDurationHours": 0.5,
+                        "breathingZoneConcentrationMgPerM3": 0.72,
+                        "inhaledMassMgPerDay": 1.575,
+                        "normalizedExternalDoseMgPerKgDay": 0.021
+                    },
+                    "determinants": {
+                        "workplaceSettingType": "janitorial_closet_or_small_room",
+                        "ventilationDeterminant": "general_ventilation",
+                        "taskFamily": "janitorial_disinfectant_trigger_spray"
+                    }
+                },
+                note="Illustrative nested external ART runner report artifact.",
+            )
+        ],
+    )
+    worker_art_execution_result_import_request = ImportWorkerArtExecutionResultRequest(
+        adapter_request=worker_inhalation_tier2_adapter_request,
+        external_result=worker_art_external_result,
+        context_of_use="worker-art-external-import",
+    )
+    worker_art_execution_result_import = import_worker_inhalation_art_execution_result(
+        worker_art_execution_result_import_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
+    worker_dermal_absorbed_dose_bridge_request = ExportWorkerDermalAbsorbedDoseBridgeRequest(
+        base_request=ExposureScenarioRequest(
+            chemical_id="DTXSID7020182",
+            chemical_name="Example Solvent A",
+            route=Route.DERMAL,
+            scenario_class=ScenarioClass.SCREENING,
+            product_use_profile=ProductUseProfile(
+                product_name="Example Workplace Wipe Cleaner",
+                product_category="household_cleaner",
+                physical_form="liquid",
+                application_method="wipe",
+                retention_type="surface_contact",
+                concentration_fraction=0.02,
+                use_amount_per_event=10,
+                use_amount_unit="g",
+                use_events_per_day=3,
+                exposure_duration_hours=0.75,
+            ),
+            population_profile=PopulationProfile(
+                population_group="adult",
+                body_weight_kg=75,
+                exposed_surface_area_cm2=840,
+                demographic_tags=["worker", "occupational"],
+                region="EU",
+            ),
+        ),
+        target_model_family="dermal_absorption_ppe",
+        task_description="Worker wet-wipe cleaning task with gloved hand contact",
+        workplace_setting="custodial closet",
+        contact_duration_hours=0.75,
+        contact_pattern=WorkerDermalContactPattern.SURFACE_TRANSFER,
+        exposed_body_areas=["hands"],
+        ppe_state=WorkerDermalPpeState.WORK_GLOVES,
+        control_measures=["task segregation", "prompt hand washing"],
+        surface_loading_context="wet cleaning cloth contact with surface residue transfer",
+        context_of_use="worker-dermal-bridge",
+        notes=["Illustrative worker dermal bridge package for a future absorbed-dose workflow."],
+    )
+    worker_dermal_absorbed_dose_bridge_package = build_worker_dermal_absorbed_dose_bridge(
+        worker_dermal_absorbed_dose_bridge_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
+    worker_dermal_absorbed_dose_adapter_request = (
+        worker_dermal_absorbed_dose_bridge_package.tool_call.arguments
+    )
+    worker_dermal_absorbed_dose_adapter_ingest_result = ingest_worker_dermal_absorbed_dose_task(
+        worker_dermal_absorbed_dose_adapter_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
+    worker_dermal_absorbed_dose_execution_request = ExecuteWorkerDermalAbsorbedDoseRequest(
+        adapter_request=worker_dermal_absorbed_dose_adapter_request,
+        execution_overrides=WorkerDermalAbsorbedDoseExecutionOverrides(
+            ppe_penetration_factor=0.3
+        ),
+        context_of_use="worker-dermal-execution",
+    )
+    worker_dermal_absorbed_dose_execution_result = execute_worker_dermal_absorbed_dose_task(
+        worker_dermal_absorbed_dose_execution_request,
+        registry=defaults_registry,
+        generated_at=EXAMPLE_GENERATED_AT,
+    )
     toxclaw_evidence = build_toxclaw_evidence_envelope(
         dermal_scenario,
         context_of_use="screening_prioritization",
@@ -658,6 +1078,12 @@ def build_examples() -> dict[str, dict]:
         "screening_dermal_scenario": dermal_scenario.model_dump(mode="json", by_alias=True),
         "inhalation_request": inhalation_request.model_dump(mode="json", by_alias=True),
         "inhalation_scenario": inhalation_scenario.model_dump(mode="json", by_alias=True),
+        "inhalation_residual_reentry_request": inhalation_residual_reentry_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "inhalation_residual_reentry_scenario": (
+            inhalation_residual_reentry_scenario.model_dump(mode="json", by_alias=True)
+        ),
         "inhalation_tier1_request": inhalation_tier1_request.model_dump(
             mode="json", by_alias=True
         ),
@@ -716,6 +1142,104 @@ def build_examples() -> dict[str, dict]:
         "comp_tox_record": comp_tox_record.model_dump(mode="json", by_alias=True),
         "comp_tox_enriched_request": comp_tox_enriched_request.model_dump(
             mode="json", by_alias=True
+        ),
+        "cons_expo_evidence_record": cons_expo_evidence_record.model_dump(
+            mode="json", by_alias=True
+        ),
+        "cons_expo_product_use_evidence": cons_expo_product_use_evidence.model_dump(
+            mode="json", by_alias=True
+        ),
+        "product_use_evidence_record": product_use_evidence_record.model_dump(
+            mode="json", by_alias=True
+        ),
+        "product_use_evidence_fit_report": product_use_fit_report.model_dump(
+            mode="json", by_alias=True
+        ),
+        "product_use_evidence_enriched_request": product_use_enriched_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "product_use_evidence_reconciliation_report": (
+            product_use_reconciliation_report.model_dump(mode="json", by_alias=True)
+        ),
+        "integrated_exposure_workflow_request": (
+            integrated_exposure_workflow_request.model_dump(mode="json", by_alias=True)
+        ),
+        "integrated_exposure_workflow_result": _freeze_integrated_workflow_result(
+            integrated_exposure_workflow_result
+        ),
+        "worker_task_routing_request": worker_task_routing_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "worker_task_routing_decision": worker_task_routing_decision.model_dump(
+            mode="json", by_alias=True
+        ),
+        "worker_inhalation_tier2_bridge_request": (
+            worker_inhalation_tier2_bridge_request.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_inhalation_tier2_bridge_package": (
+            worker_inhalation_tier2_bridge_package.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_inhalation_tier2_adapter_request": (
+            worker_inhalation_tier2_adapter_request.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_inhalation_tier2_adapter_ingest_result": (
+            worker_inhalation_tier2_adapter_ingest_result.model_dump(
+                mode="json", by_alias=True
+            )
+        ),
+        "worker_inhalation_tier2_execution_request": (
+            worker_inhalation_tier2_execution_request.model_dump(
+                mode="json",
+                by_alias=True,
+            )
+        ),
+        "worker_inhalation_tier2_execution_result": (
+            worker_inhalation_tier2_execution_result.model_dump(
+                mode="json",
+                by_alias=True,
+            )
+        ),
+        "worker_art_execution_package_request": (
+            worker_art_execution_package_request.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_art_execution_package": (
+            worker_art_execution_package.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_art_external_result": worker_art_external_result.model_dump(
+            mode="json",
+            by_alias=True,
+        ),
+        "worker_art_execution_result_import_request": (
+            worker_art_execution_result_import_request.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_art_execution_result_import": (
+            worker_art_execution_result_import.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_dermal_absorbed_dose_bridge_request": (
+            worker_dermal_absorbed_dose_bridge_request.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_dermal_absorbed_dose_bridge_package": (
+            worker_dermal_absorbed_dose_bridge_package.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_dermal_absorbed_dose_adapter_request": (
+            worker_dermal_absorbed_dose_adapter_request.model_dump(mode="json", by_alias=True)
+        ),
+        "worker_dermal_absorbed_dose_adapter_ingest_result": (
+            worker_dermal_absorbed_dose_adapter_ingest_result.model_dump(
+                mode="json", by_alias=True
+            )
+        ),
+        "worker_dermal_absorbed_dose_execution_request": (
+            worker_dermal_absorbed_dose_execution_request.model_dump(
+                mode="json",
+                by_alias=True,
+            )
+        ),
+        "worker_dermal_absorbed_dose_execution_result": (
+            worker_dermal_absorbed_dose_execution_result.model_dump(
+                mode="json",
+                by_alias=True,
+            )
         ),
         "toxclaw_evidence_envelope": toxclaw_evidence.model_dump(mode="json", by_alias=True),
         "toxclaw_evidence_bundle": toxclaw_evidence_bundle.model_dump(

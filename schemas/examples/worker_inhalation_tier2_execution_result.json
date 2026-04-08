@@ -1,0 +1,1545 @@
+{
+  "schema_version": "workerInhalationTier2ExecutionResult.v1",
+  "supportedByAdapter": true,
+  "readyForExecution": true,
+  "manualReviewRequired": false,
+  "resolvedAdapter": "art_worker_inhalation_adapter",
+  "targetModelFamily": "art",
+  "chemicalId": "DTXSID7020182",
+  "chemicalName": "Example Solvent A",
+  "route": "inhalation",
+  "scenarioClass": "refined",
+  "baselineDose": {
+    "metric": "normalized_external_dose",
+    "value": 0.09455426,
+    "unit": "mg/kg-day"
+  },
+  "externalDose": {
+    "metric": "normalized_worker_inhaled_dose",
+    "value": 0.03309399,
+    "unit": "mg/kg-day"
+  },
+  "productUseProfile": {
+    "schema_version": "productUseProfile.v1",
+    "product_name": "Example Workplace Disinfectant Spray",
+    "product_subtype": null,
+    "product_category": "disinfectant",
+    "physical_form": "spray",
+    "application_method": "trigger_spray",
+    "retention_type": "surface_contact",
+    "concentration_fraction": 0.03,
+    "use_amount_per_event": 15.0,
+    "use_amount_unit": "mL",
+    "use_events_per_day": 2.0,
+    "density_g_per_ml": null,
+    "transfer_efficiency": null,
+    "retention_factor": null,
+    "ingestion_fraction": null,
+    "aerosolized_fraction": null,
+    "room_volume_m3": 35.0,
+    "air_exchange_rate_per_hour": 2.0,
+    "exposure_duration_hours": 0.5
+  },
+  "populationProfile": {
+    "schema_version": "populationProfile.v1",
+    "population_group": "adult",
+    "body_weight_kg": 75.0,
+    "inhalation_rate_m3_per_hour": 1.1,
+    "exposed_surface_area_cm2": null,
+    "demographic_tags": [
+      "worker",
+      "occupational"
+    ],
+    "region": "EU"
+  },
+  "taskContext": {
+    "schema_version": "workerInhalationTier2TaskContext.v1",
+    "task_description": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+    "workplace_setting": "janitorial closet",
+    "task_duration_hours": 0.5,
+    "ventilation_context": "general_ventilation",
+    "local_controls": [
+      "general ventilation",
+      "task segregation"
+    ],
+    "respiratory_protection": "none",
+    "emission_descriptor": "short trigger-spray cleaning mist near the breathing zone",
+    "notes": [
+      "Illustrative worker inhalation bridge package for a future ART-style adapter."
+    ]
+  },
+  "artTaskEnvelope": {
+    "schema_version": "workerInhalationArtTaskEnvelope.v1",
+    "adapterName": "art_worker_inhalation_adapter",
+    "adapterVersion": "0.1.0",
+    "activityClass": "trigger_spray_surface_application",
+    "emissionProfile": "liquid_spray_mist_release_profile",
+    "controlProfile": "general_ventilation_control_profile",
+    "determinantTemplateMatch": {
+      "schema_version": "workerArtDeterminantTemplateMatch.v1",
+      "templateCatalogVersion": "2026.04.07.v1",
+      "templateId": "janitorial_disinfectant_trigger_spray_v1",
+      "templateLabel": "Janitorial Disinfectant Trigger Spray",
+      "alignmentStatus": "aligned",
+      "matchScore": 1.0,
+      "matchBasis": [
+        "productCategory=`disinfectant` matched the template family.",
+        "applicationMethod=`trigger_spray` matched the template release mode.",
+        "physicalForm=`spray` matched the template aerosol form.",
+        "Task text or workplace setting matched the template context."
+      ],
+      "determinantRecommendations": {
+        "artTaskFamily": "janitorial_disinfectant_trigger_spray",
+        "handlingPattern": "directed_surface_spray_and_wipe",
+        "releaseMechanism": "short_manual_trigger_spray",
+        "nearFieldOrientation": "toward_target_surface",
+        "defaultExposureContext": {
+          "workplaceSettingType": "indoor_service_area",
+          "workerProximity": "near_field_operator"
+        },
+        "activityClass": "trigger_spray_surface_application",
+        "emissionProfile": "liquid_spray_mist_release_profile"
+      },
+      "sourceBasis": [
+        "worker_art_template_pack_2026_v1",
+        "worker_routing_trigger_spray_screening_bridge_v1"
+      ],
+      "reviewNotes": []
+    },
+    "taskSummary": [
+      "Matched determinant template=`janitorial_disinfectant_trigger_spray_v1` with alignmentStatus=`aligned`.",
+      "Mapped applicationMethod=`trigger_spray` and physicalForm=`spray` to activityClass=`trigger_spray_surface_application`.",
+      "Mapped ventilationContext=`general_ventilation` and localControls count `2` to controlProfile=`general_ventilation_control_profile`.",
+      "Preserved contextOfUse=`worker-tier2-bridge` and sourceModule=`exposure-scenario-mcp` for downstream ART-side review."
+    ],
+    "artInputs": {
+      "substanceName": "Example Solvent A",
+      "substanceIdentifier": "DTXSID7020182",
+      "activityClass": "trigger_spray_surface_application",
+      "emissionProfile": "liquid_spray_mist_release_profile",
+      "controlProfile": "general_ventilation_control_profile",
+      "templateId": "janitorial_disinfectant_trigger_spray_v1",
+      "templateAlignmentStatus": "aligned",
+      "determinantTemplateRecommendations": {
+        "artTaskFamily": "janitorial_disinfectant_trigger_spray",
+        "handlingPattern": "directed_surface_spray_and_wipe",
+        "releaseMechanism": "short_manual_trigger_spray",
+        "nearFieldOrientation": "toward_target_surface",
+        "defaultExposureContext": {
+          "workplaceSettingType": "indoor_service_area",
+          "workerProximity": "near_field_operator"
+        },
+        "activityClass": "trigger_spray_surface_application",
+        "emissionProfile": "liquid_spray_mist_release_profile"
+      },
+      "taskDescription": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+      "workplaceSetting": "janitorial closet",
+      "taskDurationHours": 0.5,
+      "ventilationContext": "general_ventilation",
+      "localControls": [
+        "general ventilation",
+        "task segregation"
+      ],
+      "respiratoryProtection": "none",
+      "emissionDescriptor": "short trigger-spray cleaning mist near the breathing zone",
+      "productCategory": "disinfectant",
+      "productSubtype": null,
+      "applicationMethod": "trigger_spray",
+      "physicalForm": "spray",
+      "concentrationFraction": 0.03,
+      "useAmountPerEvent": 15.0,
+      "useAmountUnit": "mL",
+      "useEventsPerDay": 2.0,
+      "eventDurationHours": 0.5,
+      "roomVolumeM3": 35.0,
+      "airExchangeRatePerHour": 2.0,
+      "bodyWeightKg": 75.0,
+      "inhalationRateM3PerHour": 1.1,
+      "region": "EU",
+      "tier1ScreeningHints": {
+        "sourceDistanceM": 0.35,
+        "sprayDurationSeconds": 10.0,
+        "nearFieldVolumeM3": 2.0,
+        "airflowDirectionality": "cross_draft",
+        "particleSizeRegime": "coarse_spray"
+      }
+    },
+    "screeningHandoffSummary": {
+      "sourceModule": "exposure-scenario-mcp",
+      "contextOfUse": "worker-tier2-bridge",
+      "guidanceResource": "docs://worker-tier2-bridge-guide",
+      "workerRoutingSupportStatus": "future_adapter_recommended",
+      "workerRoutingTargetMcp": "future_worker_exposure_adapter",
+      "workerRoutingNextStep": "Collect task-control and ventilation inputs for an ART- or Stoffenmanager-aligned adapter.",
+      "sourceRequestSchema": "inhalationTier1ScenarioRequest.v1",
+      "sourceRoute": "inhalation",
+      "templateCatalogVersion": "2026.04.07.v1"
+    },
+    "guidanceResource": "docs://worker-art-adapter-guide"
+  },
+  "executionOverrides": {
+    "schema_version": "workerInhalationTier2ExecutionOverrides.v1",
+    "controlFactor": 0.7,
+    "respiratoryProtectionFactor": 0.5,
+    "vaporReleaseFraction": null
+  },
+  "routeMetrics": {
+    "baselineModelFamily": "tier1_nf_ff_screening",
+    "templateId": "janitorial_disinfectant_trigger_spray_v1",
+    "templateAlignmentStatus": "aligned",
+    "activityClass": "trigger_spray_surface_application",
+    "emissionProfile": "liquid_spray_mist_release_profile",
+    "controlProfile": "general_ventilation_control_profile",
+    "baselineAverageAirConcentrationMgPerM3": 6.44688144,
+    "controlAdjustedAverageAirConcentrationMgPerM3": 4.51281701,
+    "intakeEquivalentAirConcentrationMgPerM3": 2.2564085,
+    "baselineInhaledMassMgPerDay": 7.09156958,
+    "adjustedInhaledMassMgPerDay": 2.48204935,
+    "workerControlFactor": 0.7,
+    "respiratoryProtectionFactor": 0.5
+  },
+  "assumptions": [
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "use_amount_per_event",
+      "value": 15.0,
+      "unit": "mL",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Product amount per event was supplied in milliliters and converted with density.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "density_g_per_ml",
+      "value": 1.0,
+      "unit": "g/mL",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "heuristic_density_defaults_v1",
+        "title": "Exposure Scenario MCP heuristic density screening defaults",
+        "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
+        "version": "2026.03.25.v6",
+        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category, physical form, and product subtype when available.",
+      "governance": {
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
+        "uncertainty_types": [
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "physical_form": "spray"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "product_mass_g_per_event",
+      "value": 15.0,
+      "unit": "g",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Converted volume-based use amount into mass using density.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "concentration_fraction",
+      "value": 0.03,
+      "unit": "fraction",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Chemical fraction in the product was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "physical_form": "spray"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "use_events_per_day",
+      "value": 2.0,
+      "unit": "events/day",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Use frequency was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "application_method": "trigger_spray",
+          "population_group": "adult"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "chemical_mass_mg_per_event",
+      "value": 450.0,
+      "unit": "mg/event",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Product mass per event multiplied by concentration fraction.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "aerosolized_fraction",
+      "value": 0.2,
+      "unit": "fraction",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "rivm_disinfectant_trigger_spray_airborne_fraction_defaults_2006",
+        "title": "RIVM Disinfectant Products Fact Sheet trigger-spray airborne-fraction default for surface sprays",
+        "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005003.pdf",
+        "version": "RIVM report 320005003 / 2006",
+        "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Aerosolized fraction defaulted from application_method='trigger_spray' and product_category='disinfectant'.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "room_volume_m3",
+      "value": 35.0,
+      "unit": "m3",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Room volume was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "air_exchange_rate_per_hour",
+      "value": 2.0,
+      "unit": "1/h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Air exchange rate was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "exposure_duration_hours",
+      "value": 0.5,
+      "unit": "h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Exposure duration was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "inhalation_rate_m3_per_hour",
+      "value": 1.1,
+      "unit": "m3/h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Inhalation rate was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "body_weight_kg",
+      "value": 75.0,
+      "unit": "kg",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Body weight was supplied explicitly for dose normalization.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "source_distance_m",
+      "value": 0.35,
+      "unit": "m",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Tier 1 source distance was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "spray_duration_seconds",
+      "value": 10.0,
+      "unit": "s",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Tier 1 active spray duration was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "near_field_volume_m3",
+      "value": 2.0,
+      "unit": "m3",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Tier 1 near-field volume was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "airflow_directionality",
+      "value": "cross_draft",
+      "unit": null,
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Tier 1 airflow directionality class was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "particle_size_regime",
+      "value": "coarse_spray",
+      "unit": null,
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Tier 1 particle-size regime was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "released_mass_mg_per_event",
+      "value": 90.0,
+      "unit": "mg/event",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Released mass = chemical mass per event x aerosolized fraction.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "spray_duration_hours",
+      "value": 0.002777777777777778,
+      "unit": "h",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Converted Tier 1 spray duration from seconds into hours.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "far_field_volume_m3",
+      "value": 33.0,
+      "unit": "m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Far-field volume = room volume minus near-field volume.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "near_field_exchange_turnover_per_hour",
+      "value": 32.0,
+      "unit": "1/h",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "benchmark_tier1_nf_ff_parameter_pack_v1",
+        "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
+        "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
+        "version": "2026.03.25.v1",
+        "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Tier 1 screening turnover resolved from the packaged airflow-directionality profile.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "particle_persistence_factor",
+      "value": 0.85,
+      "unit": null,
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "benchmark_tier1_nf_ff_parameter_pack_v1",
+        "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
+        "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
+        "version": "2026.03.25.v1",
+        "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Tier 1 persistence factor resolved from the packaged particle-regime profile.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "physical_form": "spray",
+          "application_method": "trigger_spray"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "interzonal_mixing_rate_m3_per_hour",
+      "value": 68.0,
+      "unit": "m3/h",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Near-field volume multiplied by the Tier 1 screening exchange turnover plus ventilation.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "far_field_average_air_concentration_mg_per_m3",
+      "value": 1.6254528655591485,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Far-field room average derived from the Tier 0 room model over the full exposure window.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "near_field_active_spray_concentration_mg_per_m3",
+      "value": 869.4825957227021,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Active spray breathing-zone concentration derived from a screening near-field increment added to the far-field room average.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "breathing_zone_time_weighted_average_mg_per_m3",
+      "value": 6.44688143698772,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Time-weighted breathing-zone average over the full event duration.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "inhaled_mass_mg_per_event",
+      "value": 3.5457847903432462,
+      "unit": "mg/event",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Inhaled mass per event combines active-spray near-field and remaining far-field periods.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "inhaled_mass_mg_per_day",
+      "value": 7.0915695806864925,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Daily inhaled mass equals inhaled mass per event multiplied by events/day.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "normalized_external_dose_mg_per_kg_day",
+      "value": 0.09455426107581989,
+      "unit": "mg/kg-day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Normalized external dose = inhaled mass per day / body weight.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "worker_control_factor",
+      "value": 0.7,
+      "unit": "fraction",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_art_execution_surrogate_v1",
+        "title": "Exposure Scenario MCP worker ART-side execution surrogate",
+        "locator": "docs://worker-art-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Worker control factor was supplied as an execution override.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "respiratory_protection_factor",
+      "value": 0.5,
+      "unit": "fraction",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_art_execution_surrogate_v1",
+        "title": "Exposure Scenario MCP worker ART-side execution surrogate",
+        "locator": "docs://worker-art-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Respiratory protection factor was supplied as an execution override.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "adjusted_inhaled_mass_mg_per_day",
+      "value": 2.48204935,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_art_execution_surrogate_v1",
+        "title": "Exposure Scenario MCP worker ART-side execution surrogate",
+        "locator": "docs://worker-art-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Adjusted inhaled mass per day was derived from the baseline inhaled mass, worker control factor, and respiratory-protection factor.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "normalized_worker_inhaled_dose_mg_per_kg_day",
+      "value": 0.03309399,
+      "unit": "mg/kg-day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_art_execution_surrogate_v1",
+        "title": "Exposure Scenario MCP worker ART-side execution surrogate",
+        "locator": "docs://worker-art-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Normalized worker inhaled dose was derived from the adjusted inhaled mass and body weight.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile"
+        }
+      }
+    }
+  ],
+  "qualityFlags": [
+    {
+      "code": "worker_tier2_adapter_request_ingested",
+      "severity": "info",
+      "message": "Worker Tier 2 adapter request was ingested and normalized into an ART-side intake envelope."
+    },
+    {
+      "code": "worker_art_adapter_screening_hints_preserved",
+      "severity": "info",
+      "message": "Tier 1 screening geometry and spray hints were preserved as ART-side context only; they are not treated as solved occupational determinants."
+    },
+    {
+      "code": "worker_art_template_aligned",
+      "severity": "info",
+      "message": "Matched packaged ART determinant template `janitorial_disinfectant_trigger_spray_v1` with aligned status."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'density_g_per_ml'."
+    },
+    {
+      "code": "heuristic_default_source",
+      "severity": "warning",
+      "message": "Default value for 'density_g_per_ml' comes from a heuristic screening source rather than a curated factor pack."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'aerosolized_fraction'."
+    },
+    {
+      "code": "product_subtype_missing_for_spray_family",
+      "severity": "warning",
+      "message": "The current spray scenario uses a broad product_category without a product_subtype. Provide a narrower subtype such as `indoor_surface_insecticide`, `crack_and_crevice_insecticide`, `air_space_insecticide`, or `surface_trigger_spray_disinfectant` to unlock more specific ConsExpo-aligned screening branches."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'near_field_exchange_turnover_per_hour'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'particle_persistence_factor'."
+    },
+    {
+      "code": "tier_1_nf_ff_screening",
+      "severity": "info",
+      "message": "Tier 1 inhalation resolves a screening near-field/far-field split, but remains a deterministic external-dose model rather than a calibrated aerosol simulator."
+    },
+    {
+      "code": "tier1_profile_no_packaged_match",
+      "severity": "info",
+      "message": "No packaged Tier 1 profile matched the current product family and application method; screening geometry and regime inputs remain fully caller-defined."
+    },
+    {
+      "code": "worker_task_context",
+      "severity": "info",
+      "message": "Population profile indicates worker or occupational context; the scenario should be interpreted as worker-task triage, not as a consumer-use result."
+    },
+    {
+      "code": "worker_shared_screening_engine",
+      "severity": "warning",
+      "message": "Worker-tagged scenario uses the current shared screening engine rather than a dedicated occupational adapter. Inspect worker routing guidance before using the output downstream."
+    },
+    {
+      "code": "worker_art_execution_completed",
+      "severity": "info",
+      "message": "Worker inhalation surrogate execution completed with explicit control and respiratory-protection modifiers."
+    }
+  ],
+  "limitations": [
+    {
+      "code": "worker_art_adapter_no_solver",
+      "severity": "warning",
+      "message": "This ingest step does not execute ART, simulate workplace concentrations, or produce a compliance-ready occupational estimate."
+    },
+    {
+      "code": "worker_art_adapter_mapping_heuristic",
+      "severity": "warning",
+      "message": "Generic Exposure Scenario MCP task fields are mapped into an ART-aligned intake envelope using bounded, reviewable heuristics."
+    },
+    {
+      "code": "worker_art_adapter_screening_hints_context_only",
+      "severity": "info",
+      "message": "Tier 1 screening hints remain contextual surrogates and should not be confused with measured workplace determinants."
+    },
+    {
+      "code": "near_field_exchange_screening",
+      "severity": "warning",
+      "message": "Tier 1 NF/FF uses a deterministic screening exchange-rate mapping from airflow_directionality rather than measured interzonal airflow."
+    },
+    {
+      "code": "particle_regime_screening",
+      "severity": "warning",
+      "message": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics."
+    },
+    {
+      "code": "worker_model_boundary",
+      "severity": "warning",
+      "message": "This worker-tagged scenario reuses direct-use screening semantics and does not represent ECETOC TRA, ART, Stoffenmanager, measured workplace monitoring, or a regulatory occupational compliance determination."
+    },
+    {
+      "code": "worker_art_execution_not_art_solver",
+      "severity": "warning",
+      "message": "The current execution path is an ART-aligned surrogate layered on top of existing screening inhalation kernels; it is not a real ART solver."
+    },
+    {
+      "code": "worker_art_execution_control_factors_generic",
+      "severity": "warning",
+      "message": "Worker control and respiratory-protection effects are applied as bounded heuristic factors rather than determinant-specific model terms."
+    }
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "worker.inhalation_art_execution_surrogate.v1",
+    "plugin_id": "worker_inhalation_art_execution_surrogate",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.04.07.v18",
+    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Execution reuses the existing inhalation screening kernels and then applies bounded worker control and respiratory-protection modifiers.",
+      "The current output is an ART-aligned surrogate screening estimate, not a real ART run or occupational compliance result."
+    ]
+  },
+  "fitForPurpose": {
+    "label": "worker_inhalation_control_aware_screening",
+    "suitable_for": [
+      "worker inhalation screening with explicit control modifiers",
+      "ART-aligned occupational exposure triage",
+      "PBPK-ready external inhalation dose handoff after expert review"
+    ],
+    "not_suitable_for": [
+      "measured workplace concentration replacement",
+      "true ART execution",
+      "occupational compliance determination"
+    ]
+  },
+  "tierSemantics": {
+    "tier_claimed": "tier_1",
+    "tier_earned": "tier_1",
+    "tier_rationale": "Worker inhalation execution preserves the strongest available underlying screening kernel and layers explicit control and respiratory-protection factors on top.",
+    "assumption_checks_passed": true,
+    "required_caveats": [
+      "Interpret the result as a worker control-aware screening estimate rather than a validated occupational model output.",
+      "Keep the determinant template match, quality flags, and limitations attached to any downstream use."
+    ],
+    "forbidden_interpretations": [
+      "Do not treat the result as a real ART or Stoffenmanager execution.",
+      "Do not treat the respiratory-protection factor as a compliance-assured protection factor.",
+      "Do not treat the output as a final occupational risk conclusion."
+    ]
+  },
+  "validationSummary": {
+    "validationStatus": "benchmark_regression",
+    "routeMechanism": "worker_inhalation_control_aware_screening",
+    "benchmarkCaseIds": [
+      "worker_inhalation_janitorial_trigger_spray_execution"
+    ],
+    "externalDatasetIds": [
+      "worker_biocidal_spray_foam_inhalation_2023"
+    ],
+    "evidenceReadiness": "benchmark_plus_external_candidates",
+    "heuristicAssumptionNames": [
+      "density_g_per_ml",
+      "near_field_exchange_turnover_per_hour",
+      "particle_persistence_factor"
+    ],
+    "validationGapIds": [
+      "worker_inhalation_external_validation_partial_only",
+      "worker_art_execution_not_true_solver"
+    ],
+    "executedValidationChecks": [
+      {
+        "checkId": "worker_inhalation_janitorial_trigger_spray_execution_external_dose_benchmark_2026",
+        "title": "Worker inhalation external dose vs benchmark `worker_inhalation_janitorial_trigger_spray_execution`",
+        "referenceDatasetId": "worker_inhalation_janitorial_trigger_spray_execution",
+        "status": "pass",
+        "comparedMetric": "normalized_worker_inhaled_dose",
+        "observedValue": 0.03309399,
+        "referenceLower": 0.03143929,
+        "referenceUpper": 0.03474869,
+        "unit": "mg/kg-day",
+        "note": "Compares the current result against the packaged worker inhalation benchmark `worker_inhalation_janitorial_trigger_spray_execution` with a +/-5% acceptance band."
+      },
+      {
+        "checkId": "worker_inhalation_janitorial_trigger_spray_execution_baseline_dose_benchmark_2026",
+        "title": "Worker inhalation baseline dose vs benchmark `worker_inhalation_janitorial_trigger_spray_execution`",
+        "referenceDatasetId": "worker_inhalation_janitorial_trigger_spray_execution",
+        "status": "pass",
+        "comparedMetric": "normalized_external_dose",
+        "observedValue": 0.09455426,
+        "referenceLower": 0.08982655,
+        "referenceUpper": 0.09928197,
+        "unit": "mg/kg-day",
+        "note": "Checks the preserved screening baseline against the packaged worker inhalation benchmark `worker_inhalation_janitorial_trigger_spray_execution`."
+      },
+      {
+        "checkId": "worker_inhalation_janitorial_trigger_spray_execution_control_adjusted_concentration_benchmark_2026",
+        "title": "Worker inhalation control-adjusted concentration vs benchmark `worker_inhalation_janitorial_trigger_spray_execution`",
+        "referenceDatasetId": "worker_inhalation_janitorial_trigger_spray_execution",
+        "status": "pass",
+        "comparedMetric": "control_adjusted_average_air_concentration_mg_per_m3",
+        "observedValue": 4.51281701,
+        "referenceLower": 4.28717616,
+        "referenceUpper": 4.73845786,
+        "unit": "mg/m3",
+        "note": "Checks the control-adjusted breathing-zone surrogate against the packaged worker inhalation benchmark `worker_inhalation_janitorial_trigger_spray_execution`."
+      }
+    ],
+    "highestSupportedUncertaintyTier": "tier_b",
+    "probabilisticEnablement": "blocked",
+    "notes": [
+      "Worker inhalation validation is currently benchmark-regressed against packaged surrogate execution cases, not an external occupational solver.",
+      "A source-backed occupational biocidal spray/foam study is attached when the task family matches disinfectant or pest-control trigger spraying.",
+      "A narrow executable external concentration check is available for a study-like small-scale handheld BAC trigger-spray benchmark.",
+      "Executable checks run only when the task matches one of the governed worker benchmark patterns."
+    ]
+  },
+  "interpretationNotes": [
+    "The baseline concentration and dose come from the strongest available inhalation screening kernel preserved by the worker Tier 2 path.",
+    "Worker control and respiratory-protection modifiers are then applied transparently as bounded factors.",
+    "When the task is vapor-generating and no direct spray kernel applies, execution falls back to a labeled room-average vapor-release surrogate."
+  ]
+}

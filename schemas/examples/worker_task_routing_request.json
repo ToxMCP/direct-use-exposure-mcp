@@ -1,0 +1,41 @@
+{
+  "schema_version": "workerTaskRoutingInput.v1",
+  "chemical_id": "DTXSID7020182",
+  "route": "inhalation",
+  "scenario_class": "inhalation",
+  "product_use_profile": {
+    "schema_version": "productUseProfile.v1",
+    "product_name": "Example Workplace Disinfectant Spray",
+    "product_subtype": null,
+    "product_category": "disinfectant",
+    "physical_form": "spray",
+    "application_method": "trigger_spray",
+    "retention_type": "surface_contact",
+    "concentration_fraction": 0.03,
+    "use_amount_per_event": 15.0,
+    "use_amount_unit": "mL",
+    "use_events_per_day": 2.0,
+    "density_g_per_ml": null,
+    "transfer_efficiency": null,
+    "retention_factor": null,
+    "ingestion_fraction": null,
+    "aerosolized_fraction": null,
+    "room_volume_m3": null,
+    "air_exchange_rate_per_hour": null,
+    "exposure_duration_hours": null
+  },
+  "population_profile": {
+    "schema_version": "populationProfile.v1",
+    "population_group": "adult",
+    "body_weight_kg": 75.0,
+    "inhalation_rate_m3_per_hour": 1.1,
+    "exposed_surface_area_cm2": null,
+    "demographic_tags": [
+      "worker",
+      "occupational"
+    ],
+    "region": "EU"
+  },
+  "requested_tier": "tier_1",
+  "prefer_current_mcp": true
+}

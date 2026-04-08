@@ -2,9 +2,17 @@
 
 Exposure Scenario MCP is intended to act as the external-dose engine inside the ToxMCP stack.
 
+See [exposure_platform_architecture.md](./exposure_platform_architecture.md) for the recommended
+multi-MCP architecture and phased build order across exposure, fate, dietary, and worker domains.
+
 ## Boundary
 
 - Exposure Scenario MCP owns external dose construction and refinement only.
+- Keep environmental release and multimedia fate in a sibling Fate MCP once those workflows are
+  added; they should feed concentration surfaces into exposure workflows rather than blur the
+  boundary inside this server.
+- Keep dietary intake workflows in a sibling Dietary MCP once those workflows are added; they use
+  different input taxonomies and regulatory semantics than direct-use exposure.
 - A future Literature MCP, if introduced, should own source normalization, parameter-candidate
   extraction, applicability tagging, and evidence-pack curation rather than dose math.
 - PBPK MCP owns internal exposure, TK simulation, and downstream biological interpretation.
@@ -24,6 +32,23 @@ Exposure Scenario MCP is intended to act as the external-dose engine inside the 
 - Use CompTox identity and supporting metadata to enrich requests when available.
 - Keep enrichment additive and provenance-rich rather than making it mandatory.
 - Preserve upstream identifiers in request metadata or evidence envelopes.
+- Treat CompTox as one optional evidence source, not the only product-use authority.
+- For regional or regulatory-context differences such as EU pesticide use patterns, run the
+  generic product-use evidence fit workflow before auto-applying category or use-context updates.
+- When multiple sources are available, use the product-use reconciliation workflow to rank the
+  candidates, surface conflicts, and build a merged request preview with field-level provenance.
+- Prefer generic `productUseEvidenceRecord` payloads when the upstream source is a dossier,
+  reviewed literature pack, or user-supplied evidence rather than EPA CompTox.
+
+## ConsExpo
+
+- Treat RIVM ConsExpo as a first-class EU consumer product-use source.
+- Use the dedicated ConsExpo mapping workflow to translate fact-sheet families into the generic
+  `productUseEvidenceRecord` contract before fit, apply, or reconciliation.
+- Expect ConsExpo to be especially useful for EU consumer families such as cosmetics,
+  cleaning products, disinfecting products, DIY/paint contexts, and pest control products.
+- Preserve the underlying fact-sheet identifier, version, and locator in source metadata so
+  downstream review can distinguish current and legacy ConsExpo packs.
 
 ## ToxClaw
 

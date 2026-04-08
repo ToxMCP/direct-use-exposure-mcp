@@ -1,0 +1,153 @@
+{
+  "schema_version": "runIntegratedExposureWorkflowInput.v1",
+  "request": {
+    "schema_version": "exposureScenarioRequest.v1",
+    "chemical_id": "DTXSID7020182",
+    "chemical_name": "Example Solvent A",
+    "route": "inhalation",
+    "scenario_class": "inhalation",
+    "product_use_profile": {
+      "schema_version": "productUseProfile.v1",
+      "product_name": "Example Trigger Spray",
+      "product_subtype": null,
+      "product_category": "household_cleaner",
+      "physical_form": "spray",
+      "application_method": "trigger_spray",
+      "retention_type": "surface_contact",
+      "concentration_fraction": 0.05,
+      "use_amount_per_event": 12.0,
+      "use_amount_unit": "mL",
+      "use_events_per_day": 1.0,
+      "density_g_per_ml": null,
+      "transfer_efficiency": null,
+      "retention_factor": null,
+      "ingestion_fraction": null,
+      "aerosolized_fraction": null,
+      "room_volume_m3": 25.0,
+      "air_exchange_rate_per_hour": null,
+      "exposure_duration_hours": null
+    },
+    "population_profile": {
+      "schema_version": "populationProfile.v1",
+      "population_group": "adult",
+      "body_weight_kg": 68.0,
+      "inhalation_rate_m3_per_hour": 0.9,
+      "exposed_surface_area_cm2": null,
+      "demographic_tags": [],
+      "region": "EU"
+    },
+    "assumption_overrides": {},
+    "requestedTier": "tier_0"
+  },
+  "compToxRecord": {
+    "schema_version": "compToxChemicalRecord.v1",
+    "chemical_id": "DTXSID7020182",
+    "preferred_name": "Example Solvent A",
+    "casrn": "123-45-6",
+    "product_use_categories": [
+      "personal_care",
+      "household_cleaner"
+    ],
+    "physchem_summary": {
+      "vapor_pressure_pa": 150.0,
+      "water_solubility_mg_l": 1200.0
+    },
+    "evidence_sources": [
+      "CompTox:mock-record-001"
+    ]
+  },
+  "consExpoRecords": [
+    {
+      "schema_version": "consExpoEvidenceRecord.v1",
+      "chemical_id": "DTXSID7020182",
+      "preferred_name": "Example Solvent A",
+      "casrn": "123-45-6",
+      "factSheetId": "pest_control_products_fact_sheet_2006",
+      "factSheetTitle": "ConsExpo Pest Control Products Fact Sheet",
+      "factSheetVersion": "RIVM report 320005002 / 2006",
+      "factSheetLocator": "https://www.rivm.nl/bibliotheek/rapporten/320005002.pdf",
+      "productGroup": "pest_control_products",
+      "productSubgroup": "Indoor trigger spray insecticide",
+      "modelFamily": "spray",
+      "supportedRoutes": [
+        "dermal",
+        "inhalation"
+      ],
+      "physical_forms": [
+        "spray"
+      ],
+      "application_methods": [
+        "trigger_spray"
+      ],
+      "retention_types": [
+        "surface_contact"
+      ],
+      "region_scopes": [
+        "EU"
+      ],
+      "jurisdictions": [
+        "EU"
+      ],
+      "physchem_summary": {
+        "density_g_per_ml": 1.08
+      },
+      "evidence_sources": [
+        "ConsExpo:pest_control_products_fact_sheet_2006"
+      ],
+      "notes": [
+        "Illustrative ConsExpo pest-control evidence mapped into the generic contract."
+      ]
+    }
+  ],
+  "evidenceRecords": [
+    {
+      "schema_version": "productUseEvidenceRecord.v1",
+      "chemical_id": "DTXSID7020182",
+      "preferred_name": "Example Solvent A",
+      "casrn": "123-45-6",
+      "source_name": "EU product-use dossier example",
+      "source_kind": "regulatory_dossier",
+      "review_status": "reviewed",
+      "source_record_id": "EU-DOSSIER-001",
+      "source_locator": "https://example.org/eu-dossier/001",
+      "product_name": "Example Surface Spray",
+      "product_subtype": "indoor_surface_insecticide",
+      "product_use_categories": [
+        "pesticide"
+      ],
+      "physical_forms": [
+        "spray"
+      ],
+      "application_methods": [
+        "trigger_spray"
+      ],
+      "retention_types": [
+        "surface_contact"
+      ],
+      "region_scopes": [
+        "EU"
+      ],
+      "jurisdictions": [
+        "EU"
+      ],
+      "physchem_summary": {
+        "density_g_per_ml": 1.08
+      },
+      "evidence_sources": [
+        "EU-Dossier:mock-001"
+      ],
+      "notes": [
+        "Illustrative region-specific product-use evidence for a spray pesticide."
+      ]
+    }
+  ],
+  "requireAutoApplySafe": false,
+  "continueOnEvidenceReject": true,
+  "exportPbpkScenarioInput": true,
+  "exportPbpkExternalImportBundle": true,
+  "pbpkRegimenName": "screening_daily_use",
+  "pbpkContextOfUse": "screening-brief",
+  "pbpkRequestedOutput": null,
+  "pbpkScientificPurpose": "external exposure scenario translation for PBPK",
+  "pbpkDecisionContext": "upstream external exposure context only"
+}

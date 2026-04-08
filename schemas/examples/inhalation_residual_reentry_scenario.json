@@ -1,0 +1,833 @@
+{
+  "schema_version": "exposureScenario.v1",
+  "scenario_id": "inh-example-reentry-001",
+  "chemical_id": "DTXSID8020230",
+  "chemical_name": "Example Insecticide B",
+  "route": "inhalation",
+  "scenario_class": "inhalation",
+  "external_dose": {
+    "metric": "normalized_external_dose",
+    "value": 0.00137806,
+    "unit": "mg/kg-day"
+  },
+  "product_use_profile": {
+    "schema_version": "productUseProfile.v1",
+    "product_name": "Example Indoor Surface Insecticide",
+    "product_subtype": "indoor_surface_insecticide",
+    "product_category": "pesticide",
+    "physical_form": "spray",
+    "application_method": "residual_air_reentry",
+    "retention_type": "surface_contact",
+    "concentration_fraction": 0.005,
+    "use_amount_per_event": 20.0,
+    "use_amount_unit": "mL",
+    "use_events_per_day": 1.0,
+    "density_g_per_ml": null,
+    "transfer_efficiency": null,
+    "retention_factor": null,
+    "ingestion_fraction": null,
+    "aerosolized_fraction": null,
+    "room_volume_m3": 30.0,
+    "air_exchange_rate_per_hour": 0.5,
+    "exposure_duration_hours": 4.0
+  },
+  "population_profile": {
+    "schema_version": "populationProfile.v1",
+    "population_group": "adult",
+    "body_weight_kg": 80.0,
+    "inhalation_rate_m3_per_hour": 0.83,
+    "exposed_surface_area_cm2": null,
+    "demographic_tags": [],
+    "region": "EU"
+  },
+  "route_metrics": {
+    "air_concentration_at_reentry_start_mg_per_m3": 0.08,
+    "average_air_concentration_mg_per_m3": 0.03320635,
+    "air_concentration_at_reentry_end_mg_per_m3": 0.00960253,
+    "inhaled_mass_mg_per_day": 0.11024509,
+    "total_decay_rate_per_hour": 0.53,
+    "post_application_delay_hours": 4.0
+  },
+  "assumptions": [
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "room_volume_m3",
+      "value": 30.0,
+      "unit": "m3",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Room volume was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "air_exchange_rate_per_hour",
+      "value": 0.5,
+      "unit": "1/h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Air exchange rate was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "exposure_duration_hours",
+      "value": 4.0,
+      "unit": "h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Exposure duration was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "inhalation_rate_m3_per_hour",
+      "value": 0.83,
+      "unit": "m3/h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Inhalation rate was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "body_weight_kg",
+      "value": 80.0,
+      "unit": "kg",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Body weight was supplied explicitly for dose normalization.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "population_group": "adult",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "use_events_per_day",
+      "value": 1.0,
+      "unit": "events/day",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Reentry event frequency was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "variability"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "population_group": "adult"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "air_concentration_at_reentry_start_mg_per_m3",
+      "value": 0.08,
+      "unit": "mg/m3",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Residual-air reentry starts from a concentration anchored at the start of the reentry window.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "additional_decay_rate_per_hour",
+      "value": 0.03,
+      "unit": "1/h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Additional residual-air decay rate was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "post_application_delay_hours",
+      "value": 4.0,
+      "unit": "h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Post-application delay was supplied explicitly.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "total_decay_rate_per_hour",
+      "value": 0.53,
+      "unit": "1/h",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Total decay rate = air exchange rate + additional residual-air decay rate.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "model_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "average_air_concentration_mg_per_m3",
+      "value": 0.0332063536410771,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Average reentry air concentration derived from a first-order decay model starting at the supplied reentry-start concentration.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "air_concentration_at_reentry_end_mg_per_m3",
+      "value": 0.009602530280916538,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "End-of-window reentry air concentration after first-order decay.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "inhaled_mass_mg_per_day",
+      "value": 0.11024509408837598,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Inhaled mass = average reentry air concentration x inhalation rate x exposure duration x events/day.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "normalized_external_dose_mg_per_kg_day",
+      "value": 0.0013780636761046997,
+      "unit": "mg/kg-day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Exposure Scenario MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Normalized external dose = inhaled mass per day / body weight.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    }
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "inhalation.residual_air_reentry.v1",
+    "plugin_id": "inhalation_residual_air_reentry_plugin",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.04.07.v18",
+    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Deterministic-first v0.1 engine.",
+      "All defaults are surfaced through exposureAssumptionRecord entries."
+    ]
+  },
+  "limitations": [
+    {
+      "code": "treated_surface_emission_not_modeled",
+      "severity": "warning",
+      "message": "Residual-air reentry does not model treated-surface volatilization or application-phase emission; it starts from the supplied concentration at reentry start."
+    },
+    {
+      "code": "reentry_air_anchor_required",
+      "severity": "warning",
+      "message": "Interpret the result only in the context of the supplied or externally estimated reentry-start air concentration."
+    }
+  ],
+  "quality_flags": [
+    {
+      "code": "residual_air_reentry_screening",
+      "severity": "warning",
+      "message": "Residual-air reentry uses a caller-anchored starting air concentration and a bounded first-order decay model rather than a treated-surface emission solver."
+    }
+  ],
+  "fit_for_purpose": {
+    "label": "inhalation_residual_air_reentry_screening",
+    "suitable_for": [
+      "screening prioritization",
+      "PBPK scenario preparation",
+      "auditable scenario comparison"
+    ],
+    "not_suitable_for": [
+      "internal exposure estimation",
+      "final risk characterization",
+      "population-scale probabilistic inference"
+    ]
+  },
+  "tier_semantics": {
+    "tier_claimed": "tier_0",
+    "tier_earned": "tier_0",
+    "tier_rationale": "Inhalation output uses a bounded residual-air reentry calculation that starts from a supplied concentration and applies first-order decay.",
+    "assumption_checks_passed": true,
+    "required_caveats": [
+      "Interpret the reported air concentration as a residual-air reentry value, not an application plume.",
+      "The result depends on the supplied reentry-start concentration and any decay term.",
+      "Treated-surface volatilization is not solved mechanistically."
+    ],
+    "forbidden_interpretations": [
+      "Do not interpret this result as an application-phase breathing-zone peak concentration.",
+      "Do not treat the result as a treated-surface emission model or a substitute for chamber decay data.",
+      "Do not interpret the result as absorbed dose, internal dose, or a final risk conclusion."
+    ]
+  },
+  "uncertaintyTier": "tier_a",
+  "uncertaintyRegister": [
+    {
+      "entryId": "tier-a-model-boundary",
+      "title": "Tier A deterministic screening boundary remains in force",
+      "uncertaintyTypes": [
+        "model_uncertainty"
+      ],
+      "relatedAssumptions": [],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
+      "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
+    },
+    {
+      "entryId": "limitation-treated_surface_emission_not_modeled",
+      "title": "Limitation `treated_surface_emission_not_modeled` remains unquantified",
+      "uncertaintyTypes": [
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "bidirectional",
+      "impactLevel": "high",
+      "summary": "Residual-air reentry does not model treated-surface volatilization or application-phase emission; it starts from the supplied concentration at reentry start.",
+      "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
+    },
+    {
+      "entryId": "limitation-reentry_air_anchor_required",
+      "title": "Limitation `reentry_air_anchor_required` remains unquantified",
+      "uncertaintyTypes": [
+        "scenario_uncertainty",
+        "parameter_uncertainty"
+      ],
+      "relatedAssumptions": [],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "bidirectional",
+      "impactLevel": "high",
+      "summary": "Interpret the result only in the context of the supplied or externally estimated reentry-start air concentration.",
+      "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
+    },
+    {
+      "entryId": "dependency-handling-required",
+      "title": "Known dependencies are preserved qualitatively, not numerically",
+      "uncertaintyTypes": [
+        "variability",
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "air_exchange_rate_per_hour",
+        "body_weight_kg",
+        "exposure_duration_hours",
+        "inhalation_rate_m3_per_hour",
+        "room_volume_m3",
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "The output carries known dependence structures, but no joint sampling or correlation model is applied in Tier A.",
+      "recommendation": "Use scenario packaging for Tier B and reserve probabilistic propagation for later tiers with explicit joint models."
+    }
+  ],
+  "sensitivityRanking": [
+    {
+      "parameterName": "use_events_per_day",
+      "sourceKind": "user_input",
+      "baselineValue": 1.0,
+      "perturbedValue": 1.1,
+      "unit": "events/day",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00013781,
+      "percentDelta": 10.00029,
+      "elasticity": 1.000029,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "inhalation_rate_m3_per_hour",
+      "sourceKind": "user_input",
+      "baselineValue": 0.83,
+      "perturbedValue": 0.913,
+      "unit": "m3/h",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00013781,
+      "percentDelta": 10.00029,
+      "elasticity": 1.000029,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "air_concentration_at_reentry_start_mg_per_m3",
+      "sourceKind": "user_input",
+      "baselineValue": 0.08,
+      "perturbedValue": 0.088,
+      "unit": "mg/m3",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.00013781,
+      "percentDelta": 10.00029,
+      "elasticity": 1.000029,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "body_weight_kg",
+      "sourceKind": "user_input",
+      "baselineValue": 80.0,
+      "perturbedValue": 88.0,
+      "unit": "kg",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": -0.00012527,
+      "percentDelta": -9.090315,
+      "elasticity": -0.909032,
+      "direction": "negative"
+    },
+    {
+      "parameterName": "air_exchange_rate_per_hour",
+      "sourceKind": "user_input",
+      "baselineValue": 0.5,
+      "perturbedValue": 0.55,
+      "unit": "1/h",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": -8.766e-05,
+      "percentDelta": -6.361116,
+      "elasticity": -0.636112,
+      "direction": "negative"
+    },
+    {
+      "parameterName": "exposure_duration_hours",
+      "sourceKind": "user_input",
+      "baselineValue": 4.0,
+      "perturbedValue": 4.4,
+      "unit": "h",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 3.591e-05,
+      "percentDelta": 2.605837,
+      "elasticity": 0.260584,
+      "direction": "positive"
+    },
+    {
+      "parameterName": "additional_decay_rate_per_hour",
+      "sourceKind": "user_input",
+      "baselineValue": 0.03,
+      "perturbedValue": 0.033,
+      "unit": "1/h",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": -5.52e-06,
+      "percentDelta": -0.400563,
+      "elasticity": -0.040056,
+      "direction": "negative"
+    },
+    {
+      "parameterName": "room_volume_m3",
+      "sourceKind": "user_input",
+      "baselineValue": 30.0,
+      "perturbedValue": 33.0,
+      "unit": "m3",
+      "perturbationFraction": 0.1,
+      "responseMetric": "normalized_external_dose",
+      "absoluteDelta": 0.0,
+      "percentDelta": 0.0,
+      "elasticity": 0.0,
+      "direction": "neutral"
+    }
+  ],
+  "dependencyMetadata": [
+    {
+      "dependencyId": "use-intensity-cluster",
+      "title": "Use amount and frequency should be treated as a behavioral package",
+      "relationshipType": "behavioral",
+      "assumptionNames": [
+        "use_amount_per_event",
+        "use_events_per_day"
+      ],
+      "handlingStrategy": "scenario_packaged",
+      "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+    },
+    {
+      "dependencyId": "body-size-scaling-cluster",
+      "title": "Body size and physiology should scale together",
+      "relationshipType": "physiological",
+      "assumptionNames": [
+        "body_weight_kg",
+        "inhalation_rate_m3_per_hour"
+      ],
+      "handlingStrategy": "joint_model_required",
+      "note": "Future probabilistic tiers should use a joint physiological model rather than independent sampling."
+    },
+    {
+      "dependencyId": "room-context-cluster",
+      "title": "Room size, ventilation, and duration form one scenario context",
+      "relationshipType": "scenario_package",
+      "assumptionNames": [
+        "room_volume_m3",
+        "air_exchange_rate_per_hour",
+        "exposure_duration_hours"
+      ],
+      "handlingStrategy": "scenario_packaged",
+      "note": "Microenvironment parameters should be changed as coherent room archetypes instead of independent marginals."
+    }
+  ],
+  "validationSummary": {
+    "validationStatus": "benchmark_regression",
+    "routeMechanism": "inhalation_residual_air_reentry",
+    "benchmarkCaseIds": [
+      "inhalation_residual_air_reentry_chlorpyrifos_screening",
+      "inhalation_residual_air_reentry_chlorpyrifos_time_series_1990",
+      "inhalation_residual_air_reentry_diazinon_time_series_1990"
+    ],
+    "externalDatasetIds": [
+      "diazinon_indoor_air_monitoring_home_use_2008",
+      "chlorpyrifos_broadcast_residential_air_1990",
+      "diazinon_office_postapplication_air_1990"
+    ],
+    "evidenceReadiness": "benchmark_plus_external_candidates",
+    "heuristicAssumptionNames": [],
+    "validationGapIds": [
+      "residual_air_reentry_validation_narrow_anchor_only"
+    ],
+    "executedValidationChecks": [],
+    "highestSupportedUncertaintyTier": "tier_b",
+    "probabilisticEnablement": "blocked",
+    "notes": [
+      "Deterministic verification and benchmark regression are available for this domain.",
+      "External validation remains a documented future capability rather than an active gate.",
+      "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
+      "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
+    ]
+  },
+  "interpretation_notes": [
+    "Deterministic residual-air reentry scenario starting from a supplied room-air concentration.",
+    "The bounded decay model is intended for post-application room-air screening, not for reconstructing the original application plume."
+  ],
+  "tierUpgradeAdvisories": []
+}

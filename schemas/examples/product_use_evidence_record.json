@@ -1,0 +1,40 @@
+{
+  "schema_version": "productUseEvidenceRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Solvent A",
+  "casrn": "123-45-6",
+  "source_name": "EU product-use dossier example",
+  "source_kind": "regulatory_dossier",
+  "review_status": "reviewed",
+  "source_record_id": "EU-DOSSIER-001",
+  "source_locator": "https://example.org/eu-dossier/001",
+  "product_name": "Example Surface Spray",
+  "product_subtype": "indoor_surface_insecticide",
+  "product_use_categories": [
+    "pesticide"
+  ],
+  "physical_forms": [
+    "spray"
+  ],
+  "application_methods": [
+    "trigger_spray"
+  ],
+  "retention_types": [
+    "surface_contact"
+  ],
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU"
+  ],
+  "physchem_summary": {
+    "density_g_per_ml": 1.08
+  },
+  "evidence_sources": [
+    "EU-Dossier:mock-001"
+  ],
+  "notes": [
+    "Illustrative region-specific product-use evidence for a spray pesticide."
+  ]
+}

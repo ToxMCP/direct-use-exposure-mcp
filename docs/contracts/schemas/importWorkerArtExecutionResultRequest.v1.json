@@ -1,0 +1,583 @@
+{
+  "$defs": {
+    "WorkerArtArtifactAdapterId": {
+      "enum": [
+        "auto_detect",
+        "art_worker_result_summary_json_v1",
+        "art_worker_execution_report_json_v1",
+        "art_worker_result_summary_csv_wide_v1",
+        "art_worker_result_summary_csv_key_value_v1",
+        "art_worker_result_summary_csv_semicolon_v1"
+      ],
+      "title": "WorkerArtArtifactAdapterId",
+      "type": "string"
+    },
+    "WorkerArtExternalArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerArtExternalArtifact.v1",
+          "default": "workerArtExternalArtifact.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "label": {
+          "description": "Short label for the external ART-side artifact.",
+          "title": "Label",
+          "type": "string"
+        },
+        "locator": {
+          "description": "URL, file path, or logical locator for the artifact.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "mediaType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mediatype"
+        },
+        "adapterHint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkerArtArtifactAdapterId"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional explicit adapter hint when the client knows which external ART report format this artifact uses."
+        },
+        "contentText": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional inline text payload preserved with the artifact. JSON content can be parsed directly during result import when no normalized resultPayload is supplied.",
+          "title": "Contenttext"
+        },
+        "contentJson": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Optional structured artifact payload preserved directly on the artifact. This is the preferred way to carry a real external runner summary back into the MCP.",
+          "title": "Contentjson",
+          "type": "object"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "label",
+        "locator"
+      ],
+      "title": "WorkerArtExternalArtifact",
+      "type": "object"
+    },
+    "WorkerArtExternalExecutionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerArtExternalExecutionResult.v1",
+          "default": "workerArtExternalExecutionResult.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sourceSystem": {
+          "default": "ART",
+          "title": "Sourcesystem",
+          "type": "string"
+        },
+        "sourceRunId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourcerunid"
+        },
+        "modelVersion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Modelversion"
+        },
+        "resultStatus": {
+          "default": "completed",
+          "enum": [
+            "completed",
+            "partial",
+            "failed"
+          ],
+          "title": "Resultstatus",
+          "type": "string"
+        },
+        "taskDurationHours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Taskdurationhours"
+        },
+        "breathingZoneConcentrationMgPerM3": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Breathingzoneconcentrationmgperm3"
+        },
+        "inhaledMassMgPerDay": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inhaledmassmgperday"
+        },
+        "normalizedExternalDoseMgPerKgDay": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Normalizedexternaldosemgperkgday"
+        },
+        "determinantSnapshot": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Determinantsnapshot",
+          "type": "object"
+        },
+        "resultPayload": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Structured external ART-side result summary as emitted by a real runner or adapter. When provided, the import path can derive missing normalized fields directly from this payload and cross-check explicit summary metrics.",
+          "title": "Resultpayload",
+          "type": "object"
+        },
+        "qualityNotes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Qualitynotes",
+          "type": "array"
+        },
+        "rawArtifacts": {
+          "items": {
+            "$ref": "#/$defs/WorkerArtExternalArtifact"
+          },
+          "title": "Rawartifacts",
+          "type": "array"
+        }
+      },
+      "title": "WorkerArtExternalExecutionResult",
+      "type": "object"
+    },
+    "WorkerInhalationTier2AdapterRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerInhalationTier2AdapterRequest.v1",
+          "default": "workerInhalationTier2AdapterRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "targetAdapter": {
+          "default": "future_worker_exposure_adapter",
+          "description": "Target adapter boundary for the future occupational model.",
+          "title": "Targetadapter",
+          "type": "string"
+        },
+        "targetModelFamily": {
+          "$ref": "#/$defs/WorkerTier2ModelFamily",
+          "description": "Future occupational model family requested by the caller."
+        },
+        "sourceModule": {
+          "default": "exposure-scenario-mcp",
+          "description": "Source MCP that created the bridge package.",
+          "title": "Sourcemodule",
+          "type": "string"
+        },
+        "contextOfUse": {
+          "description": "Downstream orchestration context for the bridge payload.",
+          "title": "Contextofuse",
+          "type": "string"
+        },
+        "chemicalIdentity": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Chemical identity block for the future worker adapter.",
+          "title": "Chemicalidentity",
+          "type": "object"
+        },
+        "taskContext": {
+          "$ref": "#/$defs/WorkerInhalationTier2TaskContext",
+          "description": "Typed worker-task context for Tier 2 refinement."
+        },
+        "exposureInputs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Normalized inhalation exposure inputs preserved for the future adapter.",
+          "title": "Exposureinputs",
+          "type": "object"
+        },
+        "supportingHandoffs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Source request and routing context preserved alongside the adapter payload.",
+          "title": "Supportinghandoffs",
+          "type": "object"
+        },
+        "guidanceResource": {
+          "default": "docs://worker-tier2-bridge-guide",
+          "description": "Worker Tier 2 guide that explains how to use the bridge.",
+          "title": "Guidanceresource",
+          "type": "string"
+        }
+      },
+      "required": [
+        "targetModelFamily",
+        "contextOfUse",
+        "taskContext"
+      ],
+      "title": "WorkerInhalationTier2AdapterRequest",
+      "type": "object"
+    },
+    "WorkerInhalationTier2TaskContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerInhalationTier2TaskContext.v1",
+          "default": "workerInhalationTier2TaskContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_description": {
+          "description": "Short description of the workplace task.",
+          "title": "Task Description",
+          "type": "string"
+        },
+        "workplace_setting": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short workplace-setting label such as janitorial closet or production line.",
+          "title": "Workplace Setting"
+        },
+        "task_duration_hours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Task duration relevant to the future Tier 2 worker model.",
+          "title": "Task Duration Hours"
+        },
+        "ventilation_context": {
+          "$ref": "#/$defs/WorkerVentilationContext",
+          "default": "unknown",
+          "description": "Ventilation/control state declared for the worker task."
+        },
+        "local_controls": {
+          "description": "Engineering or administrative controls explicitly present during the task.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Local Controls",
+          "type": "array"
+        },
+        "respiratory_protection": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Respiratory protection state if explicitly known.",
+          "title": "Respiratory Protection"
+        },
+        "emission_descriptor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short free-text description of the emitted mist, vapor, or aerosol context.",
+          "title": "Emission Descriptor"
+        },
+        "notes": {
+          "description": "Additional worker-task notes preserved for adapter review.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "task_description"
+      ],
+      "title": "WorkerInhalationTier2TaskContext",
+      "type": "object"
+    },
+    "WorkerTier2ModelFamily": {
+      "enum": [
+        "art",
+        "stoffenmanager"
+      ],
+      "title": "WorkerTier2ModelFamily",
+      "type": "string"
+    },
+    "WorkerVentilationContext": {
+      "enum": [
+        "unknown",
+        "general_ventilation",
+        "enhanced_general_ventilation",
+        "local_exhaust",
+        "enclosed_process",
+        "outdoor"
+      ],
+      "title": "WorkerVentilationContext",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "importWorkerArtExecutionResultRequest.v1",
+      "default": "importWorkerArtExecutionResultRequest.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "adapterRequest": {
+      "$ref": "#/$defs/WorkerInhalationTier2AdapterRequest"
+    },
+    "externalResult": {
+      "$ref": "#/$defs/WorkerArtExternalExecutionResult"
+    },
+    "contextOfUse": {
+      "default": "worker-art-external-import",
+      "title": "Contextofuse",
+      "type": "string"
+    }
+  },
+  "required": [
+    "adapterRequest",
+    "externalResult"
+  ],
+  "title": "ImportWorkerArtExecutionResultRequest",
+  "type": "object"
+}

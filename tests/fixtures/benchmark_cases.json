@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.03.25.v11",
+  "defaults_version": "2026.04.07.v18",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -83,6 +83,331 @@
       }
     },
     {
+      "id": "inhalation_air_space_insecticide_aerosol_screening",
+      "kind": "scenario",
+      "description": "Adult EU air-space insecticide aerosol case sized to a narrow household mosquito aerosol indoor-air benchmark band.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID127",
+        "chemical_name": "Benchmark Pyrethroid A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Mosquito Aerosol",
+          "product_category": "pesticide",
+          "product_subtype": "air_space_insecticide",
+          "physical_form": "spray",
+          "application_method": "aerosol_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 0.65,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.00899138,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "average_air_concentration_mg_per_m3": 0.16983716,
+          "inhaled_mass_mg_per_day": 0.61141379
+        },
+        "assumptions": {
+          "density_g_per_ml": 0.8,
+          "aerosolized_fraction": 1.0,
+          "room_volume_m3": 58.0,
+          "air_exchange_rate_per_hour": 0.6,
+          "exposure_duration_hours": 4.0
+        }
+      }
+    },
+    {
+      "id": "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001",
+      "kind": "scenario",
+      "description": "Adult air-space insecticide aerosol case aligned to the 0.75-hour room-air concentration point from the household mosquito aerosol study.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID127",
+        "chemical_name": "Benchmark Pyrethroid A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Mosquito Aerosol 0.75h",
+          "product_category": "pesticide",
+          "product_subtype": "air_space_insecticide",
+          "physical_form": "spray",
+          "application_method": "aerosol_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 0.5059327,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 58.0,
+          "air_exchange_rate_per_hour": 0.96,
+          "exposure_duration_hours": 0.75
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.00246896,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "initial_air_concentration_mg_per_m3": 0.3489191,
+          "average_air_concentration_mg_per_m3": 0.24872492,
+          "air_concentration_at_event_end_mg_per_m3": 0.16983716,
+          "inhaled_mass_mg_per_day": 0.16788932
+        },
+        "assumptions": {
+          "density_g_per_ml": 0.8,
+          "aerosolized_fraction": 1.0,
+          "room_volume_m3": 58.0,
+          "air_exchange_rate_per_hour": 0.96,
+          "exposure_duration_hours": 0.75
+        }
+      }
+    },
+    {
+      "id": "inhalation_air_space_insecticide_aerosol_time_series_6h_2001",
+      "kind": "scenario",
+      "description": "Adult air-space insecticide aerosol case aligned to the 6-hour late-decay room-air point from the household mosquito aerosol study.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID127",
+        "chemical_name": "Benchmark Pyrethroid A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Mosquito Aerosol 6h",
+          "product_category": "pesticide",
+          "product_subtype": "air_space_insecticide",
+          "physical_form": "spray",
+          "application_method": "aerosol_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 0.5059327,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 58.0,
+          "air_exchange_rate_per_hour": 0.96,
+          "exposure_duration_hours": 6.0
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.00479531,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "initial_air_concentration_mg_per_m3": 0.3489191,
+          "average_air_concentration_mg_per_m3": 0.06038535,
+          "air_concentration_at_event_end_mg_per_m3": 0.00109948,
+          "inhaled_mass_mg_per_day": 0.32608089
+        },
+        "assumptions": {
+          "density_g_per_ml": 0.8,
+          "aerosolized_fraction": 1.0,
+          "room_volume_m3": 58.0,
+          "air_exchange_rate_per_hour": 0.96,
+          "exposure_duration_hours": 6.0
+        }
+      }
+    },
+    {
+      "id": "inhalation_residual_air_reentry_chlorpyrifos_screening",
+      "kind": "scenario",
+      "description": "Adult indoor-surface insecticide residual-air reentry case anchored to the published chlorpyrifos post-application start concentration band.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID9020412",
+        "chemical_name": "Chlorpyrifos",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Dursban Reentry",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.005,
+          "use_amount_per_event": 20,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 30,
+          "air_exchange_rate_per_hour": 0.5,
+          "exposure_duration_hours": 4.0
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 80,
+          "inhalation_rate_m3_per_hour": 0.83,
+          "region": "EU",
+          "demographic_tags": ["residential_reentry"]
+        },
+        "assumption_overrides": {},
+        "air_concentration_at_reentry_start_mg_per_m3": 0.08,
+        "additional_decay_rate_per_hour": 0.03,
+        "post_application_delay_hours": 4.0
+      },
+      "expected": {
+        "external_dose_value": 0.00137806,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "air_concentration_at_reentry_start_mg_per_m3": 0.08,
+          "average_air_concentration_mg_per_m3": 0.03320635,
+          "air_concentration_at_reentry_end_mg_per_m3": 0.00960253,
+          "inhaled_mass_mg_per_day": 0.11024509
+        },
+        "assumptions": {
+          "air_concentration_at_reentry_start_mg_per_m3": 0.08,
+          "additional_decay_rate_per_hour": 0.03,
+          "post_application_delay_hours": 4.0,
+          "total_decay_rate_per_hour": 0.53
+        }
+      }
+    },
+    {
+      "id": "inhalation_residual_air_reentry_chlorpyrifos_time_series_1990",
+      "kind": "scenario",
+      "description": "Adult indoor-surface insecticide residual-air reentry case aligned to the sparse 4-hour to 24-hour chlorpyrifos room-air series.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID9020412",
+        "chemical_name": "Chlorpyrifos",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Dursban Reentry 24h",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.005,
+          "use_amount_per_event": 20,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 30,
+          "air_exchange_rate_per_hour": 0.02,
+          "exposure_duration_hours": 20.0
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 80,
+          "inhalation_rate_m3_per_hour": 0.83,
+          "region": "EU",
+          "demographic_tags": ["residential_reentry", "time_series_anchor"]
+        },
+        "assumption_overrides": {},
+        "air_concentration_at_reentry_start_mg_per_m3": 0.08,
+        "additional_decay_rate_per_hour": 0.02904146,
+        "post_application_delay_hours": 4.0
+      },
+      "expected": {
+        "external_dose_value": 0.01057778,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "air_concentration_at_reentry_start_mg_per_m3": 0.08,
+          "average_air_concentration_mg_per_m3": 0.05097728,
+          "air_concentration_at_reentry_end_mg_per_m3": 0.03,
+          "inhaled_mass_mg_per_day": 0.84622278
+        },
+        "assumptions": {
+          "air_concentration_at_reentry_start_mg_per_m3": 0.08,
+          "additional_decay_rate_per_hour": 0.02904146,
+          "post_application_delay_hours": 4.0,
+          "total_decay_rate_per_hour": 0.04904146
+        }
+      }
+    },
+    {
+      "id": "inhalation_residual_air_reentry_diazinon_time_series_1990",
+      "kind": "scenario",
+      "description": "Adult indoor-surface insecticide residual-air reentry case aligned to the sparse 24-hour to 48-hour diazinon office room-air series.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID9020407",
+        "chemical_name": "Diazinon",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Diazinon Office Reentry",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.01,
+          "use_amount_per_event": 20,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 30,
+          "air_exchange_rate_per_hour": 0.01,
+          "exposure_duration_hours": 24.0
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 80,
+          "inhalation_rate_m3_per_hour": 0.83,
+          "region": "EU",
+          "demographic_tags": ["occupancy_reentry", "office_air"]
+        },
+        "assumption_overrides": {},
+        "air_concentration_at_reentry_start_mg_per_m3": 0.125,
+        "additional_decay_rate_per_hour": 0.02575091,
+        "post_application_delay_hours": 24.0
+      },
+      "expected": {
+        "external_dose_value": 0.02089457,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "air_concentration_at_reentry_start_mg_per_m3": 0.125,
+          "average_air_concentration_mg_per_m3": 0.08391395,
+          "air_concentration_at_reentry_end_mg_per_m3": 0.053,
+          "inhaled_mass_mg_per_day": 1.67156584
+        },
+        "assumptions": {
+          "air_concentration_at_reentry_start_mg_per_m3": 0.125,
+          "additional_decay_rate_per_hour": 0.02575091,
+          "post_application_delay_hours": 24.0,
+          "total_decay_rate_per_hour": 0.03575091
+        }
+      }
+    },
+    {
       "id": "inhalation_tier1_trigger_spray_nf_ff",
       "kind": "scenario",
       "description": "Adult EU trigger spray Tier 1 near-field/far-field screening case with explicit geometry, timing, and airflow-class inputs.",
@@ -139,6 +464,62 @@
       }
     },
     {
+      "id": "inhalation_tier1_disinfectant_trigger_spray_external_2015",
+      "kind": "scenario",
+      "description": "Study-like consumer disinfectant trigger-spray Tier 1 NF/FF case aligned to the 2015 consumer spray inhalation supplementary dataset.",
+      "request": {
+        "schema_version": "inhalationTier1ScenarioRequest.v1",
+        "chemical_id": "PM_DISINFECTANT_SPRAY_2015",
+        "chemical_name": "Consumer Disinfectant Spray Particulate",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Study-like Consumer Disinfectant Spray",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.004,
+          "use_amount_per_event": 5.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1.0,
+          "room_volume_m3": 40.0,
+          "air_exchange_rate_per_hour": 1.0,
+          "exposure_duration_hours": 0.01666667
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 70.0,
+          "inhalation_rate_m3_per_hour": 1.0,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {},
+        "source_distance_m": 0.35,
+        "spray_duration_seconds": 60.0,
+        "near_field_volume_m3": 3.0,
+        "airflow_directionality": "cross_draft",
+        "particle_size_regime": "coarse_spray"
+      },
+      "expected": {
+        "external_dose_value": 0.00107494,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "far_field_average_air_concentration_mg_per_m3": 0.09917128,
+          "near_field_active_spray_concentration_mg_per_m3": 4.51475569,
+          "average_air_concentration_mg_per_m3": 4.51475569,
+          "inhaled_mass_mg_per_day": 0.07524593
+        },
+        "assumptions": {
+          "source_distance_m": 0.35,
+          "near_field_volume_m3": 3.0,
+          "interzonal_mixing_rate_m3_per_hour": 99.0
+        }
+      }
+    },
+    {
       "id": "oral_direct_oral_screening",
       "kind": "scenario",
       "description": "Child direct-oral liquid case covering oral screening semantics and volume-to-mass conversion defaults.",
@@ -177,6 +558,50 @@
         },
         "assumptions": {
           "density_g_per_ml": 0.98,
+          "ingestion_fraction": 1.0,
+          "body_weight_kg": 15.0
+        }
+      }
+    },
+    {
+      "id": "oral_medicinal_liquid_delivered_dose_screening",
+      "kind": "scenario",
+      "description": "Child medicinal-liquid direct-oral case sized to the ready-to-use vigabatrin delivered-dose benchmark target.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID126",
+        "chemical_name": "Benchmark Oral Solution A",
+        "route": "oral",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Ready-to-Use Oral Solution",
+          "product_category": "medicinal_liquid",
+          "physical_form": "liquid",
+          "application_method": "direct_oral",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.125,
+          "use_amount_per_event": 9,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "child",
+          "region": "global",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 75.0,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 1125.0,
+          "external_mass_mg_per_day": 1125.0
+        },
+        "assumptions": {
+          "density_g_per_ml": 1.0,
           "ingestion_fraction": 1.0,
           "body_weight_kg": 15.0
         }
@@ -488,6 +913,304 @@
         ],
         "support_point_tier_claimed": "tier_1",
         "support_point_profile_id": "personal_care_pump_spray_tier1"
+      }
+    },
+    {
+      "id": "worker_inhalation_janitorial_trigger_spray_execution",
+      "kind": "worker_inhalation_execution",
+      "description": "Canonical worker inhalation surrogate execution case for a janitorial disinfectant trigger spray with explicit control and respiratory-protection modifiers.",
+      "bridge_request": {
+        "schema_version": "exportWorkerInhalationTier2BridgeRequest.v1",
+        "baseRequest": {
+          "schema_version": "inhalationTier1ScenarioRequest.v1",
+          "chemical_id": "DTXSID7020182",
+          "chemical_name": "Example Solvent A",
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Example Workplace Disinfectant Spray",
+            "product_subtype": null,
+            "product_category": "disinfectant",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.03,
+            "use_amount_per_event": 15.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 2.0,
+            "density_g_per_ml": null,
+            "transfer_efficiency": null,
+            "retention_factor": null,
+            "ingestion_fraction": null,
+            "aerosolized_fraction": null,
+            "room_volume_m3": 35.0,
+            "air_exchange_rate_per_hour": 2.0,
+            "exposure_duration_hours": 0.5
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 75.0,
+            "inhalation_rate_m3_per_hour": 1.1,
+            "exposed_surface_area_cm2": null,
+            "demographic_tags": ["worker", "occupational"],
+            "region": "EU"
+          },
+          "assumption_overrides": {},
+          "requestedTier": "tier_1",
+          "source_distance_m": 0.35,
+          "spray_duration_seconds": 10.0,
+          "near_field_volume_m3": 2.0,
+          "airflow_directionality": "cross_draft",
+          "particle_size_regime": "coarse_spray"
+        },
+        "targetModelFamily": "art",
+        "taskDescription": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+        "workplaceSetting": "janitorial closet",
+        "taskDurationHours": 0.5,
+        "ventilationContext": "general_ventilation",
+        "localControls": ["general ventilation", "task segregation"],
+        "respiratoryProtection": "none",
+        "emissionDescriptor": "short trigger-spray cleaning mist near the breathing zone",
+        "contextOfUse": "worker-tier2-bridge",
+        "notes": ["Illustrative worker inhalation bridge package for a future ART-style adapter."]
+      },
+      "execution_overrides": {
+        "controlFactor": 0.7,
+        "respiratoryProtectionFactor": 0.5
+      },
+      "context_of_use": "worker-art-execution",
+      "expected": {
+        "baseline_dose_value": 0.09455426,
+        "external_dose_value": 0.03309399,
+        "route_metrics": {
+          "baselineAverageAirConcentrationMgPerM3": 6.44688144,
+          "controlAdjustedAverageAirConcentrationMgPerM3": 4.51281701,
+          "adjustedInhaledMassMgPerDay": 2.48204935
+        }
+      }
+    },
+    {
+      "id": "worker_inhalation_handheld_biocidal_trigger_spray_execution",
+      "kind": "worker_inhalation_execution",
+      "description": "Study-like small-scale handheld BAC trigger-spray worker case aligned to the 2023 occupational biocidal spray monitoring paper.",
+      "bridge_request": {
+        "schema_version": "exportWorkerInhalationTier2BridgeRequest.v1",
+        "baseRequest": {
+          "schema_version": "inhalationTier1ScenarioRequest.v1",
+          "chemical_id": "DTXSID7020182",
+          "chemical_name": "Benzalkonium chloride",
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Study-like BAC Spray",
+            "product_subtype": null,
+            "product_category": "disinfectant",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.0016,
+            "use_amount_per_event": 96.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 1.0,
+            "density_g_per_ml": null,
+            "transfer_efficiency": null,
+            "retention_factor": null,
+            "ingestion_fraction": null,
+            "aerosolized_fraction": null,
+            "room_volume_m3": 300.0,
+            "air_exchange_rate_per_hour": 2.0,
+            "exposure_duration_hours": 2.0
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 75.0,
+            "inhalation_rate_m3_per_hour": 1.1,
+            "exposed_surface_area_cm2": null,
+            "demographic_tags": ["worker", "occupational"],
+            "region": "EU"
+          },
+          "assumption_overrides": {},
+          "requestedTier": "tier_1",
+          "source_distance_m": 1.0,
+          "spray_duration_seconds": 60.0,
+          "near_field_volume_m3": 50.0,
+          "airflow_directionality": "cross_draft",
+          "particle_size_regime": "coarse_spray"
+        },
+        "targetModelFamily": "art",
+        "taskDescription": "Small-scale handheld surface disinfection spray task on a workbench",
+        "workplaceSetting": "workbench area",
+        "taskDurationHours": 2.0,
+        "ventilationContext": "general_ventilation",
+        "localControls": ["general ventilation"],
+        "respiratoryProtection": "none",
+        "emissionDescriptor": "handheld BAC trigger spray for small-surface disinfection",
+        "contextOfUse": "worker-tier2-bridge",
+        "notes": [
+          "Study-like small-scale handheld BAC trigger-spray case aligned to the occupational biocidal spray monitoring paper."
+        ]
+      },
+      "execution_overrides": {
+        "controlFactor": 1.0,
+        "respiratoryProtectionFactor": 1.0
+      },
+      "context_of_use": "worker-art-execution",
+      "expected": {
+        "baseline_dose_value": 0.00090614,
+        "external_dose_value": 0.00090614,
+        "route_metrics": {
+          "baselineAverageAirConcentrationMgPerM3": 0.03089112,
+          "controlAdjustedAverageAirConcentrationMgPerM3": 0.03089112,
+          "adjustedInhaledMassMgPerDay": 0.06796046
+        }
+      }
+    },
+    {
+      "id": "worker_dermal_wet_wipe_gloved_hands_execution",
+      "kind": "worker_dermal_execution",
+      "description": "Canonical worker dermal absorbed-dose screening case for gloved wet-wipe contact with household cleaner residue.",
+      "bridge_request": {
+        "schema_version": "exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
+        "baseRequest": {
+          "schema_version": "exposureScenarioRequest.v1",
+          "chemical_id": "DTXSID7020182",
+          "chemical_name": "Example Solvent A",
+          "route": "dermal",
+          "scenario_class": "screening",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Example Workplace Wipe Cleaner",
+            "product_subtype": null,
+            "product_category": "household_cleaner",
+            "physical_form": "liquid",
+            "application_method": "wipe",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 10.0,
+            "use_amount_unit": "g",
+            "use_events_per_day": 3.0,
+            "density_g_per_ml": null,
+            "transfer_efficiency": null,
+            "retention_factor": null,
+            "ingestion_fraction": null,
+            "aerosolized_fraction": null,
+            "room_volume_m3": null,
+            "air_exchange_rate_per_hour": null,
+            "exposure_duration_hours": 0.75
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 75.0,
+            "inhalation_rate_m3_per_hour": null,
+            "exposed_surface_area_cm2": 840.0,
+            "demographic_tags": ["worker", "occupational"],
+            "region": "EU"
+          },
+          "assumption_overrides": {}
+        },
+        "targetModelFamily": "dermal_absorption_ppe",
+        "taskDescription": "Worker wet-wipe cleaning task with gloved hand contact",
+        "workplaceSetting": "custodial closet",
+        "contactDurationHours": 0.75,
+        "contactPattern": "surface_transfer",
+        "exposedBodyAreas": ["hands"],
+        "ppeState": "work_gloves",
+        "controlMeasures": ["task segregation", "prompt hand washing"],
+        "surfaceLoadingContext": "wet cleaning cloth contact with surface residue transfer",
+        "skinCondition": "unknown",
+        "contextOfUse": "worker-dermal-bridge",
+        "notes": [
+          "Illustrative worker dermal bridge package for a future absorbed-dose workflow."
+        ]
+      },
+      "execution_overrides": {
+        "ppePenetrationFactor": 0.3
+      },
+      "context_of_use": "worker-dermal-execution",
+      "expected": {
+        "external_dose_value": 0.8,
+        "absorbed_dose_value": 0.0108,
+        "route_metrics": {
+          "externalSkinMassMgPerDay": 60.0,
+          "protectedExternalSkinMassMgPerDay": 18.0,
+          "absorbedMassMgPerDay": 0.81
+        }
+      }
+    },
+    {
+      "id": "worker_dermal_handheld_biocidal_trigger_spray_execution",
+      "kind": "worker_dermal_execution",
+      "description": "Study-like small-scale handheld BAC trigger-spray dermal case aligned to the 2023 occupational biocidal spray monitoring paper.",
+      "bridge_request": {
+        "schema_version": "exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
+        "baseRequest": {
+          "schema_version": "exposureScenarioRequest.v1",
+          "chemical_id": "DTXSID7020182",
+          "chemical_name": "Benzalkonium chloride",
+          "route": "dermal",
+          "scenario_class": "screening",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Study-like BAC Surface Spray",
+            "product_subtype": null,
+            "product_category": "disinfectant",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.0016,
+            "use_amount_per_event": 40.0,
+            "use_amount_unit": "g",
+            "use_events_per_day": 1.0,
+            "density_g_per_ml": null,
+            "transfer_efficiency": null,
+            "retention_factor": null,
+            "ingestion_fraction": null,
+            "aerosolized_fraction": null,
+            "room_volume_m3": null,
+            "air_exchange_rate_per_hour": null,
+            "exposure_duration_hours": 1.0
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 75.0,
+            "inhalation_rate_m3_per_hour": null,
+            "exposed_surface_area_cm2": 840.0,
+            "demographic_tags": ["worker", "occupational"],
+            "region": "EU"
+          },
+          "assumption_overrides": {}
+        },
+        "targetModelFamily": "dermal_absorption_ppe",
+        "taskDescription": "Small-scale handheld BAC spray contact during workbench disinfection",
+        "workplaceSetting": "workbench area",
+        "contactDurationHours": 1.0,
+        "contactPattern": "surface_transfer",
+        "exposedBodyAreas": ["hands"],
+        "ppeState": "work_gloves",
+        "controlMeasures": ["general ventilation"],
+        "surfaceLoadingContext": "spray-and-wipe surface transfer to gloved hands",
+        "skinCondition": "unknown",
+        "contextOfUse": "worker-dermal-bridge",
+        "notes": [
+          "Study-like small-scale handheld BAC trigger-spray dermal case aligned to the occupational biocidal spray monitoring paper."
+        ]
+      },
+      "execution_overrides": {},
+      "context_of_use": "worker-dermal-execution",
+      "expected": {
+        "external_dose_value": 0.17066667,
+        "absorbed_dose_value": 0.0032768,
+        "route_metrics": {
+          "externalSkinMassMgPerDay": 12.8,
+          "protectedExternalSkinMassMgPerDay": 5.12,
+          "absorbedMassMgPerDay": 0.24576
+        }
       }
     }
   ]

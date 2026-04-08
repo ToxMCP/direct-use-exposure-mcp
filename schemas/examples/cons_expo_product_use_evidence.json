@@ -1,0 +1,47 @@
+{
+  "schema_version": "productUseEvidenceRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Solvent A",
+  "casrn": "123-45-6",
+  "source_name": "RIVM ConsExpo",
+  "source_kind": "consexpo",
+  "review_status": "reviewed",
+  "source_record_id": "pest_control_products_fact_sheet_2006",
+  "source_locator": "https://www.rivm.nl/bibliotheek/rapporten/320005002.pdf",
+  "product_name": "Indoor trigger spray insecticide",
+  "product_subtype": "indoor_surface_insecticide",
+  "product_use_categories": [
+    "pest_control",
+    "pesticide",
+    "biocide"
+  ],
+  "physical_forms": [
+    "spray"
+  ],
+  "application_methods": [
+    "trigger_spray"
+  ],
+  "retention_types": [
+    "surface_contact"
+  ],
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU"
+  ],
+  "physchem_summary": {
+    "density_g_per_ml": 1.08
+  },
+  "evidence_sources": [
+    "ConsExpo:pest_control_products_fact_sheet_2006"
+  ],
+  "notes": [
+    "Illustrative ConsExpo pest-control evidence mapped into the generic contract.",
+    "Mapped from ConsExpo product_group `pest_control_products` to internal categories ['pest_control', 'pesticide', 'biocide'].",
+    "ConsExpo product_subgroup: Indoor trigger spray insecticide.",
+    "Mapped ConsExpo product_subgroup to internal subtype `indoor_surface_insecticide`.",
+    "ConsExpo model_family: spray.",
+    "ConsExpo supported routes: dermal, inhalation."
+  ]
+}

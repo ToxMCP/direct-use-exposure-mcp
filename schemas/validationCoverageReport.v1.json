@@ -1,0 +1,230 @@
+{
+  "$defs": {
+    "UncertaintyTier": {
+      "enum": [
+        "tier_a",
+        "tier_b",
+        "tier_c",
+        "tier_d",
+        "tier_e"
+      ],
+      "title": "UncertaintyTier",
+      "type": "string"
+    },
+    "ValidationCoverageDomainSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "title": "Domain",
+          "type": "string"
+        },
+        "coverageLevel": {
+          "enum": [
+            "benchmark_time_resolved",
+            "benchmark_plus_executable_references",
+            "benchmark_only",
+            "source_backed_only",
+            "verification_only"
+          ],
+          "title": "Coveragelevel",
+          "type": "string"
+        },
+        "highestSupportedUncertaintyTier": {
+          "$ref": "#/$defs/UncertaintyTier"
+        },
+        "benchmarkCaseCount": {
+          "minimum": 0,
+          "title": "Benchmarkcasecount",
+          "type": "integer"
+        },
+        "benchmarkCaseIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Benchmarkcaseids",
+          "type": "array"
+        },
+        "goldsetCaseCount": {
+          "minimum": 0,
+          "title": "Goldsetcasecount",
+          "type": "integer"
+        },
+        "goldsetCaseIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Goldsetcaseids",
+          "type": "array"
+        },
+        "externalDatasetCount": {
+          "minimum": 0,
+          "title": "Externaldatasetcount",
+          "type": "integer"
+        },
+        "externalDatasetIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Externaldatasetids",
+          "type": "array"
+        },
+        "executableReferenceBandCount": {
+          "minimum": 0,
+          "title": "Executablereferencebandcount",
+          "type": "integer"
+        },
+        "executableReferenceBandIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Executablereferencebandids",
+          "type": "array"
+        },
+        "timeSeriesPackCount": {
+          "minimum": 0,
+          "title": "Timeseriespackcount",
+          "type": "integer"
+        },
+        "timeSeriesPackIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Timeseriespackids",
+          "type": "array"
+        },
+        "openGapCount": {
+          "minimum": 0,
+          "title": "Opengapcount",
+          "type": "integer"
+        },
+        "openGapIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Opengapids",
+          "type": "array"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "domain",
+        "coverageLevel",
+        "highestSupportedUncertaintyTier",
+        "benchmarkCaseCount",
+        "goldsetCaseCount",
+        "externalDatasetCount",
+        "executableReferenceBandCount",
+        "timeSeriesPackCount",
+        "openGapCount",
+        "summary"
+      ],
+      "title": "ValidationCoverageDomainSummary",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "validationCoverageReport.v1",
+      "default": "validationCoverageReport.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "policyVersion": {
+      "title": "Policyversion",
+      "type": "string"
+    },
+    "benchmarkDefaultsVersion": {
+      "title": "Benchmarkdefaultsversion",
+      "type": "string"
+    },
+    "referenceBandVersion": {
+      "title": "Referencebandversion",
+      "type": "string"
+    },
+    "timeSeriesReferenceVersion": {
+      "title": "Timeseriesreferenceversion",
+      "type": "string"
+    },
+    "goldsetVersion": {
+      "title": "Goldsetversion",
+      "type": "string"
+    },
+    "domainCount": {
+      "minimum": 0,
+      "title": "Domaincount",
+      "type": "integer"
+    },
+    "benchmarkCaseCount": {
+      "minimum": 0,
+      "title": "Benchmarkcasecount",
+      "type": "integer"
+    },
+    "externalDatasetCount": {
+      "minimum": 0,
+      "title": "Externaldatasetcount",
+      "type": "integer"
+    },
+    "referenceBandCount": {
+      "minimum": 0,
+      "title": "Referencebandcount",
+      "type": "integer"
+    },
+    "timeSeriesPackCount": {
+      "minimum": 0,
+      "title": "Timeseriespackcount",
+      "type": "integer"
+    },
+    "goldsetCaseCount": {
+      "minimum": 0,
+      "title": "Goldsetcasecount",
+      "type": "integer"
+    },
+    "goldsetCoverageCounts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Goldsetcoveragecounts",
+      "type": "object"
+    },
+    "unmappedGoldsetCaseIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unmappedgoldsetcaseids",
+      "type": "array"
+    },
+    "domainSummaries": {
+      "items": {
+        "$ref": "#/$defs/ValidationCoverageDomainSummary"
+      },
+      "title": "Domainsummaries",
+      "type": "array"
+    },
+    "overallNotes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Overallnotes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policyVersion",
+    "benchmarkDefaultsVersion",
+    "referenceBandVersion",
+    "timeSeriesReferenceVersion",
+    "goldsetVersion",
+    "domainCount",
+    "benchmarkCaseCount",
+    "externalDatasetCount",
+    "referenceBandCount",
+    "timeSeriesPackCount",
+    "goldsetCaseCount"
+  ],
+  "title": "ValidationCoverageReport",
+  "type": "object"
+}

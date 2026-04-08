@@ -1,0 +1,218 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "productUseEvidenceRecord.v1",
+      "default": "productUseEvidenceRecord.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Stable chemical identifier shared with the request.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "preferred_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Preferred chemical name when the evidence source also carries identity data.",
+      "title": "Preferred Name"
+    },
+    "casrn": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "CAS Registry Number when known.",
+      "title": "Casrn"
+    },
+    "source_name": {
+      "description": "Human-readable evidence-source label.",
+      "title": "Source Name",
+      "type": "string"
+    },
+    "source_kind": {
+      "default": "other",
+      "description": "What kind of upstream source produced the product-use evidence.",
+      "enum": [
+        "comptox",
+        "consexpo",
+        "regulatory_dossier",
+        "literature_pack",
+        "user_upload",
+        "other"
+      ],
+      "title": "Source Kind",
+      "type": "string"
+    },
+    "review_status": {
+      "default": "provisional",
+      "description": "Whether the evidence has been reviewed for downstream use.",
+      "enum": [
+        "reviewed",
+        "provisional",
+        "unreviewed"
+      ],
+      "title": "Review Status",
+      "type": "string"
+    },
+    "source_record_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional upstream record identifier such as a dossier or registry ID.",
+      "title": "Source Record Id"
+    },
+    "source_locator": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional URL or logical locator for the upstream record.",
+      "title": "Source Locator"
+    },
+    "product_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional product label or family name carried by the evidence source.",
+      "title": "Product Name"
+    },
+    "product_subtype": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional narrower product-use subtype carried by the evidence source.",
+      "title": "Product Subtype"
+    },
+    "product_use_categories": {
+      "description": "Candidate product-use categories supported by the evidence source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Product Use Categories",
+      "type": "array"
+    },
+    "physical_forms": {
+      "description": "Physical forms supported by the evidence source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Physical Forms",
+      "type": "array"
+    },
+    "application_methods": {
+      "description": "Application methods supported by the evidence source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Application Methods",
+      "type": "array"
+    },
+    "retention_types": {
+      "description": "Retention or contact semantics supported by the evidence source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Retention Types",
+      "type": "array"
+    },
+    "region_scopes": {
+      "description": "Regions where the product-use evidence is considered applicable.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Region Scopes",
+      "type": "array"
+    },
+    "jurisdictions": {
+      "description": "Jurisdictions or regulatory programs that back the evidence source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Jurisdictions",
+      "type": "array"
+    },
+    "physchem_summary": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Optional physicochemical context preserved for downstream review.",
+      "title": "Physchem Summary",
+      "type": "object"
+    },
+    "evidence_sources": {
+      "description": "Stable upstream evidence references backing the record.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Sources",
+      "type": "array"
+    },
+    "notes": {
+      "description": "Additional applicability or review notes preserved verbatim.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "chemical_id",
+    "source_name"
+  ],
+  "title": "ProductUseEvidenceRecord",
+  "type": "object"
+}

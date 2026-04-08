@@ -1,0 +1,51 @@
+{
+  "schema_version": "workerArtExternalExecutionResult.v1",
+  "sourceSystem": "ART",
+  "sourceRunId": "art-run-001",
+  "modelVersion": "ART-1.5.0",
+  "resultStatus": "completed",
+  "taskDurationHours": null,
+  "breathingZoneConcentrationMgPerM3": 0.72,
+  "inhaledMassMgPerDay": 1.575,
+  "normalizedExternalDoseMgPerKgDay": 0.021,
+  "determinantSnapshot": {
+    "workplaceSettingType": "janitorial_closet_or_small_room",
+    "ventilationDeterminant": "general_ventilation",
+    "taskFamily": "janitorial_disinfectant_trigger_spray"
+  },
+  "resultPayload": {},
+  "qualityNotes": [],
+  "rawArtifacts": [
+    {
+      "schema_version": "workerArtExternalArtifact.v1",
+      "label": "ART run summary",
+      "locator": "artifact://art-run-001/summary.json",
+      "mediaType": "application/json",
+      "adapterHint": "art_worker_execution_report_json_v1",
+      "contentText": null,
+      "contentJson": {
+        "schemaVersion": "artWorkerExecutionReport.v1",
+        "run": {
+          "id": "art-run-001",
+          "modelVersion": "ART-1.5.0"
+        },
+        "task": {
+          "durationHours": 0.5
+        },
+        "results": {
+          "status": "completed",
+          "taskDurationHours": 0.5,
+          "breathingZoneConcentrationMgPerM3": 0.72,
+          "inhaledMassMgPerDay": 1.575,
+          "normalizedExternalDoseMgPerKgDay": 0.021
+        },
+        "determinants": {
+          "workplaceSettingType": "janitorial_closet_or_small_room",
+          "ventilationDeterminant": "general_ventilation",
+          "taskFamily": "janitorial_disinfectant_trigger_spray"
+        }
+      },
+      "note": "Illustrative nested external ART runner report artifact."
+    }
+  ]
+}

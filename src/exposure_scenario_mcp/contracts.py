@@ -11,13 +11,23 @@ from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.examples import build_examples
 from exposure_scenario_mcp.integrations import (
+    ApplyProductUseEvidenceInput,
+    AssessProductUseEvidenceFitInput,
+    BuildProductUseEvidenceFromConsExpoInput,
     CompToxChemicalRecord,
+    ConsExpoEvidenceRecord,
     ExposureWorkflowHook,
+    IntegratedExposureWorkflowResult,
     PbpkCompatibilityReport,
     PbpkExternalImportBundle,
     PbpkExternalImportPackage,
     PbpkExternalImportRequest,
     PbpkExternalImportToolCall,
+    ProductUseEvidenceFitReport,
+    ProductUseEvidenceReconciliationReport,
+    ProductUseEvidenceRecord,
+    ReconcileProductUseEvidenceInput,
+    RunIntegratedExposureWorkflowInput,
     ToxClawEvidenceBundle,
     ToxClawEvidenceEnvelope,
     ToxClawEvidenceRecord,
@@ -61,6 +71,7 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     ExternalValidationDataset,
+    InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
     MonotonicityCheck,
@@ -101,22 +112,64 @@ from exposure_scenario_mcp.models import (
     ToolResultMeta,
     UncertaintyRegisterEntry,
     ValidationBenchmarkDomain,
+    ValidationCoverageDomainSummary,
+    ValidationCoverageReport,
     ValidationDossierReport,
     ValidationGap,
     ValidationReferenceBand,
     ValidationReferenceBandManifest,
     ValidationSummary,
+    ValidationTimeSeriesReferenceManifest,
+    ValidationTimeSeriesReferencePack,
+    ValidationTimeSeriesReferencePoint,
+    WorkerTaskRoutingDecision,
+    WorkerTaskRoutingInput,
 )
 from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
+from exposure_scenario_mcp.worker_dermal import (
+    ExecuteWorkerDermalAbsorbedDoseRequest,
+    ExportWorkerDermalAbsorbedDoseBridgeRequest,
+    WorkerDermalAbsorbedDoseAdapterIngestResult,
+    WorkerDermalAbsorbedDoseAdapterRequest,
+    WorkerDermalAbsorbedDoseAdapterToolCall,
+    WorkerDermalAbsorbedDoseBridgePackage,
+    WorkerDermalAbsorbedDoseExecutionOverrides,
+    WorkerDermalAbsorbedDoseExecutionResult,
+    WorkerDermalAbsorbedDoseTaskEnvelope,
+    WorkerDermalCompatibilityReport,
+    WorkerDermalDeterminantTemplateMatch,
+    WorkerDermalTaskContext,
+)
+from exposure_scenario_mcp.worker_tier2 import (
+    ExecuteWorkerInhalationTier2Request,
+    ExportWorkerArtExecutionPackageRequest,
+    ExportWorkerInhalationTier2BridgeRequest,
+    ImportWorkerArtExecutionResultRequest,
+    WorkerArtDeterminantTemplateMatch,
+    WorkerArtExternalArtifact,
+    WorkerArtExternalExecutionPackage,
+    WorkerArtExternalExecutionResult,
+    WorkerArtExternalResultImportToolCall,
+    WorkerInhalationArtTaskEnvelope,
+    WorkerInhalationTier2AdapterIngestResult,
+    WorkerInhalationTier2AdapterRequest,
+    WorkerInhalationTier2AdapterToolCall,
+    WorkerInhalationTier2BridgePackage,
+    WorkerInhalationTier2CompatibilityReport,
+    WorkerInhalationTier2ExecutionOverrides,
+    WorkerInhalationTier2ExecutionResult,
+    WorkerInhalationTier2TaskContext,
+)
 
 SCHEMA_MODELS = {
     "productUseProfile.v1": ProductUseProfile,
     "populationProfile.v1": PopulationProfile,
     "exposureScenarioRequest.v1": ExposureScenarioRequest,
+    "inhalationResidualAirReentryScenarioRequest.v1": InhalationResidualAirReentryScenarioRequest,
     "inhalationScenarioRequest.v1": InhalationScenarioRequest,
     "inhalationTier1ScenarioRequest.v1": InhalationTier1ScenarioRequest,
     "tier1AirflowClassProfile.v1": Tier1AirflowClassProfile,
@@ -132,9 +185,14 @@ SCHEMA_MODELS = {
     "sensitivityRankingEntry.v1": SensitivityRankingEntry,
     "dependencyDescriptor.v1": DependencyDescriptor,
     "validationBenchmarkDomain.v1": ValidationBenchmarkDomain,
+    "validationCoverageDomainSummary.v1": ValidationCoverageDomainSummary,
+    "validationCoverageReport.v1": ValidationCoverageReport,
     "externalValidationDataset.v1": ExternalValidationDataset,
     "validationReferenceBand.v1": ValidationReferenceBand,
     "validationReferenceBandManifest.v1": ValidationReferenceBandManifest,
+    "validationTimeSeriesReferencePoint.v1": ValidationTimeSeriesReferencePoint,
+    "validationTimeSeriesReferencePack.v1": ValidationTimeSeriesReferencePack,
+    "validationTimeSeriesReferenceManifest.v1": ValidationTimeSeriesReferenceManifest,
     "validationGap.v1": ValidationGap,
     "executedValidationCheck.v1": ExecutedValidationCheck,
     "defaultsCurationEntry.v1": DefaultsCurationEntry,
@@ -143,6 +201,46 @@ SCHEMA_MODELS = {
     "validationSummary.v1": ValidationSummary,
     "tierUpgradeInputRequirement.v1": TierUpgradeInputRequirement,
     "tierUpgradeAdvisory.v1": TierUpgradeAdvisory,
+    "workerTaskRoutingInput.v1": WorkerTaskRoutingInput,
+    "workerTaskRoutingDecision.v1": WorkerTaskRoutingDecision,
+    "workerInhalationTier2TaskContext.v1": WorkerInhalationTier2TaskContext,
+    "workerInhalationTier2CompatibilityReport.v1": WorkerInhalationTier2CompatibilityReport,
+    "workerInhalationTier2AdapterRequest.v1": WorkerInhalationTier2AdapterRequest,
+    "workerInhalationTier2AdapterToolCall.v1": WorkerInhalationTier2AdapterToolCall,
+    "workerInhalationTier2BridgePackage.v1": WorkerInhalationTier2BridgePackage,
+    "exportWorkerInhalationTier2BridgeRequest.v1": ExportWorkerInhalationTier2BridgeRequest,
+    "workerArtDeterminantTemplateMatch.v1": WorkerArtDeterminantTemplateMatch,
+    "workerInhalationArtTaskEnvelope.v1": WorkerInhalationArtTaskEnvelope,
+    "workerInhalationTier2AdapterIngestResult.v1": WorkerInhalationTier2AdapterIngestResult,
+    "workerInhalationTier2ExecutionOverrides.v1": (
+        WorkerInhalationTier2ExecutionOverrides
+    ),
+    "executeWorkerInhalationTier2Request.v1": ExecuteWorkerInhalationTier2Request,
+    "workerArtExternalArtifact.v1": WorkerArtExternalArtifact,
+    "workerArtExternalExecutionResult.v1": WorkerArtExternalExecutionResult,
+    "exportWorkerArtExecutionPackageRequest.v1": ExportWorkerArtExecutionPackageRequest,
+    "workerArtExternalResultImportToolCall.v1": WorkerArtExternalResultImportToolCall,
+    "workerArtExternalExecutionPackage.v1": WorkerArtExternalExecutionPackage,
+    "importWorkerArtExecutionResultRequest.v1": ImportWorkerArtExecutionResultRequest,
+    "workerInhalationTier2ExecutionResult.v1": WorkerInhalationTier2ExecutionResult,
+    "workerDermalTaskContext.v1": WorkerDermalTaskContext,
+    "workerDermalCompatibilityReport.v1": WorkerDermalCompatibilityReport,
+    "workerDermalAbsorbedDoseAdapterRequest.v1": WorkerDermalAbsorbedDoseAdapterRequest,
+    "workerDermalAbsorbedDoseAdapterToolCall.v1": WorkerDermalAbsorbedDoseAdapterToolCall,
+    "workerDermalAbsorbedDoseBridgePackage.v1": WorkerDermalAbsorbedDoseBridgePackage,
+    "exportWorkerDermalAbsorbedDoseBridgeRequest.v1": (
+        ExportWorkerDermalAbsorbedDoseBridgeRequest
+    ),
+    "workerDermalDeterminantTemplateMatch.v1": WorkerDermalDeterminantTemplateMatch,
+    "workerDermalAbsorbedDoseTaskEnvelope.v1": WorkerDermalAbsorbedDoseTaskEnvelope,
+    "workerDermalAbsorbedDoseAdapterIngestResult.v1": (
+        WorkerDermalAbsorbedDoseAdapterIngestResult
+    ),
+    "workerDermalAbsorbedDoseExecutionOverrides.v1": (
+        WorkerDermalAbsorbedDoseExecutionOverrides
+    ),
+    "executeWorkerDermalAbsorbedDoseRequest.v1": ExecuteWorkerDermalAbsorbedDoseRequest,
+    "workerDermalAbsorbedDoseExecutionResult.v1": WorkerDermalAbsorbedDoseExecutionResult,
     "buildExposureEnvelopeFromLibraryInput.v1": BuildExposureEnvelopeFromLibraryInput,
     "probabilityBoundSupportPointDefinition.v1": ProbabilityBoundSupportPointDefinition,
     "probabilityBoundsDriverProfile.v1": ProbabilityBoundsDriverProfile,
@@ -181,6 +279,16 @@ SCHEMA_MODELS = {
     "exportToxClawRefinementBundleRequest.v1": ExportToxClawRefinementBundleRequest,
     "compareExposureScenariosInput.v1": CompareExposureScenariosInput,
     "compToxChemicalRecord.v1": CompToxChemicalRecord,
+    "consExpoEvidenceRecord.v1": ConsExpoEvidenceRecord,
+    "buildProductUseEvidenceFromConsExpoInput.v1": BuildProductUseEvidenceFromConsExpoInput,
+    "productUseEvidenceRecord.v1": ProductUseEvidenceRecord,
+    "productUseEvidenceFitReport.v1": ProductUseEvidenceFitReport,
+    "assessProductUseEvidenceFitInput.v1": AssessProductUseEvidenceFitInput,
+    "applyProductUseEvidenceInput.v1": ApplyProductUseEvidenceInput,
+    "productUseEvidenceReconciliationReport.v1": ProductUseEvidenceReconciliationReport,
+    "reconcileProductUseEvidenceInput.v1": ReconcileProductUseEvidenceInput,
+    "runIntegratedExposureWorkflowInput.v1": RunIntegratedExposureWorkflowInput,
+    "integratedExposureWorkflowResult.v1": IntegratedExposureWorkflowResult,
     "toxclawEvidenceEnvelope.v1": ToxClawEvidenceEnvelope,
     "toxclawEvidenceRecord.v1": ToxClawEvidenceRecord,
     "toxclawReportEvidenceReference.v1": ToxClawReportEvidenceReference,
@@ -270,11 +378,146 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Combine component scenarios into a simple additive aggregate summary.",
             ),
             ContractToolEntry(
+                name="exposure_assess_product_use_evidence_fit",
+                request_schema="assessProductUseEvidenceFitInput.v1",
+                response_schema="productUseEvidenceFitReport.v1",
+                description=(
+                    "Assess whether product-use evidence from CompTox or another source fits "
+                    "the current scenario request."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_apply_product_use_evidence",
+                request_schema="applyProductUseEvidenceInput.v1",
+                response_schema="exposureScenarioRequest.v1",
+                description=(
+                    "Apply compatible product-use evidence to a request while preserving "
+                    "source and applicability metadata."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_build_product_use_evidence_from_consexpo",
+                request_schema="buildProductUseEvidenceFromConsExpoInput.v1",
+                response_schema="productUseEvidenceRecord.v1",
+                description=(
+                    "Map a typed ConsExpo fact-sheet record into the generic product-use "
+                    "evidence contract."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_reconcile_product_use_evidence",
+                request_schema="reconcileProductUseEvidenceInput.v1",
+                response_schema="productUseEvidenceReconciliationReport.v1",
+                description=(
+                    "Compare multiple product-use evidence sources, rank their fit, and "
+                    "build a merged request preview with explicit field provenance."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_run_integrated_workflow",
+                request_schema="runIntegratedExposureWorkflowInput.v1",
+                response_schema="integratedExposureWorkflowResult.v1",
+                description=(
+                    "Run the local evidence-to-scenario-to-PBPK workflow in one audited "
+                    "response."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_route_worker_task",
+                request_schema="workerTaskRoutingInput.v1",
+                response_schema="workerTaskRoutingDecision.v1",
+                description=(
+                    "Route a worker-tagged task to the strongest current MCP tool or a "
+                    "future occupational adapter hook."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_export_worker_inhalation_tier2_bridge",
+                request_schema="exportWorkerInhalationTier2BridgeRequest.v1",
+                response_schema="workerInhalationTier2BridgePackage.v1",
+                description=(
+                    "Export a normalized worker inhalation Tier 2 handoff package for a "
+                    "future occupational adapter."
+                ),
+            ),
+            ContractToolEntry(
+                name="worker_ingest_inhalation_tier2_task",
+                request_schema="workerInhalationTier2AdapterRequest.v1",
+                response_schema="workerInhalationTier2AdapterIngestResult.v1",
+                description=(
+                    "Ingest a worker Tier 2 adapter request and normalize it into an "
+                    "ART-aligned intake envelope."
+                ),
+            ),
+            ContractToolEntry(
+                name="worker_execute_inhalation_tier2_task",
+                request_schema="executeWorkerInhalationTier2Request.v1",
+                response_schema="workerInhalationTier2ExecutionResult.v1",
+                description=(
+                    "Execute a bounded ART-aligned worker inhalation screening estimate "
+                    "from the normalized adapter request."
+                ),
+            ),
+            ContractToolEntry(
+                name="worker_export_inhalation_art_execution_package",
+                request_schema="exportWorkerArtExecutionPackageRequest.v1",
+                response_schema="workerArtExternalExecutionPackage.v1",
+                description=(
+                    "Export an ART-ready external execution payload plus a normalized "
+                    "result-import template."
+                ),
+            ),
+            ContractToolEntry(
+                name="worker_import_inhalation_art_execution_result",
+                request_schema="importWorkerArtExecutionResultRequest.v1",
+                response_schema="workerInhalationTier2ExecutionResult.v1",
+                description=(
+                    "Import a normalized external ART result into the governed worker "
+                    "inhalation execution schema."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_export_worker_dermal_absorbed_dose_bridge",
+                request_schema="exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
+                response_schema="workerDermalAbsorbedDoseBridgePackage.v1",
+                description=(
+                    "Export a normalized worker dermal absorbed-dose and PPE handoff package "
+                    "for a future occupational dermal adapter."
+                ),
+            ),
+            ContractToolEntry(
+                name="worker_ingest_dermal_absorbed_dose_task",
+                request_schema="workerDermalAbsorbedDoseAdapterRequest.v1",
+                response_schema="workerDermalAbsorbedDoseAdapterIngestResult.v1",
+                description=(
+                    "Ingest a worker dermal absorbed-dose adapter request and normalize it "
+                    "into a PPE-aware intake envelope."
+                ),
+            ),
+            ContractToolEntry(
+                name="worker_execute_dermal_absorbed_dose_task",
+                request_schema="executeWorkerDermalAbsorbedDoseRequest.v1",
+                response_schema="workerDermalAbsorbedDoseExecutionResult.v1",
+                description=(
+                    "Execute a bounded PPE-aware worker dermal absorbed-dose estimate from "
+                    "the normalized adapter request."
+                ),
+            ),
+            ContractToolEntry(
                 name="exposure_build_inhalation_screening_scenario",
                 request_schema="inhalationScenarioRequest.v1",
                 response_schema="exposureScenario.v1",
                 description=(
                     "Build a deterministic inhalation screening scenario using room semantics."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_build_inhalation_residual_air_reentry_scenario",
+                request_schema="inhalationResidualAirReentryScenarioRequest.v1",
+                response_schema="exposureScenario.v1",
+                description=(
+                    "Build a deterministic post-application residual-air reentry inhalation "
+                    "scenario from a reentry-start concentration anchor."
                 ),
             ),
             ContractToolEntry(
@@ -410,12 +653,22 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Guide to Tier 1 inhalation upgrade hooks and current boundaries.",
             ),
             ContractResourceEntry(
+                uri="docs://inhalation-residual-air-reentry-guide",
+                description="Guide to the post-application residual-air reentry inhalation mode.",
+            ),
+            ContractResourceEntry(
                 uri="docs://validation-framework",
                 description="Validation and benchmark-domain posture for current route models.",
             ),
             ContractResourceEntry(
                 uri="docs://validation-dossier",
                 description="Validation dossier with cited external references and open gaps.",
+            ),
+            ContractResourceEntry(
+                uri="docs://validation-coverage-report",
+                description=(
+                    "Human-readable validation coverage and trust report by route mechanism."
+                ),
             ),
             ContractResourceEntry(
                 uri="docs://validation-reference-bands",
@@ -425,8 +678,66 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractResourceEntry(
+                uri="docs://validation-time-series-packs",
+                description=(
+                    "Human-readable guide to sparse executable validation time-series packs."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="docs://goldset-benchmark-guide",
+                description="Human-readable guide to the externally anchored showcase goldset.",
+            ),
+            ContractResourceEntry(
                 uri="docs://suite-integration-guide",
                 description="Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP.",
+            ),
+            ContractResourceEntry(
+                uri="docs://integrated-exposure-workflow-guide",
+                description="Guide to the evidence-to-scenario-to-PBPK workflow tool.",
+            ),
+            ContractResourceEntry(
+                uri="docs://exposure-platform-architecture",
+                description=(
+                    "Architecture guide for splitting exposure, fate, dietary, and worker "
+                    "modeling concerns across cooperating MCPs."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="docs://worker-routing-guide",
+                description="Guide to the worker-task router and occupational escalation hooks.",
+            ),
+            ContractResourceEntry(
+                uri="docs://worker-tier2-bridge-guide",
+                description="Guide to the worker inhalation Tier 2 bridge export.",
+            ),
+            ContractResourceEntry(
+                uri="docs://worker-art-adapter-guide",
+                description="Guide to the ART-side worker inhalation adapter ingest boundary.",
+            ),
+            ContractResourceEntry(
+                uri="docs://worker-art-execution-guide",
+                description="Guide to the executable ART-aligned worker inhalation kernel.",
+            ),
+            ContractResourceEntry(
+                uri="docs://worker-art-external-exchange-guide",
+                description=(
+                    "Guide to exporting ART-ready external execution packages and importing "
+                    "external ART results."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="docs://worker-dermal-bridge-guide",
+                description="Guide to the worker dermal absorbed-dose bridge export.",
+            ),
+            ContractResourceEntry(
+                uri="docs://worker-dermal-adapter-guide",
+                description=(
+                    "Guide to the dermal absorbed-dose and PPE adapter ingest boundary."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="docs://worker-dermal-execution-guide",
+                description="Guide to the executable worker dermal absorbed-dose kernel.",
             ),
             ContractResourceEntry(
                 uri="docs://troubleshooting",
@@ -464,6 +775,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Machine-readable benchmark and regression corpus manifest.",
             ),
             ContractResourceEntry(
+                uri="benchmarks://goldset",
+                description=(
+                    "Machine-readable showcase goldset with external source anchors "
+                    "and challenge tags."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="validation://manifest",
                 description="Machine-readable validation and external-reference manifest.",
             ),
@@ -475,9 +793,22 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractResourceEntry(
+                uri="validation://coverage-report",
+                description=(
+                    "Machine-readable validation coverage report across benchmarks, "
+                    "external datasets, reference bands, time-series packs, and goldset links."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="validation://reference-bands",
                 description=(
                     "Machine-readable executable validation reference-band manifest."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="validation://time-series-packs",
+                description=(
+                    "Machine-readable executable validation time-series reference-pack manifest."
                 ),
             ),
             ContractResourceEntry(
@@ -922,6 +1253,7 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://conformance-report",
             "docs://release-readiness",
             "docs://security-provenance-review",
+            "docs://goldset-benchmark-guide",
             "docs/releases/v0.1.0.md",
         ],
         validation_commands=readiness.validation_commands,

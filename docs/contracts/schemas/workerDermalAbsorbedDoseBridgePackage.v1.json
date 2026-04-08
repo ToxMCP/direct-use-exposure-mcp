@@ -1,0 +1,639 @@
+{
+  "$defs": {
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "QualityFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable quality flag code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "info",
+          "description": "Quality signal severity."
+        },
+        "message": {
+          "description": "Human-readable quality message.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "QualityFlag",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "WorkerDermalAbsorbedDoseAdapterRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerDermalAbsorbedDoseAdapterRequest.v1",
+          "default": "workerDermalAbsorbedDoseAdapterRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "targetAdapter": {
+          "default": "future_worker_dermal_adapter",
+          "title": "Targetadapter",
+          "type": "string"
+        },
+        "targetModelFamily": {
+          "$ref": "#/$defs/WorkerDermalModelFamily"
+        },
+        "sourceModule": {
+          "default": "exposure-scenario-mcp",
+          "title": "Sourcemodule",
+          "type": "string"
+        },
+        "contextOfUse": {
+          "title": "Contextofuse",
+          "type": "string"
+        },
+        "chemicalIdentity": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Chemicalidentity",
+          "type": "object"
+        },
+        "chemicalContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkerDermalChemicalContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "taskContext": {
+          "$ref": "#/$defs/WorkerDermalTaskContext"
+        },
+        "exposureInputs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Exposureinputs",
+          "type": "object"
+        },
+        "supportingHandoffs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Supportinghandoffs",
+          "type": "object"
+        },
+        "guidanceResource": {
+          "default": "docs://worker-dermal-bridge-guide",
+          "title": "Guidanceresource",
+          "type": "string"
+        }
+      },
+      "required": [
+        "targetModelFamily",
+        "contextOfUse",
+        "taskContext"
+      ],
+      "title": "WorkerDermalAbsorbedDoseAdapterRequest",
+      "type": "object"
+    },
+    "WorkerDermalAbsorbedDoseAdapterToolCall": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerDermalAbsorbedDoseAdapterToolCall.v1",
+          "default": "workerDermalAbsorbedDoseAdapterToolCall.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "toolName": {
+          "default": "worker_ingest_dermal_absorbed_dose_task",
+          "title": "Toolname",
+          "type": "string"
+        },
+        "arguments": {
+          "$ref": "#/$defs/WorkerDermalAbsorbedDoseAdapterRequest"
+        }
+      },
+      "required": [
+        "arguments"
+      ],
+      "title": "WorkerDermalAbsorbedDoseAdapterToolCall",
+      "type": "object"
+    },
+    "WorkerDermalBarrierMaterial": {
+      "enum": [
+        "unknown",
+        "generic_work_glove",
+        "nitrile",
+        "latex",
+        "neoprene",
+        "butyl",
+        "pvc",
+        "laminate",
+        "textile",
+        "coated_textile"
+      ],
+      "title": "WorkerDermalBarrierMaterial",
+      "type": "string"
+    },
+    "WorkerDermalChemicalContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerDermalChemicalContext.v1",
+          "default": "workerDermalChemicalContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "logKow": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Logkow"
+        },
+        "molecularWeightGPerMol": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Molecularweightgpermol"
+        },
+        "waterSolubilityMgPerL": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Watersolubilitymgperl"
+        },
+        "vaporPressureMmhg": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vaporpressuremmhg"
+        }
+      },
+      "title": "WorkerDermalChemicalContext",
+      "type": "object"
+    },
+    "WorkerDermalCompatibilityReport": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerDermalCompatibilityReport.v1",
+          "default": "workerDermalCompatibilityReport.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sourceRequestSchema": {
+          "title": "Sourcerequestschema",
+          "type": "string"
+        },
+        "targetModelFamily": {
+          "$ref": "#/$defs/WorkerDermalModelFamily"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "default": "dermal"
+        },
+        "workerDetected": {
+          "title": "Workerdetected",
+          "type": "boolean"
+        },
+        "readyForAdapter": {
+          "title": "Readyforadapter",
+          "type": "boolean"
+        },
+        "missingFields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missingfields",
+          "type": "array"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/LimitationNote"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "recommendedNextSteps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Recommendednextsteps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "sourceRequestSchema",
+        "targetModelFamily",
+        "workerDetected",
+        "readyForAdapter"
+      ],
+      "title": "WorkerDermalCompatibilityReport",
+      "type": "object"
+    },
+    "WorkerDermalContactPattern": {
+      "enum": [
+        "unknown",
+        "direct_handling",
+        "surface_transfer",
+        "splash_contact",
+        "immersion_contact",
+        "residue_contact"
+      ],
+      "title": "WorkerDermalContactPattern",
+      "type": "string"
+    },
+    "WorkerDermalModelFamily": {
+      "enum": [
+        "dermal_absorption_ppe",
+        "ih_skinperm"
+      ],
+      "title": "WorkerDermalModelFamily",
+      "type": "string"
+    },
+    "WorkerDermalPpeState": {
+      "enum": [
+        "unknown",
+        "none",
+        "work_gloves",
+        "chemical_resistant_gloves",
+        "protective_clothing",
+        "gloves_and_protective_clothing"
+      ],
+      "title": "WorkerDermalPpeState",
+      "type": "string"
+    },
+    "WorkerDermalTaskContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerDermalTaskContext.v1",
+          "default": "workerDermalTaskContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "taskDescription": {
+          "title": "Taskdescription",
+          "type": "string"
+        },
+        "workplaceSetting": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workplacesetting"
+        },
+        "contactDurationHours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contactdurationhours"
+        },
+        "contactPattern": {
+          "$ref": "#/$defs/WorkerDermalContactPattern",
+          "default": "unknown"
+        },
+        "exposedBodyAreas": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Exposedbodyareas",
+          "type": "array"
+        },
+        "ppeState": {
+          "$ref": "#/$defs/WorkerDermalPpeState",
+          "default": "unknown"
+        },
+        "barrierMaterial": {
+          "$ref": "#/$defs/WorkerDermalBarrierMaterial",
+          "default": "unknown"
+        },
+        "controlMeasures": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Controlmeasures",
+          "type": "array"
+        },
+        "surfaceLoadingContext": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Surfaceloadingcontext"
+        },
+        "skinCondition": {
+          "$ref": "#/$defs/WorkerSkinCondition",
+          "default": "unknown"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "taskDescription"
+      ],
+      "title": "WorkerDermalTaskContext",
+      "type": "object"
+    },
+    "WorkerSkinCondition": {
+      "enum": [
+        "unknown",
+        "intact",
+        "wet",
+        "compromised",
+        "occluded"
+      ],
+      "title": "WorkerSkinCondition",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerDermalAbsorbedDoseBridgePackage.v1",
+      "default": "workerDermalAbsorbedDoseBridgePackage.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "routingDecision": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Routingdecision",
+      "type": "object"
+    },
+    "adapterRequest": {
+      "$ref": "#/$defs/WorkerDermalAbsorbedDoseAdapterRequest"
+    },
+    "toolCall": {
+      "$ref": "#/$defs/WorkerDermalAbsorbedDoseAdapterToolCall"
+    },
+    "compatibilityReport": {
+      "$ref": "#/$defs/WorkerDermalCompatibilityReport"
+    },
+    "qualityFlags": {
+      "items": {
+        "$ref": "#/$defs/QualityFlag"
+      },
+      "title": "Qualityflags",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle"
+    }
+  },
+  "required": [
+    "adapterRequest",
+    "toolCall",
+    "compatibilityReport",
+    "provenance"
+  ],
+  "title": "WorkerDermalAbsorbedDoseBridgePackage",
+  "type": "object"
+}

@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "WorkerArtTemplateAlignmentStatus": {
+      "enum": [
+        "aligned",
+        "partial",
+        "heuristic",
+        "none"
+      ],
+      "title": "WorkerArtTemplateAlignmentStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerArtDeterminantTemplateMatch.v1",
+      "default": "workerArtDeterminantTemplateMatch.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "templateCatalogVersion": {
+      "default": "2026.04.07.v1",
+      "description": "Version of the packaged ART determinant-template catalog.",
+      "title": "Templatecatalogversion",
+      "type": "string"
+    },
+    "templateId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Matched determinant-template identifier, if any.",
+      "title": "Templateid"
+    },
+    "templateLabel": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Human-readable matched determinant-template label, if any.",
+      "title": "Templatelabel"
+    },
+    "alignmentStatus": {
+      "$ref": "#/$defs/WorkerArtTemplateAlignmentStatus",
+      "description": "How strongly the current worker task aligns with the packaged template."
+    },
+    "matchScore": {
+      "description": "Normalized match score for the selected determinant template.",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Matchscore",
+      "type": "number"
+    },
+    "matchBasis": {
+      "description": "Short statements describing why the template matched.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Matchbasis",
+      "type": "array"
+    },
+    "determinantRecommendations": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Packaged determinant recommendations for downstream ART-side execution.",
+      "title": "Determinantrecommendations",
+      "type": "object"
+    },
+    "sourceBasis": {
+      "description": "Template-pack basis preserved with the matched determinant suggestions.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Sourcebasis",
+      "type": "array"
+    },
+    "reviewNotes": {
+      "description": "Review notes attached to the template match and remaining gaps.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Reviewnotes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "alignmentStatus",
+    "matchScore"
+  ],
+  "title": "WorkerArtDeterminantTemplateMatch",
+  "type": "object"
+}

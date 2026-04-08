@@ -15,11 +15,15 @@ from exposure_scenario_mcp.models import (
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
     ExposureScenarioRequest,
+    InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
+from exposure_scenario_mcp.plugins.inhalation import (
+    build_inhalation_residual_air_reentry_scenario,
+    build_inhalation_tier_1_screening_scenario,
+)
 from exposure_scenario_mcp.probability_bounds import build_probability_bounds_from_scenario_package
 from exposure_scenario_mcp.runtime import (
     PluginRegistry,
@@ -30,6 +34,20 @@ from exposure_scenario_mcp.runtime import (
 )
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.uncertainty import enrich_scenario_uncertainty
+from exposure_scenario_mcp.worker_dermal import (
+    ExecuteWorkerDermalAbsorbedDoseRequest,
+    ExportWorkerDermalAbsorbedDoseBridgeRequest,
+    WorkerDermalAbsorbedDoseExecutionOverrides,
+    build_worker_dermal_absorbed_dose_bridge,
+    execute_worker_dermal_absorbed_dose_task,
+)
+from exposure_scenario_mcp.worker_tier2 import (
+    ExecuteWorkerInhalationTier2Request,
+    ExportWorkerInhalationTier2BridgeRequest,
+    WorkerInhalationTier2ExecutionOverrides,
+    build_worker_inhalation_tier2_bridge,
+    execute_worker_inhalation_tier2_task,
+)
 
 FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "benchmark_cases.json"
 
@@ -43,9 +61,20 @@ def build_engine() -> ScenarioEngine:
 
 def build_request(
     payload: dict,
-) -> ExposureScenarioRequest | InhalationScenarioRequest | InhalationTier1ScenarioRequest:
+) -> (
+    ExposureScenarioRequest
+    | InhalationScenarioRequest
+    | InhalationResidualAirReentryScenarioRequest
+    | InhalationTier1ScenarioRequest
+):
     if payload.get("schema_version") == "inhalationTier1ScenarioRequest.v1":
         return InhalationTier1ScenarioRequest(**payload)
+    if (
+        payload.get("product_use_profile", {}).get("application_method") == "residual_air_reentry"
+        or "air_concentration_at_reentry_start_mg_per_m3" in payload
+        or "airConcentrationAtReentryStartMgPerM3" in payload
+    ):
+        return InhalationResidualAirReentryScenarioRequest(**payload)
     if payload["route"] == "inhalation":
         return InhalationScenarioRequest(**payload)
     return ExposureScenarioRequest(**payload)
@@ -57,6 +86,11 @@ def build_scenario(engine: ScenarioEngine, payload: dict):
         return enrich_scenario_uncertainty(
             engine,
             build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load()),
+        )
+    if isinstance(request, InhalationResidualAirReentryScenarioRequest):
+        return enrich_scenario_uncertainty(
+            engine,
+            build_inhalation_residual_air_reentry_scenario(request, DefaultsRegistry.load()),
         )
     return engine.build(request)
 
@@ -267,6 +301,78 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
                 for item in summary.support_points
             ), case["id"]
             assert summary.provenance.defaults_version == fixture["defaults_version"], case["id"]
+            continue
+
+        if case["kind"] == "worker_inhalation_execution":
+            bridge_package = build_worker_inhalation_tier2_bridge(
+                ExportWorkerInhalationTier2BridgeRequest(**case["bridge_request"]),
+                registry=DefaultsRegistry.load(),
+            )
+            execution = execute_worker_inhalation_tier2_task(
+                ExecuteWorkerInhalationTier2Request(
+                    adapter_request=bridge_package.tool_call.arguments,
+                    execution_overrides=WorkerInhalationTier2ExecutionOverrides(
+                        **case["execution_overrides"]
+                    ),
+                    context_of_use=case["context_of_use"],
+                ),
+                registry=DefaultsRegistry.load(),
+            )
+            assert execution.baseline_dose is not None, case["id"]
+            assert execution.external_dose is not None, case["id"]
+            assert execution.baseline_dose.value == pytest.approx(
+                expected["baseline_dose_value"], rel=1e-6
+            ), case["id"]
+            assert execution.external_dose.value == pytest.approx(
+                expected["external_dose_value"], rel=1e-6
+            ), case["id"]
+            for metric_name, expected_value in expected["route_metrics"].items():
+                assert execution.route_metrics[metric_name] == pytest.approx(
+                    expected_value, rel=1e-6
+                ), case["id"]
+            assert execution.validation_summary is not None, case["id"]
+            assert execution.validation_summary.benchmark_case_ids == [case["id"]], case["id"]
+            assert all(
+                item.status.value == "pass"
+                for item in execution.validation_summary.executed_validation_checks
+            ), case["id"]
+            assert execution.provenance.defaults_version == fixture["defaults_version"], case["id"]
+            continue
+
+        if case["kind"] == "worker_dermal_execution":
+            bridge_package = build_worker_dermal_absorbed_dose_bridge(
+                ExportWorkerDermalAbsorbedDoseBridgeRequest(**case["bridge_request"]),
+                registry=DefaultsRegistry.load(),
+            )
+            execution = execute_worker_dermal_absorbed_dose_task(
+                ExecuteWorkerDermalAbsorbedDoseRequest(
+                    adapter_request=bridge_package.tool_call.arguments,
+                    execution_overrides=WorkerDermalAbsorbedDoseExecutionOverrides(
+                        **case["execution_overrides"]
+                    ),
+                    context_of_use=case["context_of_use"],
+                ),
+                registry=DefaultsRegistry.load(),
+            )
+            assert execution.external_dose is not None, case["id"]
+            assert execution.absorbed_dose is not None, case["id"]
+            assert execution.external_dose.value == pytest.approx(
+                expected["external_dose_value"], rel=1e-6
+            ), case["id"]
+            assert execution.absorbed_dose.value == pytest.approx(
+                expected["absorbed_dose_value"], rel=1e-6
+            ), case["id"]
+            for metric_name, expected_value in expected["route_metrics"].items():
+                assert execution.route_metrics[metric_name] == pytest.approx(
+                    expected_value, rel=1e-6
+                ), case["id"]
+            assert execution.validation_summary is not None, case["id"]
+            assert execution.validation_summary.benchmark_case_ids == [case["id"]], case["id"]
+            assert all(
+                item.status.value == "pass"
+                for item in execution.validation_summary.executed_validation_checks
+            ), case["id"]
+            assert execution.provenance.defaults_version == fixture["defaults_version"], case["id"]
             continue
 
         raise AssertionError(f"Unsupported benchmark kind: {case['kind']}")

@@ -2,7 +2,7 @@
   "schema_version": "contractManifest.v1",
   "server_name": "exposure_scenario_mcp",
   "server_version": "0.1.0",
-  "defaults_version": "2026.03.25.v11",
+  "defaults_version": "2026.04.07.v18",
   "tools": [
     {
       "name": "exposure_build_screening_exposure_scenario",
@@ -47,10 +47,100 @@
       "description": "Combine component scenarios into a simple additive aggregate summary."
     },
     {
+      "name": "exposure_assess_product_use_evidence_fit",
+      "request_schema": "assessProductUseEvidenceFitInput.v1",
+      "response_schema": "productUseEvidenceFitReport.v1",
+      "description": "Assess whether product-use evidence from CompTox or another source fits the current scenario request."
+    },
+    {
+      "name": "exposure_apply_product_use_evidence",
+      "request_schema": "applyProductUseEvidenceInput.v1",
+      "response_schema": "exposureScenarioRequest.v1",
+      "description": "Apply compatible product-use evidence to a request while preserving source and applicability metadata."
+    },
+    {
+      "name": "exposure_build_product_use_evidence_from_consexpo",
+      "request_schema": "buildProductUseEvidenceFromConsExpoInput.v1",
+      "response_schema": "productUseEvidenceRecord.v1",
+      "description": "Map a typed ConsExpo fact-sheet record into the generic product-use evidence contract."
+    },
+    {
+      "name": "exposure_reconcile_product_use_evidence",
+      "request_schema": "reconcileProductUseEvidenceInput.v1",
+      "response_schema": "productUseEvidenceReconciliationReport.v1",
+      "description": "Compare multiple product-use evidence sources, rank their fit, and build a merged request preview with explicit field provenance."
+    },
+    {
+      "name": "exposure_run_integrated_workflow",
+      "request_schema": "runIntegratedExposureWorkflowInput.v1",
+      "response_schema": "integratedExposureWorkflowResult.v1",
+      "description": "Run the local evidence-to-scenario-to-PBPK workflow in one audited response."
+    },
+    {
+      "name": "exposure_route_worker_task",
+      "request_schema": "workerTaskRoutingInput.v1",
+      "response_schema": "workerTaskRoutingDecision.v1",
+      "description": "Route a worker-tagged task to the strongest current MCP tool or a future occupational adapter hook."
+    },
+    {
+      "name": "exposure_export_worker_inhalation_tier2_bridge",
+      "request_schema": "exportWorkerInhalationTier2BridgeRequest.v1",
+      "response_schema": "workerInhalationTier2BridgePackage.v1",
+      "description": "Export a normalized worker inhalation Tier 2 handoff package for a future occupational adapter."
+    },
+    {
+      "name": "worker_ingest_inhalation_tier2_task",
+      "request_schema": "workerInhalationTier2AdapterRequest.v1",
+      "response_schema": "workerInhalationTier2AdapterIngestResult.v1",
+      "description": "Ingest a worker Tier 2 adapter request and normalize it into an ART-aligned intake envelope."
+    },
+    {
+      "name": "worker_execute_inhalation_tier2_task",
+      "request_schema": "executeWorkerInhalationTier2Request.v1",
+      "response_schema": "workerInhalationTier2ExecutionResult.v1",
+      "description": "Execute a bounded ART-aligned worker inhalation screening estimate from the normalized adapter request."
+    },
+    {
+      "name": "worker_export_inhalation_art_execution_package",
+      "request_schema": "exportWorkerArtExecutionPackageRequest.v1",
+      "response_schema": "workerArtExternalExecutionPackage.v1",
+      "description": "Export an ART-ready external execution payload plus a normalized result-import template."
+    },
+    {
+      "name": "worker_import_inhalation_art_execution_result",
+      "request_schema": "importWorkerArtExecutionResultRequest.v1",
+      "response_schema": "workerInhalationTier2ExecutionResult.v1",
+      "description": "Import a normalized external ART result into the governed worker inhalation execution schema."
+    },
+    {
+      "name": "exposure_export_worker_dermal_absorbed_dose_bridge",
+      "request_schema": "exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
+      "response_schema": "workerDermalAbsorbedDoseBridgePackage.v1",
+      "description": "Export a normalized worker dermal absorbed-dose and PPE handoff package for a future occupational dermal adapter."
+    },
+    {
+      "name": "worker_ingest_dermal_absorbed_dose_task",
+      "request_schema": "workerDermalAbsorbedDoseAdapterRequest.v1",
+      "response_schema": "workerDermalAbsorbedDoseAdapterIngestResult.v1",
+      "description": "Ingest a worker dermal absorbed-dose adapter request and normalize it into a PPE-aware intake envelope."
+    },
+    {
+      "name": "worker_execute_dermal_absorbed_dose_task",
+      "request_schema": "executeWorkerDermalAbsorbedDoseRequest.v1",
+      "response_schema": "workerDermalAbsorbedDoseExecutionResult.v1",
+      "description": "Execute a bounded PPE-aware worker dermal absorbed-dose estimate from the normalized adapter request."
+    },
+    {
       "name": "exposure_build_inhalation_screening_scenario",
       "request_schema": "inhalationScenarioRequest.v1",
       "response_schema": "exposureScenario.v1",
       "description": "Build a deterministic inhalation screening scenario using room semantics."
+    },
+    {
+      "name": "exposure_build_inhalation_residual_air_reentry_scenario",
+      "request_schema": "inhalationResidualAirReentryScenarioRequest.v1",
+      "response_schema": "exposureScenario.v1",
+      "description": "Build a deterministic post-application residual-air reentry inhalation scenario from a reentry-start concentration anchor."
     },
     {
       "name": "exposure_build_inhalation_tier1_screening_scenario",
@@ -163,6 +253,10 @@
       "description": "Guide to Tier 1 inhalation upgrade hooks and current boundaries."
     },
     {
+      "uri": "docs://inhalation-residual-air-reentry-guide",
+      "description": "Guide to the post-application residual-air reentry inhalation mode."
+    },
+    {
       "uri": "docs://validation-framework",
       "description": "Validation and benchmark-domain posture for current route models."
     },
@@ -171,12 +265,64 @@
       "description": "Validation dossier with cited external references and open gaps."
     },
     {
+      "uri": "docs://validation-coverage-report",
+      "description": "Human-readable validation coverage and trust report by route mechanism."
+    },
+    {
       "uri": "docs://validation-reference-bands",
       "description": "Human-readable executable validation reference-band guide with applicability selectors."
     },
     {
+      "uri": "docs://validation-time-series-packs",
+      "description": "Human-readable guide to sparse executable validation time-series packs."
+    },
+    {
+      "uri": "docs://goldset-benchmark-guide",
+      "description": "Human-readable guide to the externally anchored showcase goldset."
+    },
+    {
       "uri": "docs://suite-integration-guide",
       "description": "Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP."
+    },
+    {
+      "uri": "docs://integrated-exposure-workflow-guide",
+      "description": "Guide to the evidence-to-scenario-to-PBPK workflow tool."
+    },
+    {
+      "uri": "docs://exposure-platform-architecture",
+      "description": "Architecture guide for splitting exposure, fate, dietary, and worker modeling concerns across cooperating MCPs."
+    },
+    {
+      "uri": "docs://worker-routing-guide",
+      "description": "Guide to the worker-task router and occupational escalation hooks."
+    },
+    {
+      "uri": "docs://worker-tier2-bridge-guide",
+      "description": "Guide to the worker inhalation Tier 2 bridge export."
+    },
+    {
+      "uri": "docs://worker-art-adapter-guide",
+      "description": "Guide to the ART-side worker inhalation adapter ingest boundary."
+    },
+    {
+      "uri": "docs://worker-art-execution-guide",
+      "description": "Guide to the executable ART-aligned worker inhalation kernel."
+    },
+    {
+      "uri": "docs://worker-art-external-exchange-guide",
+      "description": "Guide to exporting ART-ready external execution packages and importing external ART results."
+    },
+    {
+      "uri": "docs://worker-dermal-bridge-guide",
+      "description": "Guide to the worker dermal absorbed-dose bridge export."
+    },
+    {
+      "uri": "docs://worker-dermal-adapter-guide",
+      "description": "Guide to the dermal absorbed-dose and PPE adapter ingest boundary."
+    },
+    {
+      "uri": "docs://worker-dermal-execution-guide",
+      "description": "Guide to the executable worker dermal absorbed-dose kernel."
     },
     {
       "uri": "docs://troubleshooting",
@@ -203,6 +349,10 @@
       "description": "Machine-readable benchmark and regression corpus manifest."
     },
     {
+      "uri": "benchmarks://goldset",
+      "description": "Machine-readable showcase goldset with external source anchors and challenge tags."
+    },
+    {
       "uri": "validation://manifest",
       "description": "Machine-readable validation and external-reference manifest."
     },
@@ -211,8 +361,16 @@
       "description": "Machine-readable validation dossier with external references and open gaps."
     },
     {
+      "uri": "validation://coverage-report",
+      "description": "Machine-readable validation coverage report across benchmarks, external datasets, reference bands, time-series packs, and goldset links."
+    },
+    {
       "uri": "validation://reference-bands",
       "description": "Machine-readable executable validation reference-band manifest."
+    },
+    {
+      "uri": "validation://time-series-packs",
+      "description": "Machine-readable executable validation time-series reference-pack manifest."
     },
     {
       "uri": "release://readiness-report",
@@ -249,6 +407,7 @@
     "productUseProfile.v1": "schemas/productUseProfile.v1.json",
     "populationProfile.v1": "schemas/populationProfile.v1.json",
     "exposureScenarioRequest.v1": "schemas/exposureScenarioRequest.v1.json",
+    "inhalationResidualAirReentryScenarioRequest.v1": "schemas/inhalationResidualAirReentryScenarioRequest.v1.json",
     "inhalationScenarioRequest.v1": "schemas/inhalationScenarioRequest.v1.json",
     "inhalationTier1ScenarioRequest.v1": "schemas/inhalationTier1ScenarioRequest.v1.json",
     "tier1AirflowClassProfile.v1": "schemas/tier1AirflowClassProfile.v1.json",
@@ -264,9 +423,14 @@
     "sensitivityRankingEntry.v1": "schemas/sensitivityRankingEntry.v1.json",
     "dependencyDescriptor.v1": "schemas/dependencyDescriptor.v1.json",
     "validationBenchmarkDomain.v1": "schemas/validationBenchmarkDomain.v1.json",
+    "validationCoverageDomainSummary.v1": "schemas/validationCoverageDomainSummary.v1.json",
+    "validationCoverageReport.v1": "schemas/validationCoverageReport.v1.json",
     "externalValidationDataset.v1": "schemas/externalValidationDataset.v1.json",
     "validationReferenceBand.v1": "schemas/validationReferenceBand.v1.json",
     "validationReferenceBandManifest.v1": "schemas/validationReferenceBandManifest.v1.json",
+    "validationTimeSeriesReferencePoint.v1": "schemas/validationTimeSeriesReferencePoint.v1.json",
+    "validationTimeSeriesReferencePack.v1": "schemas/validationTimeSeriesReferencePack.v1.json",
+    "validationTimeSeriesReferenceManifest.v1": "schemas/validationTimeSeriesReferenceManifest.v1.json",
     "validationGap.v1": "schemas/validationGap.v1.json",
     "executedValidationCheck.v1": "schemas/executedValidationCheck.v1.json",
     "defaultsCurationEntry.v1": "schemas/defaultsCurationEntry.v1.json",
@@ -275,6 +439,38 @@
     "validationSummary.v1": "schemas/validationSummary.v1.json",
     "tierUpgradeInputRequirement.v1": "schemas/tierUpgradeInputRequirement.v1.json",
     "tierUpgradeAdvisory.v1": "schemas/tierUpgradeAdvisory.v1.json",
+    "workerTaskRoutingInput.v1": "schemas/workerTaskRoutingInput.v1.json",
+    "workerTaskRoutingDecision.v1": "schemas/workerTaskRoutingDecision.v1.json",
+    "workerInhalationTier2TaskContext.v1": "schemas/workerInhalationTier2TaskContext.v1.json",
+    "workerInhalationTier2CompatibilityReport.v1": "schemas/workerInhalationTier2CompatibilityReport.v1.json",
+    "workerInhalationTier2AdapterRequest.v1": "schemas/workerInhalationTier2AdapterRequest.v1.json",
+    "workerInhalationTier2AdapterToolCall.v1": "schemas/workerInhalationTier2AdapterToolCall.v1.json",
+    "workerInhalationTier2BridgePackage.v1": "schemas/workerInhalationTier2BridgePackage.v1.json",
+    "exportWorkerInhalationTier2BridgeRequest.v1": "schemas/exportWorkerInhalationTier2BridgeRequest.v1.json",
+    "workerArtDeterminantTemplateMatch.v1": "schemas/workerArtDeterminantTemplateMatch.v1.json",
+    "workerInhalationArtTaskEnvelope.v1": "schemas/workerInhalationArtTaskEnvelope.v1.json",
+    "workerInhalationTier2AdapterIngestResult.v1": "schemas/workerInhalationTier2AdapterIngestResult.v1.json",
+    "workerInhalationTier2ExecutionOverrides.v1": "schemas/workerInhalationTier2ExecutionOverrides.v1.json",
+    "executeWorkerInhalationTier2Request.v1": "schemas/executeWorkerInhalationTier2Request.v1.json",
+    "workerArtExternalArtifact.v1": "schemas/workerArtExternalArtifact.v1.json",
+    "workerArtExternalExecutionResult.v1": "schemas/workerArtExternalExecutionResult.v1.json",
+    "exportWorkerArtExecutionPackageRequest.v1": "schemas/exportWorkerArtExecutionPackageRequest.v1.json",
+    "workerArtExternalResultImportToolCall.v1": "schemas/workerArtExternalResultImportToolCall.v1.json",
+    "workerArtExternalExecutionPackage.v1": "schemas/workerArtExternalExecutionPackage.v1.json",
+    "importWorkerArtExecutionResultRequest.v1": "schemas/importWorkerArtExecutionResultRequest.v1.json",
+    "workerInhalationTier2ExecutionResult.v1": "schemas/workerInhalationTier2ExecutionResult.v1.json",
+    "workerDermalTaskContext.v1": "schemas/workerDermalTaskContext.v1.json",
+    "workerDermalCompatibilityReport.v1": "schemas/workerDermalCompatibilityReport.v1.json",
+    "workerDermalAbsorbedDoseAdapterRequest.v1": "schemas/workerDermalAbsorbedDoseAdapterRequest.v1.json",
+    "workerDermalAbsorbedDoseAdapterToolCall.v1": "schemas/workerDermalAbsorbedDoseAdapterToolCall.v1.json",
+    "workerDermalAbsorbedDoseBridgePackage.v1": "schemas/workerDermalAbsorbedDoseBridgePackage.v1.json",
+    "exportWorkerDermalAbsorbedDoseBridgeRequest.v1": "schemas/exportWorkerDermalAbsorbedDoseBridgeRequest.v1.json",
+    "workerDermalDeterminantTemplateMatch.v1": "schemas/workerDermalDeterminantTemplateMatch.v1.json",
+    "workerDermalAbsorbedDoseTaskEnvelope.v1": "schemas/workerDermalAbsorbedDoseTaskEnvelope.v1.json",
+    "workerDermalAbsorbedDoseAdapterIngestResult.v1": "schemas/workerDermalAbsorbedDoseAdapterIngestResult.v1.json",
+    "workerDermalAbsorbedDoseExecutionOverrides.v1": "schemas/workerDermalAbsorbedDoseExecutionOverrides.v1.json",
+    "executeWorkerDermalAbsorbedDoseRequest.v1": "schemas/executeWorkerDermalAbsorbedDoseRequest.v1.json",
+    "workerDermalAbsorbedDoseExecutionResult.v1": "schemas/workerDermalAbsorbedDoseExecutionResult.v1.json",
     "buildExposureEnvelopeFromLibraryInput.v1": "schemas/buildExposureEnvelopeFromLibraryInput.v1.json",
     "probabilityBoundSupportPointDefinition.v1": "schemas/probabilityBoundSupportPointDefinition.v1.json",
     "probabilityBoundsDriverProfile.v1": "schemas/probabilityBoundsDriverProfile.v1.json",
@@ -311,6 +507,16 @@
     "exportToxClawRefinementBundleRequest.v1": "schemas/exportToxClawRefinementBundleRequest.v1.json",
     "compareExposureScenariosInput.v1": "schemas/compareExposureScenariosInput.v1.json",
     "compToxChemicalRecord.v1": "schemas/compToxChemicalRecord.v1.json",
+    "consExpoEvidenceRecord.v1": "schemas/consExpoEvidenceRecord.v1.json",
+    "buildProductUseEvidenceFromConsExpoInput.v1": "schemas/buildProductUseEvidenceFromConsExpoInput.v1.json",
+    "productUseEvidenceRecord.v1": "schemas/productUseEvidenceRecord.v1.json",
+    "productUseEvidenceFitReport.v1": "schemas/productUseEvidenceFitReport.v1.json",
+    "assessProductUseEvidenceFitInput.v1": "schemas/assessProductUseEvidenceFitInput.v1.json",
+    "applyProductUseEvidenceInput.v1": "schemas/applyProductUseEvidenceInput.v1.json",
+    "productUseEvidenceReconciliationReport.v1": "schemas/productUseEvidenceReconciliationReport.v1.json",
+    "reconcileProductUseEvidenceInput.v1": "schemas/reconcileProductUseEvidenceInput.v1.json",
+    "runIntegratedExposureWorkflowInput.v1": "schemas/runIntegratedExposureWorkflowInput.v1.json",
+    "integratedExposureWorkflowResult.v1": "schemas/integratedExposureWorkflowResult.v1.json",
     "toxclawEvidenceEnvelope.v1": "schemas/toxclawEvidenceEnvelope.v1.json",
     "toxclawEvidenceRecord.v1": "schemas/toxclawEvidenceRecord.v1.json",
     "toxclawReportEvidenceReference.v1": "schemas/toxclawReportEvidenceReference.v1.json",
@@ -336,6 +542,8 @@
     "screening_dermal_scenario": "schemas/examples/screening_dermal_scenario.json",
     "inhalation_request": "schemas/examples/inhalation_request.json",
     "inhalation_scenario": "schemas/examples/inhalation_scenario.json",
+    "inhalation_residual_reentry_request": "schemas/examples/inhalation_residual_reentry_request.json",
+    "inhalation_residual_reentry_scenario": "schemas/examples/inhalation_residual_reentry_scenario.json",
     "inhalation_tier1_request": "schemas/examples/inhalation_tier1_request.json",
     "inhalation_tier1_scenario": "schemas/examples/inhalation_tier1_scenario.json",
     "exposure_envelope_summary": "schemas/examples/exposure_envelope_summary.json",
@@ -359,6 +567,33 @@
     "comparison_record": "schemas/examples/comparison_record.json",
     "comp_tox_record": "schemas/examples/comp_tox_record.json",
     "comp_tox_enriched_request": "schemas/examples/comp_tox_enriched_request.json",
+    "cons_expo_evidence_record": "schemas/examples/cons_expo_evidence_record.json",
+    "cons_expo_product_use_evidence": "schemas/examples/cons_expo_product_use_evidence.json",
+    "product_use_evidence_record": "schemas/examples/product_use_evidence_record.json",
+    "product_use_evidence_fit_report": "schemas/examples/product_use_evidence_fit_report.json",
+    "product_use_evidence_enriched_request": "schemas/examples/product_use_evidence_enriched_request.json",
+    "product_use_evidence_reconciliation_report": "schemas/examples/product_use_evidence_reconciliation_report.json",
+    "integrated_exposure_workflow_request": "schemas/examples/integrated_exposure_workflow_request.json",
+    "integrated_exposure_workflow_result": "schemas/examples/integrated_exposure_workflow_result.json",
+    "worker_task_routing_request": "schemas/examples/worker_task_routing_request.json",
+    "worker_task_routing_decision": "schemas/examples/worker_task_routing_decision.json",
+    "worker_inhalation_tier2_bridge_request": "schemas/examples/worker_inhalation_tier2_bridge_request.json",
+    "worker_inhalation_tier2_bridge_package": "schemas/examples/worker_inhalation_tier2_bridge_package.json",
+    "worker_inhalation_tier2_adapter_request": "schemas/examples/worker_inhalation_tier2_adapter_request.json",
+    "worker_inhalation_tier2_adapter_ingest_result": "schemas/examples/worker_inhalation_tier2_adapter_ingest_result.json",
+    "worker_inhalation_tier2_execution_request": "schemas/examples/worker_inhalation_tier2_execution_request.json",
+    "worker_inhalation_tier2_execution_result": "schemas/examples/worker_inhalation_tier2_execution_result.json",
+    "worker_art_execution_package_request": "schemas/examples/worker_art_execution_package_request.json",
+    "worker_art_execution_package": "schemas/examples/worker_art_execution_package.json",
+    "worker_art_external_result": "schemas/examples/worker_art_external_result.json",
+    "worker_art_execution_result_import_request": "schemas/examples/worker_art_execution_result_import_request.json",
+    "worker_art_execution_result_import": "schemas/examples/worker_art_execution_result_import.json",
+    "worker_dermal_absorbed_dose_bridge_request": "schemas/examples/worker_dermal_absorbed_dose_bridge_request.json",
+    "worker_dermal_absorbed_dose_bridge_package": "schemas/examples/worker_dermal_absorbed_dose_bridge_package.json",
+    "worker_dermal_absorbed_dose_adapter_request": "schemas/examples/worker_dermal_absorbed_dose_adapter_request.json",
+    "worker_dermal_absorbed_dose_adapter_ingest_result": "schemas/examples/worker_dermal_absorbed_dose_adapter_ingest_result.json",
+    "worker_dermal_absorbed_dose_execution_request": "schemas/examples/worker_dermal_absorbed_dose_execution_request.json",
+    "worker_dermal_absorbed_dose_execution_result": "schemas/examples/worker_dermal_absorbed_dose_execution_result.json",
     "toxclaw_evidence_envelope": "schemas/examples/toxclaw_evidence_envelope.json",
     "toxclaw_evidence_bundle": "schemas/examples/toxclaw_evidence_bundle.json",
     "toxclaw_refinement_bundle": "schemas/examples/toxclaw_refinement_bundle.json",

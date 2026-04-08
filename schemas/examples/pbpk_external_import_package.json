@@ -69,6 +69,7 @@
         "product_use_profile": {
           "schema_version": "productUseProfile.v1",
           "product_name": "Example Hand Cream",
+          "product_subtype": null,
           "product_category": "personal_care",
           "physical_form": "cream",
           "application_method": "hand_application",
@@ -168,6 +169,7 @@
                 "application_method": "hand_application",
                 "retention_type": "leave_on",
                 "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
                 "region": "EU"
               }
             }
@@ -267,6 +269,7 @@
                 "application_method": "hand_application",
                 "retention_type": "leave_on",
                 "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
                 "region": "EU"
               }
             }
@@ -282,7 +285,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -312,7 +315,7 @@
               "title": "Exposure Scenario MCP curated screening route-semantics defaults",
               "locator": "docs://defaults-evidence-map#screening-route-semantics",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -345,7 +348,7 @@
               "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -399,6 +402,7 @@
                 "application_method": "hand_application",
                 "retention_type": "leave_on",
                 "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
                 "region": "EU"
               }
             }
@@ -414,7 +418,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -467,6 +471,7 @@
                 "application_method": "hand_application",
                 "retention_type": "leave_on",
                 "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
                 "region": "EU"
               }
             }
@@ -477,8 +482,8 @@
           "algorithm_id": "screening.external_dose.v1",
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v11",
-          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
+          "defaults_version": "2026.04.07.v18",
+          "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -725,8 +730,8 @@
           "algorithm_id": "pbpk.export.v1",
           "plugin_id": "pbpk_export_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v11",
-          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
+          "defaults_version": "2026.04.07.v18",
+          "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1058,6 +1063,7 @@
         "product_use_profile": {
           "schema_version": "productUseProfile.v1",
           "product_name": "Example Hand Cream",
+          "product_subtype": null,
           "product_category": "personal_care",
           "physical_form": "cream",
           "application_method": "hand_application",
@@ -1157,6 +1163,7 @@
                 "application_method": "hand_application",
                 "retention_type": "leave_on",
                 "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
                 "region": "EU"
               }
             }
@@ -1256,6 +1263,7 @@
                 "application_method": "hand_application",
                 "retention_type": "leave_on",
                 "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
                 "region": "EU"
               }
             }
@@ -1271,7 +1279,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1301,7 +1309,7 @@
               "title": "Exposure Scenario MCP curated screening route-semantics defaults",
               "locator": "docs://defaults-evidence-map#screening-route-semantics",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1334,7 +1342,7 @@
               "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1388,6 +1396,7 @@
                 "application_method": "hand_application",
                 "retention_type": "leave_on",
                 "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
                 "region": "EU"
               }
             }
@@ -1403,7 +1412,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1456,6 +1465,7 @@
                 "application_method": "hand_application",
                 "retention_type": "leave_on",
                 "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
                 "region": "EU"
               }
             }
@@ -1466,8 +1476,8 @@
           "algorithm_id": "screening.external_dose.v1",
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v11",
-          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
+          "defaults_version": "2026.04.07.v18",
+          "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1714,8 +1724,8 @@
           "algorithm_id": "pbpk.export.v1",
           "plugin_id": "pbpk_export_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v11",
-          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
+          "defaults_version": "2026.04.07.v18",
+          "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",

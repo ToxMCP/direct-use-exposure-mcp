@@ -1,0 +1,303 @@
+{
+  "$defs": {
+    "WorkerArtArtifactAdapterId": {
+      "enum": [
+        "auto_detect",
+        "art_worker_result_summary_json_v1",
+        "art_worker_execution_report_json_v1",
+        "art_worker_result_summary_csv_wide_v1",
+        "art_worker_result_summary_csv_key_value_v1",
+        "art_worker_result_summary_csv_semicolon_v1"
+      ],
+      "title": "WorkerArtArtifactAdapterId",
+      "type": "string"
+    },
+    "WorkerArtExternalArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerArtExternalArtifact.v1",
+          "default": "workerArtExternalArtifact.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "label": {
+          "description": "Short label for the external ART-side artifact.",
+          "title": "Label",
+          "type": "string"
+        },
+        "locator": {
+          "description": "URL, file path, or logical locator for the artifact.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "mediaType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mediatype"
+        },
+        "adapterHint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkerArtArtifactAdapterId"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional explicit adapter hint when the client knows which external ART report format this artifact uses."
+        },
+        "contentText": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional inline text payload preserved with the artifact. JSON content can be parsed directly during result import when no normalized resultPayload is supplied.",
+          "title": "Contenttext"
+        },
+        "contentJson": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Optional structured artifact payload preserved directly on the artifact. This is the preferred way to carry a real external runner summary back into the MCP.",
+          "title": "Contentjson",
+          "type": "object"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "label",
+        "locator"
+      ],
+      "title": "WorkerArtExternalArtifact",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerArtExternalExecutionResult.v1",
+      "default": "workerArtExternalExecutionResult.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sourceSystem": {
+      "default": "ART",
+      "title": "Sourcesystem",
+      "type": "string"
+    },
+    "sourceRunId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sourcerunid"
+    },
+    "modelVersion": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Modelversion"
+    },
+    "resultStatus": {
+      "default": "completed",
+      "enum": [
+        "completed",
+        "partial",
+        "failed"
+      ],
+      "title": "Resultstatus",
+      "type": "string"
+    },
+    "taskDurationHours": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Taskdurationhours"
+    },
+    "breathingZoneConcentrationMgPerM3": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Breathingzoneconcentrationmgperm3"
+    },
+    "inhaledMassMgPerDay": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Inhaledmassmgperday"
+    },
+    "normalizedExternalDoseMgPerKgDay": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Normalizedexternaldosemgperkgday"
+    },
+    "determinantSnapshot": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Determinantsnapshot",
+      "type": "object"
+    },
+    "resultPayload": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Structured external ART-side result summary as emitted by a real runner or adapter. When provided, the import path can derive missing normalized fields directly from this payload and cross-check explicit summary metrics.",
+      "title": "Resultpayload",
+      "type": "object"
+    },
+    "qualityNotes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Qualitynotes",
+      "type": "array"
+    },
+    "rawArtifacts": {
+      "items": {
+        "$ref": "#/$defs/WorkerArtExternalArtifact"
+      },
+      "title": "Rawartifacts",
+      "type": "array"
+    }
+  },
+  "title": "WorkerArtExternalExecutionResult",
+  "type": "object"
+}

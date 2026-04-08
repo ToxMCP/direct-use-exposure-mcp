@@ -1,0 +1,123 @@
+{
+  "reference_version": "2026.04.08.v3",
+  "notes": [
+    "These sparse packs back time-resolved executable validation checks where a route model can be compared against published concentration snapshots at more than one time coordinate.",
+    "They are screening-oriented anchors tied to specific reviewed datasets, not full kinetic calibration targets."
+  ],
+  "packs": [
+    {
+      "reference_pack_id": "chlorpyrifos_residual_air_reentry_room_air_series_1990",
+      "reference_dataset_id": "chlorpyrifos_broadcast_residential_air_1990",
+      "domain": "inhalation_residual_air_reentry",
+      "time_coordinate_reference": "hours_since_application",
+      "applicable_selectors": {
+        "application_method": "residual_air_reentry",
+        "chemical_id": "DTXSID9020412",
+        "chemical_name": "Chlorpyrifos",
+        "product_category": "pesticide",
+        "product_subtype": "indoor_surface_insecticide"
+      },
+      "points": [
+        {
+          "point_id": "chlorpyrifos_residual_air_reentry_4h_start_1990",
+          "check_id": "chlorpyrifos_residual_air_reentry_start_concentration_1990",
+          "title": "Residual-air reentry start concentration vs chlorpyrifos residential broadcast study",
+          "scenario_metric_key": "air_concentration_at_reentry_start_mg_per_m3",
+          "time_coordinate_hours": 4.0,
+          "reference_lower": 0.061,
+          "reference_upper": 0.094,
+          "unit": "mg/m3",
+          "note": "Observed reentry-start room-air concentration at 4 hours post application is compared against the reported 61-94 ug/m3 chlorpyrifos band from the residential broadcast study, converted to mg/m3."
+        },
+        {
+          "point_id": "chlorpyrifos_residual_air_reentry_24h_room_air_1990",
+          "check_id": "chlorpyrifos_residual_air_reentry_24h_concentration_1990",
+          "title": "Residual-air room concentration at 24 hours vs chlorpyrifos residential broadcast study",
+          "scenario_metric_key": "air_concentration_at_reentry_end_mg_per_m3",
+          "time_coordinate_hours": 24.0,
+          "reference_lower": 0.027,
+          "reference_upper": 0.033,
+          "unit": "mg/m3",
+          "note": "Observed room-air concentration at 24 hours post application is compared against the approximately 30 ug/m3 chlorpyrifos level reported in the residential broadcast study, widened to a +/-10% screening band for comparability."
+        }
+      ],
+      "note": "Sparse two-point room-air series derived from the chlorpyrifos residential broadcast study, anchored at about 4 hours and 24 hours post application."
+    },
+    {
+      "reference_pack_id": "diazinon_office_residual_air_series_1990",
+      "reference_dataset_id": "diazinon_office_postapplication_air_1990",
+      "domain": "inhalation_residual_air_reentry",
+      "time_coordinate_reference": "hours_since_application",
+      "applicable_selectors": {
+        "application_method": "residual_air_reentry",
+        "chemical_id": "DTXSID9020407",
+        "chemical_name": "Diazinon",
+        "product_category": "pesticide",
+        "product_subtype": "indoor_surface_insecticide"
+      },
+      "points": [
+        {
+          "point_id": "diazinon_office_residual_air_24h_1990",
+          "check_id": "diazinon_residual_air_reentry_24h_concentration_1990",
+          "title": "Residual-air room concentration at 24 hours vs diazinon office study",
+          "scenario_metric_key": "air_concentration_at_reentry_start_mg_per_m3",
+          "time_coordinate_hours": 24.0,
+          "reference_lower": 0.1125,
+          "reference_upper": 0.1375,
+          "unit": "mg/m3",
+          "note": "Observed room-air concentration at 24 hours post application is compared against the approximately 125 ug/m3 diazinon empty-office concentration reported one day after application, widened to a +/-10% screening band."
+        },
+        {
+          "point_id": "diazinon_office_residual_air_48h_1990",
+          "check_id": "diazinon_residual_air_reentry_48h_concentration_1990",
+          "title": "Residual-air room concentration at 48 hours vs diazinon office study",
+          "scenario_metric_key": "air_concentration_at_reentry_end_mg_per_m3",
+          "time_coordinate_hours": 48.0,
+          "reference_lower": 0.0477,
+          "reference_upper": 0.0583,
+          "unit": "mg/m3",
+          "note": "Observed room-air concentration at 48 hours post application is compared against the approximately 53 ug/m3 highest diazinon office concentration reported two days after application, widened to a +/-10% screening band."
+        }
+      ],
+      "note": "Sparse two-point office room-air series derived from the diazinon office post-application study, using the one-day and two-day high-air persistence observations as a screening anchor."
+    },
+    {
+      "reference_pack_id": "air_space_insecticide_aerosol_room_air_series_2001",
+      "reference_dataset_id": "household_mosquito_aerosol_indoor_air_2001",
+      "domain": "inhalation_well_mixed_spray",
+      "time_coordinate_reference": "hours_since_release_start",
+      "applicable_selectors": {
+        "chemical_id": "DTXSID127",
+        "chemical_name": "Benchmark Pyrethroid A",
+        "product_category": "pesticide",
+        "product_subtype": "air_space_insecticide",
+        "application_method": "aerosol_spray"
+      },
+      "points": [
+        {
+          "point_id": "air_space_insecticide_aerosol_room_air_0p75h_2001",
+          "check_id": "air_space_insecticide_aerosol_0p75h_concentration_2001",
+          "title": "Air-space insecticide aerosol room concentration at 0.75 hours vs household mosquito aerosol study",
+          "scenario_metric_key": "air_concentration_at_event_end_mg_per_m3",
+          "time_coordinate_hours": 0.75,
+          "reference_lower": 0.14,
+          "reference_upper": 0.2,
+          "unit": "mg/m3",
+          "note": "Observed end-of-window room concentration at 0.75 hours is compared against the reported 0.0138 ppm prallethrin aerosol level at 30 to 45 minutes after use, converted to a narrow 0.14-0.20 mg/m3 screening band."
+        },
+        {
+          "point_id": "air_space_insecticide_aerosol_room_air_6h_2001",
+          "check_id": "air_space_insecticide_aerosol_6h_concentration_2001",
+          "title": "Air-space insecticide aerosol room concentration at 6 hours vs household mosquito aerosol study",
+          "scenario_metric_key": "air_concentration_at_event_end_mg_per_m3",
+          "time_coordinate_hours": 6.0,
+          "reference_lower": 0.0,
+          "reference_upper": 0.0013,
+          "unit": "mg/m3",
+          "note": "Observed end-of-window room concentration at 6 hours is compared against the study statement that residues fell below 0.0001 ppm prallethrin by 6 hours, converted to an approximate <=0.0013 mg/m3 screening upper bound."
+        }
+      ],
+      "note": "Sparse two-point room-air decay series for household mosquito aerosol use, anchored at the reported 30 to 45 minute prallethrin concentration and the reported below-detection condition by 6 hours."
+    }
+  ]
+}

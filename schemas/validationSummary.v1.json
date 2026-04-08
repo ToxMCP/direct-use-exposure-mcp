@@ -82,6 +82,7 @@
       "enum": [
         "benchmark_only",
         "benchmark_plus_external_candidates",
+        "external_candidates_only",
         "external_partial",
         "calibrated"
       ],

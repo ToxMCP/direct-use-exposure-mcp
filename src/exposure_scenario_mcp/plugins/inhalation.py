@@ -10,6 +10,7 @@ from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import (
     DoseUnit,
     ExposureScenario,
+    InhalationResidualAirReentryScenarioRequest,
     InhalationTier1ScenarioRequest,
     Route,
     ScenarioClass,
@@ -29,10 +30,13 @@ from exposure_scenario_mcp.runtime import (
     resolve_product_mass_g,
 )
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
+from exposure_scenario_mcp.worker_routing import apply_worker_task_semantics
 
 TIER_1_SPRAY_METHODS = {"trigger_spray", "pump_spray", "aerosol_spray"}
 TIER_1_MODEL_FAMILY = "inhalation_near_field_far_field_screening"
 TIER_1_GUIDANCE_RESOURCE = "docs://inhalation-tier-upgrade-guide"
+SUBTYPE_SENSITIVE_SPRAY_FAMILIES = {"pesticide", "pest_control", "biocide", "disinfectant"}
+RESIDUAL_AIR_REENTRY_APPLICATION_METHOD = "residual_air_reentry"
 TIER_1_PROFILE_NUMERIC_TOLERANCES = {
     "source_distance_m": 0.35,
     "near_field_volume_m3": 0.35,
@@ -74,6 +78,26 @@ def _relative_difference(actual: float, reference: float) -> float:
     if reference == 0:
         return 0.0 if actual == 0 else float("inf")
     return abs(actual - reference) / abs(reference)
+
+
+def _maybe_flag_missing_product_subtype(tracker: AssumptionTracker, profile) -> None:
+    if profile.product_subtype is not None:
+        return
+    if profile.application_method not in TIER_1_SPRAY_METHODS:
+        return
+    if profile.product_category.lower() not in SUBTYPE_SENSITIVE_SPRAY_FAMILIES:
+        return
+    tracker.add_quality_flag(
+        "product_subtype_missing_for_spray_family",
+        (
+            "The current spray scenario uses a broad product_category without a "
+            "product_subtype. Provide a narrower subtype such as "
+            "`indoor_surface_insecticide`, `crack_and_crevice_insecticide`, "
+            "`air_space_insecticide`, or `surface_trigger_spray_disinfectant` to unlock "
+            "more specific ConsExpo-aligned screening branches."
+        ),
+        severity=Severity.WARNING,
+    )
 
 
 def _tier_1_profile_alignment(
@@ -141,10 +165,12 @@ def build_inhalation_tier_1_screening_scenario(
         route=request.route.value,
         scenario_class=request.scenario_class.value,
         product_category=request.product_use_profile.product_category,
+        product_subtype=request.product_use_profile.product_subtype,
         physical_form=request.product_use_profile.physical_form,
         application_method=request.product_use_profile.application_method,
         retention_type=request.product_use_profile.retention_type,
         population_group=request.population_profile.population_group,
+        demographic_tags=",".join(request.population_profile.demographic_tags),
         region=request.population_profile.region,
     )
     profile = request.product_use_profile
@@ -155,6 +181,7 @@ def build_inhalation_tier_1_screening_scenario(
     matched_profiles = tier_1_registry.matching_profiles(
         product_family=profile.product_category,
         application_method=profile.application_method,
+        product_subtype=profile.product_subtype,
     )
     matched_profile = matched_profiles[0] if matched_profiles else None
     profile_alignment_status, profile_divergences = _tier_1_profile_alignment(
@@ -195,6 +222,7 @@ def build_inhalation_tier_1_screening_scenario(
         aerosolized_fraction, source = registry.aerosolized_fraction(
             profile.application_method,
             profile.product_category,
+            profile.product_subtype,
         )
         tracker.add_default(
             "aerosolized_fraction",
@@ -204,11 +232,22 @@ def build_inhalation_tier_1_screening_scenario(
             (
                 "Aerosolized fraction defaulted from "
                 f"application_method='{profile.application_method}' and "
-                f"product_category='{profile.product_category}'."
+                f"product_category='{profile.product_category}'"
+                + (
+                    f" and product_subtype='{profile.product_subtype}'."
+                    if profile.product_subtype
+                    else "."
+                )
             ),
         )
+    _maybe_flag_missing_product_subtype(tracker, profile)
 
-    room_defaults, room_sources = registry.room_defaults(population.region)
+    room_defaults, room_sources = registry.room_defaults(
+        population.region,
+        product_category=profile.product_category,
+        product_subtype=profile.product_subtype,
+        application_method=profile.application_method,
+    )
     room_volume_m3 = profile.room_volume_m3
     if room_volume_m3 is None:
         room_volume_m3 = room_defaults["room_volume_m3"]
@@ -494,12 +533,18 @@ def build_inhalation_tier_1_screening_scenario(
             "tier1_profile_no_packaged_match",
             (
                 "No packaged Tier 1 profile matched the current product family and application "
-                "method; screening geometry and regime inputs remain fully caller-defined."
+                "method"
+                + (
+                    f" for product_subtype='{profile.product_subtype}'"
+                    if profile.product_subtype
+                    else ""
+                )
+                + "; screening geometry and regime inputs remain fully caller-defined."
             ),
             severity=Severity.INFO,
         )
 
-    return ExposureScenario(
+    scenario = ExposureScenario(
         scenario_id=f"inh-tier1-{uuid4().hex[:10]}",
         chemical_id=request.chemical_id,
         chemical_name=request.chemical_name,
@@ -595,6 +640,373 @@ def build_inhalation_tier_1_screening_scenario(
                 ]
                 if matched_profile is None
                 else []
+            ),
+        ],
+        tierUpgradeAdvisories=[],
+    )
+    return apply_worker_task_semantics(scenario, request, registry=registry)
+
+
+def build_inhalation_residual_air_reentry_scenario(
+    request: InhalationResidualAirReentryScenarioRequest,
+    registry: DefaultsRegistry,
+    *,
+    generated_at: str | None = None,
+) -> ExposureScenario:
+    tracker = AssumptionTracker(registry=registry)
+    tracker.set_context(
+        route=request.route.value,
+        scenario_class=request.scenario_class.value,
+        product_category=request.product_use_profile.product_category,
+        product_subtype=request.product_use_profile.product_subtype,
+        physical_form=request.product_use_profile.physical_form,
+        application_method=request.product_use_profile.application_method,
+        retention_type=request.product_use_profile.retention_type,
+        population_group=request.population_profile.population_group,
+        demographic_tags=",".join(request.population_profile.demographic_tags),
+        region=request.population_profile.region,
+    )
+    profile = request.product_use_profile
+    population = request.population_profile
+
+    if profile.application_method != RESIDUAL_AIR_REENTRY_APPLICATION_METHOD:
+        raise ExposureScenarioError(
+            code="inhalation_residual_air_reentry_method_invalid",
+            message=(
+                "Residual-air reentry scenarios require "
+                "product_use_profile.application_method='residual_air_reentry'."
+            ),
+            suggestion=(
+                "Set application_method to 'residual_air_reentry' and preserve the treated "
+                "product family in product_category and product_subtype."
+            ),
+            details={"applicationMethod": profile.application_method},
+        )
+
+    room_defaults, room_sources = registry.room_defaults(
+        population.region,
+        product_category=profile.product_category,
+        product_subtype=profile.product_subtype,
+        application_method=profile.application_method,
+    )
+    room_volume_m3 = profile.room_volume_m3
+    if room_volume_m3 is None:
+        room_volume_m3 = room_defaults["room_volume_m3"]
+        tracker.add_default(
+            "room_volume_m3",
+            room_volume_m3,
+            "m3",
+            room_sources["room_volume_m3"],
+            "Room volume defaulted from the shared inhalation defaults pack.",
+        )
+    else:
+        tracker.add_user(
+            "room_volume_m3",
+            room_volume_m3,
+            "m3",
+            "Room volume was supplied explicitly.",
+        )
+
+    air_exchange = profile.air_exchange_rate_per_hour
+    if air_exchange is None:
+        air_exchange = room_defaults["air_exchange_rate_per_hour"]
+        tracker.add_default(
+            "air_exchange_rate_per_hour",
+            air_exchange,
+            "1/h",
+            room_sources["air_exchange_rate_per_hour"],
+            "Air exchange rate defaulted from the shared inhalation defaults pack.",
+        )
+    else:
+        tracker.add_user(
+            "air_exchange_rate_per_hour",
+            air_exchange,
+            "1/h",
+            "Air exchange rate was supplied explicitly.",
+        )
+
+    exposure_duration_hours = profile.exposure_duration_hours
+    if exposure_duration_hours is None:
+        exposure_duration_hours = room_defaults["exposure_duration_hours"]
+        tracker.add_default(
+            "exposure_duration_hours",
+            exposure_duration_hours,
+            "h",
+            room_sources["exposure_duration_hours"],
+            "Exposure duration defaulted from the shared inhalation defaults pack.",
+        )
+    else:
+        tracker.add_user(
+            "exposure_duration_hours",
+            exposure_duration_hours,
+            "h",
+            "Exposure duration was supplied explicitly.",
+        )
+
+    inhalation_rate = resolve_population_value(
+        field_name="inhalation_rate_m3_per_hour",
+        supplied_value=population.inhalation_rate_m3_per_hour,
+        population_group=population.population_group,
+        registry=registry,
+        tracker=tracker,
+        unit="m3/h",
+        rationale="Inhalation rate was supplied explicitly.",
+    )
+    body_weight_kg = resolve_population_value(
+        field_name="body_weight_kg",
+        supplied_value=population.body_weight_kg,
+        population_group=population.population_group,
+        registry=registry,
+        tracker=tracker,
+        unit="kg",
+        rationale="Body weight was supplied explicitly for dose normalization.",
+    )
+
+    tracker.add_user(
+        "use_events_per_day",
+        profile.use_events_per_day,
+        "events/day",
+        "Reentry event frequency was supplied explicitly.",
+    )
+    tracker.add_user(
+        "air_concentration_at_reentry_start_mg_per_m3",
+        request.air_concentration_at_reentry_start_mg_per_m3,
+        "mg/m3",
+        (
+            "Residual-air reentry starts from a concentration anchored at the start of the "
+            "reentry window."
+        ),
+    )
+
+    if request.additional_decay_rate_per_hour is None:
+        additional_decay_rate = 0.0
+        tracker.add_derived(
+            "additional_decay_rate_per_hour",
+            additional_decay_rate,
+            "1/h",
+            (
+                "No additional residual-air decay term was supplied beyond the resolved "
+                "air exchange rate."
+            ),
+        )
+        tracker.add_quality_flag(
+            "additional_decay_rate_unspecified",
+            (
+                "Residual-air reentry was evaluated using air exchange only because no "
+                "additional decay-rate term was supplied."
+            ),
+            severity=Severity.WARNING,
+        )
+    else:
+        additional_decay_rate = request.additional_decay_rate_per_hour
+        tracker.add_user(
+            "additional_decay_rate_per_hour",
+            additional_decay_rate,
+            "1/h",
+            "Additional residual-air decay rate was supplied explicitly.",
+        )
+
+    if request.post_application_delay_hours is None:
+        post_application_delay = 0.0
+        tracker.add_derived(
+            "post_application_delay_hours",
+            post_application_delay,
+            "h",
+            (
+                "No explicit post-application delay was supplied; the scenario starts at "
+                "the provided reentry-start concentration."
+            ),
+        )
+        tracker.add_quality_flag(
+            "post_application_delay_unspecified",
+            (
+                "The delay between application end and reentry start was not supplied. "
+                "Interpret the scenario as beginning at the stated reentry-start air "
+                "concentration."
+            ),
+            severity=Severity.WARNING,
+        )
+    else:
+        post_application_delay = request.post_application_delay_hours
+        tracker.add_user(
+            "post_application_delay_hours",
+            post_application_delay,
+            "h",
+            "Post-application delay was supplied explicitly.",
+        )
+
+    total_decay_rate = air_exchange + additional_decay_rate
+    if total_decay_rate == 0:
+        average_air_concentration = request.air_concentration_at_reentry_start_mg_per_m3
+    else:
+        average_air_concentration = request.air_concentration_at_reentry_start_mg_per_m3 * (
+            (1.0 - math.exp(-total_decay_rate * exposure_duration_hours))
+            / (total_decay_rate * exposure_duration_hours)
+        )
+    air_concentration_at_reentry_end = (
+        request.air_concentration_at_reentry_start_mg_per_m3
+        * math.exp(-total_decay_rate * exposure_duration_hours)
+    )
+    inhaled_mass_mg_per_day = (
+        average_air_concentration
+        * inhalation_rate
+        * exposure_duration_hours
+        * profile.use_events_per_day
+    )
+    normalized_dose = inhaled_mass_mg_per_day / body_weight_kg
+
+    tracker.add_derived(
+        "total_decay_rate_per_hour",
+        total_decay_rate,
+        "1/h",
+        "Total decay rate = air exchange rate + additional residual-air decay rate.",
+    )
+    tracker.add_derived(
+        "average_air_concentration_mg_per_m3",
+        average_air_concentration,
+        "mg/m3",
+        (
+            "Average reentry air concentration derived from a first-order decay model "
+            "starting at the supplied reentry-start concentration."
+        ),
+    )
+    tracker.add_derived(
+        "air_concentration_at_reentry_end_mg_per_m3",
+        air_concentration_at_reentry_end,
+        "mg/m3",
+        "End-of-window reentry air concentration after first-order decay.",
+    )
+    tracker.add_derived(
+        "inhaled_mass_mg_per_day",
+        inhaled_mass_mg_per_day,
+        "mg/day",
+        (
+            "Inhaled mass = average reentry air concentration x inhalation rate x "
+            "exposure duration x events/day."
+        ),
+    )
+    tracker.add_derived(
+        "normalized_external_dose_mg_per_kg_day",
+        normalized_dose,
+        "mg/kg-day",
+        "Normalized external dose = inhaled mass per day / body weight.",
+    )
+
+    tracker.add_quality_flag(
+        "residual_air_reentry_screening",
+        (
+            "Residual-air reentry uses a caller-anchored starting air concentration and a "
+            "bounded first-order decay model rather than a treated-surface emission solver."
+        ),
+        severity=Severity.WARNING,
+    )
+    tracker.add_limitation(
+        "treated_surface_emission_not_modeled",
+        (
+            "Residual-air reentry does not model treated-surface volatilization or "
+            "application-phase emission; it starts from the supplied concentration at "
+            "reentry start."
+        ),
+    )
+    tracker.add_limitation(
+        "reentry_air_anchor_required",
+        (
+            "Interpret the result only in the context of the supplied or externally "
+            "estimated reentry-start air concentration."
+        ),
+    )
+    if profile.product_subtype != "indoor_surface_insecticide":
+        tracker.add_quality_flag(
+            "residual_air_reentry_product_subtype_unusual",
+            (
+                "Residual-air reentry is most strongly anchored today for "
+                "`indoor_surface_insecticide` scenarios. Other product_subtype values "
+                "should be reviewed carefully."
+            ),
+            severity=Severity.WARNING,
+        )
+
+    return ExposureScenario(
+        scenario_id=f"inh-reentry-{uuid4().hex[:12]}",
+        chemical_id=request.chemical_id,
+        chemical_name=request.chemical_name,
+        route=Route.INHALATION,
+        scenario_class=ScenarioClass.INHALATION,
+        external_dose=ScenarioDose(
+            metric="normalized_external_dose",
+            value=round(normalized_dose, 8),
+            unit=DoseUnit.MG_PER_KG_DAY,
+        ),
+        product_use_profile=profile.model_copy(
+            update={"exposure_duration_hours": exposure_duration_hours}
+        ),
+        population_profile=population.model_copy(
+            update={
+                "body_weight_kg": body_weight_kg,
+                "inhalation_rate_m3_per_hour": inhalation_rate,
+            }
+        ),
+        route_metrics={
+            "air_concentration_at_reentry_start_mg_per_m3": round(
+                request.air_concentration_at_reentry_start_mg_per_m3, 8
+            ),
+            "average_air_concentration_mg_per_m3": round(average_air_concentration, 8),
+            "air_concentration_at_reentry_end_mg_per_m3": round(
+                air_concentration_at_reentry_end, 8
+            ),
+            "inhaled_mass_mg_per_day": round(inhaled_mass_mg_per_day, 8),
+            "total_decay_rate_per_hour": round(total_decay_rate, 8),
+            "post_application_delay_hours": round(post_application_delay, 8),
+        },
+        assumptions=tracker.assumptions,
+        provenance=tracker.provenance(
+            plugin_id="inhalation_residual_air_reentry_plugin",
+            algorithm_id="inhalation.residual_air_reentry.v1",
+            generated_at=generated_at,
+        ),
+        limitations=tracker.limitations,
+        quality_flags=tracker.quality_flags,
+        fit_for_purpose=tracker.fit_for_purpose("inhalation_residual_air_reentry_screening"),
+        tier_semantics=tracker.tier_semantics(
+            tier_claimed=TierLevel.TIER_0,
+            tier_rationale=(
+                "Inhalation output uses a bounded residual-air reentry calculation that "
+                "starts from a supplied concentration and applies first-order decay."
+            ),
+            required_caveats=[
+                (
+                    "Interpret the reported air concentration as a residual-air reentry "
+                    "value, not an application plume."
+                ),
+                (
+                    "The result depends on the supplied reentry-start concentration and any "
+                    "decay term."
+                ),
+                "Treated-surface volatilization is not solved mechanistically.",
+            ],
+            forbidden_interpretations=[
+                (
+                    "Do not interpret this result as an application-phase breathing-zone "
+                    "peak concentration."
+                ),
+                (
+                    "Do not treat the result as a treated-surface emission model or a "
+                    "substitute for chamber decay data."
+                ),
+                (
+                    "Do not interpret the result as absorbed dose, internal dose, or a "
+                    "final risk conclusion."
+                ),
+            ],
+        ),
+        interpretation_notes=[
+            (
+                "Deterministic residual-air reentry scenario starting from a supplied "
+                "room-air concentration."
+            ),
+            (
+                "The bounded decay model is intended for post-application room-air "
+                "screening, not for reconstructing the original application plume."
             ),
         ],
         tierUpgradeAdvisories=[],
@@ -700,6 +1112,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             aerosolized_fraction, source = registry.aerosolized_fraction(
                 profile.application_method,
                 profile.product_category,
+                profile.product_subtype,
             )
             tracker.add_default(
                 "aerosolized_fraction",
@@ -709,11 +1122,22 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 (
                     "Aerosolized fraction defaulted from "
                     f"application_method='{profile.application_method}' and "
-                    f"product_category='{profile.product_category}'."
+                    f"product_category='{profile.product_category}'"
+                    + (
+                        f" and product_subtype='{profile.product_subtype}'."
+                        if profile.product_subtype
+                        else "."
+                    )
                 ),
             )
+        _maybe_flag_missing_product_subtype(tracker, profile)
 
-        room_defaults, room_sources = registry.room_defaults(population.region)
+        room_defaults, room_sources = registry.room_defaults(
+            population.region,
+            product_category=profile.product_category,
+            product_subtype=profile.product_subtype,
+            application_method=profile.application_method,
+        )
         room_volume_m3 = profile.room_volume_m3
         if room_volume_m3 is None:
             room_volume_m3 = room_defaults["room_volume_m3"]
@@ -793,6 +1217,10 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             average_air_concentration = initial_air_concentration * (
                 (1.0 - math.exp(-k * exposure_duration_hours)) / (k * exposure_duration_hours)
             )
+        air_concentration_at_event_end = initial_air_concentration * math.exp(
+            -k * exposure_duration_hours
+        )
+        room_air_decay_half_life_hours = math.log(2.0) / k if k > 0.0 else None
         inhaled_mass_mg_day = (
             average_air_concentration
             * inhalation_rate
@@ -816,6 +1244,34 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 "model with first-order air exchange removal."
             ),
         )
+        tracker.add_derived(
+            "initial_air_concentration_mg_per_m3",
+            initial_air_concentration,
+            "mg/m3",
+            (
+                "Initial room concentration immediately after release in the well-mixed "
+                "single-zone model."
+            ),
+        )
+        tracker.add_derived(
+            "air_concentration_at_event_end_mg_per_m3",
+            air_concentration_at_event_end,
+            "mg/m3",
+            (
+                "End-of-window room concentration after first-order air exchange removal in "
+                "the well-mixed single-zone model."
+            ),
+        )
+        if room_air_decay_half_life_hours is not None:
+            tracker.add_derived(
+                "room_air_decay_half_life_hours",
+                room_air_decay_half_life_hours,
+                "h",
+                (
+                    "Room-air decay half-life implied by the first-order air exchange term in "
+                    "the well-mixed single-zone model."
+                ),
+            )
         tracker.add_derived(
             "inhaled_mass_mg_per_day",
             inhaled_mass_mg_day,
@@ -872,7 +1328,16 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             route_metrics={
                 "chemical_mass_mg_per_event": round(chemical_mass_mg_event, 8),
                 "released_mass_mg_per_event": round(released_mass_mg_event, 8),
+                "initial_air_concentration_mg_per_m3": round(initial_air_concentration, 8),
                 "average_air_concentration_mg_per_m3": round(average_air_concentration, 8),
+                "air_concentration_at_event_end_mg_per_m3": round(
+                    air_concentration_at_event_end, 8
+                ),
+                "room_air_decay_half_life_hours": (
+                    round(room_air_decay_half_life_hours, 8)
+                    if room_air_decay_half_life_hours is not None
+                    else None
+                ),
                 "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
             },
             assumptions=tracker.assumptions,

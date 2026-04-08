@@ -1,0 +1,624 @@
+{
+  "$defs": {
+    "ExposureScenarioRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureScenarioRequest.v1",
+          "default": "exposureScenarioRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Requested exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "default": "screening",
+          "description": "Requested scenario class."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Product and use-context profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Population profile for the exposed cohort."
+        },
+        "assumption_overrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Additional explicit overrides for auditability.",
+          "title": "Assumption Overrides",
+          "type": "object"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "route",
+        "product_use_profile",
+        "population_profile"
+      ],
+      "title": "ExposureScenarioRequest",
+      "type": "object"
+    },
+    "PopulationProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "populationProfile.v1",
+          "default": "populationProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "population_group": {
+          "description": "Population group, for example adult or child.",
+          "title": "Population Group",
+          "type": "string"
+        },
+        "body_weight_kg": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Body weight in kilograms.",
+          "title": "Body Weight Kg"
+        },
+        "inhalation_rate_m3_per_hour": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inhalation rate for inhalation screening.",
+          "title": "Inhalation Rate M3 Per Hour"
+        },
+        "exposed_surface_area_cm2": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Exposed surface area for dermal scenarios.",
+          "title": "Exposed Surface Area Cm2"
+        },
+        "demographic_tags": {
+          "description": "Demographic descriptors for auditability.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Demographic Tags",
+          "type": "array"
+        },
+        "region": {
+          "default": "global",
+          "description": "Regional context for defaults or interpretation.",
+          "title": "Region",
+          "type": "string"
+        }
+      },
+      "required": [
+        "population_group"
+      ],
+      "title": "PopulationProfile",
+      "type": "object"
+    },
+    "ProductAmountUnit": {
+      "enum": [
+        "g",
+        "mL"
+      ],
+      "title": "ProductAmountUnit",
+      "type": "string"
+    },
+    "ProductUseEvidenceFitReport": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseEvidenceFitReport.v1",
+          "default": "productUseEvidenceFitReport.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Chemical identifier shared by the request and fit.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "evidence_source_name": {
+          "description": "Human-readable evidence-source label.",
+          "title": "Evidence Source Name",
+          "type": "string"
+        },
+        "evidence_source_kind": {
+          "description": "Evidence-source kind copied into the fit.",
+          "title": "Evidence Source Kind",
+          "type": "string"
+        },
+        "request_region": {
+          "description": "Region declared on the scenario request.",
+          "title": "Request Region",
+          "type": "string"
+        },
+        "compatible": {
+          "description": "Whether the evidence can be used at all.",
+          "title": "Compatible",
+          "type": "boolean"
+        },
+        "auto_apply_safe": {
+          "description": "Whether the evidence can be applied without human review warnings.",
+          "title": "Auto Apply Safe",
+          "type": "boolean"
+        },
+        "recommendation": {
+          "description": "High-level recommendation for orchestrators.",
+          "enum": [
+            "accept",
+            "accept_with_review",
+            "manual_review",
+            "reject"
+          ],
+          "title": "Recommendation",
+          "type": "string"
+        },
+        "matched_fields": {
+          "description": "Request fields already aligned with the evidence record.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Matched Fields",
+          "type": "array"
+        },
+        "suggested_updates": {
+          "description": "Request fields the evidence record would update or annotate.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Suggested Updates",
+          "type": "array"
+        },
+        "warnings": {
+          "description": "Non-blocking reasons to review the evidence before using it.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "blocking_issues": {
+          "description": "Reasons the evidence should not be applied automatically.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Blocking Issues",
+          "type": "array"
+        },
+        "suggested_request": {
+          "$ref": "#/$defs/ExposureScenarioRequest",
+          "description": "Request preview after applying additive evidence-driven enrichment."
+        }
+      },
+      "required": [
+        "chemical_id",
+        "evidence_source_name",
+        "evidence_source_kind",
+        "request_region",
+        "compatible",
+        "auto_apply_safe",
+        "recommendation",
+        "suggested_request"
+      ],
+      "title": "ProductUseEvidenceFitReport",
+      "type": "object"
+    },
+    "ProductUseProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseProfile.v1",
+          "default": "productUseProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "product_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional human-readable product label.",
+          "title": "Product Name"
+        },
+        "product_subtype": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional narrower product-use subtype such as indoor_surface_insecticide or surface_trigger_spray_disinfectant.",
+          "title": "Product Subtype"
+        },
+        "product_category": {
+          "description": "Product category or PUC-like category.",
+          "title": "Product Category",
+          "type": "string"
+        },
+        "physical_form": {
+          "description": "Physical form such as cream, liquid, spray, or gel.",
+          "title": "Physical Form",
+          "type": "string"
+        },
+        "application_method": {
+          "description": "How the product is applied, for example hand_application or trigger_spray.",
+          "title": "Application Method",
+          "type": "string"
+        },
+        "retention_type": {
+          "default": "leave_on",
+          "description": "Retention class such as leave_on or rinse_off.",
+          "title": "Retention Type",
+          "type": "string"
+        },
+        "concentration_fraction": {
+          "description": "Fraction of the target chemical in the product, 0-1.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Concentration Fraction",
+          "type": "number"
+        },
+        "use_amount_per_event": {
+          "description": "Product amount used per event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Amount Per Event",
+          "type": "number"
+        },
+        "use_amount_unit": {
+          "$ref": "#/$defs/ProductAmountUnit",
+          "description": "Unit for the use amount per event."
+        },
+        "use_events_per_day": {
+          "description": "Number of product-use events per day.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Events Per Day",
+          "type": "number"
+        },
+        "density_g_per_ml": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Density when the product amount is in mL.",
+          "title": "Density G Per Ml"
+        },
+        "transfer_efficiency": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Route modifier for external transfer.",
+          "title": "Transfer Efficiency"
+        },
+        "retention_factor": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Retention modifier for dermal screening.",
+          "title": "Retention Factor"
+        },
+        "ingestion_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass incidentally or directly ingested.",
+          "title": "Ingestion Fraction"
+        },
+        "aerosolized_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass released to air.",
+          "title": "Aerosolized Fraction"
+        },
+        "room_volume_m3": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Indoor room volume for inhalation screening.",
+          "title": "Room Volume M3"
+        },
+        "air_exchange_rate_per_hour": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Air exchange rate for inhalation screening.",
+          "title": "Air Exchange Rate Per Hour"
+        },
+        "exposure_duration_hours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration of exposure per event.",
+          "title": "Exposure Duration Hours"
+        }
+      },
+      "required": [
+        "product_category",
+        "physical_form",
+        "application_method",
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_amount_unit",
+        "use_events_per_day"
+      ],
+      "title": "ProductUseProfile",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "ScenarioClass": {
+      "enum": [
+        "screening",
+        "aggregate",
+        "inhalation",
+        "refined",
+        "population_distribution"
+      ],
+      "title": "ScenarioClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "productUseEvidenceReconciliationReport.v1",
+      "default": "productUseEvidenceReconciliationReport.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Chemical identifier shared by the request and evidence.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "request_region": {
+      "description": "Region declared on the original scenario request.",
+      "title": "Request Region",
+      "type": "string"
+    },
+    "consideredSources": {
+      "description": "All evidence sources considered during reconciliation.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Consideredsources",
+      "type": "array"
+    },
+    "compatibleSources": {
+      "description": "Compatible evidence sources after fit assessment.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Compatiblesources",
+      "type": "array"
+    },
+    "recommendedSourceName": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Primary evidence source selected for the merged request preview.",
+      "title": "Recommendedsourcename"
+    },
+    "recommendedSourceKind": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Kind of the primary evidence source selected for the merged request preview.",
+      "title": "Recommendedsourcekind"
+    },
+    "recommendation": {
+      "description": "High-level reconciliation recommendation for orchestrators.",
+      "enum": [
+        "apply",
+        "apply_with_review",
+        "manual_review",
+        "reject"
+      ],
+      "title": "Recommendation",
+      "type": "string"
+    },
+    "manualReviewRequired": {
+      "description": "Whether a human should review the reconciliation result before use.",
+      "title": "Manualreviewrequired",
+      "type": "boolean"
+    },
+    "conflicts": {
+      "description": "Cross-source conflicts that remain after compatibility filtering.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Conflicts",
+      "type": "array"
+    },
+    "rationale": {
+      "description": "Short explanation of why the primary source was selected.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Rationale",
+      "type": "array"
+    },
+    "fieldSources": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Which source supplied each additive field in the merged request preview.",
+      "title": "Fieldsources",
+      "type": "object"
+    },
+    "fitReports": {
+      "description": "Per-source fit reports against the original request.",
+      "items": {
+        "$ref": "#/$defs/ProductUseEvidenceFitReport"
+      },
+      "title": "Fitreports",
+      "type": "array"
+    },
+    "mergedRequest": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExposureScenarioRequest"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Merged request preview using the selected evidence strategy."
+    }
+  },
+  "required": [
+    "chemical_id",
+    "request_region",
+    "recommendation",
+    "manualReviewRequired"
+  ],
+  "title": "ProductUseEvidenceReconciliationReport",
+  "type": "object"
+}

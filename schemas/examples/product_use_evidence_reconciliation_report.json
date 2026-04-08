@@ -1,0 +1,314 @@
+{
+  "schema_version": "productUseEvidenceReconciliationReport.v1",
+  "chemical_id": "DTXSID7020182",
+  "request_region": "EU",
+  "consideredSources": [
+    "EPA CompTox",
+    "RIVM ConsExpo",
+    "EU product-use dossier example"
+  ],
+  "compatibleSources": [
+    "EPA CompTox",
+    "RIVM ConsExpo",
+    "EU product-use dossier example"
+  ],
+  "recommendedSourceName": "EU product-use dossier example",
+  "recommendedSourceKind": "regulatory_dossier",
+  "recommendation": "apply_with_review",
+  "manualReviewRequired": true,
+  "conflicts": [
+    "Compatible evidence sources disagree on product_use_categories: EPA CompTox=household_cleaner,personal_care; RIVM ConsExpo=biocide,pest_control,pesticide; EU product-use dossier example=pesticide",
+    "Compatible evidence sources disagree on product_name: EU product-use dossier example=Example Surface Spray; RIVM ConsExpo=Indoor trigger spray insecticide"
+  ],
+  "rationale": [
+    "Selected `EU product-use dossier example` as the primary evidence source.",
+    "Primary source matches the request region or jurisdiction context.",
+    "Primary source is marked as reviewed."
+  ],
+  "fieldSources": {
+    "product_use_profile.product_category": "EU product-use dossier example",
+    "product_use_profile.product_subtype": "EU product-use dossier example",
+    "product_use_profile.density_g_per_ml": "EU product-use dossier example"
+  },
+  "fitReports": [
+    {
+      "schema_version": "productUseEvidenceFitReport.v1",
+      "chemical_id": "DTXSID7020182",
+      "evidence_source_name": "EPA CompTox",
+      "evidence_source_kind": "comptox",
+      "request_region": "EU",
+      "compatible": true,
+      "auto_apply_safe": false,
+      "recommendation": "accept_with_review",
+      "matched_fields": [
+        "product_category"
+      ],
+      "suggested_updates": [
+        "assumption_overrides.external_product_use_source_name"
+      ],
+      "warnings": [
+        "Evidence jurisdictions ['US'] may not match request region `EU`."
+      ],
+      "blocking_issues": [],
+      "suggested_request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Trigger Spray",
+          "product_subtype": null,
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1.0,
+          "density_g_per_ml": null,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": 25.0,
+          "air_exchange_rate_per_hour": null,
+          "exposure_duration_hours": null
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68.0,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [],
+          "region": "EU"
+        },
+        "assumption_overrides": {
+          "external_product_use_source_name": "EPA CompTox",
+          "external_product_use_source_kind": "comptox",
+          "external_product_use_review_status": "reviewed",
+          "external_product_use_casrn": "123-45-6",
+          "external_product_use_primary_evidence": "CompTox:mock-record-001",
+          "external_product_use_jurisdictions": "US",
+          "external_product_use_categories": "personal_care,household_cleaner",
+          "external_product_use_physchem_vapor_pressure_pa": 150.0,
+          "external_product_use_physchem_water_solubility_mg_l": 1200.0
+        }
+      }
+    },
+    {
+      "schema_version": "productUseEvidenceFitReport.v1",
+      "chemical_id": "DTXSID7020182",
+      "evidence_source_name": "RIVM ConsExpo",
+      "evidence_source_kind": "consexpo",
+      "request_region": "EU",
+      "compatible": true,
+      "auto_apply_safe": false,
+      "recommendation": "accept_with_review",
+      "matched_fields": [
+        "region",
+        "physical_form",
+        "application_method",
+        "retention_type"
+      ],
+      "suggested_updates": [
+        "assumption_overrides.external_product_use_source_name",
+        "product_use_profile.density_g_per_ml",
+        "product_use_profile.product_category",
+        "product_use_profile.product_subtype"
+      ],
+      "warnings": [
+        "Request product_category `household_cleaner` is not listed in the evidence categories ['pest_control', 'pesticide', 'biocide']; the first evidence category is suggested instead."
+      ],
+      "blocking_issues": [],
+      "suggested_request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Trigger Spray",
+          "product_subtype": "indoor_surface_insecticide",
+          "product_category": "pest_control",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1.0,
+          "density_g_per_ml": 1.08,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": 25.0,
+          "air_exchange_rate_per_hour": null,
+          "exposure_duration_hours": null
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68.0,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [],
+          "region": "EU"
+        },
+        "assumption_overrides": {
+          "external_product_use_source_name": "RIVM ConsExpo",
+          "external_product_use_source_kind": "consexpo",
+          "external_product_use_review_status": "reviewed",
+          "external_product_use_source_record_id": "pest_control_products_fact_sheet_2006",
+          "external_product_use_source_locator": "https://www.rivm.nl/bibliotheek/rapporten/320005002.pdf",
+          "external_product_use_casrn": "123-45-6",
+          "external_product_use_primary_evidence": "ConsExpo:pest_control_products_fact_sheet_2006",
+          "external_product_use_region_scopes": "EU",
+          "external_product_use_jurisdictions": "EU",
+          "external_product_use_categories": "pest_control,pesticide,biocide",
+          "external_product_use_subtype": "indoor_surface_insecticide",
+          "external_product_use_physchem_density_g_per_ml": 1.08
+        }
+      }
+    },
+    {
+      "schema_version": "productUseEvidenceFitReport.v1",
+      "chemical_id": "DTXSID7020182",
+      "evidence_source_name": "EU product-use dossier example",
+      "evidence_source_kind": "regulatory_dossier",
+      "request_region": "EU",
+      "compatible": true,
+      "auto_apply_safe": false,
+      "recommendation": "accept_with_review",
+      "matched_fields": [
+        "region",
+        "physical_form",
+        "application_method",
+        "retention_type"
+      ],
+      "suggested_updates": [
+        "assumption_overrides.external_product_use_source_name",
+        "product_use_profile.density_g_per_ml",
+        "product_use_profile.product_category",
+        "product_use_profile.product_subtype"
+      ],
+      "warnings": [
+        "Request product_category `household_cleaner` is not listed in the evidence categories ['pesticide']; the first evidence category is suggested instead."
+      ],
+      "blocking_issues": [],
+      "suggested_request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Trigger Spray",
+          "product_subtype": "indoor_surface_insecticide",
+          "product_category": "pesticide",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1.0,
+          "density_g_per_ml": 1.08,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": 25.0,
+          "air_exchange_rate_per_hour": null,
+          "exposure_duration_hours": null
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68.0,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [],
+          "region": "EU"
+        },
+        "assumption_overrides": {
+          "external_product_use_source_name": "EU product-use dossier example",
+          "external_product_use_source_kind": "regulatory_dossier",
+          "external_product_use_review_status": "reviewed",
+          "external_product_use_source_record_id": "EU-DOSSIER-001",
+          "external_product_use_source_locator": "https://example.org/eu-dossier/001",
+          "external_product_use_casrn": "123-45-6",
+          "external_product_use_primary_evidence": "EU-Dossier:mock-001",
+          "external_product_use_region_scopes": "EU",
+          "external_product_use_jurisdictions": "EU",
+          "external_product_use_categories": "pesticide",
+          "external_product_use_subtype": "indoor_surface_insecticide",
+          "external_product_use_physchem_density_g_per_ml": 1.08
+        }
+      }
+    }
+  ],
+  "mergedRequest": {
+    "schema_version": "exposureScenarioRequest.v1",
+    "chemical_id": "DTXSID7020182",
+    "chemical_name": "Example Solvent A",
+    "route": "inhalation",
+    "scenario_class": "inhalation",
+    "product_use_profile": {
+      "schema_version": "productUseProfile.v1",
+      "product_name": "Example Trigger Spray",
+      "product_subtype": "indoor_surface_insecticide",
+      "product_category": "pesticide",
+      "physical_form": "spray",
+      "application_method": "trigger_spray",
+      "retention_type": "surface_contact",
+      "concentration_fraction": 0.05,
+      "use_amount_per_event": 12.0,
+      "use_amount_unit": "mL",
+      "use_events_per_day": 1.0,
+      "density_g_per_ml": 1.08,
+      "transfer_efficiency": null,
+      "retention_factor": null,
+      "ingestion_fraction": null,
+      "aerosolized_fraction": null,
+      "room_volume_m3": 25.0,
+      "air_exchange_rate_per_hour": null,
+      "exposure_duration_hours": null
+    },
+    "population_profile": {
+      "schema_version": "populationProfile.v1",
+      "population_group": "adult",
+      "body_weight_kg": 68.0,
+      "inhalation_rate_m3_per_hour": 0.9,
+      "exposed_surface_area_cm2": null,
+      "demographic_tags": [],
+      "region": "EU"
+    },
+    "assumption_overrides": {
+      "external_product_use_source_name": "EU product-use dossier example",
+      "external_product_use_source_kind": "regulatory_dossier",
+      "external_product_use_review_status": "reviewed",
+      "external_product_use_source_record_id": "EU-DOSSIER-001",
+      "external_product_use_source_locator": "https://example.org/eu-dossier/001",
+      "external_product_use_casrn": "123-45-6",
+      "external_product_use_primary_evidence": "EU-Dossier:mock-001",
+      "external_product_use_region_scopes": "EU",
+      "external_product_use_jurisdictions": "EU",
+      "external_product_use_categories": "pesticide",
+      "external_product_use_subtype": "indoor_surface_insecticide",
+      "external_product_use_physchem_density_g_per_ml": 1.08,
+      "external_product_use_primary_source_name": "EU product-use dossier example",
+      "external_product_use_considered_sources": "EPA CompTox,RIVM ConsExpo,EU product-use dossier example",
+      "external_product_use_compatible_sources": "EPA CompTox,RIVM ConsExpo,EU product-use dossier example",
+      "external_product_use_field_source_product_use_profile_density_g_per_ml": "EU product-use dossier example",
+      "external_product_use_field_source_product_use_profile_product_category": "EU product-use dossier example",
+      "external_product_use_field_source_product_use_profile_product_subtype": "EU product-use dossier example"
+    }
+  }
+}

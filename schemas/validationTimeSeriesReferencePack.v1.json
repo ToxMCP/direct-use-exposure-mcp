@@ -1,0 +1,123 @@
+{
+  "$defs": {
+    "ValidationTimeSeriesReferencePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "pointId": {
+          "title": "Pointid",
+          "type": "string"
+        },
+        "checkId": {
+          "title": "Checkid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "scenarioMetricKey": {
+          "title": "Scenariometrickey",
+          "type": "string"
+        },
+        "timeCoordinateHours": {
+          "minimum": 0.0,
+          "title": "Timecoordinatehours",
+          "type": "number"
+        },
+        "referenceLower": {
+          "title": "Referencelower",
+          "type": "number"
+        },
+        "referenceUpper": {
+          "title": "Referenceupper",
+          "type": "number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pointId",
+        "checkId",
+        "title",
+        "scenarioMetricKey",
+        "timeCoordinateHours",
+        "referenceLower",
+        "referenceUpper",
+        "unit",
+        "note"
+      ],
+      "title": "ValidationTimeSeriesReferencePoint",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "referencePackId": {
+      "title": "Referencepackid",
+      "type": "string"
+    },
+    "referenceDatasetId": {
+      "title": "Referencedatasetid",
+      "type": "string"
+    },
+    "domain": {
+      "description": "Validation domain or route mechanism.",
+      "title": "Domain",
+      "type": "string"
+    },
+    "timeCoordinateReference": {
+      "title": "Timecoordinatereference",
+      "type": "string"
+    },
+    "applicableSelectors": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Structured selectors describing where the time-series pack is intended to apply.",
+      "title": "Applicableselectors",
+      "type": "object"
+    },
+    "points": {
+      "items": {
+        "$ref": "#/$defs/ValidationTimeSeriesReferencePoint"
+      },
+      "title": "Points",
+      "type": "array"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "referencePackId",
+    "referenceDatasetId",
+    "domain",
+    "timeCoordinateReference",
+    "note"
+  ],
+  "title": "ValidationTimeSeriesReferencePack",
+  "type": "object"
+}

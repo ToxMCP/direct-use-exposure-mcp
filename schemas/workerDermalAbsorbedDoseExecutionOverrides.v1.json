@@ -1,0 +1,81 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerDermalAbsorbedDoseExecutionOverrides.v1",
+      "default": "workerDermalAbsorbedDoseExecutionOverrides.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "externalSkinMassMgPerDay": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Externalskinmassmgperday"
+    },
+    "bodyZoneSurfaceAreaCm2": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Bodyzonesurfaceareacm2"
+    },
+    "ppePenetrationFactor": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ppepenetrationfactor"
+    },
+    "dermalAbsorptionFraction": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dermalabsorptionfraction"
+    },
+    "contactDurationFactor": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Contactdurationfactor"
+    }
+  },
+  "title": "WorkerDermalAbsorbedDoseExecutionOverrides",
+  "type": "object"
+}

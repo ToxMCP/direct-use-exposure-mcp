@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.03.25.v11",
+  "defaults_version": "2026.04.07.v18",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -74,10 +74,34 @@
       "version": "RIVM report 2016-0179 / 2018"
     },
     {
+      "source_id": "rivm_disinfectant_trigger_spray_airborne_fraction_defaults_2006",
+      "title": "RIVM Disinfectant Products Fact Sheet trigger-spray airborne-fraction default for surface sprays",
+      "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005003.pdf",
+      "version": "RIVM report 320005003 / 2006"
+    },
+    {
       "source_id": "rivm_cosmetics_sprays_airborne_fraction_defaults_2025",
       "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
       "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
       "version": "RIVM report 2025-0099 / 2025"
+    },
+    {
+      "source_id": "heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026",
+      "title": "Exposure Scenario MCP heuristic pest-control trigger-spray airborne-fraction bridge informed by RIVM ConsExpo spray families",
+      "locator": "docs://defaults-evidence-map#heuristic-pest-control-trigger-spray-airborne-fraction-bridge",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "heuristic_consexpo_pest_control_aerosol_airborne_fraction_bridge_2026",
+      "title": "Exposure Scenario MCP heuristic pest-control aerosol airborne-fraction bridge informed by RIVM ConsExpo air-space spray families",
+      "locator": "docs://defaults-evidence-map#heuristic-pest-control-aerosol-airborne-fraction-bridge",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "heuristic_consexpo_pest_control_aerosol_density_bridge_2026",
+      "title": "Exposure Scenario MCP heuristic pest-control aerosol density bridge informed by RIVM ConsExpo pest-control aerosol families",
+      "locator": "docs://defaults-evidence-map#heuristic-pest-control-aerosol-density-bridge",
+      "version": "2026.04.07.v1"
     },
     {
       "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1",
@@ -98,6 +122,12 @@
       "version": "2026.03.25.v6"
     },
     {
+      "source_id": "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026",
+      "title": "Exposure Scenario MCP heuristic air-space pest-control room-default bridge informed by RIVM ConsExpo whole-room aerosol scenarios",
+      "locator": "docs://defaults-evidence-map#heuristic-pest-control-air-space-room-defaults-bridge",
+      "version": "2026.04.07.v1"
+    },
+    {
       "source_id": "epa_exposure_factors_handbook_2011",
       "title": "US EPA Exposure Factors Handbook: 2011 Edition",
       "locator": "https://www.epa.gov/expobox/exposure-factors-handbook-2011-edition",
@@ -108,6 +138,60 @@
       "title": "ECHA consumer inhalation room-default benchmark",
       "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
       "version": "public ECHA dossier entry accessed 2026-03-24"
+    },
+    {
+      "source_id": "worker_dermal_body_zone_area_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker dermal body-zone area defaults",
+      "locator": "docs://defaults-evidence-map#worker-dermal-body-zone-area-heuristics-2026",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_dermal_ppe_penetration_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker dermal PPE penetration defaults",
+      "locator": "docs://defaults-evidence-map#worker-dermal-ppe-penetration-heuristics-2026",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_dermal_absorption_fraction_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker dermal absorption-fraction defaults",
+      "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_dermal_contact_duration_scaling_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker dermal contact-duration scaling defaults",
+      "locator": "docs://defaults-evidence-map#worker-dermal-contact-duration-scaling-heuristics-2026",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_dermal_barrier_material_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker dermal barrier-material modifiers",
+      "locator": "docs://defaults-evidence-map#worker-dermal-barrier-material-heuristics-2026",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_dermal_physchem_modifier_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker dermal physchem modifiers",
+      "locator": "docs://defaults-evidence-map#worker-dermal-physchem-modifier-heuristics-2026",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_inhalation_control_factor_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker inhalation control-profile factors",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-control-factor-heuristics-2026",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_inhalation_rpe_factor_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker inhalation respiratory-protection factors",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-respiratory-protection-heuristics-2026",
+      "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_inhalation_vapor_release_fraction_heuristics_2026",
+      "title": "Exposure Scenario MCP heuristic worker inhalation vapor-release fractions",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-vapor-release-heuristics-2026",
+      "version": "2026.04.07.v1"
     }
   ],
   "conversion_defaults": {
@@ -129,6 +213,12 @@
       "gel": {
         "density_g_per_ml": 1.05,
         "source_id": "heuristic_density_defaults_v1"
+      }
+    },
+    "product_subtype_overrides": {
+      "air_space_insecticide": {
+        "density_g_per_ml": 0.8,
+        "source_id": "heuristic_consexpo_pest_control_aerosol_density_bridge_2026"
       }
     }
   },
@@ -239,11 +329,61 @@
         "source_id": "heuristic_residual_spray_airborne_fraction_defaults_v1"
       }
     },
+    "product_subtype_overrides": {
+      "surface_trigger_spray_disinfectant": {
+        "trigger_spray": {
+          "value": 0.2,
+          "source_id": "rivm_disinfectant_trigger_spray_airborne_fraction_defaults_2006"
+        }
+      },
+      "indoor_surface_insecticide": {
+        "trigger_spray": {
+          "value": 0.15,
+          "source_id": "heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026"
+        }
+      },
+      "targeted_spot_insecticide": {
+        "trigger_spray": {
+          "value": 0.15,
+          "source_id": "heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026"
+        }
+      },
+      "crack_and_crevice_insecticide": {
+        "trigger_spray": {
+          "value": 0.15,
+          "source_id": "heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026"
+        }
+      },
+      "air_space_insecticide": {
+        "aerosol_spray": {
+          "value": 1.0,
+          "source_id": "heuristic_consexpo_pest_control_aerosol_airborne_fraction_bridge_2026"
+        }
+      }
+    },
     "product_category_overrides": {
       "household_cleaner": {
         "pump_spray": {
           "value": 0.2,
           "source_id": "rivm_cleaning_sprays_airborne_fraction_2018"
+        }
+      },
+      "disinfectant": {
+        "trigger_spray": {
+          "value": 0.2,
+          "source_id": "rivm_disinfectant_trigger_spray_airborne_fraction_defaults_2006"
+        }
+      },
+      "pest_control": {
+        "trigger_spray": {
+          "value": 0.15,
+          "source_id": "heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026"
+        }
+      },
+      "pesticide": {
+        "trigger_spray": {
+          "value": 0.15,
+          "source_id": "heuristic_consexpo_pest_control_trigger_spray_airborne_fraction_bridge_2026"
         }
       },
       "personal_care": {
@@ -255,6 +395,527 @@
           "value": 0.9,
           "source_id": "rivm_cosmetics_sprays_airborne_fraction_defaults_2025"
         }
+      }
+    }
+  },
+  "worker_dermal_execution_defaults": {
+    "body_zone_surface_area_cm2": {
+      "hands_only_body_zone": {
+        "value": 840.0,
+        "source_id": "epa_exposure_factors_handbook_2011"
+      },
+      "hands_and_forearms_body_zone": {
+        "value": 2000.0,
+        "source_id": "worker_dermal_body_zone_area_heuristics_2026"
+      },
+      "head_and_neck_body_zone": {
+        "value": 1300.0,
+        "source_id": "worker_dermal_body_zone_area_heuristics_2026"
+      },
+      "multi_zone_body_contact_profile": {
+        "value": 2600.0,
+        "source_id": "worker_dermal_body_zone_area_heuristics_2026"
+      },
+      "body_zone_not_declared": {
+        "value": 840.0,
+        "source_id": "worker_dermal_body_zone_area_heuristics_2026"
+      }
+    },
+    "ppe_penetration_factor": {
+      "unknown": {
+        "value": 1.0,
+        "source_id": "worker_dermal_ppe_penetration_heuristics_2026"
+      },
+      "none": {
+        "value": 1.0,
+        "source_id": "worker_dermal_ppe_penetration_heuristics_2026"
+      },
+      "work_gloves": {
+        "value": 0.4,
+        "source_id": "worker_dermal_ppe_penetration_heuristics_2026"
+      },
+      "chemical_resistant_gloves": {
+        "value": 0.1,
+        "source_id": "worker_dermal_ppe_penetration_heuristics_2026"
+      },
+      "protective_clothing": {
+        "value": 0.6,
+        "source_id": "worker_dermal_ppe_penetration_heuristics_2026"
+      },
+      "gloves_and_protective_clothing": {
+        "value": 0.05,
+        "source_id": "worker_dermal_ppe_penetration_heuristics_2026"
+      }
+    },
+    "barrier_material_factor": {
+      "unknown": {
+        "value": 1.0,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "generic_work_glove": {
+        "value": 1.0,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "nitrile": {
+        "value": 0.75,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "latex": {
+        "value": 1.15,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "neoprene": {
+        "value": 0.8,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "butyl": {
+        "value": 0.6,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "pvc": {
+        "value": 0.95,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "laminate": {
+        "value": 0.5,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "textile": {
+        "value": 1.35,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      },
+      "coated_textile": {
+        "value": 1.1,
+        "source_id": "worker_dermal_barrier_material_heuristics_2026"
+      }
+    },
+    "barrier_chemistry_factor": {
+      "generic": {
+        "unknown": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "generic_work_glove": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "nitrile": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "latex": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "neoprene": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "butyl": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "pvc": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "laminate": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "textile": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "coated_textile": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        }
+      },
+      "aqueous_polar": {
+        "unknown": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "generic_work_glove": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "nitrile": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "latex": {
+          "value": 0.95,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "neoprene": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "butyl": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "pvc": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "laminate": {
+          "value": 0.95,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "textile": {
+          "value": 1.05,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "coated_textile": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        }
+      },
+      "mixed_organic": {
+        "unknown": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "generic_work_glove": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "nitrile": {
+          "value": 0.9,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "latex": {
+          "value": 1.1,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "neoprene": {
+          "value": 0.95,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "butyl": {
+          "value": 0.8,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "pvc": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "laminate": {
+          "value": 0.75,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "textile": {
+          "value": 1.2,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "coated_textile": {
+          "value": 1.05,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        }
+      },
+      "hydrophobic_solvent_like": {
+        "unknown": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "generic_work_glove": {
+          "value": 1.0,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "nitrile": {
+          "value": 0.85,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "latex": {
+          "value": 1.2,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "neoprene": {
+          "value": 0.9,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "butyl": {
+          "value": 0.7,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "pvc": {
+          "value": 1.05,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "laminate": {
+          "value": 0.65,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "textile": {
+          "value": 1.25,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        },
+        "coated_textile": {
+          "value": 1.1,
+          "source_id": "worker_dermal_barrier_material_heuristics_2026"
+        }
+      }
+    },
+    "skin_condition_factor": {
+      "unknown": {
+        "value": 1.0,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "intact": {
+        "value": 1.0,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "wet": {
+        "value": 1.25,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "compromised": {
+        "value": 1.75,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "occluded": {
+        "value": 1.4,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      }
+    },
+    "absorption_fraction_defaults": {
+      "global": {
+        "value": 0.05,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "liquid": {
+        "value": 0.1,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "gel": {
+        "value": 0.08,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "spray": {
+        "value": 0.08,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "cream": {
+        "value": 0.12,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "solid": {
+        "value": 0.02,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "powder": {
+        "value": 0.02,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "foam": {
+        "value": 0.06,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      }
+    },
+    "contact_pattern_factor": {
+      "unknown": {
+        "value": 0.6,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "direct_handling": {
+        "value": 1.0,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "surface_transfer": {
+        "value": 0.6,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "splash_contact": {
+        "value": 0.75,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "immersion_contact": {
+        "value": 1.25,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      },
+      "residue_contact": {
+        "value": 0.5,
+        "source_id": "worker_dermal_absorption_fraction_heuristics_2026"
+      }
+    },
+    "contact_duration_scaling": {
+      "reference_hours": 1.0,
+      "minimum_factor": 0.25,
+      "maximum_factor": 1.0,
+      "source_id": "worker_dermal_contact_duration_scaling_heuristics_2026"
+    },
+    "log_kow_factor": {
+      "default": {
+        "value": 0.75,
+        "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+      },
+      "thresholds": [
+        {
+          "minimum": 0.0,
+          "value": 1.0,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        },
+        {
+          "minimum": 2.0,
+          "value": 1.15,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        },
+        {
+          "minimum": 4.0,
+          "value": 0.85,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        }
+      ]
+    },
+    "molecular_weight_factor": {
+      "default": {
+        "value": 1.1,
+        "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+      },
+      "thresholds": [
+        {
+          "minimum": 200.0,
+          "value": 1.0,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        },
+        {
+          "minimum": 500.0,
+          "value": 0.65,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        }
+      ]
+    },
+    "water_solubility_factor": {
+      "default": {
+        "value": 0.9,
+        "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+      },
+      "thresholds": [
+        {
+          "minimum": 1000.0,
+          "value": 1.0,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        },
+        {
+          "minimum": 10000.0,
+          "value": 1.1,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        }
+      ]
+    },
+    "vapor_pressure_factor": {
+      "default": {
+        "value": 1.0,
+        "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+      },
+      "thresholds": [
+        {
+          "minimum": 1.0,
+          "value": 0.95,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        },
+        {
+          "minimum": 10.0,
+          "value": 0.85,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        },
+        {
+          "minimum": 100.0,
+          "value": 0.7,
+          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        }
+      ]
+    },
+    "chemical_context_factor_bounds": {
+      "minimum_factor": 0.5,
+      "maximum_factor": 1.5,
+      "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+    }
+  },
+  "worker_inhalation_execution_defaults": {
+    "control_profile_factor": {
+      "ventilation_not_declared": {
+        "value": 1.0,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "general_ventilation_control_profile": {
+        "value": 1.0,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "general_ventilation_control_profile_with_rpe": {
+        "value": 1.0,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "enhanced_general_ventilation_control_profile": {
+        "value": 0.7,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "enhanced_general_ventilation_control_profile_with_rpe": {
+        "value": 0.7,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "local_exhaust_control_profile": {
+        "value": 0.4,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "local_exhaust_control_profile_with_rpe": {
+        "value": 0.4,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "enclosed_process_control_profile": {
+        "value": 0.2,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "enclosed_process_control_profile_with_rpe": {
+        "value": 0.2,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "outdoor_dilution_control_profile": {
+        "value": 0.15,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "outdoor_dilution_control_profile_with_rpe": {
+        "value": 0.15,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      }
+    },
+    "respiratory_protection_factor": {
+      "none": {
+        "value": 1.0,
+        "source_id": "worker_inhalation_rpe_factor_heuristics_2026"
+      },
+      "half_mask_respirator": {
+        "value": 0.1,
+        "source_id": "worker_inhalation_rpe_factor_heuristics_2026"
+      },
+      "full_face_respirator": {
+        "value": 0.02,
+        "source_id": "worker_inhalation_rpe_factor_heuristics_2026"
+      },
+      "powered_air_purifying_respirator": {
+        "value": 0.03,
+        "source_id": "worker_inhalation_rpe_factor_heuristics_2026"
+      },
+      "supplied_air_respirator": {
+        "value": 0.01,
+        "source_id": "worker_inhalation_rpe_factor_heuristics_2026"
+      },
+      "generic_respirator": {
+        "value": 0.1,
+        "source_id": "worker_inhalation_rpe_factor_heuristics_2026"
+      }
+    },
+    "vapor_release_fraction_defaults": {
+      "generic_inhalation_release_profile": {
+        "value": 0.01,
+        "source_id": "worker_inhalation_vapor_release_fraction_heuristics_2026"
+      },
+      "vapor_release_profile": {
+        "value": 0.03,
+        "source_id": "worker_inhalation_vapor_release_fraction_heuristics_2026"
       }
     }
   },
@@ -273,6 +934,16 @@
         "air_exchange_rate_per_hour": 2.0,
         "exposure_duration_hours": 0.5,
         "source_id": "echa_consumer_inhalation_room_defaults"
+      }
+    },
+    "product_subtype_overrides": {
+      "air_space_insecticide": {
+        "room_volume_m3": 58.0,
+        "room_volume_source_id": "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026",
+        "air_exchange_rate_per_hour": 0.6,
+        "air_exchange_rate_source_id": "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026",
+        "exposure_duration_hours": 4.0,
+        "exposure_duration_source_id": "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026"
       }
     }
   }

@@ -33,6 +33,7 @@ from exposure_scenario_mcp.uncertainty import (
     build_aggregate_uncertainty,
     enrich_scenario_uncertainty,
 )
+from exposure_scenario_mcp.worker_routing import apply_worker_task_semantics
 
 
 @dataclass(slots=True)
@@ -116,6 +117,7 @@ def resolve_product_mass_g(
         density, source = registry.default_density_g_per_ml(
             product_category=profile.product_category,
             physical_form=profile.physical_form,
+            product_subtype=profile.product_subtype,
         )
         tracker.add_default(
             "density_g_per_ml",
@@ -124,7 +126,8 @@ def resolve_product_mass_g(
             source,
             (
                 "Default density used for volume-to-mass conversion in screening mode, "
-                "resolved from product category and physical form when available."
+                "resolved from product category, physical form, and product subtype when "
+                "available."
             ),
         )
     product_mass_g = profile.use_amount_per_event * density
@@ -444,14 +447,21 @@ class ScenarioEngine:
             route=request.route.value,
             scenario_class=request.scenario_class.value,
             product_category=request.product_use_profile.product_category,
+            product_subtype=request.product_use_profile.product_subtype,
             physical_form=request.product_use_profile.physical_form,
             application_method=request.product_use_profile.application_method,
             retention_type=request.product_use_profile.retention_type,
             population_group=request.population_profile.population_group,
+            demographic_tags=",".join(request.population_profile.demographic_tags),
             region=request.population_profile.region,
         )
         context = ScenarioExecutionContext(registry=self.defaults_registry, tracker=tracker)
         scenario = plugin.build(request, context)
+        scenario = apply_worker_task_semantics(
+            scenario,
+            request,
+            registry=self.defaults_registry,
+        )
         if not include_diagnostics:
             return scenario
         return enrich_scenario_uncertainty(self, scenario)

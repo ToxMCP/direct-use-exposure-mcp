@@ -1,0 +1,121 @@
+{
+  "$defs": {
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "WorkerTier2ModelFamily": {
+      "enum": [
+        "art",
+        "stoffenmanager"
+      ],
+      "title": "WorkerTier2ModelFamily",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerInhalationTier2CompatibilityReport.v1",
+      "default": "workerInhalationTier2CompatibilityReport.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sourceRequestSchema": {
+      "description": "Schema version of the source inhalation request.",
+      "title": "Sourcerequestschema",
+      "type": "string"
+    },
+    "targetModelFamily": {
+      "$ref": "#/$defs/WorkerTier2ModelFamily",
+      "description": "Future worker-model family targeted by the bridge."
+    },
+    "route": {
+      "$ref": "#/$defs/Route",
+      "default": "inhalation",
+      "description": "Route represented by the bridge."
+    },
+    "workerDetected": {
+      "description": "Whether worker context was detected from the population profile.",
+      "title": "Workerdetected",
+      "type": "boolean"
+    },
+    "readyForAdapter": {
+      "description": "Whether the bridge carries the minimum inputs for a future adapter handoff.",
+      "title": "Readyforadapter",
+      "type": "boolean"
+    },
+    "missingFields": {
+      "description": "Adapter-facing fields still missing from the bridge package.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Missingfields",
+      "type": "array"
+    },
+    "issues": {
+      "description": "Warnings or blockers attached to the bridge readiness decision.",
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "recommendedNextSteps": {
+      "description": "Short next-step guidance for the downstream orchestrator.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Recommendednextsteps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "sourceRequestSchema",
+    "targetModelFamily",
+    "workerDetected",
+    "readyForAdapter"
+  ],
+  "title": "WorkerInhalationTier2CompatibilityReport",
+  "type": "object"
+}

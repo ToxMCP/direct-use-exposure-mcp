@@ -1,0 +1,257 @@
+{
+  "$defs": {
+    "WorkerArtDeterminantTemplateMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerArtDeterminantTemplateMatch.v1",
+          "default": "workerArtDeterminantTemplateMatch.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "templateCatalogVersion": {
+          "default": "2026.04.07.v1",
+          "description": "Version of the packaged ART determinant-template catalog.",
+          "title": "Templatecatalogversion",
+          "type": "string"
+        },
+        "templateId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Matched determinant-template identifier, if any.",
+          "title": "Templateid"
+        },
+        "templateLabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable matched determinant-template label, if any.",
+          "title": "Templatelabel"
+        },
+        "alignmentStatus": {
+          "$ref": "#/$defs/WorkerArtTemplateAlignmentStatus",
+          "description": "How strongly the current worker task aligns with the packaged template."
+        },
+        "matchScore": {
+          "description": "Normalized match score for the selected determinant template.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Matchscore",
+          "type": "number"
+        },
+        "matchBasis": {
+          "description": "Short statements describing why the template matched.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Matchbasis",
+          "type": "array"
+        },
+        "determinantRecommendations": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Packaged determinant recommendations for downstream ART-side execution.",
+          "title": "Determinantrecommendations",
+          "type": "object"
+        },
+        "sourceBasis": {
+          "description": "Template-pack basis preserved with the matched determinant suggestions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourcebasis",
+          "type": "array"
+        },
+        "reviewNotes": {
+          "description": "Review notes attached to the template match and remaining gaps.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Reviewnotes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "alignmentStatus",
+        "matchScore"
+      ],
+      "title": "WorkerArtDeterminantTemplateMatch",
+      "type": "object"
+    },
+    "WorkerArtTemplateAlignmentStatus": {
+      "enum": [
+        "aligned",
+        "partial",
+        "heuristic",
+        "none"
+      ],
+      "title": "WorkerArtTemplateAlignmentStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerInhalationArtTaskEnvelope.v1",
+      "default": "workerInhalationArtTaskEnvelope.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "adapterName": {
+      "const": "art_worker_inhalation_adapter",
+      "default": "art_worker_inhalation_adapter",
+      "description": "Bounded ART-side adapter identity for worker inhalation intake.",
+      "title": "Adaptername",
+      "type": "string"
+    },
+    "adapterVersion": {
+      "default": "0.1.0",
+      "description": "Version of the ART-side adapter boundary implemented here.",
+      "title": "Adapterversion",
+      "type": "string"
+    },
+    "activityClass": {
+      "description": "ART-aligned task activity label derived from the source request.",
+      "title": "Activityclass",
+      "type": "string"
+    },
+    "emissionProfile": {
+      "description": "Short emission-profile label derived from task and form semantics.",
+      "title": "Emissionprofile",
+      "type": "string"
+    },
+    "controlProfile": {
+      "description": "Short control-profile label derived from ventilation and local controls.",
+      "title": "Controlprofile",
+      "type": "string"
+    },
+    "determinantTemplateMatch": {
+      "$ref": "#/$defs/WorkerArtDeterminantTemplateMatch",
+      "description": "Matched packaged determinant template carried into the ART intake."
+    },
+    "taskSummary": {
+      "description": "Short human-readable summary of the derived ART intake mapping.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Tasksummary",
+      "type": "array"
+    },
+    "artInputs": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Normalized ART-side input object ready for downstream adapter execution.",
+      "title": "Artinputs",
+      "type": "object"
+    },
+    "screeningHandoffSummary": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Preserved screening and worker-routing context carried into the adapter.",
+      "title": "Screeninghandoffsummary",
+      "type": "object"
+    },
+    "guidanceResource": {
+      "default": "docs://worker-art-adapter-guide",
+      "description": "Guide that explains how the ART adapter intake should be interpreted.",
+      "title": "Guidanceresource",
+      "type": "string"
+    }
+  },
+  "required": [
+    "activityClass",
+    "emissionProfile",
+    "controlProfile",
+    "determinantTemplateMatch"
+  ],
+  "title": "WorkerInhalationArtTaskEnvelope",
+  "type": "object"
+}

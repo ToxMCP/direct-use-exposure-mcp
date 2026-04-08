@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
+import math
+
+from exposure_scenario_mcp.benchmarks import load_benchmark_manifest, load_goldset_manifest
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
     ExecutedValidationCheck,
@@ -10,10 +12,13 @@ from exposure_scenario_mcp.models import (
     ExternalValidationDataset,
     ExternalValidationDatasetStatus,
     Route,
+    ScalarValue,
     TierLevel,
     UncertaintyTier,
     ValidationBenchmarkDomain,
     ValidationCheckStatus,
+    ValidationCoverageDomainSummary,
+    ValidationCoverageReport,
     ValidationDossierReport,
     ValidationEvidenceReadiness,
     ValidationGap,
@@ -22,18 +27,49 @@ from exposure_scenario_mcp.models import (
     ValidationSummary,
 )
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
+from exposure_scenario_mcp.validation_time_series import ValidationTimeSeriesReferenceRegistry
 
 BENCHMARK_CASE_DOMAINS = {
     "dermal_hand_cream_screening": "dermal_direct_application",
     "dermal_density_precedence_volume_case": "dermal_direct_application",
     "oral_direct_oral_screening": "oral_direct_intake",
+    "oral_medicinal_liquid_delivered_dose_screening": "oral_direct_intake",
     "inhalation_trigger_spray_screening": "inhalation_well_mixed_spray",
+    "inhalation_air_space_insecticide_aerosol_screening": "inhalation_well_mixed_spray",
+    "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001": (
+        "inhalation_well_mixed_spray"
+    ),
+    "inhalation_air_space_insecticide_aerosol_time_series_6h_2001": (
+        "inhalation_well_mixed_spray"
+    ),
+    "inhalation_residual_air_reentry_chlorpyrifos_screening": (
+        "inhalation_residual_air_reentry"
+    ),
+    "inhalation_residual_air_reentry_chlorpyrifos_time_series_1990": (
+        "inhalation_residual_air_reentry"
+    ),
+    "inhalation_residual_air_reentry_diazinon_time_series_1990": (
+        "inhalation_residual_air_reentry"
+    ),
     "inhalation_tier1_trigger_spray_nf_ff": "inhalation_near_field_far_field",
+    "inhalation_tier1_disinfectant_trigger_spray_external_2015": (
+        "inhalation_near_field_far_field"
+    ),
     "inhalation_tier1_scenario_package_probability": "inhalation_near_field_far_field",
     "cross_route_aggregate_summary": "aggregate_cross_route_screening",
     "zero_baseline_comparison": "scenario_delta_comparison",
     "dermal_pbpk_export": "pbpk_external_handoff",
     "dermal_pbpk_external_import_package": "pbpk_external_handoff",
+    "worker_inhalation_janitorial_trigger_spray_execution": (
+        "worker_inhalation_control_aware_screening"
+    ),
+    "worker_inhalation_handheld_biocidal_trigger_spray_execution": (
+        "worker_inhalation_control_aware_screening"
+    ),
+    "worker_dermal_wet_wipe_gloved_hands_execution": "worker_dermal_absorbed_dose_screening",
+    "worker_dermal_handheld_biocidal_trigger_spray_execution": (
+        "worker_dermal_absorbed_dose_screening"
+    ),
 }
 
 BENCHMARK_DOMAIN_NOTES = {
@@ -57,8 +93,17 @@ BENCHMARK_DOMAIN_NOTES = {
     ],
     "inhalation_near_field_far_field": [
         (
-            "Current benchmark coverage includes both a single Tier 1 NF/FF scenario "
+            "Current benchmark coverage includes a canonical Tier 1 NF/FF scenario, a "
+            "narrow externally anchored consumer disinfectant trigger-spray dose case, "
             "and a Tier C package built from governed Tier 1 support points."
+        )
+    ],
+    "inhalation_residual_air_reentry": [
+        (
+            "Current residual-air reentry coverage is narrow: it anchors the dedicated "
+            "chlorpyrifos post-application reentry-start concentration, a sparse 4-hour to "
+            "24-hour room-air decay series, and decay arithmetic, not full treated-surface "
+            "emission dynamics across indoor pesticide families."
         )
     ],
     "aggregate_cross_route_screening": [
@@ -71,6 +116,20 @@ BENCHMARK_DOMAIN_NOTES = {
         (
             "These benchmarks verify handoff semantics and request-shape fidelity, "
             "not PBPK model correctness."
+        )
+    ],
+    "worker_inhalation_control_aware_screening": [
+        (
+            "Current worker inhalation coverage is a governed surrogate benchmark for "
+            "control-aware janitorial trigger-spray execution plus a narrow small-scale "
+            "handheld biocidal spray concentration anchor, not a true ART validation set."
+        )
+    ],
+    "worker_dermal_absorbed_dose_screening": [
+        (
+            "Current worker dermal coverage is a governed PPE-aware wet-wipe benchmark plus "
+            "a narrow handheld biocidal spray dermal-mass anchor, not a chemical-specific "
+            "permeation or glove-breakthrough validation set."
         )
     ],
 }
@@ -97,6 +156,50 @@ EXTERNAL_VALIDATION_DATASETS = [
         ),
     ),
     ExternalValidationDataset(
+        datasetId="spray_cleaning_disinfection_decay_half_life_2023",
+        domain="inhalation_well_mixed_spray",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable="room-air aerosol decay half-life for trigger and pressurized spray products",
+        targetMetrics=["room_air_decay_half_life_hours"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["household_cleaner", "disinfectant"],
+        referenceTitle=(
+            "Characterization of the aerosol release from spray cleaning and disinfection "
+            "products - Spray scenarios in a climate chamber"
+        ),
+        referenceLocator=(
+            "https://perpus-utama.poltekkes-malang.ac.id/assets/file/jurnal/volume_252_2023.pdf"
+        ),
+        note=(
+            "A climate-chamber study of professional cleaning and disinfection sprays reported "
+            "an average aerosol total-particle-mass half-life of about 0.25 h for 13 trigger "
+            "sprays, with large between-product variation. This supports a narrow executable "
+            "half-life realism check for trigger-spray room-decay behavior, but it is not a "
+            "chemical-specific active-substance calibration set."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="household_mosquito_aerosol_indoor_air_2001",
+        domain="inhalation_well_mixed_spray",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable="closed-room indoor air concentration after household mosquito aerosol use",
+        targetMetrics=["average_air_concentration_mg_per_m3"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["air_space_insecticide"],
+        referenceTitle=(
+            "Exposures of infants and young children to pyrethroid pesticides in mosquito "
+            "coils and indoor insecticide sprays"
+        ),
+        referenceLocator="https://pubmed.ncbi.nlm.nih.gov/11354726/",
+        note=(
+            "Indoor insecticide spray testing in a closed room reported a prallethrin air "
+            "concentration of 0.0138 ppm within 30 to 45 minutes after use and most residues "
+            "dissipated below 0.0001 ppm by 6 hours. This supports a narrow room-air "
+            "benchmark for air-space insecticide aerosol screening plus a sparse late-decay "
+            "time-series anchor after conversion to mg/m3."
+        ),
+    ),
+    ExternalValidationDataset(
         datasetId="consumer_spray_inhalation_exposure_2015",
         domain="inhalation_near_field_far_field",
         status=ExternalValidationDatasetStatus.PARTIAL,
@@ -117,6 +220,144 @@ EXTERNAL_VALIDATION_DATASETS = [
             "product-specific inhalation exposure and deposited-dose ranges. This is useful "
             "for near-field burden checks, but it is not a direct calibration dataset for "
             "the MCP NF/FF mass-balance solver."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="consumer_disinfectant_trigger_spray_inhalation_2015",
+        domain="inhalation_near_field_far_field",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "total inhalation exposure during a consumer disinfectant trigger-spray task"
+        ),
+        targetMetrics=[
+            "normalized_external_dose",
+            "inhaled_mass_mg_per_day",
+            "breathing_zone_time_weighted_average_mg_per_m3",
+        ],
+        applicableTierClaims=[TierLevel.TIER_1],
+        productFamilies=["disinfectant"],
+        referenceTitle=(
+            "Quantitative assessment of inhalation exposure and deposited dose of aerosol "
+            "from nanotechnology-based consumer sprays (Supplementary Information)"
+        ),
+        referenceLocator="https://www.rsc.org/suppdata/en/c3/c3en00053b/c3en00053b.pdf",
+        note=(
+            "The supplementary disinfectant-spray case reports a mean total inhalation "
+            "exposure of about 1076 ng/kg bw/application and supports a narrow executable "
+            "dose band for a study-like Tier 1 NF/FF trigger-spray scenario. It is useful "
+            "for a product-specific external check, but it is still not a full chamber "
+            "time-series calibration set for the NF/FF solver."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="worker_biocidal_spray_foam_inhalation_2023",
+        domain="worker_inhalation_control_aware_screening",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "personal air sampling of non-volatile active substances during occupational "
+            "biocidal spray and foam applications"
+        ),
+        targetMetrics=[
+            "controlAdjustedAverageAirConcentrationMgPerM3",
+            "normalized_worker_inhaled_dose",
+        ],
+        applicableTierClaims=[TierLevel.TIER_2],
+        productFamilies=["disinfectant", "pest_control"],
+        referenceTitle=(
+            "Inhalation and dermal exposure to biocidal products during foam and spray "
+            "applications"
+        ),
+        referenceLocator=(
+            "https://www.baua.de/EN/Service/Publications/Essays/article3676.pdf"
+            "?__blob=publicationFile&v=3"
+        ),
+        note=(
+            "Occupational monitoring across 26 biocidal foam and spray applications reported "
+            "personal-air inhalation exposure with detailed task context, and direct "
+            "spray-to-foam comparisons showed lower inhalation exposure for foam "
+            "applications. Handheld BAC spray scenarios reported 9.06-61.7 ug/m3 active-"
+            "substance concentrations for small-scale surface disinfection sprays. The study "
+            "is a strong contextual anchor and now supports a narrow executable worker "
+            "concentration band, but it does not provide a direct ART-equivalent determinant "
+            "or dose-normalization dataset for the MCP execution kernel."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="diazinon_indoor_air_monitoring_home_use_2008",
+        domain="inhalation_residual_air_reentry",
+        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
+        observable=(
+            "measured indoor air diazinon concentrations during historical home-use contexts"
+        ),
+        targetMetrics=[
+            "air_concentration_at_reentry_start_mg_per_m3",
+            "average_air_concentration_mg_per_m3",
+        ],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["indoor_surface_insecticide"],
+        referenceTitle="Diazinon Technical Fact Sheet",
+        referenceLocator="https://npic.orst.edu/factsheets/archive/diazinontech.html",
+        note=(
+            "The technical fact sheet reports indoor air diazinon concentrations up to "
+            "13 ug/m3 when diazinon was registered for residential home use. This is useful "
+            "as an integration-level plausibility anchor for Diazinon workflows, but it is "
+            "not sufficiently scenario-resolved to serve as an executable benchmark band."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="chlorpyrifos_broadcast_residential_air_1990",
+        domain="inhalation_residual_air_reentry",
+        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
+        observable=(
+            "post-application indoor air concentrations after broadcast residential surface "
+            "treatment"
+        ),
+        targetMetrics=[
+            "air_concentration_at_reentry_start_mg_per_m3",
+            "average_air_concentration_mg_per_m3",
+        ],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["indoor_surface_insecticide"],
+        referenceTitle=(
+            "Potential exposure and health risks of infants following indoor residential "
+            "pesticide applications"
+        ),
+        referenceLocator="https://pubmed.ncbi.nlm.nih.gov/1693041/",
+        note=(
+            "A 0.5% Dursban broadcast application for fleas produced peak infant-breathing-zone "
+            "chlorpyrifos air concentrations of 61-94 ug/m3 at 3-7 hours post-application and "
+            "about 30 ug/m3 at 24 hours. This is a strong analogue for indoor-surface "
+            "insecticide residual-air plausibility, but it mixes broadcast application, "
+            "ventilation effects, and delayed post-application decay that the current trigger-"
+            "spray screening kernel does not model explicitly."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="diazinon_office_postapplication_air_1990",
+        domain="inhalation_residual_air_reentry",
+        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
+        observable=(
+            "post-application indoor air concentrations after commercial office surface "
+            "treatment"
+        ),
+        targetMetrics=[
+            "air_concentration_at_reentry_start_mg_per_m3",
+            "average_air_concentration_mg_per_m3",
+        ],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["indoor_surface_insecticide"],
+        referenceTitle=(
+            "Concentrations of diazinon, chlorpyrifos, and bendiocarb after application "
+            "in offices"
+        ),
+        referenceLocator="https://pubmed.ncbi.nlm.nih.gov/1689096/",
+        note=(
+            "Office monitoring after application of a 1% aqueous diazinon solution reported "
+            "air concentrations of 163 and 158 ug/m3 in empty offices and 27 ug/m3 in a "
+            "furnished office at 4 hours, with persistence over multiple days. This supports "
+            "indoor-surface insecticide plausibility and highlights the importance of treated-"
+            "surface re-emission, furnishing effects, and reentry timing that are outside the "
+            "current Tier 0 spray-cloud screening semantics."
         ),
     ),
     ExternalValidationDataset(
@@ -154,6 +395,39 @@ EXTERNAL_VALIDATION_DATASETS = [
             "0.31 g for an all-purpose cleaner spray rinsing case and 0.62 g for a floor "
             "cleaner liquid case. These support an executable secondary-contact realism "
             "check for household-cleaner wipe scenarios, but not a calibrated transfer model."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="worker_biocidal_spray_foam_dermal_2023",
+        domain="worker_dermal_absorbed_dose_screening",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "patch- and glove-based dermal exposure during occupational biocidal spray and "
+            "foam applications"
+        ),
+        targetMetrics=[
+            "externalSkinMassMgPerDay",
+            "protectedExternalSkinMassMgPerDay",
+            "absorbedMassMgPerDay",
+        ],
+        applicableTierClaims=[TierLevel.TIER_2],
+        productFamilies=["disinfectant", "pest_control"],
+        referenceTitle=(
+            "Inhalation and dermal exposure to biocidal products during foam and spray "
+            "applications"
+        ),
+        referenceLocator=(
+            "https://www.baua.de/EN/Service/Publications/Essays/article3676.pdf"
+            "?__blob=publicationFile&v=3"
+        ),
+        note=(
+            "Occupational monitoring across 26 biocidal foam and spray applications also "
+            "reported dermal contamination using glove dosimeters and body patches. This is a "
+            "useful contextual anchor for worker dermal contact during disinfectant or "
+            "pest-control spray tasks, and the handheld BAC spray subset supports a narrow "
+            "executable 12.8-13.6 mg/day external skin-mass band for study-like small-scale "
+            "surface disinfection tasks. It is still not a direct absorbed-dose or glove-"
+            "breakthrough validation dataset for the MCP dermal execution kernel."
         ),
     ),
     ExternalValidationDataset(
@@ -200,19 +474,27 @@ def _heuristic_source_ids(registry: DefaultsRegistry) -> list[str]:
     )
 
 
+def _normalized_text(value: str | None) -> str:
+    if value is None:
+        return ""
+    return value.strip().lower().replace("-", "_").replace(" ", "_")
+
+
 def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
     heuristic_source_ids = _heuristic_source_ids(registry)
     gaps = [
         ValidationGap(
             gapId="tier1_nf_ff_external_validation_partial_only",
-            title="Tier 1 NF/FF external validation is reference-linked but not executable",
+            title="Tier 1 NF/FF external validation is still narrow despite executable support",
             severity=ValidationGapSeverity.HIGH,
             appliesToDomains=["inhalation_near_field_far_field"],
             relatedSourceIds=["benchmark_tier1_nf_ff_parameter_pack_v1"],
             note=(
                 "Tier 1 NF/FF spray screening now has benchmark coverage plus a cited "
-                "consumer-spray inhalation study, but the dossier still lacks raw time-series "
-                "datasets and acceptance bands that can be executed against the NF/FF solver."
+                "consumer-spray inhalation study and a narrow executable disinfectant "
+                "trigger-spray dose anchor, but the dossier still lacks raw time-series "
+                "datasets and broader acceptance bands that can be executed against the "
+                "NF/FF solver."
             ),
             recommendation=(
                 "Add chamber or breathing-zone datasets with raw time-series coverage and "
@@ -235,13 +517,39 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
                 "Tier 0 spray screening is benchmark-regressed and now tied to a real "
                 "cleaning-spray study for trigger sprays plus an RIVM fact-sheet default for "
                 "household-cleaner surface sprays and RIVM cosmetics defaults for personal-care "
-                "pump and aerosol sprays, but residual spray product families still rely on "
-                "heuristic airborne-fraction defaults and no executable chamber validation is "
-                "wired in."
+                "pump and aerosol sprays. A sparse air-space insecticide aerosol decay series "
+                "is now executable, but residual spray product families still rely on "
+                "heuristic airborne-fraction defaults and no broad chamber validation family is "
+                "wired in beyond a narrow trigger-spray aerosol half-life anchor."
             ),
             recommendation=(
                 "Add raw chamber or room-concentration datasets before promoting spray "
                 "screening defaults beyond partial reference support."
+            ),
+        ),
+        ValidationGap(
+            gapId="residual_air_reentry_validation_narrow_anchor_only",
+            title="Residual-air reentry validation is narrowly anchored only",
+            severity=ValidationGapSeverity.HIGH,
+            appliesToDomains=["inhalation_residual_air_reentry"],
+            relatedSourceIds=[
+                "chlorpyrifos_broadcast_residential_air_1990",
+                "diazinon_office_postapplication_air_1990",
+                "diazinon_indoor_air_monitoring_home_use_2008",
+            ],
+            note=(
+                "Residual-air reentry now has a dedicated chlorpyrifos benchmark fixture, "
+                "a narrow executable reference check against published post-application indoor "
+                "air concentrations at reentry start, and a sparse 4-hour to 24-hour "
+                "chlorpyrifos room-air reference pack. The underlying treated-surface "
+                "emission, furnishing uptake, and room-decay dynamics are still not externally "
+                "validated across indoor-surface insecticide scenarios."
+            ),
+            recommendation=(
+                "Add richer time-resolved post-application room-air datasets with treatment "
+                "method, surface loading, ventilation, and furnishing metadata so the "
+                "reentry model can be validated beyond the current sparse chlorpyrifos "
+                "screening pack."
             ),
         ),
         ValidationGap(
@@ -283,13 +591,61 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
                 "heuristic_incidental_oral_defaults_v1",
             ],
             note=(
-                "Direct-oral screening is benchmarked internally and now linked to a real "
-                "delivered-dose study, but that reference is a narrow medicinal-liquid use "
-                "case rather than a broad oral-product calibration set."
+                "Direct-oral screening is benchmarked internally and now has a narrow "
+                "executable medicinal-liquid delivered-dose check plus a real delivered-dose "
+                "study anchor, but that evidence still comes from a single medication family "
+                "rather than a broad oral-product calibration set."
             ),
             recommendation=(
                 "Add broader observed dosing or dispensed-amount datasets before broadening "
                 "the direct-oral evidence posture beyond medicinal-liquid workflows."
+            ),
+        ),
+        ValidationGap(
+            gapId="worker_inhalation_external_validation_partial_only",
+            title=(
+                "Worker inhalation surrogate execution is benchmarked but not externally "
+                "validated"
+            ),
+            severity=ValidationGapSeverity.HIGH,
+            appliesToDomains=["worker_inhalation_control_aware_screening"],
+            relatedSourceIds=[
+                "worker_art_execution_surrogate_v1",
+                "worker_biocidal_spray_foam_inhalation_2023",
+            ],
+            note=(
+                "Worker inhalation execution now has a governed benchmark case for a "
+                "janitorial trigger-spray task, a narrow handheld BAC spray concentration "
+                "benchmark band, and a source-backed occupational biocidal spray/foam study "
+                "anchor, but it remains a surrogate layered on top of screening kernels "
+                "rather than an externally validated ART execution."
+            ),
+            recommendation=(
+                "Add reviewed workplace monitoring datasets and determinant mappings for "
+                "cleaning-spray worker tasks before claiming external validation maturity."
+            ),
+        ),
+        ValidationGap(
+            gapId="worker_dermal_external_validation_partial_only",
+            title=(
+                "Worker dermal absorbed-dose execution has only narrow external support"
+            ),
+            severity=ValidationGapSeverity.HIGH,
+            appliesToDomains=["worker_dermal_absorbed_dose_screening"],
+            relatedSourceIds=[
+                "worker_dermal_absorbed_dose_execution_v1",
+                "worker_biocidal_spray_foam_dermal_2023",
+            ],
+            note=(
+                "Worker dermal execution now has a governed benchmark case for gloved wet-wipe "
+                "contact plus a source-backed occupational biocidal spray/foam dermal study "
+                "anchor and a narrow handheld BAC spray dermal-mass benchmark, but it "
+                "remains a generic PPE-aware absorbed-dose screening kernel."
+            ),
+            recommendation=(
+                "Add reviewed dermal loading, glove penetration, and absorbed-dose datasets "
+                "for worker wipe and handling tasks before treating the kernel as externally "
+                "validated."
             ),
         ),
         ValidationGap(
@@ -323,6 +679,8 @@ def infer_route_mechanism(scenario: ExposureScenario) -> str:
         if profile.application_method == "incidental_oral":
             return "oral_incidental_transfer"
         return "oral_direct_intake"
+    if profile.application_method == "residual_air_reentry":
+        return "inhalation_residual_air_reentry"
     if scenario.tier_semantics.tier_claimed.value == "tier_1":
         return "inhalation_near_field_far_field"
     if profile.application_method in {"trigger_spray", "pump_spray", "aerosol_spray"}:
@@ -367,8 +725,8 @@ def build_validation_dossier_report(
             ),
             (
                 "Reference-linked validation targets are published for inhalation, dermal, "
-                "and direct-oral screening, and selected dermal scenarios now support narrow "
-                "executable reference checks."
+                "and direct-oral screening, and selected inhalation and dermal scenarios now "
+                "support narrow executable reference checks and sparse time-series packs."
             ),
             (
                 "Selected dermal scenarios now support narrow executable reference checks "
@@ -395,6 +753,196 @@ def validation_reference_band_manifest() -> dict:
     return ValidationReferenceBandRegistry.load().manifest().model_dump(mode="json", by_alias=True)
 
 
+def validation_time_series_reference_manifest() -> dict:
+    return ValidationTimeSeriesReferenceRegistry.load().manifest().model_dump(
+        mode="json",
+        by_alias=True,
+    )
+
+
+def _coverage_level(
+    *,
+    benchmark_case_ids: list[str],
+    executable_reference_band_ids: list[str],
+    time_series_pack_ids: list[str],
+    external_dataset_ids: list[str],
+) -> str:
+    if benchmark_case_ids and time_series_pack_ids:
+        return "benchmark_time_resolved"
+    if benchmark_case_ids and executable_reference_band_ids:
+        return "benchmark_plus_executable_references"
+    if benchmark_case_ids:
+        return "benchmark_only"
+    if external_dataset_ids:
+        return "source_backed_only"
+    return "verification_only"
+
+
+def build_validation_coverage_report() -> ValidationCoverageReport:
+    dossier = build_validation_dossier_report()
+    benchmark_fixture = load_benchmark_manifest()
+    goldset = load_goldset_manifest()
+    reference_manifest = ValidationReferenceBandRegistry.load().manifest()
+    time_series_manifest = ValidationTimeSeriesReferenceRegistry.load().manifest()
+
+    benchmark_domains = {
+        item.domain: item for item in dossier.benchmark_domains
+    }
+    benchmark_case_ids_by_domain: dict[str, list[str]] = {}
+    for case in benchmark_fixture.get("cases", []):
+        domain = BENCHMARK_CASE_DOMAINS.get(str(case["id"]))
+        if domain is None:
+            continue
+        benchmark_case_ids_by_domain.setdefault(domain, []).append(str(case["id"]))
+
+    goldset_coverage_counts: dict[str, int] = {}
+    goldset_case_ids_by_domain: dict[str, set[str]] = {}
+    unmapped_goldset_case_ids: list[str] = []
+    for case in goldset.get("cases", []):
+        coverage_status = str(case.get("coverage_status", "unknown"))
+        goldset_coverage_counts[coverage_status] = (
+            goldset_coverage_counts.get(coverage_status, 0) + 1
+        )
+        linked_domains = {
+            BENCHMARK_CASE_DOMAINS[item]
+            for item in case.get("benchmark_case_ids", [])
+            if item in BENCHMARK_CASE_DOMAINS
+        }
+        if not linked_domains:
+            unmapped_goldset_case_ids.append(str(case["id"]))
+            continue
+        for domain in linked_domains:
+            goldset_case_ids_by_domain.setdefault(domain, set()).add(str(case["id"]))
+
+    external_dataset_ids_by_domain: dict[str, list[str]] = {}
+    for item in dossier.external_datasets:
+        external_dataset_ids_by_domain.setdefault(item.domain, []).append(item.dataset_id)
+
+    reference_band_ids_by_domain: dict[str, list[str]] = {}
+    for item in reference_manifest.bands:
+        reference_band_ids_by_domain.setdefault(item.domain, []).append(item.check_id)
+
+    time_series_pack_ids_by_domain: dict[str, list[str]] = {}
+    for item in time_series_manifest.packs:
+        time_series_pack_ids_by_domain.setdefault(item.domain, []).append(item.reference_pack_id)
+
+    open_gap_ids_by_domain: dict[str, list[str]] = {}
+    global_gap_ids: list[str] = []
+    for item in dossier.open_gaps:
+        applied = False
+        for domain in item.applies_to_domains:
+            if domain == "global":
+                global_gap_ids.append(item.gap_id)
+                continue
+            open_gap_ids_by_domain.setdefault(domain, []).append(item.gap_id)
+            applied = True
+        if not item.applies_to_domains or not applied:
+            global_gap_ids.append(item.gap_id)
+
+    all_domains = sorted(
+        {
+            *benchmark_domains.keys(),
+            *external_dataset_ids_by_domain.keys(),
+            *reference_band_ids_by_domain.keys(),
+            *time_series_pack_ids_by_domain.keys(),
+            *open_gap_ids_by_domain.keys(),
+        }
+    )
+
+    domain_summaries: list[ValidationCoverageDomainSummary] = []
+    for domain in all_domains:
+        benchmark_case_ids = sorted(benchmark_case_ids_by_domain.get(domain, []))
+        goldset_case_ids = sorted(goldset_case_ids_by_domain.get(domain, set()))
+        external_dataset_ids = sorted(external_dataset_ids_by_domain.get(domain, []))
+        reference_band_ids = sorted(reference_band_ids_by_domain.get(domain, []))
+        time_series_pack_ids = sorted(time_series_pack_ids_by_domain.get(domain, []))
+        open_gap_ids = sorted(open_gap_ids_by_domain.get(domain, []))
+        benchmark_domain = benchmark_domains.get(domain)
+        highest_tier = (
+            benchmark_domain.highest_supported_uncertainty_tier
+            if benchmark_domain is not None
+            else UncertaintyTier.TIER_A
+        )
+        coverage_level = _coverage_level(
+            benchmark_case_ids=benchmark_case_ids,
+            executable_reference_band_ids=reference_band_ids,
+            time_series_pack_ids=time_series_pack_ids,
+            external_dataset_ids=external_dataset_ids,
+        )
+        summary_parts = [
+            f"{len(benchmark_case_ids)} benchmark case(s)",
+            f"{len(external_dataset_ids)} external dataset(s)",
+            f"{len(reference_band_ids)} executable reference band(s)",
+            f"{len(time_series_pack_ids)} time-series pack(s)",
+            f"{len(open_gap_ids)} open gap(s)",
+        ]
+        domain_summaries.append(
+            ValidationCoverageDomainSummary(
+                domain=domain,
+                coverageLevel=coverage_level,
+                highestSupportedUncertaintyTier=highest_tier,
+                benchmarkCaseCount=len(benchmark_case_ids),
+                benchmarkCaseIds=benchmark_case_ids,
+                goldsetCaseCount=len(goldset_case_ids),
+                goldsetCaseIds=goldset_case_ids,
+                externalDatasetCount=len(external_dataset_ids),
+                externalDatasetIds=external_dataset_ids,
+                executableReferenceBandCount=len(reference_band_ids),
+                executableReferenceBandIds=reference_band_ids,
+                timeSeriesPackCount=len(time_series_pack_ids),
+                timeSeriesPackIds=time_series_pack_ids,
+                openGapCount=len(open_gap_ids),
+                openGapIds=open_gap_ids,
+                summary=", ".join(summary_parts) + ".",
+            )
+        )
+
+    notes = [
+        (
+            "Coverage is derived from the governed benchmark corpus, showcase goldset, "
+            "validation dossier, executable reference-band manifest, and executable "
+            "time-series manifest."
+        ),
+        (
+            "Coverage levels describe current trust posture by domain; they do not "
+            "imply full scientific validation or regulatory acceptance."
+        ),
+    ]
+    if global_gap_ids:
+        notes.append(
+            "Global validation gaps still active across the stack: "
+            + ", ".join(f"`{item}`" for item in sorted(set(global_gap_ids)))
+            + "."
+        )
+    if unmapped_goldset_case_ids:
+        notes.append(
+            (
+                "Some goldset cases remain integration-only or challenge-only and "
+                "therefore do not map to a benchmark domain summary: "
+            )
+            + ", ".join(f"`{item}`" for item in sorted(unmapped_goldset_case_ids))
+            + "."
+        )
+
+    return ValidationCoverageReport(
+        policyVersion=dossier.policy_version,
+        benchmarkDefaultsVersion=str(benchmark_fixture.get("defaults_version", "unknown")),
+        referenceBandVersion=reference_manifest.reference_version,
+        timeSeriesReferenceVersion=time_series_manifest.reference_version,
+        goldsetVersion=str(goldset.get("goldset_version", "unknown")),
+        domainCount=len(domain_summaries),
+        benchmarkCaseCount=len(benchmark_fixture.get("cases", [])),
+        externalDatasetCount=len(dossier.external_datasets),
+        referenceBandCount=reference_manifest.band_count,
+        timeSeriesPackCount=time_series_manifest.pack_count,
+        goldsetCaseCount=len(goldset.get("cases", [])),
+        goldsetCoverageCounts=goldset_coverage_counts,
+        unmappedGoldsetCaseIds=sorted(unmapped_goldset_case_ids),
+        domainSummaries=domain_summaries,
+        overallNotes=notes,
+    )
+
+
 def _evidence_readiness(
     benchmark_case_ids: list[str],
     datasets: list[ExternalValidationDataset],
@@ -406,10 +954,13 @@ def _evidence_readiness(
         return ValidationEvidenceReadiness.EXTERNAL_PARTIAL
     if benchmark_case_ids and datasets:
         return ValidationEvidenceReadiness.BENCHMARK_PLUS_EXTERNAL_CANDIDATES
+    if datasets:
+        return ValidationEvidenceReadiness.EXTERNAL_CANDIDATES_ONLY
     return ValidationEvidenceReadiness.BENCHMARK_ONLY
 
 
 def _scenario_validation_gap_ids(
+    scenario: ExposureScenario,
     route_mechanism: str,
     *,
     heuristic_assumption_names: list[str],
@@ -429,6 +980,161 @@ def _assumption_value(scenario: ExposureScenario, name: str) -> float | None:
         if item.name == name and isinstance(item.value, int | float):
             return float(item.value)
     return None
+
+
+def _dataset_matches_scenario(
+    scenario: ExposureScenario, dataset: ExternalValidationDataset
+) -> bool:
+    if dataset.domain != infer_route_mechanism(scenario):
+        return False
+
+    families = set(dataset.product_families)
+    if not families or "mixed_use" in families:
+        return True
+
+    profile = scenario.product_use_profile
+    scenario_families = {
+        profile.product_category,
+        profile.product_category.lower(),
+    }
+    if profile.product_subtype is not None:
+        scenario_families.add(profile.product_subtype)
+        scenario_families.add(profile.product_subtype.lower())
+    return any(item in scenario_families for item in families)
+
+
+def _selector_matches_scenario(
+    scenario: ExposureScenario,
+    *,
+    key: str,
+    expected_value: ScalarValue,
+) -> bool:
+    if expected_value is None:
+        return True
+    profile = scenario.product_use_profile
+    if key == "product_category":
+        return _normalized_text(profile.product_category) == _normalized_text(str(expected_value))
+    if key == "product_subtype":
+        return _normalized_text(profile.product_subtype) == _normalized_text(str(expected_value))
+    if key == "physical_form":
+        return _normalized_text(profile.physical_form) == _normalized_text(str(expected_value))
+    if key == "application_method":
+        return _normalized_text(profile.application_method) == _normalized_text(str(expected_value))
+    if key == "retention_type":
+        return _normalized_text(profile.retention_type) == _normalized_text(str(expected_value))
+    if key == "chemical_id":
+        return _normalized_text(scenario.chemical_id) == _normalized_text(str(expected_value))
+    if key == "chemical_name":
+        return _normalized_text(scenario.chemical_name) == _normalized_text(str(expected_value))
+    return True
+
+
+def _selectors_match_scenario(
+    scenario: ExposureScenario,
+    selectors: dict[str, ScalarValue],
+) -> bool:
+    return all(
+        _selector_matches_scenario(scenario, key=key, expected_value=value)
+        for key, value in selectors.items()
+    )
+
+
+def _scenario_time_coordinate_hours(
+    scenario: ExposureScenario,
+    *,
+    metric_key: str,
+) -> float | None:
+    route_mechanism = infer_route_mechanism(scenario)
+    if route_mechanism == "inhalation_well_mixed_spray":
+        if metric_key != "air_concentration_at_event_end_mg_per_m3":
+            return None
+        exposure_duration_hours = _assumption_value(scenario, "exposure_duration_hours")
+        if exposure_duration_hours is None:
+            raw_duration = scenario.route_metrics.get("exposure_duration_hours")
+            if isinstance(raw_duration, int | float):
+                exposure_duration_hours = float(raw_duration)
+        if exposure_duration_hours is None:
+            exposure_duration_hours = scenario.product_use_profile.exposure_duration_hours
+        return exposure_duration_hours
+
+    if route_mechanism != "inhalation_residual_air_reentry":
+        return None
+    post_application_delay_hours = _assumption_value(scenario, "post_application_delay_hours")
+    if post_application_delay_hours is None:
+        raw_delay = scenario.route_metrics.get("post_application_delay_hours")
+        if isinstance(raw_delay, int | float):
+            post_application_delay_hours = float(raw_delay)
+    if post_application_delay_hours is None:
+        return None
+    if metric_key == "air_concentration_at_reentry_start_mg_per_m3":
+        return post_application_delay_hours
+    if metric_key == "air_concentration_at_reentry_end_mg_per_m3":
+        exposure_duration_hours = _assumption_value(scenario, "exposure_duration_hours")
+        if exposure_duration_hours is None:
+            raw_duration = scenario.route_metrics.get("exposure_duration_hours")
+            if isinstance(raw_duration, int | float):
+                exposure_duration_hours = float(raw_duration)
+        if exposure_duration_hours is None:
+            exposure_duration_hours = scenario.product_use_profile.exposure_duration_hours
+        if exposure_duration_hours is None:
+            return None
+        return post_application_delay_hours + exposure_duration_hours
+    return None
+
+
+def _executed_time_series_checks(
+    scenario: ExposureScenario,
+    *,
+    existing_check_ids: set[str],
+) -> list[ExecutedValidationCheck]:
+    if infer_route_mechanism(scenario) not in {
+        "inhalation_residual_air_reentry",
+        "inhalation_well_mixed_spray",
+    }:
+        return []
+    checks: list[ExecutedValidationCheck] = []
+    manifest = ValidationTimeSeriesReferenceRegistry.load().manifest()
+    for pack in manifest.packs:
+        if pack.domain != infer_route_mechanism(scenario):
+            continue
+        if not _selectors_match_scenario(scenario, pack.applicable_selectors):
+            continue
+        for point in pack.points:
+            if point.check_id in existing_check_ids:
+                continue
+            time_coordinate_hours = _scenario_time_coordinate_hours(
+                scenario,
+                metric_key=point.scenario_metric_key,
+            )
+            if time_coordinate_hours is None or not math.isclose(
+                time_coordinate_hours,
+                point.time_coordinate_hours,
+                abs_tol=0.5,
+            ):
+                continue
+            observed_value = scenario.route_metrics.get(point.scenario_metric_key)
+            if not isinstance(observed_value, int | float):
+                continue
+            status = (
+                ValidationCheckStatus.PASS
+                if point.reference_lower <= float(observed_value) <= point.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId=point.check_id,
+                    title=point.title,
+                    referenceDatasetId=pack.reference_dataset_id,
+                    status=status,
+                    comparedMetric=point.scenario_metric_key,
+                    observedValue=round(float(observed_value), 8),
+                    referenceLower=point.reference_lower,
+                    referenceUpper=point.reference_upper,
+                    unit=point.unit,
+                    note=point.note,
+                )
+            )
+    return checks
 
 
 def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedValidationCheck]:
@@ -518,6 +1224,241 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
             )
         )
 
+    if (
+        scenario.route == Route.ORAL
+        and profile.product_category == "medicinal_liquid"
+        and profile.physical_form == "liquid"
+        and profile.application_method == "direct_oral"
+    ):
+        observed = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
+        reference_band = reference_registry.band_for_check(
+            "medicinal_liquid_direct_oral_delivered_mass_2025"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="medicinal_liquid_direct_oral_delivered_mass_2025",
+                title="Medicinal-liquid delivered dose vs ready-to-use vigabatrin study",
+                referenceDatasetId="vigabatrin_ready_to_use_dosing_accuracy_2025",
+                status=status,
+                comparedMetric="external_mass_mg_per_day",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed external_mass_mg_per_day is compared against the 1125 mg target "
+                    "dose with a +/-5% band, matching the delivered-dose accuracy envelope "
+                    "reported for the ready-to-use vigabatrin solution."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.INHALATION
+        and profile.product_category == "household_cleaner"
+        and profile.physical_form == "spray"
+        and profile.application_method == "trigger_spray"
+    ):
+        observed = _assumption_value(scenario, "aerosolized_fraction")
+        if observed is not None:
+            reference_band = reference_registry.band_for_check(
+                "cleaning_trigger_spray_airborne_fraction_2019"
+            )
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= observed
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="cleaning_trigger_spray_airborne_fraction_2019",
+                    title=(
+                        "Trigger-spray cleaner airborne fraction vs ready-to-use cleaning "
+                        "spray study"
+                    ),
+                    referenceDatasetId="cleaning_trigger_spray_airborne_mass_fraction_2019",
+                    status=status,
+                    comparedMetric="aerosolized_fraction",
+                    observedValue=round(observed, 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed aerosolized_fraction is compared against the reported "
+                        "2.7%-32.2% airborne-mass range for ready-to-use trigger cleaning "
+                        "sprays."
+                    ),
+                )
+            )
+
+        half_life = scenario.route_metrics.get("room_air_decay_half_life_hours")
+        if isinstance(half_life, int | float):
+            reference_band = reference_registry.band_for_check(
+                "trigger_spray_aerosol_decay_half_life_2023"
+            )
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= float(half_life)
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="trigger_spray_aerosol_decay_half_life_2023",
+                    title=(
+                        "Trigger-spray aerosol decay half-life vs climate-chamber spray study"
+                    ),
+                    referenceDatasetId="spray_cleaning_disinfection_decay_half_life_2023",
+                    status=status,
+                    comparedMetric="room_air_decay_half_life_hours",
+                    observedValue=round(float(half_life), 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed room-air decay half-life is compared against a screening "
+                        "band centered on the reported 0.25 h average trigger-spray aerosol "
+                        "half-life from the 2023 cleaning and disinfection spray chamber study."
+                    ),
+                )
+            )
+
+    if infer_route_mechanism(scenario) == "inhalation_near_field_far_field":
+        reference_band = reference_registry.band_for_check(
+            "consumer_disinfectant_trigger_spray_inhaled_dose_2015"
+        )
+        if _selectors_match_scenario(scenario, reference_band.applicable_selectors):
+            observed = float(scenario.external_dose.value)
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= observed
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="consumer_disinfectant_trigger_spray_inhaled_dose_2015",
+                    title=(
+                        "Tier 1 disinfectant trigger-spray dose vs consumer inhalation study"
+                    ),
+                    referenceDatasetId="consumer_disinfectant_trigger_spray_inhalation_2015",
+                    status=status,
+                    comparedMetric="normalized_external_dose",
+                    observedValue=round(observed, 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed normalized external dose is compared against the "
+                        "supplementary disinfectant trigger-spray inhalation exposure band "
+                        "reported in the 2015 consumer spray study, converted from "
+                        "ng/kg bw/application to mg/kg-day for a one-event screening case."
+                    ),
+                )
+            )
+
+    if (
+        scenario.route == Route.INHALATION
+        and profile.product_subtype == "air_space_insecticide"
+        and profile.application_method == "aerosol_spray"
+        and profile.product_category in {"pesticide", "pest_control"}
+        and math.isclose(float(profile.exposure_duration_hours or 0.0), 4.0, abs_tol=1e-9)
+    ):
+        observed = float(scenario.route_metrics.get("average_air_concentration_mg_per_m3", 0.0))
+        reference_band = reference_registry.band_for_check(
+            "air_space_insecticide_aerosol_concentration_2001"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="air_space_insecticide_aerosol_concentration_2001",
+                title=(
+                    "Air-space insecticide aerosol concentration vs household mosquito "
+                    "aerosol study"
+                ),
+                referenceDatasetId="household_mosquito_aerosol_indoor_air_2001",
+                status=status,
+                comparedMetric="average_air_concentration_mg_per_m3",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed room-average air concentration is compared against a narrow "
+                    "4-hour screening proxy derived from reported indoor prallethrin aerosol "
+                    "room-air measurements in a closed-room household mosquito aerosol study."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.INHALATION
+        and profile.product_subtype == "indoor_surface_insecticide"
+        and profile.application_method == "residual_air_reentry"
+        and profile.product_category in {"pesticide", "pest_control"}
+    ):
+        reference_band = reference_registry.band_for_check(
+            "chlorpyrifos_residual_air_reentry_start_concentration_1990"
+        )
+        if _selectors_match_scenario(scenario, reference_band.applicable_selectors):
+            observed = float(
+                scenario.route_metrics.get("air_concentration_at_reentry_start_mg_per_m3", 0.0)
+            )
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= observed
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="chlorpyrifos_residual_air_reentry_start_concentration_1990",
+                    title=(
+                        "Residual-air reentry start concentration vs chlorpyrifos residential "
+                        "broadcast study"
+                    ),
+                    referenceDatasetId="chlorpyrifos_broadcast_residential_air_1990",
+                    status=status,
+                    comparedMetric="air_concentration_at_reentry_start_mg_per_m3",
+                    observedValue=round(observed, 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed reentry-start room-air concentration is compared against the "
+                        "reported 61-94 ug/m3 chlorpyrifos band from the residential broadcast "
+                        "study, converted to mg/m3. This is a narrow anchor for the dedicated "
+                        "residual-air reentry path, not a full treated-surface emission "
+                        "validation."
+                    ),
+                )
+            )
+
+    checks.extend(
+        _executed_time_series_checks(
+            scenario,
+            existing_check_ids={item.check_id for item in checks},
+        )
+    )
+
     return checks
 
 
@@ -532,7 +1473,9 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
             highest_supported_tier = item.highest_supported_uncertainty_tier
             break
     matched_datasets = [
-        item for item in dossier.external_datasets if item.domain == route_mechanism
+        item
+        for item in dossier.external_datasets
+        if _dataset_matches_scenario(scenario, item)
     ]
     external_dataset_ids = [item.dataset_id for item in matched_datasets]
     heuristic_assumption_names = sorted(
@@ -554,6 +1497,7 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
         evidence_readiness=_evidence_readiness(benchmark_case_ids, matched_datasets),
         heuristic_assumption_names=heuristic_assumption_names,
         validation_gap_ids=_scenario_validation_gap_ids(
+            scenario,
             route_mechanism,
             heuristic_assumption_names=heuristic_assumption_names,
             dossier=dossier,

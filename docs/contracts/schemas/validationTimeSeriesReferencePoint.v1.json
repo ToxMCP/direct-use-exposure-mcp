@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "pointId": {
+      "title": "Pointid",
+      "type": "string"
+    },
+    "checkId": {
+      "title": "Checkid",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "scenarioMetricKey": {
+      "title": "Scenariometrickey",
+      "type": "string"
+    },
+    "timeCoordinateHours": {
+      "minimum": 0.0,
+      "title": "Timecoordinatehours",
+      "type": "number"
+    },
+    "referenceLower": {
+      "title": "Referencelower",
+      "type": "number"
+    },
+    "referenceUpper": {
+      "title": "Referenceupper",
+      "type": "number"
+    },
+    "unit": {
+      "title": "Unit",
+      "type": "string"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "pointId",
+    "checkId",
+    "title",
+    "scenarioMetricKey",
+    "timeCoordinateHours",
+    "referenceLower",
+    "referenceUpper",
+    "unit",
+    "note"
+  ],
+  "title": "ValidationTimeSeriesReferencePoint",
+  "type": "object"
+}

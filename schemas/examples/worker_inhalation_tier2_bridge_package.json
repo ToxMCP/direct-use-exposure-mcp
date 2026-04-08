@@ -1,0 +1,334 @@
+{
+  "schema_version": "workerInhalationTier2BridgePackage.v1",
+  "routingDecision": {
+    "schema_version": "workerTaskRoutingDecision.v1",
+    "route": "inhalation",
+    "scenario_class": "inhalation",
+    "worker_detected": true,
+    "detection_basis": [
+      "demographic_tag:occupational",
+      "demographic_tag:worker"
+    ],
+    "support_status": "future_adapter_recommended",
+    "recommended_model_family": "art_adapter_candidate",
+    "recommended_tool": null,
+    "target_mcp": "future_worker_exposure_adapter",
+    "guidance_resource": "docs://worker-routing-guide",
+    "required_inputs": [
+      "task_description",
+      "ventilation_context",
+      "local_controls",
+      "task_duration_hours",
+      "emission_characterization"
+    ],
+    "warnings": [],
+    "limitations": [
+      "The current Exposure Scenario MCP does not implement Tier 2 occupational inhalation models such as ART or Stoffenmanager."
+    ],
+    "rationale": "A higher worker inhalation tier was requested, so routing escalates to a future occupational adapter rather than reusing deterministic screening.",
+    "next_step": "Collect task-control and ventilation inputs for an ART- or Stoffenmanager-aligned adapter."
+  },
+  "adapterRequest": {
+    "schema_version": "workerInhalationTier2AdapterRequest.v1",
+    "targetAdapter": "future_worker_exposure_adapter",
+    "targetModelFamily": "art",
+    "sourceModule": "exposure-scenario-mcp",
+    "contextOfUse": "worker-tier2-bridge",
+    "chemicalIdentity": {
+      "chemicalId": "DTXSID7020182",
+      "preferredName": "Example Solvent A",
+      "sourceModule": "exposure-scenario-mcp"
+    },
+    "taskContext": {
+      "schema_version": "workerInhalationTier2TaskContext.v1",
+      "task_description": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+      "workplace_setting": "janitorial closet",
+      "task_duration_hours": 0.5,
+      "ventilation_context": "general_ventilation",
+      "local_controls": [
+        "general ventilation",
+        "task segregation"
+      ],
+      "respiratory_protection": "none",
+      "emission_descriptor": "short trigger-spray cleaning mist near the breathing zone",
+      "notes": [
+        "Illustrative worker inhalation bridge package for a future ART-style adapter."
+      ]
+    },
+    "exposureInputs": {
+      "applicationMethod": "trigger_spray",
+      "physicalForm": "spray",
+      "productCategory": "disinfectant",
+      "productSubtype": null,
+      "concentrationFraction": 0.03,
+      "useAmountPerEvent": 15.0,
+      "useAmountUnit": "mL",
+      "useEventsPerDay": 2.0,
+      "eventDurationHours": 0.5,
+      "roomVolumeM3": 35.0,
+      "airExchangeRatePerHour": 2.0,
+      "bodyWeightKg": 75.0,
+      "inhalationRateM3PerHour": 1.1,
+      "region": "EU",
+      "tier1Hints": {
+        "sourceDistanceM": 0.35,
+        "sprayDurationSeconds": 10.0,
+        "nearFieldVolumeM3": 2.0,
+        "airflowDirectionality": "cross_draft",
+        "particleSizeRegime": "coarse_spray"
+      }
+    },
+    "supportingHandoffs": {
+      "baseRequest": {
+        "schema_version": "inhalationTier1ScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Workplace Disinfectant Spray",
+          "product_subtype": null,
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.03,
+          "use_amount_per_event": 15.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 2.0,
+          "density_g_per_ml": null,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": 35.0,
+          "air_exchange_rate_per_hour": 2.0,
+          "exposure_duration_hours": 0.5
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 75.0,
+          "inhalation_rate_m3_per_hour": 1.1,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [
+            "worker",
+            "occupational"
+          ],
+          "region": "EU"
+        },
+        "assumption_overrides": {},
+        "requestedTier": "tier_1",
+        "source_distance_m": 0.35,
+        "spray_duration_seconds": 10.0,
+        "near_field_volume_m3": 2.0,
+        "airflow_directionality": "cross_draft",
+        "particle_size_regime": "coarse_spray"
+      },
+      "workerRoutingDecision": {
+        "schema_version": "workerTaskRoutingDecision.v1",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "worker_detected": true,
+        "detection_basis": [
+          "demographic_tag:occupational",
+          "demographic_tag:worker"
+        ],
+        "support_status": "future_adapter_recommended",
+        "recommended_model_family": "art_adapter_candidate",
+        "recommended_tool": null,
+        "target_mcp": "future_worker_exposure_adapter",
+        "guidance_resource": "docs://worker-routing-guide",
+        "required_inputs": [
+          "task_description",
+          "ventilation_context",
+          "local_controls",
+          "task_duration_hours",
+          "emission_characterization"
+        ],
+        "warnings": [],
+        "limitations": [
+          "The current Exposure Scenario MCP does not implement Tier 2 occupational inhalation models such as ART or Stoffenmanager."
+        ],
+        "rationale": "A higher worker inhalation tier was requested, so routing escalates to a future occupational adapter rather than reusing deterministic screening.",
+        "next_step": "Collect task-control and ventilation inputs for an ART- or Stoffenmanager-aligned adapter."
+      }
+    },
+    "guidanceResource": "docs://worker-tier2-bridge-guide"
+  },
+  "toolCall": {
+    "schema_version": "workerInhalationTier2AdapterToolCall.v1",
+    "toolName": "worker_ingest_inhalation_tier2_task",
+    "arguments": {
+      "schema_version": "workerInhalationTier2AdapterRequest.v1",
+      "targetAdapter": "future_worker_exposure_adapter",
+      "targetModelFamily": "art",
+      "sourceModule": "exposure-scenario-mcp",
+      "contextOfUse": "worker-tier2-bridge",
+      "chemicalIdentity": {
+        "chemicalId": "DTXSID7020182",
+        "preferredName": "Example Solvent A",
+        "sourceModule": "exposure-scenario-mcp"
+      },
+      "taskContext": {
+        "schema_version": "workerInhalationTier2TaskContext.v1",
+        "task_description": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+        "workplace_setting": "janitorial closet",
+        "task_duration_hours": 0.5,
+        "ventilation_context": "general_ventilation",
+        "local_controls": [
+          "general ventilation",
+          "task segregation"
+        ],
+        "respiratory_protection": "none",
+        "emission_descriptor": "short trigger-spray cleaning mist near the breathing zone",
+        "notes": [
+          "Illustrative worker inhalation bridge package for a future ART-style adapter."
+        ]
+      },
+      "exposureInputs": {
+        "applicationMethod": "trigger_spray",
+        "physicalForm": "spray",
+        "productCategory": "disinfectant",
+        "productSubtype": null,
+        "concentrationFraction": 0.03,
+        "useAmountPerEvent": 15.0,
+        "useAmountUnit": "mL",
+        "useEventsPerDay": 2.0,
+        "eventDurationHours": 0.5,
+        "roomVolumeM3": 35.0,
+        "airExchangeRatePerHour": 2.0,
+        "bodyWeightKg": 75.0,
+        "inhalationRateM3PerHour": 1.1,
+        "region": "EU",
+        "tier1Hints": {
+          "sourceDistanceM": 0.35,
+          "sprayDurationSeconds": 10.0,
+          "nearFieldVolumeM3": 2.0,
+          "airflowDirectionality": "cross_draft",
+          "particleSizeRegime": "coarse_spray"
+        }
+      },
+      "supportingHandoffs": {
+        "baseRequest": {
+          "schema_version": "inhalationTier1ScenarioRequest.v1",
+          "chemical_id": "DTXSID7020182",
+          "chemical_name": "Example Solvent A",
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Example Workplace Disinfectant Spray",
+            "product_subtype": null,
+            "product_category": "disinfectant",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.03,
+            "use_amount_per_event": 15.0,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 2.0,
+            "density_g_per_ml": null,
+            "transfer_efficiency": null,
+            "retention_factor": null,
+            "ingestion_fraction": null,
+            "aerosolized_fraction": null,
+            "room_volume_m3": 35.0,
+            "air_exchange_rate_per_hour": 2.0,
+            "exposure_duration_hours": 0.5
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 75.0,
+            "inhalation_rate_m3_per_hour": 1.1,
+            "exposed_surface_area_cm2": null,
+            "demographic_tags": [
+              "worker",
+              "occupational"
+            ],
+            "region": "EU"
+          },
+          "assumption_overrides": {},
+          "requestedTier": "tier_1",
+          "source_distance_m": 0.35,
+          "spray_duration_seconds": 10.0,
+          "near_field_volume_m3": 2.0,
+          "airflow_directionality": "cross_draft",
+          "particle_size_regime": "coarse_spray"
+        },
+        "workerRoutingDecision": {
+          "schema_version": "workerTaskRoutingDecision.v1",
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "worker_detected": true,
+          "detection_basis": [
+            "demographic_tag:occupational",
+            "demographic_tag:worker"
+          ],
+          "support_status": "future_adapter_recommended",
+          "recommended_model_family": "art_adapter_candidate",
+          "recommended_tool": null,
+          "target_mcp": "future_worker_exposure_adapter",
+          "guidance_resource": "docs://worker-routing-guide",
+          "required_inputs": [
+            "task_description",
+            "ventilation_context",
+            "local_controls",
+            "task_duration_hours",
+            "emission_characterization"
+          ],
+          "warnings": [],
+          "limitations": [
+            "The current Exposure Scenario MCP does not implement Tier 2 occupational inhalation models such as ART or Stoffenmanager."
+          ],
+          "rationale": "A higher worker inhalation tier was requested, so routing escalates to a future occupational adapter rather than reusing deterministic screening.",
+          "next_step": "Collect task-control and ventilation inputs for an ART- or Stoffenmanager-aligned adapter."
+        }
+      },
+      "guidanceResource": "docs://worker-tier2-bridge-guide"
+    }
+  },
+  "compatibilityReport": {
+    "schema_version": "workerInhalationTier2CompatibilityReport.v1",
+    "sourceRequestSchema": "inhalationTier1ScenarioRequest.v1",
+    "targetModelFamily": "art",
+    "route": "inhalation",
+    "workerDetected": true,
+    "readyForAdapter": true,
+    "missingFields": [],
+    "issues": [
+      {
+        "code": "worker_tier2_bridge_no_solver",
+        "severity": "warning",
+        "message": "This package prepares a future occupational Tier 2 handoff only. Exposure Scenario MCP does not execute ART, Stoffenmanager, or another occupational Tier 2 solver."
+      }
+    ],
+    "recommendedNextSteps": [
+      "Review compatibilityReport.missingFields and fill the worker-task gaps first.",
+      "Preserve adapterRequest and toolCall as the exact Tier 2 handoff payload for a future occupational adapter.",
+      "Use docs://worker-tier2-bridge-guide to keep the bridge bounded as a handoff artifact rather than a solved occupational estimate."
+    ]
+  },
+  "qualityFlags": [
+    {
+      "code": "worker_tier2_bridge_export",
+      "severity": "info",
+      "message": "Worker Tier 2 bridge package was exported for a future occupational adapter path."
+    }
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "worker.inhalation_tier2_bridge.v1",
+    "plugin_id": "worker_inhalation_tier2_bridge_export",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.04.07.v18",
+    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Bridge package only; no occupational Tier 2 solver is executed here.",
+      "Routing decision and source inhalation request remain preserved as supporting handoffs."
+    ]
+  }
+}

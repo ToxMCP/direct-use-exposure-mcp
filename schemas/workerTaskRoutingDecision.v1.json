@@ -1,0 +1,143 @@
+{
+  "$defs": {
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "ScenarioClass": {
+      "enum": [
+        "screening",
+        "aggregate",
+        "inhalation",
+        "refined",
+        "population_distribution"
+      ],
+      "title": "ScenarioClass",
+      "type": "string"
+    },
+    "WorkerSupportStatus": {
+      "enum": [
+        "supported_in_current_mcp",
+        "supported_with_caveats",
+        "future_adapter_recommended",
+        "out_of_scope"
+      ],
+      "title": "WorkerSupportStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerTaskRoutingDecision.v1",
+      "default": "workerTaskRoutingDecision.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "route": {
+      "$ref": "#/$defs/Route",
+      "description": "Exposure route evaluated by the router."
+    },
+    "scenario_class": {
+      "$ref": "#/$defs/ScenarioClass",
+      "description": "Scenario class evaluated by the router."
+    },
+    "worker_detected": {
+      "description": "Whether worker context was explicitly detected.",
+      "title": "Worker Detected",
+      "type": "boolean"
+    },
+    "detection_basis": {
+      "description": "Fields or tags that triggered worker-context detection.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Detection Basis",
+      "type": "array"
+    },
+    "support_status": {
+      "$ref": "#/$defs/WorkerSupportStatus",
+      "description": "Current implementation status for the task path."
+    },
+    "recommended_model_family": {
+      "description": "Best-fit model family for the task given the current MCP boundary.",
+      "title": "Recommended Model Family",
+      "type": "string"
+    },
+    "recommended_tool": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Current MCP tool to call next when one is available.",
+      "title": "Recommended Tool"
+    },
+    "target_mcp": {
+      "description": "MCP or adapter boundary that should own the next step.",
+      "title": "Target Mcp",
+      "type": "string"
+    },
+    "guidance_resource": {
+      "description": "Documentation resource that explains the routed worker path.",
+      "title": "Guidance Resource",
+      "type": "string"
+    },
+    "required_inputs": {
+      "description": "Inputs that should be provided before taking the routed path seriously.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Inputs",
+      "type": "array"
+    },
+    "warnings": {
+      "description": "Worker-routing warnings that should remain visible.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "limitations": {
+      "description": "Known limits of the routed worker path.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "rationale": {
+      "description": "Why the router chose this path.",
+      "title": "Rationale",
+      "type": "string"
+    },
+    "next_step": {
+      "description": "Recommended immediate action for the caller.",
+      "title": "Next Step",
+      "type": "string"
+    }
+  },
+  "required": [
+    "route",
+    "scenario_class",
+    "worker_detected",
+    "support_status",
+    "recommended_model_family",
+    "target_mcp",
+    "guidance_resource",
+    "rationale",
+    "next_step"
+  ],
+  "title": "WorkerTaskRoutingDecision",
+  "type": "object"
+}

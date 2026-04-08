@@ -1,5 +1,5 @@
 {
-  "reference_version": "2026.03.25.v1",
+  "reference_version": "2026.04.08.v9",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
@@ -38,6 +38,142 @@
         "retention_type": "surface_contact"
       },
       "note": "Wet-cloth dermal contact range derived from RIVM cleaning-product scenarios for household-cleaner wipe contexts."
+    },
+    {
+      "reference_band_id": "medicinal_liquid_direct_oral_delivered_mass_2025_band",
+      "check_id": "medicinal_liquid_direct_oral_delivered_mass_2025",
+      "reference_dataset_id": "vigabatrin_ready_to_use_dosing_accuracy_2025",
+      "domain": "oral_direct_intake",
+      "compared_metric": "external_mass_mg_per_day",
+      "reference_lower": 1068.75,
+      "reference_upper": 1181.25,
+      "unit": "mg/day",
+      "applicable_selectors": {
+        "product_category": "medicinal_liquid",
+        "physical_form": "liquid",
+        "application_method": "direct_oral"
+      },
+      "note": "Ready-to-use vigabatrin delivered-dose benchmark band using the stated 1125 mg target dose with a +/-5% acceptance band, matching the dosing-accuracy envelope reported for the ready-to-use solution."
+    },
+    {
+      "reference_band_id": "air_space_insecticide_aerosol_concentration_2001_band",
+      "check_id": "air_space_insecticide_aerosol_concentration_2001",
+      "reference_dataset_id": "household_mosquito_aerosol_indoor_air_2001",
+      "domain": "inhalation_well_mixed_spray",
+      "compared_metric": "average_air_concentration_mg_per_m3",
+      "reference_lower": 0.14,
+      "reference_upper": 0.2,
+      "unit": "mg/m3",
+      "applicable_selectors": {
+        "product_category": "pesticide",
+        "product_subtype": "air_space_insecticide",
+        "application_method": "aerosol_spray"
+      },
+      "note": "Closed-room household mosquito aerosol benchmark band derived from the reported prallethrin indoor air concentration of 0.0138 ppm, converted to approximately 0.17 mg/m3 and widened for screening comparability."
+    },
+    {
+      "reference_band_id": "cleaning_trigger_spray_airborne_fraction_2019_band",
+      "check_id": "cleaning_trigger_spray_airborne_fraction_2019",
+      "reference_dataset_id": "cleaning_trigger_spray_airborne_mass_fraction_2019",
+      "domain": "inhalation_well_mixed_spray",
+      "compared_metric": "aerosolized_fraction",
+      "reference_lower": 0.027,
+      "reference_upper": 0.322,
+      "unit": "fraction",
+      "applicable_selectors": {
+        "application_method": "trigger_spray",
+        "physical_form": "spray",
+        "product_category": "household_cleaner"
+      },
+      "note": "Airborne mass-fraction benchmark band for ready-to-use trigger cleaning sprays, taken from the reported 2.7%-32.2% emitted-mass range in Schwarz et al. (2019)."
+    },
+    {
+      "reference_band_id": "trigger_spray_aerosol_decay_half_life_2023_band",
+      "check_id": "trigger_spray_aerosol_decay_half_life_2023",
+      "reference_dataset_id": "spray_cleaning_disinfection_decay_half_life_2023",
+      "domain": "inhalation_well_mixed_spray",
+      "compared_metric": "room_air_decay_half_life_hours",
+      "reference_lower": 0.125,
+      "reference_upper": 0.375,
+      "unit": "h",
+      "applicable_selectors": {
+        "product_category": "household_cleaner",
+        "physical_form": "spray",
+        "application_method": "trigger_spray"
+      },
+      "note": "Trigger-spray aerosol decay half-life screening band centered on the reported 0.25 h average trigger-spray TPMC half-life from Clausen et al. (2023), widened to +/-50% because the abstract reports large between-product variation."
+    },
+    {
+      "reference_band_id": "chlorpyrifos_residual_air_reentry_start_concentration_1990_band",
+      "check_id": "chlorpyrifos_residual_air_reentry_start_concentration_1990",
+      "reference_dataset_id": "chlorpyrifos_broadcast_residential_air_1990",
+      "domain": "inhalation_residual_air_reentry",
+      "compared_metric": "air_concentration_at_reentry_start_mg_per_m3",
+      "reference_lower": 0.061,
+      "reference_upper": 0.094,
+      "unit": "mg/m3",
+      "applicable_selectors": {
+        "application_method": "residual_air_reentry",
+        "chemical_id": "DTXSID9020412",
+        "chemical_name": "Chlorpyrifos",
+        "product_category": "pesticide",
+        "product_subtype": "indoor_surface_insecticide"
+      },
+      "note": "Post-application chlorpyrifos residual-air benchmark band derived from the reported 61-94 ug/m3 infant-breathing-zone concentrations at 3-7 hours after residential broadcast treatment in Fenske et al. (1990), converted to mg/m3."
+    },
+    {
+      "reference_band_id": "worker_biocidal_handheld_trigger_spray_concentration_2023_band",
+      "check_id": "worker_biocidal_handheld_trigger_spray_concentration_2023",
+      "reference_dataset_id": "worker_biocidal_spray_foam_inhalation_2023",
+      "domain": "worker_inhalation_control_aware_screening",
+      "compared_metric": "control_adjusted_average_air_concentration_mg_per_m3",
+      "reference_lower": 0.00906,
+      "reference_upper": 0.0617,
+      "unit": "mg/m3",
+      "applicable_selectors": {
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Benzalkonium chloride",
+        "product_category": "disinfectant",
+        "physical_form": "spray",
+        "application_method": "trigger_spray"
+      },
+      "note": "Small-scale handheld BAC trigger-spray concentration band derived from the reported 9.06-61.7 ug/m3 active-substance concentrations in handheld workbench and tabletop spray scenarios from Schaferhenrich et al. (2023), converted to mg/m3."
+    },
+    {
+      "reference_band_id": "worker_biocidal_handheld_trigger_spray_dermal_mass_2023_band",
+      "check_id": "worker_biocidal_handheld_trigger_spray_dermal_mass_2023",
+      "reference_dataset_id": "worker_biocidal_spray_foam_dermal_2023",
+      "domain": "worker_dermal_absorbed_dose_screening",
+      "compared_metric": "external_skin_mass_mg_per_day",
+      "reference_lower": 12.8,
+      "reference_upper": 13.6,
+      "unit": "mg/day",
+      "applicable_selectors": {
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Benzalkonium chloride",
+        "product_category": "disinfectant",
+        "physical_form": "spray",
+        "application_method": "trigger_spray"
+      },
+      "note": "Small-scale handheld BAC trigger-spray dermal loading band derived from the approximately 12.8-13.6 mg/day absolute contamination totals reported for workbench and tabletop surface-disinfection scenarios in Schaferhenrich et al. (2023)."
+    },
+    {
+      "reference_band_id": "consumer_disinfectant_trigger_spray_inhaled_dose_2015_band",
+      "check_id": "consumer_disinfectant_trigger_spray_inhaled_dose_2015",
+      "reference_dataset_id": "consumer_disinfectant_trigger_spray_inhalation_2015",
+      "domain": "inhalation_near_field_far_field",
+      "compared_metric": "normalized_external_dose",
+      "reference_lower": 0.00093527,
+      "reference_upper": 0.00121723,
+      "unit": "mg/kg-day",
+      "applicable_selectors": {
+        "chemical_id": "PM_DISINFECTANT_SPRAY_2015",
+        "chemical_name": "Consumer Disinfectant Spray Particulate",
+        "product_category": "disinfectant",
+        "physical_form": "spray",
+        "application_method": "trigger_spray"
+      },
+      "note": "Study-like consumer disinfectant trigger-spray inhaled-dose band derived from the reported total inhalation exposure for the disinfectant spray case in the 2015 consumer spray supplementary data, converted from ng/kg bw/application to mg/kg-day for a one-event screening benchmark."
     }
   ]
 }

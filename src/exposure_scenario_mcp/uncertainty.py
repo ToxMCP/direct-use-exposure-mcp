@@ -27,6 +27,7 @@ from exposure_scenario_mcp.models import (
     ExposureEnvelopeSummary,
     ExposureScenario,
     ExposureScenarioRequest,
+    InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
     MonotonicDirection,
@@ -64,6 +65,11 @@ SENSITIVITY_FIELD_MAP = {
     "exposure_duration_hours": ("product_use_profile", "exposure_duration_hours"),
     "body_weight_kg": ("population_profile", "body_weight_kg"),
     "inhalation_rate_m3_per_hour": ("population_profile", "inhalation_rate_m3_per_hour"),
+    "air_concentration_at_reentry_start_mg_per_m3": (
+        "request",
+        "air_concentration_at_reentry_start_mg_per_m3",
+    ),
+    "additional_decay_rate_per_hour": ("request", "additional_decay_rate_per_hour"),
     "source_distance_m": ("request", "source_distance_m"),
     "spray_duration_seconds": ("request", "spray_duration_seconds"),
     "near_field_volume_m3": ("request", "near_field_volume_m3"),
@@ -124,6 +130,14 @@ BOUNDS_PARAMETER_CONFIG: dict[
         "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
         "routes": {Route.INHALATION},
     },
+    "air_concentration_at_reentry_start_mg_per_m3": {
+        "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
+        "routes": {Route.INHALATION},
+    },
+    "additional_decay_rate_per_hour": {
+        "direction": MonotonicDirection.INCREASE_DECREASES_DOSE,
+        "routes": {Route.INHALATION},
+    },
 }
 
 LIMITATION_UNCERTAINTY_MAP = {
@@ -152,6 +166,16 @@ LIMITATION_UNCERTAINTY_MAP = {
         BiasDirection.UNKNOWN,
         "medium",
     ),
+    "treated_surface_emission_not_modeled": (
+        [UncertaintyType.MODEL_UNCERTAINTY, UncertaintyType.SCENARIO_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "high",
+    ),
+    "reentry_air_anchor_required": (
+        [UncertaintyType.SCENARIO_UNCERTAINTY, UncertaintyType.PARAMETER_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "high",
+    ),
 }
 
 
@@ -173,6 +197,26 @@ def request_from_scenario(scenario: ExposureScenario) -> ExposureScenarioRequest
             near_field_volume_m3=float(assumption_values["near_field_volume_m3"]),
             airflow_directionality=str(assumption_values["airflow_directionality"]),
             particle_size_regime=str(assumption_values["particle_size_regime"]),
+            assumption_overrides={},
+        )
+    if (
+        scenario.route == Route.INHALATION
+        and scenario.product_use_profile.application_method == "residual_air_reentry"
+    ):
+        return InhalationResidualAirReentryScenarioRequest(
+            chemical_id=scenario.chemical_id,
+            chemical_name=scenario.chemical_name,
+            route=scenario.route,
+            scenario_class=scenario.scenario_class,
+            product_use_profile=scenario.product_use_profile,
+            population_profile=scenario.population_profile,
+            air_concentration_at_reentry_start_mg_per_m3=float(
+                assumption_values["air_concentration_at_reentry_start_mg_per_m3"]
+            ),
+            additional_decay_rate_per_hour=float(
+                assumption_values["additional_decay_rate_per_hour"]
+            ),
+            post_application_delay_hours=float(assumption_values["post_application_delay_hours"]),
             assumption_overrides={},
         )
     request_cls = (
@@ -219,6 +263,15 @@ def _build_request_scenario(engine, request: ExposureScenarioRequest) -> Exposur
         )
 
         return build_inhalation_tier_1_screening_scenario(request, engine.defaults_registry)
+    if isinstance(request, InhalationResidualAirReentryScenarioRequest):
+        from exposure_scenario_mcp.plugins.inhalation import (
+            build_inhalation_residual_air_reentry_scenario,
+        )
+
+        return build_inhalation_residual_air_reentry_scenario(
+            request,
+            engine.defaults_registry,
+        )
     return engine.build(request, include_diagnostics=False)
 
 

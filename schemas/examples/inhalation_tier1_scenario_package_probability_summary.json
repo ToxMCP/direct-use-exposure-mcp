@@ -47,6 +47,7 @@
         "product_use_profile": {
           "schema_version": "productUseProfile.v1",
           "product_name": null,
+          "product_subtype": null,
           "product_category": "personal_care",
           "physical_form": "spray",
           "application_method": "pump_spray",
@@ -130,11 +131,11 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
-            "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category and physical form when available.",
+            "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category, physical form, and product subtype when available.",
             "governance": {
               "evidence_grade": "grade_1",
               "evidence_basis": "heuristic_default",
@@ -181,6 +182,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -280,6 +282,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -295,7 +298,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -406,6 +409,7 @@
                 "scenario_uncertainty"
               ],
               "applicability_domain": {
+                "product_category": "personal_care",
                 "application_method": "pump_spray",
                 "region": "EU"
               }
@@ -661,6 +665,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -695,6 +700,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -729,6 +735,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -744,7 +751,7 @@
               "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "24b97b77b4561f92446d976786e464677c3d8c0d221660f2816e905804832743"
+              "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -776,7 +783,7 @@
               "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "24b97b77b4561f92446d976786e464677c3d8c0d221660f2816e905804832743"
+              "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -829,6 +836,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -866,6 +874,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -903,6 +912,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -940,6 +950,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -974,6 +985,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -1011,6 +1023,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -1048,6 +1061,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -1058,8 +1072,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v11",
-          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
+          "defaults_version": "2026.04.07.v18",
+          "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1399,6 +1413,7 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_disinfectant_trigger_spray_external_2015",
             "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
@@ -1452,6 +1467,7 @@
         "product_use_profile": {
           "schema_version": "productUseProfile.v1",
           "product_name": "Example Personal-Care Pump Spray",
+          "product_subtype": null,
           "product_category": "personal_care",
           "physical_form": "spray",
           "application_method": "pump_spray",
@@ -1535,11 +1551,11 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
-            "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category and physical form when available.",
+            "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category, physical form, and product subtype when available.",
             "governance": {
               "evidence_grade": "grade_1",
               "evidence_basis": "heuristic_default",
@@ -1586,6 +1602,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -1685,6 +1702,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -1700,7 +1718,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1811,6 +1829,7 @@
                 "scenario_uncertainty"
               ],
               "applicability_domain": {
+                "product_category": "personal_care",
                 "application_method": "pump_spray",
                 "region": "EU"
               }
@@ -2066,6 +2085,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2100,6 +2120,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2134,6 +2155,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2149,7 +2171,7 @@
               "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "24b97b77b4561f92446d976786e464677c3d8c0d221660f2816e905804832743"
+              "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2181,7 +2203,7 @@
               "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "24b97b77b4561f92446d976786e464677c3d8c0d221660f2816e905804832743"
+              "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2234,6 +2256,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2271,6 +2294,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2308,6 +2332,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2345,6 +2370,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2379,6 +2405,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2416,6 +2443,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2453,6 +2481,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -2463,8 +2492,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v11",
-          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
+          "defaults_version": "2026.04.07.v18",
+          "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -2804,6 +2833,7 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_disinfectant_trigger_spray_external_2015",
             "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
@@ -2857,6 +2887,7 @@
         "product_use_profile": {
           "schema_version": "productUseProfile.v1",
           "product_name": null,
+          "product_subtype": null,
           "product_category": "personal_care",
           "physical_form": "spray",
           "application_method": "pump_spray",
@@ -2940,11 +2971,11 @@
               "title": "Exposure Scenario MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
-            "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category and physical form when available.",
+            "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category, physical form, and product subtype when available.",
             "governance": {
               "evidence_grade": "grade_1",
               "evidence_basis": "heuristic_default",
@@ -2991,6 +3022,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3090,6 +3122,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3105,7 +3138,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d"
+              "hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3216,6 +3249,7 @@
                 "scenario_uncertainty"
               ],
               "applicability_domain": {
+                "product_category": "personal_care",
                 "application_method": "pump_spray",
                 "region": "EU"
               }
@@ -3471,6 +3505,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3505,6 +3540,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3539,6 +3575,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3554,7 +3591,7 @@
               "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "24b97b77b4561f92446d976786e464677c3d8c0d221660f2816e905804832743"
+              "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3586,7 +3623,7 @@
               "title": "Exposure Scenario MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "24b97b77b4561f92446d976786e464677c3d8c0d221660f2816e905804832743"
+              "hash_sha256": "24c3674aff424dff50f49721ac0874ce115ab9395b1387ed3f9ec5b5ec9a807a"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3639,6 +3676,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3676,6 +3714,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3713,6 +3752,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3750,6 +3790,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3784,6 +3825,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3821,6 +3863,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3858,6 +3901,7 @@
                 "application_method": "pump_spray",
                 "retention_type": "surface_contact",
                 "population_group": "adult",
+                "demographic_tags": "",
                 "region": "EU"
               }
             }
@@ -3868,8 +3912,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.03.25.v11",
-          "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
+          "defaults_version": "2026.04.07.v18",
+          "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -4209,6 +4253,7 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_disinfectant_trigger_spray_external_2015",
             "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
           ],
@@ -4382,6 +4427,7 @@
     "validationStatus": "benchmark_regression",
     "routeMechanism": "inhalation_near_field_far_field",
     "benchmarkCaseIds": [
+      "inhalation_tier1_disinfectant_trigger_spray_external_2015",
       "inhalation_tier1_scenario_package_probability",
       "inhalation_tier1_trigger_spray_nf_ff"
     ],
@@ -4412,8 +4458,8 @@
     "algorithm_id": "uncertainty.scenario_package_probability.v1",
     "plugin_id": "scenario_package_probability_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.03.25.v11",
-    "defaults_hash_sha256": "eb9841379e2727e552b153d4d8600dbfe9f4179c8d8923f5feec697c03e1e65d",
+    "defaults_version": "2026.04.07.v18",
+    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

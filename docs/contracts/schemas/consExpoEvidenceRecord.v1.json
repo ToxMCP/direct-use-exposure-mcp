@@ -1,0 +1,198 @@
+{
+  "$defs": {
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "consExpoEvidenceRecord.v1",
+      "default": "consExpoEvidenceRecord.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Stable chemical identifier shared with the request.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "preferred_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Preferred chemical name when the ConsExpo source is already tied to identity.",
+      "title": "Preferred Name"
+    },
+    "casrn": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "CAS Registry Number when known.",
+      "title": "Casrn"
+    },
+    "factSheetId": {
+      "title": "Factsheetid",
+      "type": "string"
+    },
+    "factSheetTitle": {
+      "title": "Factsheettitle",
+      "type": "string"
+    },
+    "factSheetVersion": {
+      "title": "Factsheetversion",
+      "type": "string"
+    },
+    "factSheetLocator": {
+      "title": "Factsheetlocator",
+      "type": "string"
+    },
+    "productGroup": {
+      "description": "ConsExpo product-group family such as cosmetics or pest_control_products.",
+      "title": "Productgroup",
+      "type": "string"
+    },
+    "productSubgroup": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional narrower ConsExpo subgroup or scenario label.",
+      "title": "Productsubgroup"
+    },
+    "modelFamily": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional ConsExpo model family such as spray or direct_application.",
+      "title": "Modelfamily"
+    },
+    "supportedRoutes": {
+      "description": "Routes explicitly supported by the cited ConsExpo source.",
+      "items": {
+        "$ref": "#/$defs/Route"
+      },
+      "title": "Supportedroutes",
+      "type": "array"
+    },
+    "physical_forms": {
+      "description": "Physical forms supported by the ConsExpo source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Physical Forms",
+      "type": "array"
+    },
+    "application_methods": {
+      "description": "Application methods supported by the ConsExpo source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Application Methods",
+      "type": "array"
+    },
+    "retention_types": {
+      "description": "Retention or contact semantics supported by the ConsExpo source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Retention Types",
+      "type": "array"
+    },
+    "region_scopes": {
+      "description": "Regions where the ConsExpo evidence is considered applicable.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Region Scopes",
+      "type": "array"
+    },
+    "jurisdictions": {
+      "description": "Jurisdictions or programs where the ConsExpo evidence is relevant.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Jurisdictions",
+      "type": "array"
+    },
+    "physchem_summary": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Optional physicochemical context preserved from the ConsExpo source.",
+      "title": "Physchem Summary",
+      "type": "object"
+    },
+    "evidence_sources": {
+      "description": "Stable upstream evidence references backing the ConsExpo record.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Sources",
+      "type": "array"
+    },
+    "notes": {
+      "description": "Additional notes preserved from the ConsExpo source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "chemical_id",
+    "factSheetId",
+    "factSheetTitle",
+    "factSheetVersion",
+    "factSheetLocator",
+    "productGroup"
+  ],
+  "title": "ConsExpoEvidenceRecord",
+  "type": "object"
+}

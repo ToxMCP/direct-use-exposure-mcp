@@ -1,0 +1,171 @@
+{
+  "schema_version": "workerInhalationTier2AdapterIngestResult.v1",
+  "ingestToolName": "worker_ingest_inhalation_tier2_task",
+  "targetModelFamily": "art",
+  "resolvedAdapter": "art_worker_inhalation_adapter",
+  "supportedByAdapter": true,
+  "readyForAdapterExecution": true,
+  "manualReviewRequired": false,
+  "missingAdapterFields": [],
+  "artTaskEnvelope": {
+    "schema_version": "workerInhalationArtTaskEnvelope.v1",
+    "adapterName": "art_worker_inhalation_adapter",
+    "adapterVersion": "0.1.0",
+    "activityClass": "trigger_spray_surface_application",
+    "emissionProfile": "liquid_spray_mist_release_profile",
+    "controlProfile": "general_ventilation_control_profile",
+    "determinantTemplateMatch": {
+      "schema_version": "workerArtDeterminantTemplateMatch.v1",
+      "templateCatalogVersion": "2026.04.07.v1",
+      "templateId": "janitorial_disinfectant_trigger_spray_v1",
+      "templateLabel": "Janitorial Disinfectant Trigger Spray",
+      "alignmentStatus": "aligned",
+      "matchScore": 1.0,
+      "matchBasis": [
+        "productCategory=`disinfectant` matched the template family.",
+        "applicationMethod=`trigger_spray` matched the template release mode.",
+        "physicalForm=`spray` matched the template aerosol form.",
+        "Task text or workplace setting matched the template context."
+      ],
+      "determinantRecommendations": {
+        "artTaskFamily": "janitorial_disinfectant_trigger_spray",
+        "handlingPattern": "directed_surface_spray_and_wipe",
+        "releaseMechanism": "short_manual_trigger_spray",
+        "nearFieldOrientation": "toward_target_surface",
+        "defaultExposureContext": {
+          "workplaceSettingType": "indoor_service_area",
+          "workerProximity": "near_field_operator"
+        },
+        "activityClass": "trigger_spray_surface_application",
+        "emissionProfile": "liquid_spray_mist_release_profile"
+      },
+      "sourceBasis": [
+        "worker_art_template_pack_2026_v1",
+        "worker_routing_trigger_spray_screening_bridge_v1"
+      ],
+      "reviewNotes": []
+    },
+    "taskSummary": [
+      "Matched determinant template=`janitorial_disinfectant_trigger_spray_v1` with alignmentStatus=`aligned`.",
+      "Mapped applicationMethod=`trigger_spray` and physicalForm=`spray` to activityClass=`trigger_spray_surface_application`.",
+      "Mapped ventilationContext=`general_ventilation` and localControls count `2` to controlProfile=`general_ventilation_control_profile`.",
+      "Preserved contextOfUse=`worker-tier2-bridge` and sourceModule=`exposure-scenario-mcp` for downstream ART-side review."
+    ],
+    "artInputs": {
+      "substanceName": "Example Solvent A",
+      "substanceIdentifier": "DTXSID7020182",
+      "activityClass": "trigger_spray_surface_application",
+      "emissionProfile": "liquid_spray_mist_release_profile",
+      "controlProfile": "general_ventilation_control_profile",
+      "templateId": "janitorial_disinfectant_trigger_spray_v1",
+      "templateAlignmentStatus": "aligned",
+      "determinantTemplateRecommendations": {
+        "artTaskFamily": "janitorial_disinfectant_trigger_spray",
+        "handlingPattern": "directed_surface_spray_and_wipe",
+        "releaseMechanism": "short_manual_trigger_spray",
+        "nearFieldOrientation": "toward_target_surface",
+        "defaultExposureContext": {
+          "workplaceSettingType": "indoor_service_area",
+          "workerProximity": "near_field_operator"
+        },
+        "activityClass": "trigger_spray_surface_application",
+        "emissionProfile": "liquid_spray_mist_release_profile"
+      },
+      "taskDescription": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+      "workplaceSetting": "janitorial closet",
+      "taskDurationHours": 0.5,
+      "ventilationContext": "general_ventilation",
+      "localControls": [
+        "general ventilation",
+        "task segregation"
+      ],
+      "respiratoryProtection": "none",
+      "emissionDescriptor": "short trigger-spray cleaning mist near the breathing zone",
+      "productCategory": "disinfectant",
+      "productSubtype": null,
+      "applicationMethod": "trigger_spray",
+      "physicalForm": "spray",
+      "concentrationFraction": 0.03,
+      "useAmountPerEvent": 15.0,
+      "useAmountUnit": "mL",
+      "useEventsPerDay": 2.0,
+      "eventDurationHours": 0.5,
+      "roomVolumeM3": 35.0,
+      "airExchangeRatePerHour": 2.0,
+      "bodyWeightKg": 75.0,
+      "inhalationRateM3PerHour": 1.1,
+      "region": "EU",
+      "tier1ScreeningHints": {
+        "sourceDistanceM": 0.35,
+        "sprayDurationSeconds": 10.0,
+        "nearFieldVolumeM3": 2.0,
+        "airflowDirectionality": "cross_draft",
+        "particleSizeRegime": "coarse_spray"
+      }
+    },
+    "screeningHandoffSummary": {
+      "sourceModule": "exposure-scenario-mcp",
+      "contextOfUse": "worker-tier2-bridge",
+      "guidanceResource": "docs://worker-tier2-bridge-guide",
+      "workerRoutingSupportStatus": "future_adapter_recommended",
+      "workerRoutingTargetMcp": "future_worker_exposure_adapter",
+      "workerRoutingNextStep": "Collect task-control and ventilation inputs for an ART- or Stoffenmanager-aligned adapter.",
+      "sourceRequestSchema": "inhalationTier1ScenarioRequest.v1",
+      "sourceRoute": "inhalation",
+      "templateCatalogVersion": "2026.04.07.v1"
+    },
+    "guidanceResource": "docs://worker-art-adapter-guide"
+  },
+  "qualityFlags": [
+    {
+      "code": "worker_tier2_adapter_request_ingested",
+      "severity": "info",
+      "message": "Worker Tier 2 adapter request was ingested and normalized into an ART-side intake envelope."
+    },
+    {
+      "code": "worker_art_adapter_screening_hints_preserved",
+      "severity": "info",
+      "message": "Tier 1 screening geometry and spray hints were preserved as ART-side context only; they are not treated as solved occupational determinants."
+    },
+    {
+      "code": "worker_art_template_aligned",
+      "severity": "info",
+      "message": "Matched packaged ART determinant template `janitorial_disinfectant_trigger_spray_v1` with aligned status."
+    }
+  ],
+  "limitations": [
+    {
+      "code": "worker_art_adapter_no_solver",
+      "severity": "warning",
+      "message": "This ingest step does not execute ART, simulate workplace concentrations, or produce a compliance-ready occupational estimate."
+    },
+    {
+      "code": "worker_art_adapter_mapping_heuristic",
+      "severity": "warning",
+      "message": "Generic Exposure Scenario MCP task fields are mapped into an ART-aligned intake envelope using bounded, reviewable heuristics."
+    },
+    {
+      "code": "worker_art_adapter_screening_hints_context_only",
+      "severity": "info",
+      "message": "Tier 1 screening hints remain contextual surrogates and should not be confused with measured workplace determinants."
+    }
+  ],
+  "recommendedNextSteps": [
+    "Preserve the ingest result, qualityFlags, limitations, and provenance alongside the ART-side intake envelope.",
+    "Pass `artTaskEnvelope.artInputs` into the next ART-side adapter or execution boundary.",
+    "Keep `screeningHandoffSummary` and any preserved Tier 1 hints attached as reviewable upstream evidence rather than solved ART determinants."
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "worker.inhalation_art_adapter_ingest.v1",
+    "plugin_id": "worker_inhalation_art_adapter_ingest",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.04.07.v18",
+    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Adapter ingest only; no ART solver or regulatory worker model is executed here.",
+      "The adapter envelope preserves screening hints and worker routing context as reviewable upstream evidence."
+    ]
+  }
+}

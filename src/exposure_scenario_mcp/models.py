@@ -115,6 +115,13 @@ class TierUpgradeStatus(StrEnum):
     REQUESTED_NOT_IMPLEMENTED = "requested_not_implemented"
 
 
+class WorkerSupportStatus(StrEnum):
+    SUPPORTED_IN_CURRENT_MCP = "supported_in_current_mcp"
+    SUPPORTED_WITH_CAVEATS = "supported_with_caveats"
+    FUTURE_ADAPTER_RECOMMENDED = "future_adapter_recommended"
+    OUT_OF_SCOPE = "out_of_scope"
+
+
 class AirflowDirectionality(StrEnum):
     QUIESCENT = "quiescent"
     CROSS_DRAFT = "cross_draft"
@@ -197,6 +204,7 @@ class ValidationStatus(StrEnum):
 class ValidationEvidenceReadiness(StrEnum):
     BENCHMARK_ONLY = "benchmark_only"
     BENCHMARK_PLUS_EXTERNAL_CANDIDATES = "benchmark_plus_external_candidates"
+    EXTERNAL_CANDIDATES_ONLY = "external_candidates_only"
     EXTERNAL_PARTIAL = "external_partial"
     CALIBRATED = "calibrated"
 
@@ -449,6 +457,50 @@ class ValidationReferenceBandManifest(StrictModel):
     bands: list[ValidationReferenceBand] = Field(default_factory=list)
 
 
+class ValidationTimeSeriesReferencePoint(StrictModel):
+    point_id: str = Field(..., alias="pointId")
+    check_id: str = Field(..., alias="checkId")
+    title: str
+    scenario_metric_key: str = Field(..., alias="scenarioMetricKey")
+    time_coordinate_hours: float = Field(..., alias="timeCoordinateHours", ge=0.0)
+    reference_lower: float = Field(..., alias="referenceLower")
+    reference_upper: float = Field(..., alias="referenceUpper")
+    unit: str
+    note: str
+
+
+class ValidationTimeSeriesReferencePack(StrictModel):
+    reference_pack_id: str = Field(..., alias="referencePackId")
+    reference_dataset_id: str = Field(..., alias="referenceDatasetId")
+    domain: str = Field(..., description="Validation domain or route mechanism.")
+    time_coordinate_reference: str = Field(..., alias="timeCoordinateReference")
+    applicable_selectors: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        alias="applicableSelectors",
+        description=(
+            "Structured selectors describing where the time-series pack is intended to apply."
+        ),
+    )
+    points: list[ValidationTimeSeriesReferencePoint] = Field(default_factory=list)
+    note: str
+
+
+class ValidationTimeSeriesReferenceManifest(StrictModel):
+    schema_version: Literal["validationTimeSeriesReferenceManifest.v1"] = (
+        "validationTimeSeriesReferenceManifest.v1"
+    )
+    reference_version: str = Field(..., alias="referenceVersion")
+    reference_hash_sha256: str = Field(..., alias="referenceHashSha256")
+    path: str = Field(
+        ...,
+        description="Package or repository path for the time-series reference-pack manifest.",
+    )
+    pack_count: int = Field(..., alias="packCount", ge=0)
+    point_count: int = Field(..., alias="pointCount", ge=0)
+    notes: list[str] = Field(default_factory=list)
+    packs: list[ValidationTimeSeriesReferencePack] = Field(default_factory=list)
+
+
 class ValidationGap(StrictModel):
     gap_id: str = Field(..., alias="gapId")
     title: str
@@ -484,6 +536,64 @@ class ValidationDossierReport(StrictModel):
     heuristic_source_ids: list[str] = Field(default_factory=list, alias="heuristicSourceIds")
     open_gaps: list[ValidationGap] = Field(default_factory=list, alias="openGaps")
     notes: list[str] = Field(default_factory=list)
+
+
+class ValidationCoverageDomainSummary(StrictModel):
+    domain: str
+    coverage_level: Literal[
+        "benchmark_time_resolved",
+        "benchmark_plus_executable_references",
+        "benchmark_only",
+        "source_backed_only",
+        "verification_only",
+    ] = Field(..., alias="coverageLevel")
+    highest_supported_uncertainty_tier: UncertaintyTier = Field(
+        ..., alias="highestSupportedUncertaintyTier"
+    )
+    benchmark_case_count: int = Field(..., alias="benchmarkCaseCount", ge=0)
+    benchmark_case_ids: list[str] = Field(default_factory=list, alias="benchmarkCaseIds")
+    goldset_case_count: int = Field(..., alias="goldsetCaseCount", ge=0)
+    goldset_case_ids: list[str] = Field(default_factory=list, alias="goldsetCaseIds")
+    external_dataset_count: int = Field(..., alias="externalDatasetCount", ge=0)
+    external_dataset_ids: list[str] = Field(default_factory=list, alias="externalDatasetIds")
+    executable_reference_band_count: int = Field(
+        ..., alias="executableReferenceBandCount", ge=0
+    )
+    executable_reference_band_ids: list[str] = Field(
+        default_factory=list, alias="executableReferenceBandIds"
+    )
+    time_series_pack_count: int = Field(..., alias="timeSeriesPackCount", ge=0)
+    time_series_pack_ids: list[str] = Field(default_factory=list, alias="timeSeriesPackIds")
+    open_gap_count: int = Field(..., alias="openGapCount", ge=0)
+    open_gap_ids: list[str] = Field(default_factory=list, alias="openGapIds")
+    summary: str
+
+
+class ValidationCoverageReport(StrictModel):
+    schema_version: Literal["validationCoverageReport.v1"] = Field(
+        default="validationCoverageReport.v1", alias="schemaVersion"
+    )
+    policy_version: str = Field(..., alias="policyVersion")
+    benchmark_defaults_version: str = Field(..., alias="benchmarkDefaultsVersion")
+    reference_band_version: str = Field(..., alias="referenceBandVersion")
+    time_series_reference_version: str = Field(..., alias="timeSeriesReferenceVersion")
+    goldset_version: str = Field(..., alias="goldsetVersion")
+    domain_count: int = Field(..., alias="domainCount", ge=0)
+    benchmark_case_count: int = Field(..., alias="benchmarkCaseCount", ge=0)
+    external_dataset_count: int = Field(..., alias="externalDatasetCount", ge=0)
+    reference_band_count: int = Field(..., alias="referenceBandCount", ge=0)
+    time_series_pack_count: int = Field(..., alias="timeSeriesPackCount", ge=0)
+    goldset_case_count: int = Field(..., alias="goldsetCaseCount", ge=0)
+    goldset_coverage_counts: dict[str, int] = Field(
+        default_factory=dict, alias="goldsetCoverageCounts"
+    )
+    unmapped_goldset_case_ids: list[str] = Field(
+        default_factory=list, alias="unmappedGoldsetCaseIds"
+    )
+    domain_summaries: list[ValidationCoverageDomainSummary] = Field(
+        default_factory=list, alias="domainSummaries"
+    )
+    overall_notes: list[str] = Field(default_factory=list, alias="overallNotes")
 
 
 class DefaultsCurationEntry(StrictModel):
@@ -760,6 +870,13 @@ class ProductUseProfile(StrictModel):
     product_name: str | None = Field(
         default=None, description="Optional human-readable product label."
     )
+    product_subtype: str | None = Field(
+        default=None,
+        description=(
+            "Optional narrower product-use subtype such as indoor_surface_insecticide "
+            "or surface_trigger_spray_disinfectant."
+        ),
+    )
     product_category: str = Field(..., description="Product category or PUC-like category.")
     physical_form: str = Field(
         ..., description="Physical form such as cream, liquid, spray, or gel."
@@ -811,6 +928,7 @@ class ProductUseProfile(StrictModel):
 
     @field_validator(
         "product_name",
+        "product_subtype",
         "product_category",
         "physical_form",
         "application_method",
@@ -884,6 +1002,43 @@ class InhalationScenarioRequest(ExposureScenarioRequest):
     )
 
     @model_validator(mode="after")
+    def validate_route_is_inhalation(self) -> InhalationScenarioRequest:
+        if self.route != Route.INHALATION:
+            raise ValueError("InhalationScenarioRequest requires route='inhalation'.")
+        return self
+
+
+class InhalationResidualAirReentryScenarioRequest(InhalationScenarioRequest):
+    air_concentration_at_reentry_start_mg_per_m3: float = Field(
+        ...,
+        alias="airConcentrationAtReentryStartMgPerM3",
+        description=(
+            "Room-air concentration at the start of the reentry exposure window, typically "
+            "anchored to measured, monitored, or externally estimated post-application air."
+        ),
+        gt=0.0,
+    )
+    additional_decay_rate_per_hour: float | None = Field(
+        default=None,
+        alias="additionalDecayRatePerHour",
+        description=(
+            "Optional first-order decay term beyond air exchange, used to represent residual "
+            "air decline during the reentry window."
+        ),
+        ge=0.0,
+    )
+    post_application_delay_hours: float | None = Field(
+        default=None,
+        alias="postApplicationDelayHours",
+        description=(
+            "Elapsed time between the end of application and the start of the reentry exposure "
+            "window. This is carried for auditability and interpretation even when the supplied "
+            "starting concentration already reflects that delay."
+        ),
+        ge=0.0,
+    )
+
+    @model_validator(mode="after")
     def validate_inhalation_route(self) -> InhalationScenarioRequest:
         if self.route != Route.INHALATION:
             raise ValueError("InhalationScenarioRequest requires route='inhalation'.")
@@ -948,6 +1103,87 @@ class InhalationTier1ScenarioRequest(ExposureScenarioRequest):
         return self
 
 
+class WorkerTaskRoutingInput(StrictModel):
+    schema_version: Literal["workerTaskRoutingInput.v1"] = "workerTaskRoutingInput.v1"
+    chemical_id: str | None = Field(
+        default=None,
+        description="Optional chemical identifier carried for auditability of the routing request.",
+    )
+    route: Route = Field(..., description="Exposure route to route inside worker mode.")
+    scenario_class: ScenarioClass = Field(
+        default=ScenarioClass.SCREENING,
+        description="Scenario class that the caller is trying to instantiate.",
+    )
+    product_use_profile: ProductUseProfile = Field(..., description="Product and task-use profile.")
+    population_profile: PopulationProfile = Field(
+        ..., description="Population profile for the worker task."
+    )
+    requested_tier: TierLevel | None = Field(
+        default=None,
+        description=(
+            "Optional worker-tier request used to force a higher-tier route recommendation."
+        ),
+    )
+    prefer_current_mcp: bool = Field(
+        default=True,
+        description=(
+            "Whether routing should favor a scientifically bounded path already implemented in "
+            "this MCP when one exists."
+        ),
+    )
+
+    @field_validator("chemical_id")
+    @classmethod
+    def validate_worker_routing_text_fields(cls, value: str | None) -> str | None:
+        return _validate_optional_auditable_text(value)
+
+
+class WorkerTaskRoutingDecision(StrictModel):
+    schema_version: Literal["workerTaskRoutingDecision.v1"] = "workerTaskRoutingDecision.v1"
+    route: Route = Field(..., description="Exposure route evaluated by the router.")
+    scenario_class: ScenarioClass = Field(
+        ..., description="Scenario class evaluated by the router."
+    )
+    worker_detected: bool = Field(
+        ..., description="Whether worker context was explicitly detected."
+    )
+    detection_basis: list[str] = Field(
+        default_factory=list,
+        description="Fields or tags that triggered worker-context detection.",
+    )
+    support_status: WorkerSupportStatus = Field(
+        ..., description="Current implementation status for the task path."
+    )
+    recommended_model_family: str = Field(
+        ...,
+        description="Best-fit model family for the task given the current MCP boundary.",
+    )
+    recommended_tool: str | None = Field(
+        default=None,
+        description="Current MCP tool to call next when one is available.",
+    )
+    target_mcp: str = Field(
+        ...,
+        description="MCP or adapter boundary that should own the next step.",
+    )
+    guidance_resource: str = Field(
+        ...,
+        description="Documentation resource that explains the routed worker path.",
+    )
+    required_inputs: list[str] = Field(
+        default_factory=list,
+        description="Inputs that should be provided before taking the routed path seriously.",
+    )
+    warnings: list[str] = Field(
+        default_factory=list, description="Worker-routing warnings that should remain visible."
+    )
+    limitations: list[str] = Field(
+        default_factory=list, description="Known limits of the routed worker path."
+    )
+    rationale: str = Field(..., description="Why the router chose this path.")
+    next_step: str = Field(..., description="Recommended immediate action for the caller.")
+
+
 class Tier1AirflowClassProfile(StrictModel):
     directionality: AirflowDirectionality = Field(
         ..., description="Governed airflow-directionality class for Tier 1 NF/FF screening."
@@ -983,6 +1219,11 @@ class Tier1InhalationProductProfile(StrictModel):
     label: str = Field(..., description="Human-readable product-family profile label.")
     product_family: str = Field(
         ..., alias="productFamily", description="Named product-family/use-family context."
+    )
+    product_subtype: str | None = Field(
+        default=None,
+        alias="productSubtype",
+        description="Optional narrower product-use subtype that this profile is tuned for.",
     )
     application_method: str = Field(
         ..., alias="applicationMethod", description="Application method supported by the profile."

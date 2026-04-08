@@ -13,8 +13,12 @@ from exposure_scenario_mcp.contracts import (
 )
 from exposure_scenario_mcp.defaults import DefaultsRegistry, build_defaults_curation_report
 from exposure_scenario_mcp.server import create_mcp_server
-from exposure_scenario_mcp.validation import build_validation_dossier_report
+from exposure_scenario_mcp.validation import (
+    build_validation_coverage_report,
+    build_validation_dossier_report,
+)
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
+from exposure_scenario_mcp.validation_time_series import ValidationTimeSeriesReferenceRegistry
 from scripts.generate_contract_assets import main as generate_contract_assets
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -56,6 +60,45 @@ EXAMPLE_SCHEMA_MAP = {
     "comparison_record": "scenarioComparisonRecord.v1",
     "comp_tox_record": "compToxChemicalRecord.v1",
     "comp_tox_enriched_request": "exposureScenarioRequest.v1",
+    "cons_expo_evidence_record": "consExpoEvidenceRecord.v1",
+    "cons_expo_product_use_evidence": "productUseEvidenceRecord.v1",
+    "product_use_evidence_record": "productUseEvidenceRecord.v1",
+    "product_use_evidence_fit_report": "productUseEvidenceFitReport.v1",
+    "product_use_evidence_enriched_request": "exposureScenarioRequest.v1",
+    "product_use_evidence_reconciliation_report": "productUseEvidenceReconciliationReport.v1",
+    "integrated_exposure_workflow_request": "runIntegratedExposureWorkflowInput.v1",
+    "integrated_exposure_workflow_result": "integratedExposureWorkflowResult.v1",
+    "worker_task_routing_request": "workerTaskRoutingInput.v1",
+    "worker_task_routing_decision": "workerTaskRoutingDecision.v1",
+    "worker_inhalation_tier2_bridge_request": "exportWorkerInhalationTier2BridgeRequest.v1",
+    "worker_inhalation_tier2_bridge_package": "workerInhalationTier2BridgePackage.v1",
+    "worker_inhalation_tier2_adapter_request": "workerInhalationTier2AdapterRequest.v1",
+    "worker_inhalation_tier2_adapter_ingest_result": (
+        "workerInhalationTier2AdapterIngestResult.v1"
+    ),
+    "worker_inhalation_tier2_execution_request": "executeWorkerInhalationTier2Request.v1",
+    "worker_inhalation_tier2_execution_result": "workerInhalationTier2ExecutionResult.v1",
+    "worker_art_execution_package_request": "exportWorkerArtExecutionPackageRequest.v1",
+    "worker_art_execution_package": "workerArtExternalExecutionPackage.v1",
+    "worker_art_external_result": "workerArtExternalExecutionResult.v1",
+    "worker_art_execution_result_import_request": "importWorkerArtExecutionResultRequest.v1",
+    "worker_art_execution_result_import": "workerInhalationTier2ExecutionResult.v1",
+    "worker_dermal_absorbed_dose_bridge_request": (
+        "exportWorkerDermalAbsorbedDoseBridgeRequest.v1"
+    ),
+    "worker_dermal_absorbed_dose_bridge_package": "workerDermalAbsorbedDoseBridgePackage.v1",
+    "worker_dermal_absorbed_dose_adapter_request": (
+        "workerDermalAbsorbedDoseAdapterRequest.v1"
+    ),
+    "worker_dermal_absorbed_dose_adapter_ingest_result": (
+        "workerDermalAbsorbedDoseAdapterIngestResult.v1"
+    ),
+    "worker_dermal_absorbed_dose_execution_request": (
+        "executeWorkerDermalAbsorbedDoseRequest.v1"
+    ),
+    "worker_dermal_absorbed_dose_execution_result": (
+        "workerDermalAbsorbedDoseExecutionResult.v1"
+    ),
     "toxclaw_evidence_envelope": "toxclawEvidenceEnvelope.v1",
     "toxclaw_evidence_bundle": "toxclawEvidenceBundle.v1",
     "toxclaw_refinement_bundle": "toxclawExposureRefinementBundle.v1",
@@ -79,9 +122,45 @@ def test_contract_manifest_and_server_boot() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
-    assert len(manifest["tools"]) == 14
+    assert len(manifest["tools"]) == 29
     assert "exposureScenario.v1" in manifest["schemas"]
     assert "inhalationTier1ScenarioRequest.v1" in manifest["schemas"]
+    assert "consExpoEvidenceRecord.v1" in manifest["schemas"]
+    assert "buildProductUseEvidenceFromConsExpoInput.v1" in manifest["schemas"]
+    assert "productUseEvidenceRecord.v1" in manifest["schemas"]
+    assert "productUseEvidenceFitReport.v1" in manifest["schemas"]
+    assert "assessProductUseEvidenceFitInput.v1" in manifest["schemas"]
+    assert "applyProductUseEvidenceInput.v1" in manifest["schemas"]
+    assert "productUseEvidenceReconciliationReport.v1" in manifest["schemas"]
+    assert "reconcileProductUseEvidenceInput.v1" in manifest["schemas"]
+    assert "runIntegratedExposureWorkflowInput.v1" in manifest["schemas"]
+    assert "integratedExposureWorkflowResult.v1" in manifest["schemas"]
+    assert "workerTaskRoutingInput.v1" in manifest["schemas"]
+    assert "workerTaskRoutingDecision.v1" in manifest["schemas"]
+    assert "workerInhalationTier2TaskContext.v1" in manifest["schemas"]
+    assert "workerInhalationTier2CompatibilityReport.v1" in manifest["schemas"]
+    assert "workerInhalationTier2AdapterRequest.v1" in manifest["schemas"]
+    assert "workerInhalationTier2AdapterToolCall.v1" in manifest["schemas"]
+    assert "workerInhalationTier2BridgePackage.v1" in manifest["schemas"]
+    assert "exportWorkerInhalationTier2BridgeRequest.v1" in manifest["schemas"]
+    assert "workerArtDeterminantTemplateMatch.v1" in manifest["schemas"]
+    assert "workerInhalationArtTaskEnvelope.v1" in manifest["schemas"]
+    assert "workerInhalationTier2AdapterIngestResult.v1" in manifest["schemas"]
+    assert "workerInhalationTier2ExecutionOverrides.v1" in manifest["schemas"]
+    assert "executeWorkerInhalationTier2Request.v1" in manifest["schemas"]
+    assert "workerInhalationTier2ExecutionResult.v1" in manifest["schemas"]
+    assert "workerDermalTaskContext.v1" in manifest["schemas"]
+    assert "workerDermalCompatibilityReport.v1" in manifest["schemas"]
+    assert "workerDermalAbsorbedDoseAdapterRequest.v1" in manifest["schemas"]
+    assert "workerDermalAbsorbedDoseAdapterToolCall.v1" in manifest["schemas"]
+    assert "workerDermalAbsorbedDoseBridgePackage.v1" in manifest["schemas"]
+    assert "exportWorkerDermalAbsorbedDoseBridgeRequest.v1" in manifest["schemas"]
+    assert "workerDermalDeterminantTemplateMatch.v1" in manifest["schemas"]
+    assert "workerDermalAbsorbedDoseTaskEnvelope.v1" in manifest["schemas"]
+    assert "workerDermalAbsorbedDoseAdapterIngestResult.v1" in manifest["schemas"]
+    assert "workerDermalAbsorbedDoseExecutionOverrides.v1" in manifest["schemas"]
+    assert "executeWorkerDermalAbsorbedDoseRequest.v1" in manifest["schemas"]
+    assert "workerDermalAbsorbedDoseExecutionResult.v1" in manifest["schemas"]
     assert "tier1AirflowClassProfile.v1" in manifest["schemas"]
     assert "tier1ParticleRegimeProfile.v1" in manifest["schemas"]
     assert "tier1InhalationProductProfile.v1" in manifest["schemas"]
@@ -102,6 +181,9 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "externalValidationDataset.v1" in manifest["schemas"]
     assert "validationReferenceBand.v1" in manifest["schemas"]
     assert "validationReferenceBandManifest.v1" in manifest["schemas"]
+    assert "validationTimeSeriesReferencePoint.v1" in manifest["schemas"]
+    assert "validationTimeSeriesReferencePack.v1" in manifest["schemas"]
+    assert "validationTimeSeriesReferenceManifest.v1" in manifest["schemas"]
     assert "validationGap.v1" in manifest["schemas"]
     assert "executedValidationCheck.v1" in manifest["schemas"]
     assert "defaultsCurationEntry.v1" in manifest["schemas"]
@@ -140,6 +222,30 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "scenario_package_probability_summary" in manifest["examples"]
     assert "inhalation_tier1_scenario_package_probability_request" in manifest["examples"]
     assert "inhalation_tier1_scenario_package_probability_summary" in manifest["examples"]
+    assert "cons_expo_evidence_record" in manifest["examples"]
+    assert "cons_expo_product_use_evidence" in manifest["examples"]
+    assert "product_use_evidence_record" in manifest["examples"]
+    assert "product_use_evidence_fit_report" in manifest["examples"]
+    assert "product_use_evidence_enriched_request" in manifest["examples"]
+    assert "product_use_evidence_reconciliation_report" in manifest["examples"]
+    assert "integrated_exposure_workflow_request" in manifest["examples"]
+    assert "integrated_exposure_workflow_result" in manifest["examples"]
+    assert "worker_task_routing_request" in manifest["examples"]
+    assert "worker_task_routing_decision" in manifest["examples"]
+    assert "worker_inhalation_tier2_bridge_request" in manifest["examples"]
+    assert "worker_inhalation_tier2_bridge_package" in manifest["examples"]
+    assert "worker_inhalation_tier2_adapter_request" in manifest["examples"]
+    assert "worker_inhalation_tier2_adapter_ingest_result" in manifest["examples"]
+    assert "worker_inhalation_tier2_execution_request" in manifest["examples"]
+    assert "worker_inhalation_tier2_execution_result" in manifest["examples"]
+    assert "worker_dermal_absorbed_dose_bridge_request" in manifest["examples"]
+    assert "worker_dermal_absorbed_dose_bridge_package" in manifest["examples"]
+    assert "worker_dermal_absorbed_dose_adapter_request" in manifest["examples"]
+    assert "worker_dermal_absorbed_dose_adapter_ingest_result" in manifest["examples"]
+    assert "worker_dermal_absorbed_dose_execution_request" in manifest["examples"]
+    assert "worker_dermal_absorbed_dose_execution_result" in manifest["examples"]
+    assert "inhalation_residual_reentry_request" in manifest["examples"]
+    assert "inhalation_residual_reentry_scenario" in manifest["examples"]
     assert "toxclaw_evidence_bundle" in manifest["examples"]
     assert "toxclaw_refinement_bundle" in manifest["examples"]
     assert {
@@ -151,23 +257,39 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://tier1-inhalation-parameter-guide",
         "docs://uncertainty-framework",
         "docs://inhalation-tier-upgrade-guide",
+        "docs://inhalation-residual-air-reentry-guide",
         "docs://defaults-curation-report",
         "docs://validation-framework",
         "docs://validation-dossier",
+        "docs://validation-coverage-report",
         "docs://validation-reference-bands",
+        "docs://validation-time-series-packs",
+        "docs://goldset-benchmark-guide",
+        "docs://exposure-platform-architecture",
+        "docs://integrated-exposure-workflow-guide",
+        "docs://worker-routing-guide",
+        "docs://worker-tier2-bridge-guide",
+        "docs://worker-art-adapter-guide",
+        "docs://worker-art-execution-guide",
+        "docs://worker-dermal-bridge-guide",
+        "docs://worker-dermal-adapter-guide",
+        "docs://worker-dermal-execution-guide",
         "docs://troubleshooting",
         "defaults://curation-report",
         "tier1-inhalation://manifest",
         "archetypes://manifest",
         "probability-bounds://manifest",
         "scenario-probability://manifest",
+        "benchmarks://goldset",
         "docs://release-readiness",
         "docs://release-notes",
         "docs://conformance-report",
         "docs://security-provenance-review",
         "validation://manifest",
         "validation://dossier-report",
+        "validation://coverage-report",
         "validation://reference-bands",
+        "validation://time-series-packs",
         "release://metadata-report",
         "release://readiness-report",
         "release://security-provenance-review-report",
@@ -189,12 +311,94 @@ def test_validation_dossier_report_matches_schema_and_surface() -> None:
     validate(instance=report, schema=schema)
     assert report["policyVersion"] == "2026.03.25.v4"
     assert "heuristic_defaults_active" in {item["gapId"] for item in report["openGaps"]}
+    assert "residual_air_reentry_validation_narrow_anchor_only" in {
+        item["gapId"] for item in report["openGaps"]
+    }
     assert "consumer_spray_inhalation_exposure_2015" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
+    assert "spray_cleaning_disinfection_decay_half_life_2023" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
+    assert "consumer_disinfectant_trigger_spray_inhalation_2015" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
+    assert "household_mosquito_aerosol_indoor_air_2001" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
+    assert "worker_biocidal_spray_foam_inhalation_2023" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
+    assert "worker_biocidal_spray_foam_dermal_2023" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
+    assert "diazinon_office_postapplication_air_1990" in {
+        item["datasetId"] for item in report["externalDatasets"]
+    }
+    assert "chlorpyrifos_broadcast_residential_air_1990" in {
         item["datasetId"] for item in report["externalDatasets"]
     }
     assert "rivm_wet_cloth_dermal_contact_loading_2018" in {
         item["datasetId"] for item in report["externalDatasets"]
     }
+
+
+def test_validation_coverage_report_matches_schema_and_surface() -> None:
+    generate_contract_assets()
+    schema = json.loads(
+        (SCHEMA_DIR / "validationCoverageReport.v1.json").read_text(encoding="utf-8")
+    )
+    report = build_validation_coverage_report().model_dump(mode="json", by_alias=True)
+
+    validate(instance=report, schema=schema)
+    assert report["policyVersion"] == "2026.03.25.v4"
+    assert report["domainCount"] == 11
+    assert report["benchmarkCaseCount"] == 22
+    assert report["externalDatasetCount"] == 14
+    assert report["referenceBandCount"] == 10
+    assert report["timeSeriesPackCount"] == 3
+    assert report["goldsetCaseCount"] == 13
+    assert report["goldsetCoverageCounts"] == {
+        "benchmark_regressed_showcase": 11,
+        "challenge_case": 1,
+        "integration_showcase": 1,
+    }
+    assert set(report["unmappedGoldsetCaseIds"]) == {
+        "consumer_air_space_insecticide_aerosol",
+        "eu_diazinon_indoor_surface_insecticide",
+    }
+
+    domain_summaries = {
+        item["domain"]: item for item in report["domainSummaries"]
+    }
+    assert domain_summaries["inhalation_residual_air_reentry"]["coverageLevel"] == (
+        "benchmark_time_resolved"
+    )
+    assert set(
+        domain_summaries["inhalation_residual_air_reentry"]["timeSeriesPackIds"]
+    ) == {
+        "chlorpyrifos_residual_air_reentry_room_air_series_1990",
+        "diazinon_office_residual_air_series_1990",
+    }
+    assert domain_summaries["inhalation_well_mixed_spray"]["coverageLevel"] == (
+        "benchmark_time_resolved"
+    )
+    assert set(domain_summaries["inhalation_well_mixed_spray"]["executableReferenceBandIds"]) == {
+        "air_space_insecticide_aerosol_concentration_2001",
+        "cleaning_trigger_spray_airborne_fraction_2019",
+        "trigger_spray_aerosol_decay_half_life_2023",
+    }
+    assert domain_summaries["worker_inhalation_control_aware_screening"][
+        "coverageLevel"
+    ] == "benchmark_plus_executable_references"
+    assert domain_summaries["worker_dermal_absorbed_dose_screening"]["coverageLevel"] == (
+        "benchmark_plus_executable_references"
+    )
+    assert any(
+        "Coverage levels describe current trust posture by domain"
+        in note
+        for note in report["overallNotes"]
+    )
 
 
 def test_validation_reference_band_manifest_matches_schema_and_surface() -> None:
@@ -207,11 +411,42 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
     )
 
     validate(instance=report, schema=schema)
-    assert report["referenceVersion"] == "2026.03.25.v1"
-    assert report["bandCount"] == 2
+    assert report["referenceVersion"] == "2026.04.08.v9"
+    assert report["bandCount"] == 10
     assert {item["checkId"] for item in report["bands"]} == {
+        "air_space_insecticide_aerosol_concentration_2001",
+        "chlorpyrifos_residual_air_reentry_start_concentration_1990",
+        "cleaning_trigger_spray_airborne_fraction_2019",
+        "consumer_disinfectant_trigger_spray_inhaled_dose_2015",
         "hand_cream_application_loading_2012",
+        "medicinal_liquid_direct_oral_delivered_mass_2025",
+        "trigger_spray_aerosol_decay_half_life_2023",
+        "worker_biocidal_handheld_trigger_spray_dermal_mass_2023",
+        "worker_biocidal_handheld_trigger_spray_concentration_2023",
         "wet_cloth_contact_mass_2018",
+    }
+
+
+def test_validation_time_series_manifest_matches_schema_and_surface() -> None:
+    generate_contract_assets()
+    schema = json.loads(
+        (SCHEMA_DIR / "validationTimeSeriesReferenceManifest.v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    report = ValidationTimeSeriesReferenceRegistry.load().manifest().model_dump(
+        mode="json",
+        by_alias=True,
+    )
+
+    validate(instance=report, schema=schema)
+    assert report["referenceVersion"] == "2026.04.08.v3"
+    assert report["packCount"] == 3
+    assert report["pointCount"] == 6
+    assert {item["referencePackId"] for item in report["packs"]} == {
+        "air_space_insecticide_aerosol_room_air_series_2001",
+        "chlorpyrifos_residual_air_reentry_room_air_series_1990",
+        "diazinon_office_residual_air_series_1990",
     }
 
 
@@ -249,6 +484,55 @@ def test_defaults_curation_report_matches_schema_and_surface() -> None:
         item["pathId"]
         == "aerosolized_fraction:application_method=aerosol_spray,product_category=personal_care"
         and item["curationStatus"] == "curated"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"]
+        == "aerosolized_fraction:application_method=trigger_spray,product_category=disinfectant"
+        and item["curationStatus"] == "curated"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"]
+        == (
+            "aerosolized_fraction:application_method=trigger_spray,"
+            "product_subtype=surface_trigger_spray_disinfectant"
+        )
+        and item["curationStatus"] == "curated"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"]
+        == "aerosolized_fraction:application_method=trigger_spray,product_category=pesticide"
+        and item["curationStatus"] == "heuristic"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"]
+        == (
+            "aerosolized_fraction:application_method=trigger_spray,"
+            "product_subtype=indoor_surface_insecticide"
+        )
+        and item["curationStatus"] == "heuristic"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"] == "density_g_per_ml:product_subtype=air_space_insecticide"
+        and item["curationStatus"] == "heuristic"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"]
+        == (
+            "aerosolized_fraction:application_method=aerosol_spray,"
+            "product_subtype=air_space_insecticide"
+        )
+        and item["curationStatus"] == "heuristic"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"] == "room_volume_m3:product_subtype=air_space_insecticide"
+        and item["curationStatus"] == "heuristic"
         for item in report["entries"]
     )
     assert any(
@@ -317,6 +601,7 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert artifact["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
     assert {"wheel", "sdist"} == {item["kind"] for item in artifact["distributionArtifacts"]}
     assert "docs://release-notes" in artifact["publishedDocs"]
+    assert "docs://goldset-benchmark-guide" in artifact["publishedDocs"]
     for item in artifact["distributionArtifacts"]:
         if item["present"]:
             assert item["sha256"] is not None

@@ -1,0 +1,136 @@
+{
+  "schema_version": "executeWorkerDermalAbsorbedDoseRequest.v1",
+  "adapterRequest": {
+    "schema_version": "workerDermalAbsorbedDoseAdapterRequest.v1",
+    "targetAdapter": "future_worker_dermal_adapter",
+    "targetModelFamily": "dermal_absorption_ppe",
+    "sourceModule": "exposure-scenario-mcp",
+    "contextOfUse": "worker-dermal-bridge",
+    "chemicalIdentity": {
+      "chemicalId": "DTXSID7020182",
+      "preferredName": "Example Solvent A",
+      "sourceModule": "exposure-scenario-mcp"
+    },
+    "chemicalContext": null,
+    "taskContext": {
+      "schema_version": "workerDermalTaskContext.v1",
+      "taskDescription": "Worker wet-wipe cleaning task with gloved hand contact",
+      "workplaceSetting": "custodial closet",
+      "contactDurationHours": 0.75,
+      "contactPattern": "surface_transfer",
+      "exposedBodyAreas": [
+        "hands"
+      ],
+      "ppeState": "work_gloves",
+      "barrierMaterial": "unknown",
+      "controlMeasures": [
+        "task segregation",
+        "prompt hand washing"
+      ],
+      "surfaceLoadingContext": "wet cleaning cloth contact with surface residue transfer",
+      "skinCondition": "unknown",
+      "notes": [
+        "Illustrative worker dermal bridge package for a future absorbed-dose workflow."
+      ]
+    },
+    "exposureInputs": {
+      "applicationMethod": "wipe",
+      "physicalForm": "liquid",
+      "productCategory": "household_cleaner",
+      "productSubtype": null,
+      "concentrationFraction": 0.02,
+      "useAmountPerEvent": 10.0,
+      "useAmountUnit": "g",
+      "useEventsPerDay": 3.0,
+      "eventDurationHours": 0.75,
+      "retentionType": "surface_contact",
+      "retentionFactor": null,
+      "transferEfficiency": null,
+      "densityGPerMl": null,
+      "bodyWeightKg": 75.0,
+      "exposedSurfaceAreaCm2": 840.0,
+      "region": "EU"
+    },
+    "supportingHandoffs": {
+      "baseRequest": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Workplace Wipe Cleaner",
+          "product_subtype": null,
+          "product_category": "household_cleaner",
+          "physical_form": "liquid",
+          "application_method": "wipe",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 10.0,
+          "use_amount_unit": "g",
+          "use_events_per_day": 3.0,
+          "density_g_per_ml": null,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": null,
+          "air_exchange_rate_per_hour": null,
+          "exposure_duration_hours": 0.75
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 75.0,
+          "inhalation_rate_m3_per_hour": null,
+          "exposed_surface_area_cm2": 840.0,
+          "demographic_tags": [
+            "worker",
+            "occupational"
+          ],
+          "region": "EU"
+        },
+        "assumption_overrides": {}
+      },
+      "workerRoutingDecision": {
+        "schema_version": "workerTaskRoutingDecision.v1",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "worker_detected": true,
+        "detection_basis": [
+          "demographic_tag:occupational",
+          "demographic_tag:worker"
+        ],
+        "support_status": "future_adapter_recommended",
+        "recommended_model_family": "dermal_absorption_ppe_adapter_candidate",
+        "recommended_tool": "exposure_export_worker_dermal_absorbed_dose_bridge",
+        "target_mcp": "exposure_scenario_mcp",
+        "guidance_resource": "docs://worker-routing-guide",
+        "required_inputs": [
+          "task_description",
+          "contact_duration_hours",
+          "surface_loading_context",
+          "ppe_state",
+          "control_measures"
+        ],
+        "warnings": [],
+        "limitations": [
+          "The current dermal engine only covers direct-use external loading and does not ship a dedicated occupational dermal adapter."
+        ],
+        "rationale": "This dermal worker task needs a dedicated occupational path or absorbed-dose refinement rather than the shared direct-use screening equations.",
+        "next_step": "Export a worker dermal absorbed-dose bridge and keep the result bounded as a handoff artifact for a future occupational dermal workflow."
+      }
+    },
+    "guidanceResource": "docs://worker-dermal-bridge-guide"
+  },
+  "executionOverrides": {
+    "schema_version": "workerDermalAbsorbedDoseExecutionOverrides.v1",
+    "externalSkinMassMgPerDay": null,
+    "bodyZoneSurfaceAreaCm2": null,
+    "ppePenetrationFactor": 0.3,
+    "dermalAbsorptionFraction": null,
+    "contactDurationFactor": null
+  },
+  "contextOfUse": "worker-dermal-execution"
+}

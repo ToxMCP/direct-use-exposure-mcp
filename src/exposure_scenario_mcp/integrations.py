@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import UTC, datetime
 from hashlib import sha256
 from typing import Literal
 
@@ -21,7 +22,10 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExposureScenarioRequest,
     FitForPurpose,
+    InhalationScenarioRequest,
+    InhalationTier1ScenarioRequest,
     LimitationNote,
+    PbpkScenarioInput,
     ProvenanceBundle,
     QualityFlag,
     Route,
@@ -30,7 +34,16 @@ from exposure_scenario_mcp.models import (
     Severity,
     StrictModel,
 )
-from exposure_scenario_mcp.runtime import compare_scenarios, export_pbpk_input
+from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
+from exposure_scenario_mcp.runtime import (
+    PluginRegistry,
+    ScenarioEngine,
+    compare_scenarios,
+    export_pbpk_input,
+)
+from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
+from exposure_scenario_mcp.uncertainty import enrich_scenario_uncertainty
 
 
 def _sorted_json(value):
@@ -133,6 +146,67 @@ def _upstream_uncertainty_summary(scenario: ExposureScenario) -> dict[str, Scala
     }
 
 
+def _workflow_provenance(
+    registry: DefaultsRegistry,
+    *,
+    generated_at: str | None = None,
+) -> ProvenanceBundle:
+    return ProvenanceBundle(
+        algorithm_id="workflow.integrated_exposure_pbpk.v1",
+        plugin_id="integrated_exposure_workflow_service",
+        plugin_version="0.1.0",
+        defaults_version=registry.version,
+        defaults_hash_sha256=registry.sha256,
+        generated_at=generated_at or datetime.now(UTC).isoformat(),
+        notes=[
+            "Workflow result preserves evidence reconciliation, scenario construction, and "
+            "optional PBPK handoff generation as one auditable response.",
+            "CompTox and ConsExpo records are normalized locally into the generic evidence "
+            "contract; no external MCP call is executed inside this workflow helper.",
+        ],
+    )
+
+
+def _restore_request_contract(
+    source_request: ExposureScenarioRequest
+    | InhalationScenarioRequest
+    | InhalationTier1ScenarioRequest,
+    updated_request: ExposureScenarioRequest,
+) -> ExposureScenarioRequest | InhalationScenarioRequest | InhalationTier1ScenarioRequest:
+    shared_update = {
+        "chemical_id": updated_request.chemical_id,
+        "chemical_name": updated_request.chemical_name,
+        "route": updated_request.route,
+        "scenario_class": updated_request.scenario_class,
+        "product_use_profile": updated_request.product_use_profile,
+        "population_profile": updated_request.population_profile,
+        "assumption_overrides": updated_request.assumption_overrides,
+    }
+    return source_request.model_copy(update=shared_update, deep=True)
+
+
+def _build_scenario_from_request(
+    request: ExposureScenarioRequest | InhalationScenarioRequest | InhalationTier1ScenarioRequest,
+    registry: DefaultsRegistry,
+    *,
+    generated_at: str | None = None,
+) -> ExposureScenario:
+    plugin_registry = PluginRegistry()
+    plugin_registry.register(ScreeningScenarioPlugin())
+    plugin_registry.register(InhalationScreeningPlugin())
+    engine = ScenarioEngine(registry=plugin_registry, defaults_registry=registry)
+
+    if isinstance(request, InhalationTier1ScenarioRequest):
+        scenario = build_inhalation_tier_1_screening_scenario(
+            request,
+            registry,
+            profile_registry=Tier1InhalationProfileRegistry.load(),
+            generated_at=generated_at,
+        )
+        return enrich_scenario_uncertainty(engine, scenario)
+    return engine.build(request)
+
+
 TOXCLAW_REFINE_EXPOSURE_RECOMMENDATION = (
     "Refine exposure characterization before relying on the screening recommendation."
 )
@@ -231,6 +305,312 @@ class CompToxChemicalRecord(StrictModel):
     evidence_sources: list[str] = Field(
         default_factory=list,
         description="Upstream evidence or record identifiers backing the CompTox record.",
+    )
+
+
+class ConsExpoEvidenceRecord(StrictModel):
+    schema_version: Literal["consExpoEvidenceRecord.v1"] = "consExpoEvidenceRecord.v1"
+    chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
+    preferred_name: str | None = Field(
+        default=None,
+        description="Preferred chemical name when the ConsExpo source is already tied to identity.",
+    )
+    casrn: str | None = Field(default=None, description="CAS Registry Number when known.")
+    fact_sheet_id: str = Field(..., alias="factSheetId")
+    fact_sheet_title: str = Field(..., alias="factSheetTitle")
+    fact_sheet_version: str = Field(..., alias="factSheetVersion")
+    fact_sheet_locator: str = Field(..., alias="factSheetLocator")
+    product_group: str = Field(
+        ...,
+        alias="productGroup",
+        description="ConsExpo product-group family such as cosmetics or pest_control_products.",
+    )
+    product_subgroup: str | None = Field(
+        default=None,
+        alias="productSubgroup",
+        description="Optional narrower ConsExpo subgroup or scenario label.",
+    )
+    model_family: str | None = Field(
+        default=None,
+        alias="modelFamily",
+        description="Optional ConsExpo model family such as spray or direct_application.",
+    )
+    supported_routes: list[Route] = Field(
+        default_factory=list,
+        alias="supportedRoutes",
+        description="Routes explicitly supported by the cited ConsExpo source.",
+    )
+    physical_forms: list[str] = Field(
+        default_factory=list,
+        description="Physical forms supported by the ConsExpo source.",
+    )
+    application_methods: list[str] = Field(
+        default_factory=list,
+        description="Application methods supported by the ConsExpo source.",
+    )
+    retention_types: list[str] = Field(
+        default_factory=list,
+        description="Retention or contact semantics supported by the ConsExpo source.",
+    )
+    region_scopes: list[str] = Field(
+        default_factory=lambda: ["EU"],
+        description="Regions where the ConsExpo evidence is considered applicable.",
+    )
+    jurisdictions: list[str] = Field(
+        default_factory=lambda: ["EU"],
+        description="Jurisdictions or programs where the ConsExpo evidence is relevant.",
+    )
+    physchem_summary: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        description="Optional physicochemical context preserved from the ConsExpo source.",
+    )
+    evidence_sources: list[str] = Field(
+        default_factory=list,
+        description="Stable upstream evidence references backing the ConsExpo record.",
+    )
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Additional notes preserved from the ConsExpo source.",
+    )
+
+
+class ProductUseEvidenceRecord(StrictModel):
+    schema_version: Literal["productUseEvidenceRecord.v1"] = "productUseEvidenceRecord.v1"
+    chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
+    preferred_name: str | None = Field(
+        default=None,
+        description="Preferred chemical name when the evidence source also carries identity data.",
+    )
+    casrn: str | None = Field(default=None, description="CAS Registry Number when known.")
+    source_name: str = Field(..., description="Human-readable evidence-source label.")
+    source_kind: Literal[
+        "comptox",
+        "consexpo",
+        "regulatory_dossier",
+        "literature_pack",
+        "user_upload",
+        "other",
+    ] = Field(
+        default="other",
+        description="What kind of upstream source produced the product-use evidence.",
+    )
+    review_status: Literal["reviewed", "provisional", "unreviewed"] = Field(
+        default="provisional",
+        description="Whether the evidence has been reviewed for downstream use.",
+    )
+    source_record_id: str | None = Field(
+        default=None,
+        description="Optional upstream record identifier such as a dossier or registry ID.",
+    )
+    source_locator: str | None = Field(
+        default=None,
+        description="Optional URL or logical locator for the upstream record.",
+    )
+    product_name: str | None = Field(
+        default=None,
+        description="Optional product label or family name carried by the evidence source.",
+    )
+    product_subtype: str | None = Field(
+        default=None,
+        description="Optional narrower product-use subtype carried by the evidence source.",
+    )
+    product_use_categories: list[str] = Field(
+        default_factory=list,
+        description="Candidate product-use categories supported by the evidence source.",
+    )
+    physical_forms: list[str] = Field(
+        default_factory=list,
+        description="Physical forms supported by the evidence source.",
+    )
+    application_methods: list[str] = Field(
+        default_factory=list,
+        description="Application methods supported by the evidence source.",
+    )
+    retention_types: list[str] = Field(
+        default_factory=list,
+        description="Retention or contact semantics supported by the evidence source.",
+    )
+    region_scopes: list[str] = Field(
+        default_factory=list,
+        description="Regions where the product-use evidence is considered applicable.",
+    )
+    jurisdictions: list[str] = Field(
+        default_factory=list,
+        description="Jurisdictions or regulatory programs that back the evidence source.",
+    )
+    physchem_summary: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        description="Optional physicochemical context preserved for downstream review.",
+    )
+    evidence_sources: list[str] = Field(
+        default_factory=list,
+        description="Stable upstream evidence references backing the record.",
+    )
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Additional applicability or review notes preserved verbatim.",
+    )
+
+
+class ProductUseEvidenceFitReport(StrictModel):
+    schema_version: Literal["productUseEvidenceFitReport.v1"] = "productUseEvidenceFitReport.v1"
+    chemical_id: str = Field(..., description="Chemical identifier shared by the request and fit.")
+    evidence_source_name: str = Field(..., description="Human-readable evidence-source label.")
+    evidence_source_kind: str = Field(..., description="Evidence-source kind copied into the fit.")
+    request_region: str = Field(..., description="Region declared on the scenario request.")
+    compatible: bool = Field(..., description="Whether the evidence can be used at all.")
+    auto_apply_safe: bool = Field(
+        ...,
+        description="Whether the evidence can be applied without human review warnings.",
+    )
+    recommendation: Literal["accept", "accept_with_review", "manual_review", "reject"] = Field(
+        ...,
+        description="High-level recommendation for orchestrators.",
+    )
+    matched_fields: list[str] = Field(
+        default_factory=list,
+        description="Request fields already aligned with the evidence record.",
+    )
+    suggested_updates: list[str] = Field(
+        default_factory=list,
+        description="Request fields the evidence record would update or annotate.",
+    )
+    warnings: list[str] = Field(
+        default_factory=list,
+        description="Non-blocking reasons to review the evidence before using it.",
+    )
+    blocking_issues: list[str] = Field(
+        default_factory=list,
+        description="Reasons the evidence should not be applied automatically.",
+    )
+    suggested_request: ExposureScenarioRequest = Field(
+        ...,
+        description="Request preview after applying additive evidence-driven enrichment.",
+    )
+
+
+class AssessProductUseEvidenceFitInput(StrictModel):
+    schema_version: Literal["assessProductUseEvidenceFitInput.v1"] = (
+        "assessProductUseEvidenceFitInput.v1"
+    )
+    request: ExposureScenarioRequest = Field(..., description="Scenario request to assess.")
+    evidence: ProductUseEvidenceRecord = Field(
+        ...,
+        description="Generic product-use evidence supplied by CompTox or another source.",
+    )
+
+
+class ApplyProductUseEvidenceInput(StrictModel):
+    schema_version: Literal["applyProductUseEvidenceInput.v1"] = "applyProductUseEvidenceInput.v1"
+    request: ExposureScenarioRequest = Field(..., description="Scenario request to enrich.")
+    evidence: ProductUseEvidenceRecord = Field(
+        ...,
+        description="Generic product-use evidence supplied by CompTox or another source.",
+    )
+    require_auto_apply_safe: bool = Field(
+        default=False,
+        alias="requireAutoApplySafe",
+        description=(
+            "When true, reject evidence records that need human review even if they are "
+            "otherwise compatible."
+        ),
+    )
+
+
+class BuildProductUseEvidenceFromConsExpoInput(StrictModel):
+    schema_version: Literal["buildProductUseEvidenceFromConsExpoInput.v1"] = (
+        "buildProductUseEvidenceFromConsExpoInput.v1"
+    )
+    evidence: ConsExpoEvidenceRecord = Field(
+        ...,
+        description="Typed ConsExpo evidence record to map into the generic evidence contract.",
+    )
+
+
+class ProductUseEvidenceReconciliationReport(StrictModel):
+    schema_version: Literal["productUseEvidenceReconciliationReport.v1"] = (
+        "productUseEvidenceReconciliationReport.v1"
+    )
+    chemical_id: str = Field(
+        ...,
+        description="Chemical identifier shared by the request and evidence.",
+    )
+    request_region: str = Field(
+        ...,
+        description="Region declared on the original scenario request.",
+    )
+    considered_sources: list[str] = Field(
+        default_factory=list,
+        description="All evidence sources considered during reconciliation.",
+        alias="consideredSources",
+    )
+    compatible_sources: list[str] = Field(
+        default_factory=list,
+        description="Compatible evidence sources after fit assessment.",
+        alias="compatibleSources",
+    )
+    recommended_source_name: str | None = Field(
+        default=None,
+        description="Primary evidence source selected for the merged request preview.",
+        alias="recommendedSourceName",
+    )
+    recommended_source_kind: str | None = Field(
+        default=None,
+        description="Kind of the primary evidence source selected for the merged request preview.",
+        alias="recommendedSourceKind",
+    )
+    recommendation: Literal["apply", "apply_with_review", "manual_review", "reject"] = Field(
+        ...,
+        description="High-level reconciliation recommendation for orchestrators.",
+    )
+    manual_review_required: bool = Field(
+        ...,
+        description="Whether a human should review the reconciliation result before use.",
+        alias="manualReviewRequired",
+    )
+    conflicts: list[str] = Field(
+        default_factory=list,
+        description="Cross-source conflicts that remain after compatibility filtering.",
+    )
+    rationale: list[str] = Field(
+        default_factory=list,
+        description="Short explanation of why the primary source was selected.",
+    )
+    field_sources: dict[str, str] = Field(
+        default_factory=dict,
+        description="Which source supplied each additive field in the merged request preview.",
+        alias="fieldSources",
+    )
+    fit_reports: list[ProductUseEvidenceFitReport] = Field(
+        default_factory=list,
+        description="Per-source fit reports against the original request.",
+        alias="fitReports",
+    )
+    merged_request: ExposureScenarioRequest | None = Field(
+        default=None,
+        description="Merged request preview using the selected evidence strategy.",
+        alias="mergedRequest",
+    )
+
+
+class ReconcileProductUseEvidenceInput(StrictModel):
+    schema_version: Literal["reconcileProductUseEvidenceInput.v1"] = (
+        "reconcileProductUseEvidenceInput.v1"
+    )
+    request: ExposureScenarioRequest = Field(..., description="Scenario request to reconcile.")
+    evidence_records: list[ProductUseEvidenceRecord] = Field(
+        ...,
+        min_length=1,
+        description="Evidence records to compare and reconcile.",
+        alias="evidenceRecords",
+    )
+    require_auto_apply_safe: bool = Field(
+        default=False,
+        alias="requireAutoApplySafe",
+        description=(
+            "When true, any review-needed primary recommendation is surfaced as manual review "
+            "instead of apply-with-review."
+        ),
     )
 
 
@@ -549,44 +929,849 @@ class PbpkExternalImportPackage(StrictModel):
     compatibility_report: PbpkCompatibilityReport = Field(..., alias="compatibilityReport")
 
 
+class RunIntegratedExposureWorkflowInput(StrictModel):
+    schema_version: Literal["runIntegratedExposureWorkflowInput.v1"] = (
+        "runIntegratedExposureWorkflowInput.v1"
+    )
+    request: (
+        ExposureScenarioRequest | InhalationScenarioRequest | InhalationTier1ScenarioRequest
+    ) = Field(..., description="Scenario request to enrich, build, and optionally export.")
+    comp_tox_record: CompToxChemicalRecord | None = Field(
+        default=None,
+        alias="compToxRecord",
+        description="Optional normalized CompTox record to convert into product-use evidence.",
+    )
+    cons_expo_records: list[ConsExpoEvidenceRecord] = Field(
+        default_factory=list,
+        alias="consExpoRecords",
+        description="Optional ConsExpo records to normalize into product-use evidence.",
+    )
+    evidence_records: list[ProductUseEvidenceRecord] = Field(
+        default_factory=list,
+        alias="evidenceRecords",
+        description="Additional evidence records such as user uploads or dossiers.",
+    )
+    require_auto_apply_safe: bool = Field(
+        default=False,
+        alias="requireAutoApplySafe",
+        description=(
+            "When true, only evidence that is safe to auto-apply can modify the effective "
+            "request. Otherwise, review-needed evidence can still be applied with traceable "
+            "warnings."
+        ),
+    )
+    continue_on_evidence_reject: bool = Field(
+        default=True,
+        alias="continueOnEvidenceReject",
+        description=(
+            "When true, build the scenario from the source request if all evidence is rejected."
+        ),
+    )
+    export_pbpk_scenario_input: bool = Field(
+        default=True,
+        alias="exportPbpkScenarioInput",
+        description="Whether to export the normalized PBPK scenario input object.",
+    )
+    export_pbpk_external_import_bundle: bool = Field(
+        default=True,
+        alias="exportPbpkExternalImportBundle",
+        description="Whether to export the PBPK external-import bundle package.",
+    )
+    pbpk_regimen_name: str | None = Field(
+        default=None,
+        alias="pbpkRegimenName",
+        description="Optional regimen label for the PBPK scenario-input export.",
+    )
+    pbpk_context_of_use: str = Field(
+        default="screening-brief",
+        alias="pbpkContextOfUse",
+        description="Context label for the PBPK external-import bundle.",
+    )
+    pbpk_requested_output: str | None = Field(
+        default=None,
+        alias="pbpkRequestedOutput",
+        description="Optional target PBPK output label for the external-import bundle.",
+    )
+    pbpk_scientific_purpose: str = Field(
+        default="external exposure scenario translation for PBPK",
+        alias="pbpkScientificPurpose",
+        description="Scientific purpose text preserved in the PBPK external-import bundle.",
+    )
+    pbpk_decision_context: str = Field(
+        default="upstream external exposure context only",
+        alias="pbpkDecisionContext",
+        description="Decision-context text preserved in the PBPK external-import bundle.",
+    )
+
+
+class IntegratedExposureWorkflowResult(StrictModel):
+    schema_version: Literal["integratedExposureWorkflowResult.v1"] = (
+        "integratedExposureWorkflowResult.v1"
+    )
+    chemical_id: str = Field(..., alias="chemicalId")
+    source_request: (
+        ExposureScenarioRequest | InhalationScenarioRequest | InhalationTier1ScenarioRequest
+    ) = Field(
+        ...,
+        alias="sourceRequest",
+    )
+    effective_request: (
+        ExposureScenarioRequest | InhalationScenarioRequest | InhalationTier1ScenarioRequest
+    ) = Field(
+        ...,
+        alias="effectiveRequest",
+    )
+    evidence_strategy: Literal[
+        "source_request_only",
+        "reconciled_evidence_applied",
+        "reconciled_evidence_applied_with_review",
+        "evidence_rejected_source_request_retained",
+    ] = Field(..., alias="evidenceStrategy")
+    normalized_evidence_records: list[ProductUseEvidenceRecord] = Field(
+        default_factory=list,
+        alias="normalizedEvidenceRecords",
+    )
+    reconciliation_report: ProductUseEvidenceReconciliationReport | None = Field(
+        default=None,
+        alias="reconciliationReport",
+    )
+    selected_evidence_source_name: str | None = Field(
+        default=None,
+        alias="selectedEvidenceSourceName",
+    )
+    selected_evidence_source_kind: str | None = Field(
+        default=None,
+        alias="selectedEvidenceSourceKind",
+    )
+    manual_review_required: bool = Field(..., alias="manualReviewRequired")
+    scenario: ExposureScenario
+    pbpk_compatibility_report: PbpkCompatibilityReport = Field(
+        ...,
+        alias="pbpkCompatibilityReport",
+    )
+    pbpk_scenario_input: PbpkScenarioInput | None = Field(
+        default=None,
+        alias="pbpkScenarioInput",
+    )
+    pbpk_external_import_package: PbpkExternalImportPackage | None = Field(
+        default=None,
+        alias="pbpkExternalImportPackage",
+    )
+    workflow_notes: list[str] = Field(default_factory=list, alias="workflowNotes")
+    quality_flags: list[QualityFlag] = Field(default_factory=list, alias="qualityFlags")
+    limitations: list[LimitationNote] = Field(default_factory=list)
+    provenance: ProvenanceBundle
+
+
 def apply_comptox_enrichment(
     request: ExposureScenarioRequest,
     record: CompToxChemicalRecord,
 ) -> ExposureScenarioRequest:
     """Merge CompTox identity and discovery context into a scenario request."""
 
-    ensure(
-        request.chemical_id == record.chemical_id,
-        "comptox_identity_mismatch",
-        "CompTox enrichment record does not match the request chemical_id.",
-        suggestion=(
-            "Pass a CompTox record for the same chemical referenced by the scenario request."
-        ),
-        request_chemical_id=request.chemical_id,
-        comp_tox_chemical_id=record.chemical_id,
+    enriched = apply_product_use_evidence(
+        request,
+        build_product_use_evidence_from_comptox(record),
     )
-
-    updated_product_profile = request.product_use_profile
-    if (
-        record.product_use_categories
-        and updated_product_profile.product_category not in record.product_use_categories
-    ):
-        updated_product_profile = updated_product_profile.model_copy(
-            update={"product_category": record.product_use_categories[0]}
-        )
-
-    overrides = dict(request.assumption_overrides)
+    overrides = dict(enriched.assumption_overrides)
     if record.casrn:
         overrides["comptox_casrn"] = record.casrn
     if record.evidence_sources:
         overrides["comptox_primary_evidence"] = record.evidence_sources[0]
+    return enriched.model_copy(update={"assumption_overrides": overrides})
 
-    return request.model_copy(
-        update={
-            "chemical_name": request.chemical_name or record.preferred_name,
-            "product_use_profile": updated_product_profile,
-            "assumption_overrides": overrides,
-        }
+
+def build_product_use_evidence_from_comptox(
+    record: CompToxChemicalRecord,
+    *,
+    region_scopes: list[str] | None = None,
+    jurisdictions: list[str] | None = None,
+    review_status: Literal["reviewed", "provisional", "unreviewed"] = "reviewed",
+) -> ProductUseEvidenceRecord:
+    """Map the compact CompTox enrichment record into the generic evidence contract."""
+
+    return ProductUseEvidenceRecord(
+        chemical_id=record.chemical_id,
+        preferred_name=record.preferred_name,
+        casrn=record.casrn,
+        source_name="EPA CompTox",
+        source_kind="comptox",
+        review_status=review_status,
+        product_use_categories=list(record.product_use_categories),
+        region_scopes=list(region_scopes or []),
+        jurisdictions=list(jurisdictions or ["US"]),
+        physchem_summary=dict(record.physchem_summary),
+        evidence_sources=list(record.evidence_sources),
+        notes=[
+            "Derived from the compact CompTox identity/use-context enrichment record.",
+        ],
+    )
+
+
+def _normalize_tokens(values: list[str]) -> set[str]:
+    return {value.strip().lower() for value in values if value and value.strip()}
+
+
+def _normalize_product_group(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", value.strip().lower()).strip("_")
+
+
+def _normalize_product_subtype_token(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", value.strip().lower()).strip("_")
+
+
+def _map_consexpo_product_subtype(record: ConsExpoEvidenceRecord) -> str | None:
+    subgroup = (record.product_subgroup or "").strip()
+    if not subgroup:
+        return None
+
+    normalized_group = _normalize_product_group(record.product_group)
+    normalized_subgroup = _normalize_product_subtype_token(subgroup)
+
+    if normalized_group in {"pest_control_products", "pest_control"}:
+        if (
+            ("air" in normalized_subgroup and "space" in normalized_subgroup)
+            or "airspace" in normalized_subgroup
+            or "space_spray" in normalized_subgroup
+            or "space_aerosol" in normalized_subgroup
+        ):
+            return "air_space_insecticide"
+        if "crack" in normalized_subgroup and "crevice" in normalized_subgroup:
+            return "crack_and_crevice_insecticide"
+        if "spot" in normalized_subgroup or "targeted" in normalized_subgroup:
+            return "targeted_spot_insecticide"
+        if "trigger" in normalized_subgroup and (
+            "indoor" in normalized_subgroup
+            or "surface" in normalized_subgroup
+            or "insect" in normalized_subgroup
+        ):
+            return "indoor_surface_insecticide"
+
+    if normalized_group in {"disinfecting_products", "disinfectants"}:
+        if "trigger" in normalized_subgroup and "surface" in normalized_subgroup:
+            return "surface_trigger_spray_disinfectant"
+
+    return None
+
+
+CONSEXPO_PRODUCT_GROUP_CATEGORY_MAP: dict[str, list[str]] = {
+    "cosmetics": ["personal_care"],
+    "cosmetic_products": ["personal_care"],
+    "cleaning_products": ["household_cleaner"],
+    "disinfecting_products": ["disinfectant", "household_cleaner", "biocide"],
+    "disinfectants": ["disinfectant", "household_cleaner", "biocide"],
+    "paint_products": ["paint_coating", "do_it_yourself"],
+    "paints": ["paint_coating", "do_it_yourself"],
+    "do_it_yourself_products": ["do_it_yourself"],
+    "diy": ["do_it_yourself"],
+    "pest_control_products": ["pest_control", "pesticide", "biocide"],
+    "pest_control": ["pest_control", "pesticide", "biocide"],
+}
+
+
+def build_product_use_evidence_from_consexpo(
+    record: ConsExpoEvidenceRecord,
+) -> ProductUseEvidenceRecord:
+    """Map a ConsExpo fact-sheet record into the generic product-use evidence contract."""
+
+    normalized_group = _normalize_product_group(record.product_group)
+    mapped_categories = list(
+        CONSEXPO_PRODUCT_GROUP_CATEGORY_MAP.get(normalized_group, [normalized_group])
+    )
+    notes = list(record.notes)
+    notes.append(
+        "Mapped from ConsExpo product_group "
+        f"`{record.product_group}` to internal categories {mapped_categories}."
+    )
+    if record.product_subgroup:
+        notes.append(f"ConsExpo product_subgroup: {record.product_subgroup}.")
+    mapped_subtype = _map_consexpo_product_subtype(record)
+    if mapped_subtype:
+        notes.append(f"Mapped ConsExpo product_subgroup to internal subtype `{mapped_subtype}`.")
+    elif record.product_subgroup:
+        notes.append(
+            "No internal product_subtype mapping was registered for the ConsExpo subgroup; "
+            "the subgroup label is preserved in product_name only."
+        )
+    if record.model_family:
+        notes.append(f"ConsExpo model_family: {record.model_family}.")
+    if record.supported_routes:
+        notes.append(
+            "ConsExpo supported routes: "
+            + ", ".join(route.value for route in record.supported_routes)
+            + "."
+        )
+
+    evidence_sources = list(record.evidence_sources)
+    if not evidence_sources:
+        evidence_sources = [f"ConsExpo:{record.fact_sheet_id}"]
+
+    return ProductUseEvidenceRecord(
+        chemical_id=record.chemical_id,
+        preferred_name=record.preferred_name,
+        casrn=record.casrn,
+        source_name="RIVM ConsExpo",
+        source_kind="consexpo",
+        review_status="reviewed",
+        source_record_id=record.fact_sheet_id,
+        source_locator=record.fact_sheet_locator,
+        product_name=record.product_subgroup,
+        product_subtype=mapped_subtype,
+        product_use_categories=mapped_categories,
+        physical_forms=list(record.physical_forms),
+        application_methods=list(record.application_methods),
+        retention_types=list(record.retention_types),
+        region_scopes=list(record.region_scopes),
+        jurisdictions=list(record.jurisdictions),
+        physchem_summary=dict(record.physchem_summary),
+        evidence_sources=evidence_sources,
+        notes=notes,
+    )
+
+
+def _coerce_base_request(request: ExposureScenarioRequest) -> ExposureScenarioRequest:
+    """Drop request-subclass-only fields so enrichment outputs stay on the base contract."""
+
+    payload = request.model_dump(
+        mode="json",
+        by_alias=True,
+        include=set(ExposureScenarioRequest.model_fields),
+    )
+    payload["schema_version"] = "exposureScenarioRequest.v1"
+    return ExposureScenarioRequest.model_validate(payload)
+
+
+def _region_match_score(request_region: str, evidence: ProductUseEvidenceRecord) -> int:
+    request_region_token = request_region.strip().lower()
+    evidence_regions = _normalize_tokens(evidence.region_scopes)
+    evidence_jurisdictions = _normalize_tokens(evidence.jurisdictions)
+    if request_region_token in evidence_regions:
+        return 3
+    if "global" in evidence_regions:
+        return 2
+    if request_region_token in evidence_jurisdictions:
+        return 1
+    return 0
+
+
+def _review_status_rank(review_status: Literal["reviewed", "provisional", "unreviewed"]) -> int:
+    return {
+        "reviewed": 2,
+        "provisional": 1,
+        "unreviewed": 0,
+    }[review_status]
+
+
+def _source_kind_rank(
+    source_kind: Literal[
+        "comptox",
+        "consexpo",
+        "regulatory_dossier",
+        "literature_pack",
+        "user_upload",
+        "other",
+    ],
+) -> int:
+    return {
+        "regulatory_dossier": 4,
+        "consexpo": 3,
+        "literature_pack": 2,
+        "user_upload": 2,
+        "comptox": 1,
+        "other": 0,
+    }[source_kind]
+
+
+def _fit_rank_key(
+    request: ExposureScenarioRequest,
+    evidence: ProductUseEvidenceRecord,
+    report: ProductUseEvidenceFitReport,
+) -> tuple[int, int, int, int, int, int, int, int]:
+    return (
+        int(report.compatible),
+        _region_match_score(request.population_profile.region, evidence),
+        _review_status_rank(evidence.review_status),
+        int(report.auto_apply_safe),
+        len(report.matched_fields),
+        -len(report.warnings),
+        _source_kind_rank(evidence.source_kind),
+        len(evidence.evidence_sources),
+    )
+
+
+def _normalized_conflict_value(values: list[str]) -> str | None:
+    normalized = sorted(_normalize_tokens(values))
+    if not normalized:
+        return None
+    return ",".join(normalized)
+
+
+def _build_product_use_conflicts(
+    compatible_pairs: list[tuple[ProductUseEvidenceRecord, ProductUseEvidenceFitReport]],
+) -> list[str]:
+    conflicts: list[str] = []
+    if len(compatible_pairs) < 2:
+        return conflicts
+
+    category_values = {
+        value
+        for evidence, _ in compatible_pairs
+        if (value := _normalized_conflict_value(evidence.product_use_categories)) is not None
+    }
+    if len(category_values) > 1:
+        conflicts.append(
+            "Compatible evidence sources disagree on product_use_categories: "
+            + "; ".join(
+                f"{evidence.source_name}={_normalized_conflict_value(evidence.product_use_categories)}"
+                for evidence, _ in compatible_pairs
+                if evidence.product_use_categories
+            )
+        )
+
+    product_names = {
+        evidence.product_name.strip(): evidence.source_name
+        for evidence, _ in compatible_pairs
+        if evidence.product_name and evidence.product_name.strip()
+    }
+    if len(product_names) > 1:
+        conflicts.append(
+            "Compatible evidence sources disagree on product_name: "
+            + "; ".join(
+                f"{source_name}={product_name}"
+                for product_name, source_name in sorted(product_names.items())
+            )
+        )
+    product_subtypes = {
+        evidence.product_subtype.strip(): evidence.source_name
+        for evidence, _ in compatible_pairs
+        if evidence.product_subtype and evidence.product_subtype.strip()
+    }
+    if len(product_subtypes) > 1:
+        conflicts.append(
+            "Compatible evidence sources disagree on product_subtype: "
+            + "; ".join(
+                f"{source_name}={product_subtype}"
+                for product_subtype, source_name in sorted(product_subtypes.items())
+            )
+        )
+
+    density_values = {
+        float(density): evidence.source_name
+        for evidence, _ in compatible_pairs
+        if isinstance(
+            (density := evidence.physchem_summary.get("density_g_per_ml")),
+            int | float,
+        )
+        and not isinstance(density, bool)
+    }
+    if len(density_values) > 1:
+        conflicts.append(
+            "Compatible evidence sources disagree on density_g_per_ml: "
+            + "; ".join(
+                f"{source_name}={density:g}"
+                for density, source_name in sorted(density_values.items())
+            )
+        )
+
+    return conflicts
+
+
+def assess_product_use_evidence_fit(
+    request: ExposureScenarioRequest,
+    evidence: ProductUseEvidenceRecord,
+) -> ProductUseEvidenceFitReport:
+    """Assess whether external product-use evidence fits the current request."""
+
+    matched_fields: list[str] = []
+    suggested_updates: list[str] = []
+    warnings: list[str] = []
+    blocking_issues: list[str] = []
+
+    if request.chemical_id != evidence.chemical_id:
+        blocking_issues.append(
+            "chemical_id does not match between the request and the product-use evidence record."
+        )
+
+    updated_product_profile = request.product_use_profile
+    updated_request_name = request.chemical_name
+
+    request_region = request.population_profile.region
+    request_region_token = request_region.strip().lower()
+    evidence_regions = _normalize_tokens(evidence.region_scopes)
+    evidence_jurisdictions = _normalize_tokens(evidence.jurisdictions)
+
+    if evidence_regions:
+        if request_region_token in evidence_regions or "global" in evidence_regions:
+            matched_fields.append("region")
+        else:
+            warnings.append(
+                "Evidence region_scopes do not include the request region "
+                f"`{request.population_profile.region}`."
+            )
+    elif evidence_jurisdictions and request_region_token not in evidence_jurisdictions:
+        warnings.append(
+            "Evidence jurisdictions "
+            f"{sorted(evidence.jurisdictions)} may not match request region "
+            f"`{request.population_profile.region}`."
+        )
+
+    evidence_categories = list(evidence.product_use_categories)
+    if evidence_categories:
+        if updated_product_profile.product_category in evidence_categories:
+            matched_fields.append("product_category")
+        else:
+            updated_product_profile = updated_product_profile.model_copy(
+                update={"product_category": evidence_categories[0]}
+            )
+            suggested_updates.append("product_use_profile.product_category")
+            warnings.append(
+                "Request product_category "
+                f"`{request.product_use_profile.product_category}` is not listed in the "
+                f"evidence categories {evidence.product_use_categories}; the first evidence "
+                "category is suggested instead."
+            )
+
+    evidence_forms = _normalize_tokens(evidence.physical_forms)
+    if evidence_forms:
+        if updated_product_profile.physical_form.lower() in evidence_forms:
+            matched_fields.append("physical_form")
+        else:
+            blocking_issues.append(
+                "Request physical_form "
+                f"`{request.product_use_profile.physical_form}` is outside the evidence-backed "
+                f"forms {sorted(evidence.physical_forms)}."
+            )
+
+    evidence_methods = _normalize_tokens(evidence.application_methods)
+    if evidence_methods:
+        if updated_product_profile.application_method.lower() in evidence_methods:
+            matched_fields.append("application_method")
+        else:
+            blocking_issues.append(
+                "Request application_method "
+                f"`{request.product_use_profile.application_method}` is outside the "
+                f"evidence-backed methods {sorted(evidence.application_methods)}."
+            )
+
+    evidence_retention_types = _normalize_tokens(evidence.retention_types)
+    if evidence_retention_types:
+        if updated_product_profile.retention_type.lower() in evidence_retention_types:
+            matched_fields.append("retention_type")
+        else:
+            warnings.append(
+                "Request retention_type "
+                f"`{request.product_use_profile.retention_type}` is not listed in the "
+                f"evidence-backed retention types {sorted(evidence.retention_types)}."
+            )
+
+    if evidence.product_subtype:
+        request_subtype = (updated_product_profile.product_subtype or "").strip().lower()
+        evidence_subtype = evidence.product_subtype.strip().lower()
+        if request_subtype:
+            if request_subtype == evidence_subtype:
+                matched_fields.append("product_subtype")
+            else:
+                blocking_issues.append(
+                    "Request product_subtype "
+                    f"`{request.product_use_profile.product_subtype}` is outside the "
+                    f"evidence-backed subtype `{evidence.product_subtype}`."
+                )
+        else:
+            updated_product_profile = updated_product_profile.model_copy(
+                update={"product_subtype": evidence.product_subtype}
+            )
+            suggested_updates.append("product_use_profile.product_subtype")
+
+    if evidence.product_name and not updated_product_profile.product_name:
+        updated_product_profile = updated_product_profile.model_copy(
+            update={"product_name": evidence.product_name}
+        )
+        suggested_updates.append("product_use_profile.product_name")
+
+    evidence_density = evidence.physchem_summary.get("density_g_per_ml")
+    if isinstance(evidence_density, int | float) and not isinstance(evidence_density, bool):
+        resolved_density = float(evidence_density)
+        if updated_product_profile.density_g_per_ml is None:
+            updated_product_profile = updated_product_profile.model_copy(
+                update={"density_g_per_ml": resolved_density}
+            )
+            suggested_updates.append("product_use_profile.density_g_per_ml")
+        elif abs(updated_product_profile.density_g_per_ml - resolved_density) < 1e-12:
+            matched_fields.append("density_g_per_ml")
+        else:
+            warnings.append(
+                "Request density_g_per_ml "
+                f"`{updated_product_profile.density_g_per_ml}` differs from the "
+                f"evidence-backed value `{resolved_density}`; keeping the explicit request "
+                "value."
+            )
+
+    if evidence.preferred_name and not updated_request_name:
+        updated_request_name = evidence.preferred_name
+        suggested_updates.append("chemical_name")
+
+    overrides = dict(request.assumption_overrides)
+    overrides["external_product_use_source_name"] = evidence.source_name
+    overrides["external_product_use_source_kind"] = evidence.source_kind
+    overrides["external_product_use_review_status"] = evidence.review_status
+    suggested_updates.append("assumption_overrides.external_product_use_source_name")
+    if evidence.source_record_id:
+        overrides["external_product_use_source_record_id"] = evidence.source_record_id
+    if evidence.source_locator:
+        overrides["external_product_use_source_locator"] = evidence.source_locator
+    if evidence.casrn:
+        overrides["external_product_use_casrn"] = evidence.casrn
+    if evidence.evidence_sources:
+        overrides["external_product_use_primary_evidence"] = evidence.evidence_sources[0]
+    if evidence.region_scopes:
+        overrides["external_product_use_region_scopes"] = ",".join(evidence.region_scopes)
+    if evidence.jurisdictions:
+        overrides["external_product_use_jurisdictions"] = ",".join(evidence.jurisdictions)
+    if evidence.product_use_categories:
+        overrides["external_product_use_categories"] = ",".join(evidence.product_use_categories)
+    if evidence.product_subtype:
+        overrides["external_product_use_subtype"] = evidence.product_subtype
+    for key, value in sorted(evidence.physchem_summary.items()):
+        overrides[f"external_product_use_physchem_{key}"] = value
+
+    suggested_request = _coerce_base_request(
+        request.model_copy(
+            update={
+                "chemical_name": updated_request_name,
+                "product_use_profile": updated_product_profile,
+                "assumption_overrides": overrides,
+            }
+        )
+    )
+
+    compatible = not blocking_issues
+    auto_apply_safe = compatible and not warnings
+    if blocking_issues:
+        recommendation: Literal["accept", "accept_with_review", "manual_review", "reject"] = (
+            "reject"
+        )
+    elif warnings:
+        recommendation = "accept_with_review"
+    elif suggested_updates:
+        recommendation = "accept"
+    else:
+        recommendation = "accept"
+
+    return ProductUseEvidenceFitReport(
+        chemical_id=request.chemical_id,
+        evidence_source_name=evidence.source_name,
+        evidence_source_kind=evidence.source_kind,
+        request_region=request.population_profile.region,
+        compatible=compatible,
+        auto_apply_safe=auto_apply_safe,
+        recommendation=recommendation,
+        matched_fields=matched_fields,
+        suggested_updates=sorted(set(suggested_updates)),
+        warnings=warnings,
+        blocking_issues=blocking_issues,
+        suggested_request=suggested_request,
+    )
+
+
+def apply_product_use_evidence(
+    request: ExposureScenarioRequest,
+    evidence: ProductUseEvidenceRecord,
+    *,
+    require_auto_apply_safe: bool = False,
+) -> ExposureScenarioRequest:
+    """Apply generic product-use evidence to a request when the fit is acceptable."""
+
+    report = assess_product_use_evidence_fit(request, evidence)
+    ensure(
+        report.compatible,
+        "product_use_evidence_incompatible",
+        "External product-use evidence is not compatible with the current request.",
+        suggestion="Review the blocking issues and revise the request or evidence record.",
+        blocking_issues=report.blocking_issues,
+        warnings=report.warnings,
+        evidence_source_name=evidence.source_name,
+    )
+    if require_auto_apply_safe:
+        ensure(
+            report.auto_apply_safe,
+            "product_use_evidence_requires_review",
+            "External product-use evidence requires human review before auto-application.",
+            suggestion="Review the warnings or call the fit-assessment tool before applying.",
+            warnings=report.warnings,
+            evidence_source_name=evidence.source_name,
+        )
+    return report.suggested_request
+
+
+def reconcile_product_use_evidence(
+    request: ExposureScenarioRequest,
+    evidence_records: list[ProductUseEvidenceRecord],
+    *,
+    require_auto_apply_safe: bool = False,
+) -> ProductUseEvidenceReconciliationReport:
+    """Reconcile multiple evidence records into one merged request preview."""
+
+    ensure(
+        bool(evidence_records),
+        "product_use_evidence_missing",
+        "At least one product-use evidence record is required for reconciliation.",
+    )
+
+    fit_pairs = [
+        (evidence, assess_product_use_evidence_fit(request, evidence))
+        for evidence in evidence_records
+    ]
+    compatible_pairs = [
+        (evidence, report) for evidence, report in fit_pairs if report.compatible
+    ]
+    considered_sources = [evidence.source_name for evidence, _ in fit_pairs]
+    compatible_sources = [evidence.source_name for evidence, _ in compatible_pairs]
+
+    if not compatible_pairs:
+        return ProductUseEvidenceReconciliationReport(
+            chemical_id=request.chemical_id,
+            request_region=request.population_profile.region,
+            considered_sources=considered_sources,
+            compatible_sources=[],
+            recommended_source_name=None,
+            recommended_source_kind=None,
+            recommendation="reject",
+            manual_review_required=True,
+            conflicts=[],
+            rationale=[
+                "No supplied evidence record was compatible with the current request.",
+            ],
+            field_sources={},
+            fit_reports=[report for _, report in fit_pairs],
+            merged_request=None,
+        )
+
+    ranked_pairs = sorted(
+        compatible_pairs,
+        key=lambda pair: _fit_rank_key(request, pair[0], pair[1]),
+        reverse=True,
+    )
+    primary_evidence, primary_report = ranked_pairs[0]
+    merged_request = primary_report.suggested_request
+    updated_product_profile = merged_request.product_use_profile
+    updated_request_name = merged_request.chemical_name
+    field_sources: dict[str, str] = {}
+
+    if updated_request_name != request.chemical_name and updated_request_name is not None:
+        field_sources["chemical_name"] = primary_evidence.source_name
+    if (
+        updated_product_profile.product_category
+        != request.product_use_profile.product_category
+    ):
+        field_sources["product_use_profile.product_category"] = primary_evidence.source_name
+    if (
+        updated_product_profile.product_subtype
+        != request.product_use_profile.product_subtype
+        and updated_product_profile.product_subtype is not None
+    ):
+        field_sources["product_use_profile.product_subtype"] = primary_evidence.source_name
+    if (
+        updated_product_profile.product_name != request.product_use_profile.product_name
+        and updated_product_profile.product_name is not None
+    ):
+        field_sources["product_use_profile.product_name"] = primary_evidence.source_name
+    if (
+        request.product_use_profile.density_g_per_ml is None
+        and updated_product_profile.density_g_per_ml is not None
+    ):
+        field_sources["product_use_profile.density_g_per_ml"] = primary_evidence.source_name
+
+    secondary_sources: list[str] = []
+    for evidence, _report in ranked_pairs[1:]:
+        contributed = False
+        if updated_request_name is None and evidence.preferred_name:
+            updated_request_name = evidence.preferred_name
+            field_sources["chemical_name"] = evidence.source_name
+            contributed = True
+        if updated_product_profile.product_subtype is None and evidence.product_subtype:
+            updated_product_profile = updated_product_profile.model_copy(
+                update={"product_subtype": evidence.product_subtype}
+            )
+            field_sources["product_use_profile.product_subtype"] = evidence.source_name
+            contributed = True
+        if updated_product_profile.product_name is None and evidence.product_name:
+            updated_product_profile = updated_product_profile.model_copy(
+                update={"product_name": evidence.product_name}
+            )
+            field_sources["product_use_profile.product_name"] = evidence.source_name
+            contributed = True
+        evidence_density = evidence.physchem_summary.get("density_g_per_ml")
+        if (
+            updated_product_profile.density_g_per_ml is None
+            and isinstance(evidence_density, int | float)
+            and not isinstance(evidence_density, bool)
+        ):
+            updated_product_profile = updated_product_profile.model_copy(
+                update={"density_g_per_ml": float(evidence_density)}
+            )
+            field_sources["product_use_profile.density_g_per_ml"] = evidence.source_name
+            contributed = True
+        if contributed:
+            secondary_sources.append(evidence.source_name)
+
+    overrides = dict(merged_request.assumption_overrides)
+    overrides["external_product_use_primary_source_name"] = primary_evidence.source_name
+    overrides["external_product_use_considered_sources"] = ",".join(considered_sources)
+    overrides["external_product_use_compatible_sources"] = ",".join(compatible_sources)
+    if secondary_sources:
+        overrides["external_product_use_secondary_sources"] = ",".join(secondary_sources)
+    for field_name, source_name in sorted(field_sources.items()):
+        overrides[f"external_product_use_field_source_{field_name.replace('.', '_')}"] = (
+            source_name
+        )
+
+    merged_request = _coerce_base_request(
+        merged_request.model_copy(
+            update={
+                "chemical_name": updated_request_name,
+                "product_use_profile": updated_product_profile,
+                "assumption_overrides": overrides,
+            }
+        )
+    )
+
+    conflicts = _build_product_use_conflicts(compatible_pairs)
+    manual_review_required = (not primary_report.auto_apply_safe) or bool(conflicts)
+    if require_auto_apply_safe and manual_review_required:
+        recommendation: Literal["apply", "apply_with_review", "manual_review", "reject"] = (
+            "manual_review"
+        )
+    elif manual_review_required:
+        recommendation = "apply_with_review"
+    else:
+        recommendation = "apply"
+
+    rationale = [
+        f"Selected `{primary_evidence.source_name}` as the primary evidence source.",
+    ]
+    if _region_match_score(request.population_profile.region, primary_evidence):
+        rationale.append("Primary source matches the request region or jurisdiction context.")
+    if primary_evidence.review_status == "reviewed":
+        rationale.append("Primary source is marked as reviewed.")
+    if secondary_sources:
+        rationale.append(
+            "Secondary compatible sources only filled missing additive fields."
+        )
+
+    return ProductUseEvidenceReconciliationReport(
+        chemical_id=request.chemical_id,
+        request_region=request.population_profile.region,
+        considered_sources=considered_sources,
+        compatible_sources=compatible_sources,
+        recommended_source_name=primary_evidence.source_name,
+        recommended_source_kind=primary_evidence.source_kind,
+        recommendation=recommendation,
+        manual_review_required=manual_review_required,
+        conflicts=conflicts,
+        rationale=rationale,
+        field_sources=field_sources,
+        fit_reports=[report for _, report in fit_pairs],
+        merged_request=merged_request,
     )
 
 
@@ -1206,6 +2391,243 @@ def build_pbpk_external_import_package(
         tool_call=tool_call,
         toxclaw_module_params=toxclaw_module_params,
         compatibility_report=check_pbpk_compatibility(scenario),
+    )
+
+
+def run_integrated_exposure_workflow(
+    params: RunIntegratedExposureWorkflowInput,
+    *,
+    registry: DefaultsRegistry | None = None,
+    generated_at: str | None = None,
+) -> IntegratedExposureWorkflowResult:
+    """Run the local end-to-end evidence -> exposure -> PBPK handoff workflow."""
+
+    registry = registry or DefaultsRegistry.load()
+    source_request = params.request
+    quality_flags: list[QualityFlag] = []
+    limitations: list[LimitationNote] = []
+    workflow_notes: list[str] = []
+
+    normalized_evidence_records: list[ProductUseEvidenceRecord] = []
+    if params.comp_tox_record is not None:
+        normalized_evidence_records.append(
+            build_product_use_evidence_from_comptox(params.comp_tox_record)
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_comptox_normalized",
+                severity=Severity.INFO,
+                message="CompTox record was normalized into the generic evidence contract.",
+            )
+        )
+    if params.cons_expo_records:
+        normalized_evidence_records.extend(
+            build_product_use_evidence_from_consexpo(record) for record in params.cons_expo_records
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_consexpo_normalized",
+                severity=Severity.INFO,
+                message=(
+                    f"Normalized {len(params.cons_expo_records)} ConsExpo record(s) into the "
+                    "generic evidence contract."
+                ),
+            )
+        )
+    if params.evidence_records:
+        normalized_evidence_records.extend(params.evidence_records)
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_user_evidence_attached",
+                severity=Severity.INFO,
+                message=(
+                    f"Attached {len(params.evidence_records)} additional evidence record(s) "
+                    "to the integrated workflow."
+                ),
+            )
+        )
+
+    reconciliation_report: ProductUseEvidenceReconciliationReport | None = None
+    effective_request = source_request
+    evidence_strategy: Literal[
+        "source_request_only",
+        "reconciled_evidence_applied",
+        "reconciled_evidence_applied_with_review",
+        "evidence_rejected_source_request_retained",
+    ] = "source_request_only"
+    manual_review_required = False
+    selected_evidence_source_name: str | None = None
+    selected_evidence_source_kind: str | None = None
+
+    if normalized_evidence_records:
+        reconciliation_report = reconcile_product_use_evidence(
+            source_request,
+            normalized_evidence_records,
+            require_auto_apply_safe=params.require_auto_apply_safe,
+        )
+        selected_evidence_source_name = reconciliation_report.recommended_source_name
+        selected_evidence_source_kind = reconciliation_report.recommended_source_kind
+        manual_review_required = reconciliation_report.manual_review_required
+
+        if reconciliation_report.merged_request is not None:
+            effective_request = _restore_request_contract(
+                source_request,
+                reconciliation_report.merged_request,
+            )
+            if reconciliation_report.recommendation == "apply":
+                evidence_strategy = "reconciled_evidence_applied"
+                workflow_notes.append(
+                    "Built the effective request from reconciled evidence without review-only "
+                    "conflicts."
+                )
+            else:
+                evidence_strategy = "reconciled_evidence_applied_with_review"
+                workflow_notes.append(
+                    "Built the effective request from reconciled evidence, but manual review "
+                    "is still required."
+                )
+                quality_flags.append(
+                    QualityFlag(
+                        code="integrated_workflow_evidence_review_required",
+                        severity=Severity.WARNING,
+                        message=(
+                            "Evidence reconciliation selected a usable source, but the merged "
+                            "request still requires human review."
+                        ),
+                    )
+                )
+        else:
+            ensure(
+                params.continue_on_evidence_reject,
+                "integrated_workflow_evidence_rejected",
+                "No compatible evidence could be applied in the integrated workflow.",
+                suggestion=(
+                    "Revise the evidence records or rerun with continueOnEvidenceReject=true "
+                    "to keep the original request."
+                ),
+                considered_sources=reconciliation_report.considered_sources,
+            )
+            evidence_strategy = "evidence_rejected_source_request_retained"
+            manual_review_required = True
+            workflow_notes.append(
+                "All supplied evidence was rejected, so the workflow retained the source request."
+            )
+            quality_flags.append(
+                QualityFlag(
+                    code="integrated_workflow_evidence_rejected_source_request_retained",
+                    severity=Severity.WARNING,
+                    message=(
+                        "No compatible evidence was available; the workflow retained the "
+                        "source request."
+                    ),
+                )
+            )
+            limitations.append(
+                LimitationNote(
+                    code="integrated_workflow_no_compatible_evidence",
+                    severity=Severity.WARNING,
+                    message=(
+                        "The scenario was built from the source request because all supplied "
+                        "evidence records were incompatible."
+                    ),
+                )
+            )
+    else:
+        workflow_notes.append(
+            "No external evidence records were supplied, so the source request was built as-is."
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_source_request_only",
+                severity=Severity.INFO,
+                message="The integrated workflow proceeded without external evidence records.",
+            )
+        )
+
+    scenario = _build_scenario_from_request(
+        effective_request,
+        registry,
+        generated_at=generated_at,
+    )
+    quality_flags.append(
+        QualityFlag(
+            code="integrated_workflow_scenario_built",
+            severity=Severity.INFO,
+            message=(
+                f"Built scenario `{scenario.scenario_id}` from the effective reconciled request."
+            ),
+        )
+    )
+
+    pbpk_compatibility_report = check_pbpk_compatibility(scenario)
+    if any(item.severity == Severity.ERROR for item in pbpk_compatibility_report.issues):
+        manual_review_required = True
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_pbpk_not_ready",
+                severity=Severity.WARNING,
+                message=(
+                    "PBPK compatibility checks found blocking issues for the current scenario."
+                ),
+            )
+        )
+
+    pbpk_scenario_input: PbpkScenarioInput | None = None
+    if params.export_pbpk_scenario_input:
+        pbpk_scenario_input = export_pbpk_input(
+            ExportPbpkScenarioInputRequest(
+                scenario=scenario,
+                regimen_name=params.pbpk_regimen_name,
+            ),
+            registry,
+            generated_at=generated_at,
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_pbpk_scenario_input_exported",
+                severity=Severity.INFO,
+                message="Exported the normalized PBPK scenario input object.",
+            )
+        )
+
+    pbpk_external_import_package: PbpkExternalImportPackage | None = None
+    if params.export_pbpk_external_import_bundle:
+        pbpk_external_import_package = build_pbpk_external_import_package(
+            ExportPbpkExternalImportBundleRequest(
+                scenario=scenario,
+                context_of_use=params.pbpk_context_of_use,
+                scientific_purpose=params.pbpk_scientific_purpose,
+                decision_context=params.pbpk_decision_context,
+                requested_output=params.pbpk_requested_output,
+            ),
+            generated_at=generated_at,
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_pbpk_external_import_bundle_exported",
+                severity=Severity.INFO,
+                message="Exported the PBPK external-import bundle package.",
+            )
+        )
+
+    return IntegratedExposureWorkflowResult(
+        chemical_id=scenario.chemical_id,
+        source_request=source_request,
+        effective_request=effective_request,
+        evidence_strategy=evidence_strategy,
+        normalized_evidence_records=normalized_evidence_records,
+        reconciliation_report=reconciliation_report,
+        selected_evidence_source_name=selected_evidence_source_name,
+        selected_evidence_source_kind=selected_evidence_source_kind,
+        manual_review_required=manual_review_required,
+        scenario=scenario,
+        pbpk_compatibility_report=pbpk_compatibility_report,
+        pbpk_scenario_input=pbpk_scenario_input,
+        pbpk_external_import_package=pbpk_external_import_package,
+        workflow_notes=workflow_notes,
+        quality_flags=quality_flags,
+        limitations=limitations,
+        provenance=_workflow_provenance(registry, generated_at=generated_at),
     )
 
 

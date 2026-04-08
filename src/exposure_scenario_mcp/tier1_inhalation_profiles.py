@@ -136,11 +136,22 @@ class Tier1InhalationProfileRegistry:
         *,
         product_family: str,
         application_method: str,
+        product_subtype: str | None = None,
     ) -> list[Tier1InhalationProductProfile]:
         family = product_family.lower()
         method = application_method.lower()
-        return [
+        candidates = [
             item
             for item in self.manifest().profiles
             if item.product_family.lower() == family and item.application_method.lower() == method
         ]
+        if product_subtype:
+            subtype = product_subtype.lower()
+            exact_matches = [
+                item
+                for item in candidates
+                if item.product_subtype is not None and item.product_subtype.lower() == subtype
+            ]
+            if exact_matches:
+                return exact_matches
+        return [item for item in candidates if item.product_subtype is None]

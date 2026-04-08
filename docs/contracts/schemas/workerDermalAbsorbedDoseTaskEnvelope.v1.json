@@ -1,0 +1,298 @@
+{
+  "$defs": {
+    "WorkerDermalChemicalContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerDermalChemicalContext.v1",
+          "default": "workerDermalChemicalContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "logKow": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Logkow"
+        },
+        "molecularWeightGPerMol": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Molecularweightgpermol"
+        },
+        "waterSolubilityMgPerL": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Watersolubilitymgperl"
+        },
+        "vaporPressureMmhg": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vaporpressuremmhg"
+        }
+      },
+      "title": "WorkerDermalChemicalContext",
+      "type": "object"
+    },
+    "WorkerDermalDeterminantTemplateMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerDermalDeterminantTemplateMatch.v1",
+          "default": "workerDermalDeterminantTemplateMatch.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "templateId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Templateid"
+        },
+        "templateLabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Templatelabel"
+        },
+        "alignmentStatus": {
+          "$ref": "#/$defs/WorkerDermalTemplateAlignmentStatus",
+          "default": "none"
+        },
+        "matchScore": {
+          "default": 0.0,
+          "title": "Matchscore",
+          "type": "number"
+        },
+        "matchBasis": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Matchbasis",
+          "type": "array"
+        },
+        "determinantRecommendations": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Determinantrecommendations",
+          "type": "object"
+        },
+        "sourceBasis": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourcebasis",
+          "type": "array"
+        },
+        "reviewNotes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reviewnotes",
+          "type": "array"
+        }
+      },
+      "title": "WorkerDermalDeterminantTemplateMatch",
+      "type": "object"
+    },
+    "WorkerDermalTemplateAlignmentStatus": {
+      "enum": [
+        "aligned",
+        "partial",
+        "heuristic",
+        "none"
+      ],
+      "title": "WorkerDermalTemplateAlignmentStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerDermalAbsorbedDoseTaskEnvelope.v1",
+      "default": "workerDermalAbsorbedDoseTaskEnvelope.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "adapterName": {
+      "default": "worker_dermal_absorption_ppe_adapter",
+      "title": "Adaptername",
+      "type": "string"
+    },
+    "adapterVersion": {
+      "default": "0.1.0",
+      "title": "Adapterversion",
+      "type": "string"
+    },
+    "contactProfile": {
+      "title": "Contactprofile",
+      "type": "string"
+    },
+    "ppeProfile": {
+      "title": "Ppeprofile",
+      "type": "string"
+    },
+    "bodyZoneProfile": {
+      "title": "Bodyzoneprofile",
+      "type": "string"
+    },
+    "determinantTemplateMatch": {
+      "$ref": "#/$defs/WorkerDermalDeterminantTemplateMatch"
+    },
+    "chemicalContext": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/WorkerDermalChemicalContext"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "taskSummary": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tasksummary",
+      "type": "array"
+    },
+    "dermalInputs": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Dermalinputs",
+      "type": "object"
+    },
+    "screeningHandoffSummary": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Screeninghandoffsummary",
+      "type": "object"
+    }
+  },
+  "required": [
+    "contactProfile",
+    "ppeProfile",
+    "bodyZoneProfile",
+    "determinantTemplateMatch"
+  ],
+  "title": "WorkerDermalAbsorbedDoseTaskEnvelope",
+  "type": "object"
+}

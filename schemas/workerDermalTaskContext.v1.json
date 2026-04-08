@@ -1,0 +1,147 @@
+{
+  "$defs": {
+    "WorkerDermalBarrierMaterial": {
+      "enum": [
+        "unknown",
+        "generic_work_glove",
+        "nitrile",
+        "latex",
+        "neoprene",
+        "butyl",
+        "pvc",
+        "laminate",
+        "textile",
+        "coated_textile"
+      ],
+      "title": "WorkerDermalBarrierMaterial",
+      "type": "string"
+    },
+    "WorkerDermalContactPattern": {
+      "enum": [
+        "unknown",
+        "direct_handling",
+        "surface_transfer",
+        "splash_contact",
+        "immersion_contact",
+        "residue_contact"
+      ],
+      "title": "WorkerDermalContactPattern",
+      "type": "string"
+    },
+    "WorkerDermalPpeState": {
+      "enum": [
+        "unknown",
+        "none",
+        "work_gloves",
+        "chemical_resistant_gloves",
+        "protective_clothing",
+        "gloves_and_protective_clothing"
+      ],
+      "title": "WorkerDermalPpeState",
+      "type": "string"
+    },
+    "WorkerSkinCondition": {
+      "enum": [
+        "unknown",
+        "intact",
+        "wet",
+        "compromised",
+        "occluded"
+      ],
+      "title": "WorkerSkinCondition",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerDermalTaskContext.v1",
+      "default": "workerDermalTaskContext.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "taskDescription": {
+      "title": "Taskdescription",
+      "type": "string"
+    },
+    "workplaceSetting": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Workplacesetting"
+    },
+    "contactDurationHours": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Contactdurationhours"
+    },
+    "contactPattern": {
+      "$ref": "#/$defs/WorkerDermalContactPattern",
+      "default": "unknown"
+    },
+    "exposedBodyAreas": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Exposedbodyareas",
+      "type": "array"
+    },
+    "ppeState": {
+      "$ref": "#/$defs/WorkerDermalPpeState",
+      "default": "unknown"
+    },
+    "barrierMaterial": {
+      "$ref": "#/$defs/WorkerDermalBarrierMaterial",
+      "default": "unknown"
+    },
+    "controlMeasures": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Controlmeasures",
+      "type": "array"
+    },
+    "surfaceLoadingContext": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Surfaceloadingcontext"
+    },
+    "skinCondition": {
+      "$ref": "#/$defs/WorkerSkinCondition",
+      "default": "unknown"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "taskDescription"
+  ],
+  "title": "WorkerDermalTaskContext",
+  "type": "object"
+}

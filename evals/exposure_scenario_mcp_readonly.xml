@@ -9,7 +9,7 @@
   </qa_pair>
   <qa_pair>
     <question>Read the defaults manifest or any example provenance bundle. What defaults pack version is in force for this server? Answer exactly.</question>
-    <answer>2026.03.25.v11</answer>
+    <answer>2026.04.07.v18</answer>
   </qa_pair>
   <qa_pair>
     <question>From the example inhalation scenario, what is the average air concentration value? Respond with the numeric value only and keep all shown decimal places.</question>
@@ -21,7 +21,7 @@
   </qa_pair>
   <qa_pair>
     <question>Count the public tools declared in the machine-readable contract manifest. Respond with the number only.</question>
-    <answer>14</answer>
+    <answer>29</answer>
   </qa_pair>
   <qa_pair>
     <question>Compare the dermal baseline and refined example scenarios using the comparison record. Did the comparison dose increase or decrease relative to baseline? Answer with increase or decrease only.</question>

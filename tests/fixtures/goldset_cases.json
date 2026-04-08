@@ -1,0 +1,430 @@
+{
+  "schema_version": "benchmarkGoldsetManifest.v1",
+  "goldset_version": "2026.04.08.v12",
+  "selection_criteria": [
+    "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
+    "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
+    "Each goldset case must carry at least one external source anchor so the showcase stays auditable.",
+    "Keep benchmark-regressed showcases separate from integration-only or challenge cases so the server never over-claims validation maturity."
+  ],
+  "cases": [
+    {
+      "id": "consumer_hand_cream_application_loading",
+      "title": "Hand cream direct-application loading realism",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["dermal_hand_cream_screening"],
+      "recognizable_examples": ["hand cream", "skin protection cream"],
+      "challenge_tags": ["direct_application", "use_amount_realism", "surface_normalization"],
+      "why_it_matters": "Direct hand application is common, easy to understand, and exposes whether the MCP is realistic about amount-per-area rather than only doing arithmetic correctly.",
+      "showcase_story": "Shows that the canonical dermal screening path is tied to a real workplace hand-cream application study rather than an arbitrary toy amount.",
+      "evidence_gaps": [
+        "This anchor supports amount-per-area realism, but it does not validate retention or transfer behavior outside leave-on hand application."
+      ],
+      "external_sources": [
+        {
+          "source_id": "pubmed_22709142",
+          "title": "How much skin protection cream is actually applied in the workplace? Determination of dose per skin surface area in nurses",
+          "locator": "https://pubmed.ncbi.nlm.nih.gov/22709142/",
+          "publisher": "PubMed",
+          "source_type": "journal_article"
+        }
+      ]
+    },
+    {
+      "id": "consumer_trigger_spray_cleaner_aerosol",
+      "title": "Trigger-spray cleaner aerosol burden",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": [
+        "inhalation_trigger_spray_screening",
+        "inhalation_tier1_trigger_spray_nf_ff"
+      ],
+      "recognizable_examples": ["bathroom cleaner spray", "all-purpose trigger spray"],
+      "challenge_tags": [
+        "airborne_fraction",
+        "room_average_vs_breathing_zone",
+        "near_field_far_field",
+        "spray_particle_regime"
+      ],
+      "why_it_matters": "Cleaning sprays are widely recognized and expose the exact place where a naive room-average model can diverge from breathing-zone reality.",
+      "showcase_story": "Shows the value of the MCP's Tier 0 versus Tier 1 inhalation split against recognizable cleaning-spray literature, including both airborne-fraction realism and a narrow room-air decay half-life anchor.",
+      "evidence_gaps": [
+        "The current solver still lacks raw executable chamber time series for direct calibration against the NF/FF implementation."
+      ],
+      "external_sources": [
+        {
+          "source_id": "pubmed_31361572",
+          "title": "Characterization of airborne particles from cleaning sprays and their corresponding respiratory deposition fractions",
+          "locator": "https://pubmed.ncbi.nlm.nih.gov/31361572/",
+          "publisher": "PubMed",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "consumer_spray_inhalation_exposure_2015",
+          "title": "Quantitative assessment of inhalation exposure and deposited dose of aerosol from nanotechnology-based consumer sprays",
+          "locator": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4303255/",
+          "publisher": "PubMed Central",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "clausen_spray_chamber_2023",
+          "title": "Characterization of the aerosol release from spray cleaning and disinfection products - Spray scenarios in a climate chamber",
+          "locator": "https://perpus-utama.poltekkes-malang.ac.id/assets/file/jurnal/volume_252_2023.pdf",
+          "publisher": "International Journal of Hygiene and Environmental Health",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "rivm_cleaning_products_fact_sheet_2016",
+          "title": "Cleaning Products Fact Sheet",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
+          "publisher": "RIVM",
+          "source_type": "regulatory_fact_sheet"
+        }
+      ]
+    },
+    {
+      "id": "pediatric_oral_liquid_medication",
+      "title": "Pediatric oral liquid delivered-dose realism",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["oral_medicinal_liquid_delivered_dose_screening"],
+      "recognizable_examples": ["oral liquid medicine"],
+      "challenge_tags": ["delivered_dose_accuracy", "caregiver_variability", "volume_to_mass_conversion"],
+      "why_it_matters": "Liquid oral dosing is familiar to clinicians and parents, and it tests whether the MCP treats delivered dose as an exposure problem rather than as a perfect nominal label dose.",
+      "showcase_story": "Shows that the direct-oral path can be explained through a real dosing-accuracy study instead of a purely notional ingestion scenario.",
+      "evidence_gaps": [
+        "The anchor is medication-specific and should not be over-generalized to all oral consumer or dietary scenarios."
+      ],
+      "external_sources": [
+        {
+          "source_id": "vigabatrin_dosing_accuracy_2025",
+          "title": "Liquid Medication Dosing Errors: Comparison of a Ready-to-Use Vigabatrin Solution to Reconstituted Solutions of Vigabatrin Powder for Oral Solution",
+          "locator": "https://doi.org/10.1007/s12325-024-03089-0",
+          "publisher": "Advances in Therapy",
+          "source_type": "journal_article"
+        }
+      ]
+    },
+    {
+      "id": "worker_janitorial_disinfectant_trigger_spray",
+      "title": "Janitorial disinfectant trigger spray with controls",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["worker_inhalation_janitorial_trigger_spray_execution"],
+      "recognizable_examples": ["surface disinfectant spray", "janitorial trigger spray"],
+      "challenge_tags": ["worker_controls", "respiratory_protection", "tier2_adapter_exchange", "breathing_zone"],
+      "why_it_matters": "This is a realistic occupational task that people immediately understand, and it stress-tests the handoff from screening to a control-aware worker execution path.",
+      "showcase_story": "Shows the MCP can route and execute a governed worker inhalation case, then exchange it through an ART-ready adapter contract without hiding its surrogate status.",
+      "evidence_gaps": [
+        "The current execution kernel is ART-aligned and control-aware, but it is still not a native ART solver."
+      ],
+      "external_sources": [
+        {
+          "source_id": "worker_biocidal_spray_foam_inhalation_2023",
+          "title": "Inhalation and dermal exposure to biocidal products during foam and spray applications",
+          "locator": "https://www.baua.de/EN/Service/Publications/Essays/article3676.pdf?__blob=publicationFile&v=3",
+          "publisher": "Annals of Work Exposures and Health / BAuA",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "rivm_disinfectant_products_fact_sheet_2006",
+          "title": "Disinfectant Products Fact Sheet",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005003.pdf",
+          "publisher": "RIVM",
+          "source_type": "regulatory_fact_sheet"
+        },
+        {
+          "source_id": "art_official_site",
+          "title": "Advanced REACH Tool (ART) official site",
+          "locator": "https://www.advancedreachtool.com/",
+          "publisher": "ART consortium",
+          "source_type": "model_scope"
+        }
+      ]
+    },
+    {
+      "id": "consumer_disinfectant_trigger_spray_tier1_monitoring",
+      "title": "Consumer disinfectant trigger spray vs Tier 1 inhalation benchmark",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["inhalation_tier1_disinfectant_trigger_spray_external_2015"],
+      "recognizable_examples": ["surface disinfectant spray", "kitchen disinfectant trigger spray", "consumer biocidal trigger spray"],
+      "challenge_tags": ["near_field_far_field", "consumer_monitoring", "external_benchmark", "spray_particle_regime"],
+      "why_it_matters": "Disinfectant trigger sprays are highly recognizable and expose whether the Tier 1 NF/FF route can land inside a product-specific inhalation benchmark instead of only passing internal numeric fixtures.",
+      "showcase_story": "Shows that the MCP can reproduce a study-like consumer disinfectant trigger-spray task and match a narrow inhaled-dose band derived from the 2015 consumer spray supplementary dataset.",
+      "evidence_gaps": [
+        "This is still a narrow product-specific inhaled-dose anchor rather than a full chamber time-series validation set for NF/FF sprays."
+      ],
+      "external_sources": [
+        {
+          "source_id": "consumer_disinfectant_trigger_spray_inhalation_2015",
+          "title": "Quantitative assessment of inhalation exposure and deposited dose of aerosol from nanotechnology-based consumer sprays (Supplementary Information)",
+          "locator": "https://www.rsc.org/suppdata/en/c3/c3en00053b/c3en00053b.pdf",
+          "publisher": "Royal Society of Chemistry",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "consumer_spray_inhalation_exposure_2015",
+          "title": "Quantitative assessment of inhalation exposure and deposited dose of aerosol from nanotechnology-based consumer sprays",
+          "locator": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4303255/",
+          "publisher": "PubMed Central",
+          "source_type": "journal_article"
+        }
+      ]
+    },
+    {
+      "id": "worker_handheld_biocidal_trigger_spray_monitoring",
+      "title": "Small-scale handheld biocidal spray vs occupational monitoring",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["worker_inhalation_handheld_biocidal_trigger_spray_execution"],
+      "recognizable_examples": ["tabletop disinfectant spray", "handheld BAC surface disinfection", "small-scale biocidal trigger spray"],
+      "challenge_tags": ["worker_inhalation", "occupational_monitoring", "external_benchmark", "breathing_zone"],
+      "why_it_matters": "This is a recognizable occupational spray task with measured personal-air data, so it demonstrates that the worker inhalation path is anchored to something more defensible than an internal numeric fixture.",
+      "showcase_story": "Shows the MCP can reproduce a study-like small-scale handheld BAC trigger-spray task and land inside the measured occupational breathing-zone concentration band from the 2023 biocidal spray monitoring paper.",
+      "evidence_gaps": [
+        "The benchmark is still a narrow handheld BAC spray anchor rather than a broad worker inhalation calibration set.",
+        "The execution path remains ART-aligned and control-aware, but it is still not a native ART solver."
+      ],
+      "external_sources": [
+        {
+          "source_id": "worker_biocidal_spray_foam_inhalation_2023",
+          "title": "Inhalation and dermal exposure to biocidal products during foam and spray applications",
+          "locator": "https://www.baua.de/EN/Service/Publications/Essays/article3676.pdf?__blob=publicationFile&v=3",
+          "publisher": "Annals of Work Exposures and Health / BAuA",
+          "source_type": "journal_article"
+        }
+      ]
+    },
+    {
+      "id": "worker_gloved_wet_wipe_dermal_contact",
+      "title": "Gloved wet-wipe dermal absorbed-dose screening",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["worker_dermal_wet_wipe_gloved_hands_execution"],
+      "recognizable_examples": ["cleaning wipe", "gloved wet cleaning task"],
+      "challenge_tags": ["secondary_transfer", "ppe_penetration", "absorbed_dose", "barrier_material"],
+      "why_it_matters": "Wipe and cloth contact is easy to picture but difficult to model well because secondary transfer, PPE, and skin absorption all matter at once.",
+      "showcase_story": "Shows that the worker dermal path now executes a bounded absorbed-dose estimate rather than stopping at an external-contact bridge package.",
+      "evidence_gaps": [
+        "The current dermal kernel uses bounded PPE and physchem modifiers, not full glove-breakthrough or chemical-specific permeation kinetics."
+      ],
+      "external_sources": [
+        {
+          "source_id": "rivm_cleaning_products_fact_sheet_2016",
+          "title": "Cleaning Products Fact Sheet",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
+          "publisher": "RIVM",
+          "source_type": "regulatory_fact_sheet"
+        }
+      ]
+    },
+    {
+      "id": "worker_biocidal_spray_dermal_contact",
+      "title": "Worker biocidal spray dermal-contact workflow",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["worker_dermal_handheld_biocidal_trigger_spray_execution"],
+      "recognizable_examples": ["disinfectant spray task", "biocidal trigger spray", "spray-and-wipe surface treatment"],
+      "challenge_tags": ["worker_dermal", "spray_contact", "external_loading_anchor", "ppe_and_barrier_material"],
+      "why_it_matters": "Spray disinfection work is common and easy to picture, but the dermal side is often ignored even though glove contamination, hand contact, and barrier assumptions all matter.",
+      "showcase_story": "Shows that the worker dermal path can now reproduce a study-like handheld BAC spray-contact task and land inside a narrow occupational dermal loading anchor instead of relying only on internal wet-wipe fixtures.",
+      "evidence_gaps": [
+        "The current dermal execution kernel is still a bounded absorbed-dose model, not a glove-breakthrough or chemical-specific permeation solver.",
+        "The benchmark is still a narrow external skin-mass anchor rather than a full absorbed-dose calibration dataset."
+      ],
+      "external_sources": [
+        {
+          "source_id": "worker_biocidal_spray_foam_dermal_2023",
+          "title": "Inhalation and dermal exposure to biocidal products during foam and spray applications",
+          "locator": "https://www.baua.de/EN/Service/Publications/Essays/article3676.pdf?__blob=publicationFile&v=3",
+          "publisher": "Annals of Work Exposures and Health / BAuA",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "rivm_disinfectant_products_fact_sheet_2006",
+          "title": "Disinfectant Products Fact Sheet",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005003.pdf",
+          "publisher": "RIVM",
+          "source_type": "regulatory_fact_sheet"
+        }
+      ]
+    },
+    {
+      "id": "consumer_mosquito_aerosol_room_air_validation",
+      "title": "Household mosquito aerosol room-air validation",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": [
+        "inhalation_air_space_insecticide_aerosol_screening",
+        "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001",
+        "inhalation_air_space_insecticide_aerosol_time_series_6h_2001"
+      ],
+      "recognizable_examples": ["mosquito spray", "flying insect aerosol"],
+      "challenge_tags": ["air_space_aerosol", "room_air_validation", "whole_room_release", "literature_anchor"],
+      "why_it_matters": "Household insecticide aerosol use is easy to recognize and hard to model credibly because the whole-room airborne burden dominates the story.",
+      "showcase_story": "Shows that the air-space insecticide subtype is no longer just a heuristic branch in the defaults pack; it now has both a narrow executable room-air check and a sparse 0.75-hour to 6-hour decay series tied to published indoor aerosol measurements.",
+      "evidence_gaps": [
+        "The current executable checks are still based on a narrow closed-room pyrethroid aerosol scenario, not a full family of measured insecticide aerosol chamber datasets."
+      ],
+      "external_sources": [
+        {
+          "source_id": "pubmed_11354726",
+          "title": "Exposures of infants and young children to pyrethroid pesticides in mosquito coils and indoor insecticide sprays",
+          "locator": "https://pubmed.ncbi.nlm.nih.gov/11354726/",
+          "publisher": "PubMed",
+          "source_type": "journal_article"
+        }
+      ]
+    },
+    {
+      "id": "eu_diazinon_indoor_surface_insecticide",
+      "title": "EU Diazinon indoor surface insecticide workflow",
+      "coverage_status": "integration_showcase",
+      "benchmark_case_ids": [],
+      "recognizable_examples": ["residential bug spray", "indoor insecticide trigger spray"],
+      "challenge_tags": ["regional_evidence_reconciliation", "product_subtype_selection", "integrated_workflow", "pesticide_support"],
+      "why_it_matters": "Diazinon is a recognizable pesticide example that forces the MCP to reconcile chemical identity, regional product-use evidence, and subtype-specific exposure logic.",
+      "showcase_story": "Shows the end-to-end value of keeping CompTox and ConsExpo separate but interoperable: identity from EPA, EU use semantics from RIVM, then an auditable exposure scenario and PBPK-ready handoff.",
+      "evidence_gaps": [
+        "The workflow is useful today, but it still lacks a pesticide-specific executable chamber or field benchmark for this exact consumer case.",
+        "Published indoor-surface insecticide monitoring studies for diazinon and chlorpyrifos mostly reflect broadcast treatment, treated-surface volatilization, and delayed reentry rather than the immediate trigger-spray cloud represented by the current screening kernel."
+      ],
+      "external_sources": [
+        {
+          "source_id": "epa_comptox_dashboard",
+          "title": "EPA CompTox Chemicals Dashboard",
+          "locator": "https://comptox.epa.gov/dashboard",
+          "publisher": "U.S. EPA",
+          "source_type": "chemical_identity_platform"
+        },
+        {
+          "source_id": "npic_diazinon_technical_fact_sheet",
+          "title": "Diazinon Technical Fact Sheet",
+          "locator": "https://npic.orst.edu/factsheets/archive/diazinontech.html",
+          "publisher": "NPIC",
+          "source_type": "technical_fact_sheet"
+        },
+        {
+          "source_id": "currie_office_postapplication_1990",
+          "title": "Concentrations of diazinon, chlorpyrifos, and bendiocarb after application in offices",
+          "locator": "https://pubmed.ncbi.nlm.nih.gov/1689096/",
+          "publisher": "PubMed",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "fenske_residential_broadcast_1990",
+          "title": "Potential exposure and health risks of infants following indoor residential pesticide applications",
+          "locator": "https://pubmed.ncbi.nlm.nih.gov/1693041/",
+          "publisher": "PubMed",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "rivm_consexpo_pest_control_fact_sheet_2007",
+          "title": "Pest Control Products Fact Sheet",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005005.pdf",
+          "publisher": "RIVM",
+          "source_type": "regulatory_fact_sheet"
+        },
+        {
+          "source_id": "rivm_consexpo_fact_sheets_page",
+          "title": "ConsExpo Fact Sheets",
+          "locator": "https://www.rivm.nl/en/consexpo/fact-sheets",
+          "publisher": "RIVM",
+          "source_type": "program_index"
+        }
+      ]
+    },
+    {
+      "id": "consumer_air_space_insecticide_aerosol",
+      "title": "Air-space insecticide aerosol room-decay challenge",
+      "coverage_status": "challenge_case",
+      "benchmark_case_ids": [],
+      "recognizable_examples": ["bug spray aerosol", "room insecticide aerosol"],
+      "challenge_tags": ["full_room_aerosol", "longer_decay", "subtype_selection", "pesticide_consumer"],
+      "why_it_matters": "Room-filling insecticide aerosols are familiar and scientifically hard because they combine full-air release, room persistence, and deposition in a way that stresses a simple screening stack.",
+      "showcase_story": "This is the pesticide consumer case most likely to convince skeptical users that the MCP understands where it is still extrapolating and where a future validation package is needed.",
+      "evidence_gaps": [
+        "Needs external chamber concentration time series and aerosol deposition anchors before it can move from challenge case to benchmark-regressed showcase."
+      ],
+      "external_sources": [
+        {
+          "source_id": "rivm_consexpo_pest_control_fact_sheet_2007",
+          "title": "Pest Control Products Fact Sheet",
+          "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005005.pdf",
+          "publisher": "RIVM",
+          "source_type": "regulatory_fact_sheet"
+        },
+        {
+          "source_id": "rivm_consexpo_main",
+          "title": "ConsExpo",
+          "locator": "https://www.rivm.nl/en/consexpo",
+          "publisher": "RIVM",
+          "source_type": "program_index"
+        }
+      ]
+    },
+    {
+      "id": "chlorpyrifos_indoor_surface_insecticide_reentry",
+      "title": "Chlorpyrifos indoor-surface reentry benchmark",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": [
+        "inhalation_residual_air_reentry_chlorpyrifos_screening",
+        "inhalation_residual_air_reentry_chlorpyrifos_time_series_1990"
+      ],
+      "recognizable_examples": ["residential flea spray", "indoor surface insecticide"],
+      "challenge_tags": ["indoor_surface_insecticide", "residual_air", "reentry", "organophosphate"],
+      "why_it_matters": "Chlorpyrifos is a recognizable indoor pesticide example with published post-application air data, and it now anchors the MCP's dedicated residual-air reentry path through both a reentry-start concentration benchmark and a sparse 4-hour to 24-hour room-air series.",
+      "showcase_story": "Shows that the MCP can benchmark a residual-air reentry scenario against published chlorpyrifos indoor air concentrations at reentry start and at the later 24-hour room-air point, while still making the remaining treated-surface emission gaps explicit.",
+      "evidence_gaps": [
+        "The executable checks anchor reentry-start air concentration and one later room-air decay point, not full treated-surface emission, furnishing uptake, or home-specific decay behavior.",
+        "The published chlorpyrifos evidence is still a narrow broadcast-treatment analogue and should not be over-generalized to every indoor-surface insecticide scenario."
+      ],
+      "external_sources": [
+        {
+          "source_id": "fenske_residential_broadcast_1990",
+          "title": "Potential exposure and health risks of infants following indoor residential pesticide applications",
+          "locator": "https://pubmed.ncbi.nlm.nih.gov/1693041/",
+          "publisher": "PubMed",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "atsdr_chlorpyrifos_toxicological_profile",
+          "title": "Toxicological Profile for Chlorpyrifos",
+          "locator": "https://www.atsdr.cdc.gov/toxprofiles/tp84.pdf",
+          "publisher": "ATSDR",
+          "source_type": "toxicological_profile"
+        },
+        {
+          "source_id": "epa_chlorpyrifos_human_health_risk_assessment",
+          "title": "Revised Human Health Risk Assessment on Chlorpyrifos",
+          "locator": "https://www.epa.gov/ingredients-used-pesticide-products/revised-human-health-risk-assessment-chlorpyrifos",
+          "publisher": "U.S. EPA",
+          "source_type": "risk_assessment"
+        }
+      ]
+    },
+    {
+      "id": "diazinon_office_postapplication_reentry",
+      "title": "Diazinon office residual-air reentry benchmark",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["inhalation_residual_air_reentry_diazinon_time_series_1990"],
+      "recognizable_examples": ["office insecticide treatment", "post-application reentry air"],
+      "challenge_tags": ["diazinon", "office_air", "residual_air", "reentry", "organophosphate"],
+      "why_it_matters": "Diazinon is a recognizable organophosphate pesticide, and the office post-application measurements show how persistent indoor residual air can be even when the exposure starts well after application.",
+      "showcase_story": "Shows that the MCP can now benchmark a diazinon residual-air reentry scenario against a sparse one-day to two-day office-air series, without pretending that this is a full treated-surface emission model.",
+      "evidence_gaps": [
+        "The executable checks anchor only a sparse office-air decay series, not furnishing uptake, source depletion, or worker-task determinants.",
+        "The source study is an office treatment analogue and should not be over-generalized to residential consumer trigger-spray cases."
+      ],
+      "external_sources": [
+        {
+          "source_id": "currie_office_postapplication_1990",
+          "title": "Concentrations of diazinon, chlorpyrifos, and bendiocarb after application in offices",
+          "locator": "https://pubmed.ncbi.nlm.nih.gov/1689096/",
+          "publisher": "PubMed",
+          "source_type": "journal_article"
+        },
+        {
+          "source_id": "npic_diazinon_technical_fact_sheet",
+          "title": "Diazinon Technical Fact Sheet",
+          "locator": "https://npic.orst.edu/factsheets/archive/diazinontech.html",
+          "publisher": "NPIC",
+          "source_type": "technical_fact_sheet"
+        }
+      ]
+    }
+  ]
+}

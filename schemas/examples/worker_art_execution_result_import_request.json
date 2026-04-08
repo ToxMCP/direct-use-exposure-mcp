@@ -1,0 +1,184 @@
+{
+  "schema_version": "importWorkerArtExecutionResultRequest.v1",
+  "adapterRequest": {
+    "schema_version": "workerInhalationTier2AdapterRequest.v1",
+    "targetAdapter": "future_worker_exposure_adapter",
+    "targetModelFamily": "art",
+    "sourceModule": "exposure-scenario-mcp",
+    "contextOfUse": "worker-tier2-bridge",
+    "chemicalIdentity": {
+      "chemicalId": "DTXSID7020182",
+      "preferredName": "Example Solvent A",
+      "sourceModule": "exposure-scenario-mcp"
+    },
+    "taskContext": {
+      "schema_version": "workerInhalationTier2TaskContext.v1",
+      "task_description": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+      "workplace_setting": "janitorial closet",
+      "task_duration_hours": 0.5,
+      "ventilation_context": "general_ventilation",
+      "local_controls": [
+        "general ventilation",
+        "task segregation"
+      ],
+      "respiratory_protection": "none",
+      "emission_descriptor": "short trigger-spray cleaning mist near the breathing zone",
+      "notes": [
+        "Illustrative worker inhalation bridge package for a future ART-style adapter."
+      ]
+    },
+    "exposureInputs": {
+      "applicationMethod": "trigger_spray",
+      "physicalForm": "spray",
+      "productCategory": "disinfectant",
+      "productSubtype": null,
+      "concentrationFraction": 0.03,
+      "useAmountPerEvent": 15.0,
+      "useAmountUnit": "mL",
+      "useEventsPerDay": 2.0,
+      "eventDurationHours": 0.5,
+      "roomVolumeM3": 35.0,
+      "airExchangeRatePerHour": 2.0,
+      "bodyWeightKg": 75.0,
+      "inhalationRateM3PerHour": 1.1,
+      "region": "EU",
+      "tier1Hints": {
+        "sourceDistanceM": 0.35,
+        "sprayDurationSeconds": 10.0,
+        "nearFieldVolumeM3": 2.0,
+        "airflowDirectionality": "cross_draft",
+        "particleSizeRegime": "coarse_spray"
+      }
+    },
+    "supportingHandoffs": {
+      "baseRequest": {
+        "schema_version": "inhalationTier1ScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Workplace Disinfectant Spray",
+          "product_subtype": null,
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.03,
+          "use_amount_per_event": 15.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 2.0,
+          "density_g_per_ml": null,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": 35.0,
+          "air_exchange_rate_per_hour": 2.0,
+          "exposure_duration_hours": 0.5
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 75.0,
+          "inhalation_rate_m3_per_hour": 1.1,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [
+            "worker",
+            "occupational"
+          ],
+          "region": "EU"
+        },
+        "assumption_overrides": {},
+        "requestedTier": "tier_1",
+        "source_distance_m": 0.35,
+        "spray_duration_seconds": 10.0,
+        "near_field_volume_m3": 2.0,
+        "airflow_directionality": "cross_draft",
+        "particle_size_regime": "coarse_spray"
+      },
+      "workerRoutingDecision": {
+        "schema_version": "workerTaskRoutingDecision.v1",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "worker_detected": true,
+        "detection_basis": [
+          "demographic_tag:occupational",
+          "demographic_tag:worker"
+        ],
+        "support_status": "future_adapter_recommended",
+        "recommended_model_family": "art_adapter_candidate",
+        "recommended_tool": null,
+        "target_mcp": "future_worker_exposure_adapter",
+        "guidance_resource": "docs://worker-routing-guide",
+        "required_inputs": [
+          "task_description",
+          "ventilation_context",
+          "local_controls",
+          "task_duration_hours",
+          "emission_characterization"
+        ],
+        "warnings": [],
+        "limitations": [
+          "The current Exposure Scenario MCP does not implement Tier 2 occupational inhalation models such as ART or Stoffenmanager."
+        ],
+        "rationale": "A higher worker inhalation tier was requested, so routing escalates to a future occupational adapter rather than reusing deterministic screening.",
+        "next_step": "Collect task-control and ventilation inputs for an ART- or Stoffenmanager-aligned adapter."
+      }
+    },
+    "guidanceResource": "docs://worker-tier2-bridge-guide"
+  },
+  "externalResult": {
+    "schema_version": "workerArtExternalExecutionResult.v1",
+    "sourceSystem": "ART",
+    "sourceRunId": "art-run-001",
+    "modelVersion": "ART-1.5.0",
+    "resultStatus": "completed",
+    "taskDurationHours": null,
+    "breathingZoneConcentrationMgPerM3": 0.72,
+    "inhaledMassMgPerDay": 1.575,
+    "normalizedExternalDoseMgPerKgDay": 0.021,
+    "determinantSnapshot": {
+      "workplaceSettingType": "janitorial_closet_or_small_room",
+      "ventilationDeterminant": "general_ventilation",
+      "taskFamily": "janitorial_disinfectant_trigger_spray"
+    },
+    "resultPayload": {},
+    "qualityNotes": [],
+    "rawArtifacts": [
+      {
+        "schema_version": "workerArtExternalArtifact.v1",
+        "label": "ART run summary",
+        "locator": "artifact://art-run-001/summary.json",
+        "mediaType": "application/json",
+        "adapterHint": "art_worker_execution_report_json_v1",
+        "contentText": null,
+        "contentJson": {
+          "schemaVersion": "artWorkerExecutionReport.v1",
+          "run": {
+            "id": "art-run-001",
+            "modelVersion": "ART-1.5.0"
+          },
+          "task": {
+            "durationHours": 0.5
+          },
+          "results": {
+            "status": "completed",
+            "taskDurationHours": 0.5,
+            "breathingZoneConcentrationMgPerM3": 0.72,
+            "inhaledMassMgPerDay": 1.575,
+            "normalizedExternalDoseMgPerKgDay": 0.021
+          },
+          "determinants": {
+            "workplaceSettingType": "janitorial_closet_or_small_room",
+            "ventilationDeterminant": "general_ventilation",
+            "taskFamily": "janitorial_disinfectant_trigger_spray"
+          }
+        },
+        "note": "Illustrative nested external ART runner report artifact."
+      }
+    ]
+  },
+  "contextOfUse": "worker-art-external-import"
+}

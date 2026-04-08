@@ -1,0 +1,113 @@
+{
+  "$defs": {
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "WorkerDermalModelFamily": {
+      "enum": [
+        "dermal_absorption_ppe",
+        "ih_skinperm"
+      ],
+      "title": "WorkerDermalModelFamily",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerDermalCompatibilityReport.v1",
+      "default": "workerDermalCompatibilityReport.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sourceRequestSchema": {
+      "title": "Sourcerequestschema",
+      "type": "string"
+    },
+    "targetModelFamily": {
+      "$ref": "#/$defs/WorkerDermalModelFamily"
+    },
+    "route": {
+      "$ref": "#/$defs/Route",
+      "default": "dermal"
+    },
+    "workerDetected": {
+      "title": "Workerdetected",
+      "type": "boolean"
+    },
+    "readyForAdapter": {
+      "title": "Readyforadapter",
+      "type": "boolean"
+    },
+    "missingFields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Missingfields",
+      "type": "array"
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "recommendedNextSteps": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Recommendednextsteps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "sourceRequestSchema",
+    "targetModelFamily",
+    "workerDetected",
+    "readyForAdapter"
+  ],
+  "title": "WorkerDermalCompatibilityReport",
+  "type": "object"
+}

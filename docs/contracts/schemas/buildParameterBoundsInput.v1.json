@@ -227,6 +227,19 @@
           "description": "Optional human-readable product label.",
           "title": "Product Name"
         },
+        "product_subtype": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional narrower product-use subtype such as indoor_surface_insecticide or surface_trigger_spray_disinfectant.",
+          "title": "Product Subtype"
+        },
         "product_category": {
           "description": "Product category or PUC-like category.",
           "title": "Product Category",

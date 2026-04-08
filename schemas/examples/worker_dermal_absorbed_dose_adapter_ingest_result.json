@@ -1,0 +1,122 @@
+{
+  "schema_version": "workerDermalAbsorbedDoseAdapterIngestResult.v1",
+  "supportedByAdapter": true,
+  "readyForAdapterExecution": true,
+  "manualReviewRequired": false,
+  "resolvedAdapter": "worker_dermal_absorption_ppe_adapter",
+  "targetModelFamily": "dermal_absorption_ppe",
+  "dermalTaskEnvelope": {
+    "schema_version": "workerDermalAbsorbedDoseTaskEnvelope.v1",
+    "adapterName": "worker_dermal_absorption_ppe_adapter",
+    "adapterVersion": "0.1.0",
+    "contactProfile": "surface_transfer_contact_profile",
+    "ppeProfile": "general_work_glove_barrier_profile",
+    "bodyZoneProfile": "hands_only_body_zone",
+    "determinantTemplateMatch": {
+      "schema_version": "workerDermalDeterminantTemplateMatch.v1",
+      "templateId": "janitorial_wet_wipe_gloved_hands_v1",
+      "templateLabel": "Janitorial Wet-Wipe Contact with Gloved Hands",
+      "alignmentStatus": "aligned",
+      "matchScore": 1.0,
+      "matchBasis": [
+        "productCategory=`household_cleaner` matched the template family.",
+        "applicationMethod=`wipe` matched the contact mode.",
+        "physicalForm=`liquid` matched the template form.",
+        "contactPattern=`surface_transfer` matched the template contact mode.",
+        "ppeState=`work_gloves` matched the template barrier state.",
+        "Body-area selections matched the template contact zone.",
+        "Task text or workplace context matched the template family."
+      ],
+      "determinantRecommendations": {
+        "dermalTaskFamily": "janitorial_wet_wipe_gloved_hands",
+        "contactMechanism": "wet_surface_secondary_transfer",
+        "ppeAssumption": "gloved_hand_contact",
+        "absorptionContext": "aqueous_surface_residue_contact",
+        "contactProfile": "surface_transfer_contact_profile",
+        "ppeProfile": "general_work_glove_barrier_profile",
+        "bodyZoneProfile": "hands_only_body_zone"
+      },
+      "sourceBasis": [
+        "worker_dermal_template_pack_2026_v1",
+        "rivm_wet_cloth_dermal_contact_loading_2018"
+      ],
+      "reviewNotes": []
+    },
+    "chemicalContext": null,
+    "taskSummary": [
+      "Matched determinant template=`janitorial_wet_wipe_gloved_hands_v1` with alignmentStatus=`aligned`.",
+      "Mapped contactPattern=`surface_transfer` and ppeState=`work_gloves` to contactProfile=`surface_transfer_contact_profile` and ppeProfile=`general_work_glove_barrier_profile`.",
+      "Mapped exposedBodyAreas to bodyZoneProfile=`hands_only_body_zone`.",
+      "Preserved barrierMaterial=`unknown` for downstream absorbed-dose execution."
+    ],
+    "dermalInputs": {
+      "substanceName": "Example Solvent A",
+      "chemicalId": "DTXSID7020182",
+      "productCategory": "household_cleaner",
+      "productSubtype": null,
+      "applicationMethod": "wipe",
+      "physicalForm": "liquid",
+      "concentrationFraction": 0.02,
+      "useAmountPerEvent": 10.0,
+      "useAmountUnit": "g",
+      "useEventsPerDay": 3.0,
+      "eventDurationHours": 0.75,
+      "contactDurationHours": 0.75,
+      "contactPattern": "surface_transfer",
+      "exposedBodyAreas": [
+        "hands"
+      ],
+      "ppeState": "work_gloves",
+      "barrierMaterial": "unknown",
+      "controlMeasures": [
+        "task segregation",
+        "prompt hand washing"
+      ],
+      "surfaceLoadingContext": "wet cleaning cloth contact with surface residue transfer",
+      "skinCondition": "unknown",
+      "transferEfficiency": null,
+      "retentionFactor": null,
+      "exposedSurfaceAreaCm2": 840.0,
+      "bodyWeightKg": 75.0,
+      "region": "EU",
+      "templateAlignmentStatus": "aligned"
+    },
+    "screeningHandoffSummary": {
+      "workerRoutingSupportStatus": "future_adapter_recommended",
+      "sourceRequestSchema": "exposureScenarioRequest.v1",
+      "templateCatalogVersion": "2026.04.07.v1"
+    }
+  },
+  "qualityFlags": [
+    {
+      "code": "worker_dermal_adapter_request_ingested",
+      "severity": "info",
+      "message": "Worker dermal absorbed-dose adapter request was ingested and normalized into a dermal/PPE intake envelope."
+    }
+  ],
+  "limitations": [
+    {
+      "code": "worker_dermal_adapter_no_solver",
+      "severity": "warning",
+      "message": "This ingest step does not execute a dermal absorption solver, glove breakthrough model, or compliance-ready occupational assessment."
+    },
+    {
+      "code": "worker_dermal_adapter_mapping_heuristic",
+      "severity": "warning",
+      "message": "The current ingest path maps screening task fields into a structured occupational dermal envelope, but determinant selection remains packaged or heuristic unless later overridden."
+    }
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "worker.dermal_absorbed_dose_adapter_ingest.v1",
+    "plugin_id": "worker_dermal_absorbed_dose_adapter_ingest",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.04.07.v18",
+    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Adapter ingest only; no dermal absorption, permeation, or glove breakthrough solver is executed here.",
+      "The adapter envelope preserves screening and worker routing context as reviewable upstream evidence."
+    ]
+  }
+}

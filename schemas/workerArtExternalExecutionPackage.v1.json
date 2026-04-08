@@ -1,0 +1,795 @@
+{
+  "$defs": {
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
+    },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "QualityFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable quality flag code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "info",
+          "description": "Quality signal severity."
+        },
+        "message": {
+          "description": "Human-readable quality message.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "QualityFlag",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "WorkerArtDeterminantTemplateMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerArtDeterminantTemplateMatch.v1",
+          "default": "workerArtDeterminantTemplateMatch.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "templateCatalogVersion": {
+          "default": "2026.04.07.v1",
+          "description": "Version of the packaged ART determinant-template catalog.",
+          "title": "Templatecatalogversion",
+          "type": "string"
+        },
+        "templateId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Matched determinant-template identifier, if any.",
+          "title": "Templateid"
+        },
+        "templateLabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable matched determinant-template label, if any.",
+          "title": "Templatelabel"
+        },
+        "alignmentStatus": {
+          "$ref": "#/$defs/WorkerArtTemplateAlignmentStatus",
+          "description": "How strongly the current worker task aligns with the packaged template."
+        },
+        "matchScore": {
+          "description": "Normalized match score for the selected determinant template.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Matchscore",
+          "type": "number"
+        },
+        "matchBasis": {
+          "description": "Short statements describing why the template matched.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Matchbasis",
+          "type": "array"
+        },
+        "determinantRecommendations": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Packaged determinant recommendations for downstream ART-side execution.",
+          "title": "Determinantrecommendations",
+          "type": "object"
+        },
+        "sourceBasis": {
+          "description": "Template-pack basis preserved with the matched determinant suggestions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourcebasis",
+          "type": "array"
+        },
+        "reviewNotes": {
+          "description": "Review notes attached to the template match and remaining gaps.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Reviewnotes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "alignmentStatus",
+        "matchScore"
+      ],
+      "title": "WorkerArtDeterminantTemplateMatch",
+      "type": "object"
+    },
+    "WorkerArtExternalResultImportToolCall": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerArtExternalResultImportToolCall.v1",
+          "default": "workerArtExternalResultImportToolCall.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "toolName": {
+          "const": "worker_import_inhalation_art_execution_result",
+          "default": "worker_import_inhalation_art_execution_result",
+          "title": "Toolname",
+          "type": "string"
+        },
+        "argumentTemplate": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Argumenttemplate",
+          "type": "object"
+        }
+      },
+      "title": "WorkerArtExternalResultImportToolCall",
+      "type": "object"
+    },
+    "WorkerArtTemplateAlignmentStatus": {
+      "enum": [
+        "aligned",
+        "partial",
+        "heuristic",
+        "none"
+      ],
+      "title": "WorkerArtTemplateAlignmentStatus",
+      "type": "string"
+    },
+    "WorkerInhalationArtTaskEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerInhalationArtTaskEnvelope.v1",
+          "default": "workerInhalationArtTaskEnvelope.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "adapterName": {
+          "const": "art_worker_inhalation_adapter",
+          "default": "art_worker_inhalation_adapter",
+          "description": "Bounded ART-side adapter identity for worker inhalation intake.",
+          "title": "Adaptername",
+          "type": "string"
+        },
+        "adapterVersion": {
+          "default": "0.1.0",
+          "description": "Version of the ART-side adapter boundary implemented here.",
+          "title": "Adapterversion",
+          "type": "string"
+        },
+        "activityClass": {
+          "description": "ART-aligned task activity label derived from the source request.",
+          "title": "Activityclass",
+          "type": "string"
+        },
+        "emissionProfile": {
+          "description": "Short emission-profile label derived from task and form semantics.",
+          "title": "Emissionprofile",
+          "type": "string"
+        },
+        "controlProfile": {
+          "description": "Short control-profile label derived from ventilation and local controls.",
+          "title": "Controlprofile",
+          "type": "string"
+        },
+        "determinantTemplateMatch": {
+          "$ref": "#/$defs/WorkerArtDeterminantTemplateMatch",
+          "description": "Matched packaged determinant template carried into the ART intake."
+        },
+        "taskSummary": {
+          "description": "Short human-readable summary of the derived ART intake mapping.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Tasksummary",
+          "type": "array"
+        },
+        "artInputs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Normalized ART-side input object ready for downstream adapter execution.",
+          "title": "Artinputs",
+          "type": "object"
+        },
+        "screeningHandoffSummary": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Preserved screening and worker-routing context carried into the adapter.",
+          "title": "Screeninghandoffsummary",
+          "type": "object"
+        },
+        "guidanceResource": {
+          "default": "docs://worker-art-adapter-guide",
+          "description": "Guide that explains how the ART adapter intake should be interpreted.",
+          "title": "Guidanceresource",
+          "type": "string"
+        }
+      },
+      "required": [
+        "activityClass",
+        "emissionProfile",
+        "controlProfile",
+        "determinantTemplateMatch"
+      ],
+      "title": "WorkerInhalationArtTaskEnvelope",
+      "type": "object"
+    },
+    "WorkerInhalationTier2AdapterRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerInhalationTier2AdapterRequest.v1",
+          "default": "workerInhalationTier2AdapterRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "targetAdapter": {
+          "default": "future_worker_exposure_adapter",
+          "description": "Target adapter boundary for the future occupational model.",
+          "title": "Targetadapter",
+          "type": "string"
+        },
+        "targetModelFamily": {
+          "$ref": "#/$defs/WorkerTier2ModelFamily",
+          "description": "Future occupational model family requested by the caller."
+        },
+        "sourceModule": {
+          "default": "exposure-scenario-mcp",
+          "description": "Source MCP that created the bridge package.",
+          "title": "Sourcemodule",
+          "type": "string"
+        },
+        "contextOfUse": {
+          "description": "Downstream orchestration context for the bridge payload.",
+          "title": "Contextofuse",
+          "type": "string"
+        },
+        "chemicalIdentity": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Chemical identity block for the future worker adapter.",
+          "title": "Chemicalidentity",
+          "type": "object"
+        },
+        "taskContext": {
+          "$ref": "#/$defs/WorkerInhalationTier2TaskContext",
+          "description": "Typed worker-task context for Tier 2 refinement."
+        },
+        "exposureInputs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Normalized inhalation exposure inputs preserved for the future adapter.",
+          "title": "Exposureinputs",
+          "type": "object"
+        },
+        "supportingHandoffs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Source request and routing context preserved alongside the adapter payload.",
+          "title": "Supportinghandoffs",
+          "type": "object"
+        },
+        "guidanceResource": {
+          "default": "docs://worker-tier2-bridge-guide",
+          "description": "Worker Tier 2 guide that explains how to use the bridge.",
+          "title": "Guidanceresource",
+          "type": "string"
+        }
+      },
+      "required": [
+        "targetModelFamily",
+        "contextOfUse",
+        "taskContext"
+      ],
+      "title": "WorkerInhalationTier2AdapterRequest",
+      "type": "object"
+    },
+    "WorkerInhalationTier2TaskContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "workerInhalationTier2TaskContext.v1",
+          "default": "workerInhalationTier2TaskContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_description": {
+          "description": "Short description of the workplace task.",
+          "title": "Task Description",
+          "type": "string"
+        },
+        "workplace_setting": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short workplace-setting label such as janitorial closet or production line.",
+          "title": "Workplace Setting"
+        },
+        "task_duration_hours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Task duration relevant to the future Tier 2 worker model.",
+          "title": "Task Duration Hours"
+        },
+        "ventilation_context": {
+          "$ref": "#/$defs/WorkerVentilationContext",
+          "default": "unknown",
+          "description": "Ventilation/control state declared for the worker task."
+        },
+        "local_controls": {
+          "description": "Engineering or administrative controls explicitly present during the task.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Local Controls",
+          "type": "array"
+        },
+        "respiratory_protection": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Respiratory protection state if explicitly known.",
+          "title": "Respiratory Protection"
+        },
+        "emission_descriptor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short free-text description of the emitted mist, vapor, or aerosol context.",
+          "title": "Emission Descriptor"
+        },
+        "notes": {
+          "description": "Additional worker-task notes preserved for adapter review.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "task_description"
+      ],
+      "title": "WorkerInhalationTier2TaskContext",
+      "type": "object"
+    },
+    "WorkerTier2ModelFamily": {
+      "enum": [
+        "art",
+        "stoffenmanager"
+      ],
+      "title": "WorkerTier2ModelFamily",
+      "type": "string"
+    },
+    "WorkerVentilationContext": {
+      "enum": [
+        "unknown",
+        "general_ventilation",
+        "enhanced_general_ventilation",
+        "local_exhaust",
+        "enclosed_process",
+        "outdoor"
+      ],
+      "title": "WorkerVentilationContext",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerArtExternalExecutionPackage.v1",
+      "default": "workerArtExternalExecutionPackage.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "targetModelFamily": {
+      "$ref": "#/$defs/WorkerTier2ModelFamily"
+    },
+    "resolvedAdapter": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resolvedadapter"
+    },
+    "readyForExternalExecution": {
+      "title": "Readyforexternalexecution",
+      "type": "boolean"
+    },
+    "manualReviewRequired": {
+      "title": "Manualreviewrequired",
+      "type": "boolean"
+    },
+    "adapterRequest": {
+      "$ref": "#/$defs/WorkerInhalationTier2AdapterRequest"
+    },
+    "artTaskEnvelope": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/WorkerInhalationArtTaskEnvelope"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "externalExecutionPayload": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Externalexecutionpayload",
+      "type": "object"
+    },
+    "resultImportToolCall": {
+      "$ref": "#/$defs/WorkerArtExternalResultImportToolCall"
+    },
+    "qualityFlags": {
+      "items": {
+        "$ref": "#/$defs/QualityFlag"
+      },
+      "title": "Qualityflags",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "recommendedNextSteps": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Recommendednextsteps",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle"
+    }
+  },
+  "required": [
+    "targetModelFamily",
+    "readyForExternalExecution",
+    "manualReviewRequired",
+    "adapterRequest",
+    "resultImportToolCall",
+    "provenance"
+  ],
+  "title": "WorkerArtExternalExecutionPackage",
+  "type": "object"
+}

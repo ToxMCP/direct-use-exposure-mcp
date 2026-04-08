@@ -10,15 +10,29 @@ from exposure_scenario_mcp.guidance import (
     archetype_library_guide,
     conformance_report_markdown,
     defaults_curation_report_markdown,
+    exposure_platform_architecture_guide,
+    goldset_benchmark_guide,
+    inhalation_residual_air_reentry_guide,
     inhalation_tier_upgrade_guide,
+    integrated_exposure_workflow_guide,
     probability_bounds_guide,
     release_notes_markdown,
     release_readiness_markdown,
     tier1_inhalation_parameter_guide,
     uncertainty_framework,
+    validation_coverage_report_markdown,
     validation_dossier_markdown,
     validation_framework,
     validation_reference_bands_guide,
+    validation_time_series_packs_guide,
+    worker_art_adapter_guide,
+    worker_art_execution_guide,
+    worker_art_external_exchange_guide,
+    worker_dermal_adapter_guide,
+    worker_dermal_bridge_guide,
+    worker_dermal_execution_guide,
+    worker_routing_guide,
+    worker_tier2_bridge_guide,
 )
 
 
@@ -44,12 +58,26 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     uncertainty = uncertainty_framework()
     validation = validation_framework()
     dossier = validation_dossier_markdown()
+    coverage_report = validation_coverage_report_markdown()
+    goldset = goldset_benchmark_guide()
     defaults_curation = defaults_curation_report_markdown()
     archetypes = archetype_library_guide()
     inhalation_tier_guide = inhalation_tier_upgrade_guide()
     tier1_parameter_guide = tier1_inhalation_parameter_guide()
+    inhalation_reentry_guide = inhalation_residual_air_reentry_guide()
     probability_bounds = probability_bounds_guide()
+    architecture = exposure_platform_architecture_guide()
     validation_bands = validation_reference_bands_guide()
+    validation_time_series = validation_time_series_packs_guide()
+    worker_routing = worker_routing_guide()
+    worker_tier2 = worker_tier2_bridge_guide()
+    worker_art = worker_art_adapter_guide()
+    worker_art_exchange = worker_art_external_exchange_guide()
+    worker_art_execution = worker_art_execution_guide()
+    worker_dermal_bridge = worker_dermal_bridge_guide()
+    worker_dermal_adapter = worker_dermal_adapter_guide()
+    worker_dermal_execution = worker_dermal_execution_guide()
+    integrated_workflow = integrated_exposure_workflow_guide()
 
     assert "Tier A" in uncertainty
     assert "Tier B" in uncertainty
@@ -72,6 +100,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "exposureScenario.v1" in inhalation_tier_guide
     assert "tier1-inhalation://manifest" in inhalation_tier_guide
     assert "docs://tier1-inhalation-parameter-guide" in inhalation_tier_guide
+    assert "Inhalation Residual-Air Reentry Guide" in inhalation_reentry_guide
+    assert "exposure_build_inhalation_residual_air_reentry_scenario" in inhalation_reentry_guide
+    assert "inhalationResidualAirReentryScenarioRequest.v1" in inhalation_reentry_guide
     assert "`tier1_profile_alignment_status`" in inhalation_tier_guide
     assert "`tier1_profile_anchor_divergence`" in inhalation_tier_guide
     assert "`household_cleaner_trigger_spray_tier1`" in inhalation_tier_guide
@@ -86,16 +117,64 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`cleaning_trigger_spray_airborne_mass_fraction_2019`" in validation
     assert "pubmed.ncbi.nlm.nih.gov/31361572" in validation
     assert "Executable Validation Checks" in validation
+    assert "validation://coverage-report" in validation
+    assert "docs://validation-coverage-report" in validation
     assert "validation://reference-bands" in validation
+    assert "benchmarks://goldset" in validation
     assert "executedValidationChecks" in validation
+    assert "air-space insecticide aerosol concentration realism" in validation
     assert "wet-cloth contact mass realism" in validation
     assert "Validation Reference Bands" in validation_bands
+    assert "`air_space_insecticide_aerosol_concentration_2001_band`" in validation_bands
+    assert "`chlorpyrifos_residual_air_reentry_start_concentration_1990_band`" in (
+        validation_bands
+    )
+    assert "`cleaning_trigger_spray_airborne_fraction_2019_band`" in validation_bands
     assert "`hand_cream_application_loading_2012_band`" in validation_bands
+    assert "`medicinal_liquid_direct_oral_delivered_mass_2025_band`" in validation_bands
+    assert "`consumer_disinfectant_trigger_spray_inhaled_dose_2015_band`" in validation_bands
+    assert "`trigger_spray_aerosol_decay_half_life_2023_band`" in validation_bands
+    assert "`worker_biocidal_handheld_trigger_spray_concentration_2023_band`" in (
+        validation_bands
+    )
+    assert "`worker_biocidal_handheld_trigger_spray_dermal_mass_2023_band`" in (
+        validation_bands
+    )
     assert "`wet_cloth_contact_mass_2018_band`" in validation_bands
     assert "selectors:" in validation_bands
+    assert "Validation Time-Series Packs" in validation_time_series
+    assert "`air_space_insecticide_aerosol_room_air_series_2001`" in validation_time_series
+    assert "`air_space_insecticide_aerosol_6h_concentration_2001`" in validation_time_series
+    assert "`chlorpyrifos_residual_air_reentry_room_air_series_1990`" in validation_time_series
+    assert "`chlorpyrifos_residual_air_reentry_24h_concentration_1990`" in validation_time_series
+    assert "`diazinon_office_residual_air_series_1990`" in validation_time_series
+    assert "`diazinon_residual_air_reentry_48h_concentration_1990`" in validation_time_series
+    assert "validation://time-series-packs" in validation
     assert "Validation Dossier" in dossier
+    assert "Validation Coverage Report" in coverage_report
+    assert "[benchmark_time_resolved]" in coverage_report
+    assert "`inhalation_residual_air_reentry`" in coverage_report
+    assert "`inhalation_well_mixed_spray`" in coverage_report
+    assert "`worker_inhalation_control_aware_screening`" in coverage_report
+    assert "`worker_dermal_absorbed_dose_screening`" in coverage_report
+    assert "`consumer_air_space_insecticide_aerosol`" in coverage_report
+    assert "`eu_diazinon_indoor_surface_insecticide`" in coverage_report
     assert "`heuristic_defaults_active`" in dossier
     assert "`tier1_nf_ff_external_validation_partial_only`" in dossier
+    assert "`residual_air_reentry_validation_narrow_anchor_only`" in dossier
+    assert "Goldset Benchmark Guide" in goldset
+    assert "`consumer_trigger_spray_cleaner_aerosol`" in goldset
+    assert "`eu_diazinon_indoor_surface_insecticide`" in goldset
+    assert "`diazinon_office_postapplication_reentry`" in goldset
+    assert "`chlorpyrifos_indoor_surface_insecticide_reentry`" in goldset
+    assert "`worker_handheld_biocidal_trigger_spray_monitoring`" in goldset
+    assert "`consumer_mosquito_aerosol_room_air_validation`" in goldset
+    assert "`consumer_disinfectant_trigger_spray_tier1_monitoring`" in goldset
+    assert "`inhalation_residual_air_reentry_chlorpyrifos_time_series_1990`" in goldset
+    assert "`worker_biocidal_spray_dermal_contact`" in goldset
+    assert "`benchmark_regressed_showcase`" in goldset
+    assert "pubmed.ncbi.nlm.nih.gov/31361572" in goldset
+    assert "pubmed.ncbi.nlm.nih.gov/1693041" in goldset
     assert "Defaults Curation Report" in defaults_curation
     cleaner_wipe_transfer = (
         "`transfer_efficiency:application_method=wipe,product_category=household_cleaner`"
@@ -117,3 +196,74 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`transfer_efficiency:application_method=trigger_spray`" in defaults_curation
     assert "`transfer_efficiency:application_method=hand_application`" in defaults_curation
     assert "Residual Heuristic Branches" in defaults_curation
+    assert "Exposure Platform Architecture" in architecture
+    assert "Fate MCP" in architecture
+    assert "Dietary MCP" in architecture
+    assert "Worker Exposure Mode" in architecture
+    assert "PBPK remains a separate MCP boundary" in architecture
+    assert "Worker Routing Guide" in worker_routing
+    assert "exposure_route_worker_task" in worker_routing
+    assert "workerTaskRoutingInput.v1" in worker_routing
+    assert "workerTaskRoutingDecision.v1" in worker_routing
+    assert "docs://worker-routing-guide" in worker_routing
+    assert "Worker Tier 2 Bridge Guide" in worker_tier2
+    assert "exposure_export_worker_inhalation_tier2_bridge" in worker_tier2
+    assert "exportWorkerInhalationTier2BridgeRequest.v1" in worker_tier2
+    assert "workerInhalationTier2BridgePackage.v1" in worker_tier2
+    assert "docs://worker-tier2-bridge-guide" in worker_tier2
+    assert "Worker ART Adapter Guide" in worker_art
+    assert "worker_ingest_inhalation_tier2_task" in worker_art
+    assert "workerInhalationTier2AdapterRequest.v1" in worker_art
+    assert "workerInhalationTier2AdapterIngestResult.v1" in worker_art
+    assert "docs://worker-art-adapter-guide" in worker_art
+    assert "packaged determinant templates" in worker_art
+    assert "`aligned`, `partial`, `heuristic`, or `none`" in worker_art
+    assert "janitorial pump sprays" in worker_art
+    assert "paint/coating aerosols" in worker_art
+    assert "solvent/degreasing vapor tasks" in worker_art
+    assert "open mixing/blending" in worker_art
+    assert "enclosed transfer vapor tasks" in worker_art
+    assert "outdoor or enhanced-ventilation" in worker_art
+    assert "Worker ART Execution Guide" in worker_art_execution
+    assert "worker_execute_inhalation_tier2_task" in worker_art_execution
+    assert "executeWorkerInhalationTier2Request.v1" in worker_art_execution
+    assert "workerInhalationTier2ExecutionResult.v1" in worker_art_execution
+    assert "docs://worker-art-execution-guide" in worker_art_execution
+    assert "room-average vapor-release surrogate" in worker_art_execution
+    assert "worker_control_factor" in worker_art_execution
+    assert "respiratory_protection_factor" in worker_art_execution
+    assert "Worker ART External Exchange Guide" in worker_art_exchange
+    assert "worker_export_inhalation_art_execution_package" in worker_art_exchange
+    assert "exportWorkerArtExecutionPackageRequest.v1" in worker_art_exchange
+    assert "workerArtExternalExecutionPackage.v1" in worker_art_exchange
+    assert "worker_import_inhalation_art_execution_result" in worker_art_exchange
+    assert "importWorkerArtExecutionResultRequest.v1" in worker_art_exchange
+    assert "rawArtifacts" in worker_art_exchange
+    assert "art_worker_execution_report_json_v1" in worker_art_exchange
+    assert "art_worker_result_summary_csv_semicolon_v1" in worker_art_exchange
+    assert "adapterHint" in worker_art_exchange
+    assert "Worker Dermal Bridge Guide" in worker_dermal_bridge
+    assert "exposure_export_worker_dermal_absorbed_dose_bridge" in worker_dermal_bridge
+    assert "exportWorkerDermalAbsorbedDoseBridgeRequest.v1" in worker_dermal_bridge
+    assert "workerDermalAbsorbedDoseBridgePackage.v1" in worker_dermal_bridge
+    assert "docs://worker-dermal-bridge-guide" in worker_dermal_bridge
+    assert "Worker Dermal Adapter Guide" in worker_dermal_adapter
+    assert "worker_ingest_dermal_absorbed_dose_task" in worker_dermal_adapter
+    assert "workerDermalAbsorbedDoseAdapterRequest.v1" in worker_dermal_adapter
+    assert "workerDermalAbsorbedDoseAdapterIngestResult.v1" in worker_dermal_adapter
+    assert "docs://worker-dermal-adapter-guide" in worker_dermal_adapter
+    assert "janitorial wet-wipe glove contact" in worker_dermal_adapter
+    assert "generic gloved or ungloved hand contact" in worker_dermal_adapter
+    assert "Worker Dermal Execution Guide" in worker_dermal_execution
+    assert "worker_execute_dermal_absorbed_dose_task" in worker_dermal_execution
+    assert "executeWorkerDermalAbsorbedDoseRequest.v1" in worker_dermal_execution
+    assert "workerDermalAbsorbedDoseExecutionResult.v1" in worker_dermal_execution
+    assert "docs://worker-dermal-execution-guide" in worker_dermal_execution
+    assert "externalSkinMassMgPerDay" in worker_dermal_execution
+    assert "PPE penetration" in worker_dermal_execution
+    assert "Integrated Exposure Workflow Guide" in integrated_workflow
+    assert "exposure_run_integrated_workflow" in integrated_workflow
+    assert "runIntegratedExposureWorkflowInput.v1" in integrated_workflow
+    assert "integratedExposureWorkflowResult.v1" in integrated_workflow
+    assert "docs://integrated-exposure-workflow-guide" in integrated_workflow
+    assert "CompTox and ConsExpo records are normalized" in integrated_workflow

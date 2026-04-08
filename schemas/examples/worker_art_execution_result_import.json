@@ -1,0 +1,564 @@
+{
+  "schema_version": "workerInhalationTier2ExecutionResult.v1",
+  "supportedByAdapter": true,
+  "readyForExecution": true,
+  "manualReviewRequired": false,
+  "resolvedAdapter": "art_worker_inhalation_external_adapter",
+  "targetModelFamily": "art",
+  "chemicalId": "DTXSID7020182",
+  "chemicalName": "Example Solvent A",
+  "route": "inhalation",
+  "scenarioClass": "refined",
+  "baselineDose": {
+    "metric": "normalized_external_dose",
+    "value": 0.09455426,
+    "unit": "mg/kg-day"
+  },
+  "externalDose": {
+    "metric": "normalized_worker_inhaled_dose",
+    "value": 0.021,
+    "unit": "mg/kg-day"
+  },
+  "productUseProfile": {
+    "schema_version": "productUseProfile.v1",
+    "product_name": "Example Workplace Disinfectant Spray",
+    "product_subtype": null,
+    "product_category": "disinfectant",
+    "physical_form": "spray",
+    "application_method": "trigger_spray",
+    "retention_type": "surface_contact",
+    "concentration_fraction": 0.03,
+    "use_amount_per_event": 15.0,
+    "use_amount_unit": "mL",
+    "use_events_per_day": 2.0,
+    "density_g_per_ml": null,
+    "transfer_efficiency": null,
+    "retention_factor": null,
+    "ingestion_fraction": null,
+    "aerosolized_fraction": null,
+    "room_volume_m3": 35.0,
+    "air_exchange_rate_per_hour": 2.0,
+    "exposure_duration_hours": 0.5
+  },
+  "populationProfile": {
+    "schema_version": "populationProfile.v1",
+    "population_group": "adult",
+    "body_weight_kg": 75.0,
+    "inhalation_rate_m3_per_hour": 1.1,
+    "exposed_surface_area_cm2": null,
+    "demographic_tags": [
+      "worker",
+      "occupational"
+    ],
+    "region": "EU"
+  },
+  "taskContext": {
+    "schema_version": "workerInhalationTier2TaskContext.v1",
+    "task_description": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+    "workplace_setting": "janitorial closet",
+    "task_duration_hours": 0.5,
+    "ventilation_context": "general_ventilation",
+    "local_controls": [
+      "general ventilation",
+      "task segregation"
+    ],
+    "respiratory_protection": "none",
+    "emission_descriptor": "short trigger-spray cleaning mist near the breathing zone",
+    "notes": [
+      "Illustrative worker inhalation bridge package for a future ART-style adapter."
+    ]
+  },
+  "artTaskEnvelope": {
+    "schema_version": "workerInhalationArtTaskEnvelope.v1",
+    "adapterName": "art_worker_inhalation_adapter",
+    "adapterVersion": "0.1.0",
+    "activityClass": "trigger_spray_surface_application",
+    "emissionProfile": "liquid_spray_mist_release_profile",
+    "controlProfile": "general_ventilation_control_profile",
+    "determinantTemplateMatch": {
+      "schema_version": "workerArtDeterminantTemplateMatch.v1",
+      "templateCatalogVersion": "2026.04.07.v1",
+      "templateId": "janitorial_disinfectant_trigger_spray_v1",
+      "templateLabel": "Janitorial Disinfectant Trigger Spray",
+      "alignmentStatus": "aligned",
+      "matchScore": 1.0,
+      "matchBasis": [
+        "productCategory=`disinfectant` matched the template family.",
+        "applicationMethod=`trigger_spray` matched the template release mode.",
+        "physicalForm=`spray` matched the template aerosol form.",
+        "Task text or workplace setting matched the template context."
+      ],
+      "determinantRecommendations": {
+        "artTaskFamily": "janitorial_disinfectant_trigger_spray",
+        "handlingPattern": "directed_surface_spray_and_wipe",
+        "releaseMechanism": "short_manual_trigger_spray",
+        "nearFieldOrientation": "toward_target_surface",
+        "defaultExposureContext": {
+          "workplaceSettingType": "indoor_service_area",
+          "workerProximity": "near_field_operator"
+        },
+        "activityClass": "trigger_spray_surface_application",
+        "emissionProfile": "liquid_spray_mist_release_profile"
+      },
+      "sourceBasis": [
+        "worker_art_template_pack_2026_v1",
+        "worker_routing_trigger_spray_screening_bridge_v1"
+      ],
+      "reviewNotes": []
+    },
+    "taskSummary": [
+      "Matched determinant template=`janitorial_disinfectant_trigger_spray_v1` with alignmentStatus=`aligned`.",
+      "Mapped applicationMethod=`trigger_spray` and physicalForm=`spray` to activityClass=`trigger_spray_surface_application`.",
+      "Mapped ventilationContext=`general_ventilation` and localControls count `2` to controlProfile=`general_ventilation_control_profile`.",
+      "Preserved contextOfUse=`worker-tier2-bridge` and sourceModule=`exposure-scenario-mcp` for downstream ART-side review."
+    ],
+    "artInputs": {
+      "substanceName": "Example Solvent A",
+      "substanceIdentifier": "DTXSID7020182",
+      "activityClass": "trigger_spray_surface_application",
+      "emissionProfile": "liquid_spray_mist_release_profile",
+      "controlProfile": "general_ventilation_control_profile",
+      "templateId": "janitorial_disinfectant_trigger_spray_v1",
+      "templateAlignmentStatus": "aligned",
+      "determinantTemplateRecommendations": {
+        "artTaskFamily": "janitorial_disinfectant_trigger_spray",
+        "handlingPattern": "directed_surface_spray_and_wipe",
+        "releaseMechanism": "short_manual_trigger_spray",
+        "nearFieldOrientation": "toward_target_surface",
+        "defaultExposureContext": {
+          "workplaceSettingType": "indoor_service_area",
+          "workerProximity": "near_field_operator"
+        },
+        "activityClass": "trigger_spray_surface_application",
+        "emissionProfile": "liquid_spray_mist_release_profile"
+      },
+      "taskDescription": "Worker trigger-spray disinfection task needing Tier 2 refinement",
+      "workplaceSetting": "janitorial closet",
+      "taskDurationHours": 0.5,
+      "ventilationContext": "general_ventilation",
+      "localControls": [
+        "general ventilation",
+        "task segregation"
+      ],
+      "respiratoryProtection": "none",
+      "emissionDescriptor": "short trigger-spray cleaning mist near the breathing zone",
+      "productCategory": "disinfectant",
+      "productSubtype": null,
+      "applicationMethod": "trigger_spray",
+      "physicalForm": "spray",
+      "concentrationFraction": 0.03,
+      "useAmountPerEvent": 15.0,
+      "useAmountUnit": "mL",
+      "useEventsPerDay": 2.0,
+      "eventDurationHours": 0.5,
+      "roomVolumeM3": 35.0,
+      "airExchangeRatePerHour": 2.0,
+      "bodyWeightKg": 75.0,
+      "inhalationRateM3PerHour": 1.1,
+      "region": "EU",
+      "tier1ScreeningHints": {
+        "sourceDistanceM": 0.35,
+        "sprayDurationSeconds": 10.0,
+        "nearFieldVolumeM3": 2.0,
+        "airflowDirectionality": "cross_draft",
+        "particleSizeRegime": "coarse_spray"
+      }
+    },
+    "screeningHandoffSummary": {
+      "sourceModule": "exposure-scenario-mcp",
+      "contextOfUse": "worker-tier2-bridge",
+      "guidanceResource": "docs://worker-tier2-bridge-guide",
+      "workerRoutingSupportStatus": "future_adapter_recommended",
+      "workerRoutingTargetMcp": "future_worker_exposure_adapter",
+      "workerRoutingNextStep": "Collect task-control and ventilation inputs for an ART- or Stoffenmanager-aligned adapter.",
+      "sourceRequestSchema": "inhalationTier1ScenarioRequest.v1",
+      "sourceRoute": "inhalation",
+      "templateCatalogVersion": "2026.04.07.v1"
+    },
+    "guidanceResource": "docs://worker-art-adapter-guide"
+  },
+  "executionOverrides": null,
+  "routeMetrics": {
+    "baselineModelFamily": "tier1_nf_ff_screening",
+    "templateId": "janitorial_disinfectant_trigger_spray_v1",
+    "templateAlignmentStatus": "aligned",
+    "activityClass": "trigger_spray_surface_application",
+    "emissionProfile": "liquid_spray_mist_release_profile",
+    "controlProfile": "general_ventilation_control_profile",
+    "importedSourceSystem": "ART",
+    "importedResultStatus": "completed",
+    "importedResultPayloadSchemaVersion": "workerArtExternalResultSummary.v1",
+    "externalRunId": "art-run-001",
+    "externalModelVersion": "ART-1.5.0",
+    "importedDeterminantSnapshot": {
+      "workplaceSettingType": "janitorial_closet_or_small_room",
+      "ventilationDeterminant": "general_ventilation",
+      "taskFamily": "janitorial_disinfectant_trigger_spray"
+    },
+    "importedResultPayloadUsed": true,
+    "importedArtifactPayloadUsed": true,
+    "artifactFormatAdapterId": "art_worker_execution_report_json_v1",
+    "artifactFormatAdapterLocator": "artifact://art-run-001/summary.json",
+    "importedBreathingZoneConcentrationMgPerM3": 0.72,
+    "importedInhaledMassMgPerDay": 1.575,
+    "importedDoseDerivationMethod": "explicit_normalized_external_dose",
+    "surrogateExternalDoseMgPerKgDay": 0.09455426,
+    "importedDoseDeltaVsSurrogateMgPerKgDay": -0.07355426,
+    "importedDoseRatioVsSurrogate": 0.2220947
+  },
+  "assumptions": [
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "body_weight_kg",
+      "value": 75.0,
+      "unit": "kg",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_art_execution_surrogate_v1",
+        "title": "Exposure Scenario MCP worker ART-side execution surrogate",
+        "locator": "docs://worker-art-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Body weight was preserved from the worker adapter payload for external ART-result normalization.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile",
+          "external_source_system": "ART"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "inhalation_rate_m3_per_hour",
+      "value": 1.1,
+      "unit": "m3/h",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_art_execution_surrogate_v1",
+        "title": "Exposure Scenario MCP worker ART-side execution surrogate",
+        "locator": "docs://worker-art-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Inhalation rate was preserved from the worker adapter payload for external ART-result normalization.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile",
+          "external_source_system": "ART"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "task_duration_hours",
+      "value": 0.5,
+      "unit": "h",
+      "source_kind": "system",
+      "source": {
+        "source_id": "worker_art_external_result:art",
+        "title": "External ART worker inhalation execution result",
+        "locator": "artifact://art-run-001/summary.json",
+        "version": "ART-1.5.0",
+        "hash_sha256": null
+      },
+      "confidence": "external_system",
+      "default_applied": false,
+      "rationale": "Task duration was imported from the external ART execution result or its structured resultPayload.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile",
+          "external_source_system": "ART"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "breathing_zone_concentration_mg_per_m3",
+      "value": 0.72,
+      "unit": "mg/m3",
+      "source_kind": "system",
+      "source": {
+        "source_id": "worker_art_external_result:art",
+        "title": "External ART worker inhalation execution result",
+        "locator": "artifact://art-run-001/summary.json",
+        "version": "ART-1.5.0",
+        "hash_sha256": null
+      },
+      "confidence": "external_system",
+      "default_applied": false,
+      "rationale": "Breathing-zone concentration was imported from the external ART execution result.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile",
+          "external_source_system": "ART"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "imported_inhaled_mass_mg_per_day",
+      "value": 1.575,
+      "unit": "mg/day",
+      "source_kind": "system",
+      "source": {
+        "source_id": "worker_art_external_result:art",
+        "title": "External ART worker inhalation execution result",
+        "locator": "artifact://art-run-001/summary.json",
+        "version": "ART-1.5.0",
+        "hash_sha256": null
+      },
+      "confidence": "external_system",
+      "default_applied": false,
+      "rationale": "Inhaled mass per day was imported from the external ART execution result.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile",
+          "external_source_system": "ART"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "normalized_worker_inhaled_dose_mg_per_kg_day",
+      "value": 0.021,
+      "unit": "mg/kg-day",
+      "source_kind": "system",
+      "source": {
+        "source_id": "worker_art_external_result:art",
+        "title": "External ART worker inhalation execution result",
+        "locator": "artifact://art-run-001/summary.json",
+        "version": "ART-1.5.0",
+        "hash_sha256": null
+      },
+      "confidence": "external_system",
+      "default_applied": false,
+      "rationale": "Normalized worker inhaled dose was imported directly from the external ART execution result.",
+      "governance": {
+        "evidence_grade": "grade_3",
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile",
+          "external_source_system": "ART"
+        }
+      }
+    }
+  ],
+  "qualityFlags": [
+    {
+      "code": "worker_tier2_adapter_request_ingested",
+      "severity": "info",
+      "message": "Worker Tier 2 adapter request was ingested and normalized into an ART-side intake envelope."
+    },
+    {
+      "code": "worker_art_adapter_screening_hints_preserved",
+      "severity": "info",
+      "message": "Tier 1 screening geometry and spray hints were preserved as ART-side context only; they are not treated as solved occupational determinants."
+    },
+    {
+      "code": "worker_art_template_aligned",
+      "severity": "info",
+      "message": "Matched packaged ART determinant template `janitorial_disinfectant_trigger_spray_v1` with aligned status."
+    },
+    {
+      "code": "worker_art_external_result_imported",
+      "severity": "info",
+      "message": "Imported an external ART-side worker inhalation result into the governed Exposure Scenario MCP execution schema."
+    },
+    {
+      "code": "worker_art_external_result_payload_present",
+      "severity": "info",
+      "message": "The import included a structured resultPayload from an external ART-side runner."
+    },
+    {
+      "code": "worker_art_external_result_artifact_payload_present",
+      "severity": "info",
+      "message": "The import included inline raw-artifact content that was parsed through a named ART artifact-format adapter."
+    },
+    {
+      "code": "worker_art_external_result_artifact_adapter_resolved",
+      "severity": "info",
+      "message": "Resolved raw artifact content through the `art_worker_execution_report_json_v1` adapter."
+    },
+    {
+      "code": "worker_art_external_result_artifact_payload_used_without_explicit_summary",
+      "severity": "info",
+      "message": "The import derived its normalized summary from inline raw-artifact content because no explicit resultPayload was supplied."
+    },
+    {
+      "code": "worker_art_external_result_surrogate_divergence",
+      "severity": "warning",
+      "message": "The imported external ART dose diverged materially from the current internal surrogate execution result."
+    }
+  ],
+  "limitations": [
+    {
+      "code": "worker_art_adapter_no_solver",
+      "severity": "warning",
+      "message": "This ingest step does not execute ART, simulate workplace concentrations, or produce a compliance-ready occupational estimate."
+    },
+    {
+      "code": "worker_art_adapter_mapping_heuristic",
+      "severity": "warning",
+      "message": "Generic Exposure Scenario MCP task fields are mapped into an ART-aligned intake envelope using bounded, reviewable heuristics."
+    },
+    {
+      "code": "worker_art_adapter_screening_hints_context_only",
+      "severity": "info",
+      "message": "Tier 1 screening hints remain contextual surrogates and should not be confused with measured workplace determinants."
+    },
+    {
+      "code": "worker_art_external_result_not_independently_verified",
+      "severity": "warning",
+      "message": "Exposure Scenario MCP normalized the external ART result but did not independently re-run or verify the external occupational solver."
+    },
+    {
+      "code": "worker_art_external_result_not_compliance_ready",
+      "severity": "warning",
+      "message": "Treat the imported ART result as a structured occupational refinement artifact for expert review, not as a final compliance determination."
+    }
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "worker.inhalation_art_external_import.v1",
+    "plugin_id": "worker_inhalation_art_external_result_import",
+    "plugin_version": "0.1.0",
+    "defaults_version": "2026.04.07.v18",
+    "defaults_hash_sha256": "ba772ee02857f692ec6e7fa1cbfaf5160f9cd8ae1f4362fba2c3c869864d8312",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Imports a normalized external ART-side execution result back into the governed worker inhalation execution schema.",
+      "The imported result is preserved alongside screening-baseline comparison fields; it is not independently re-solved inside Exposure Scenario MCP."
+    ]
+  },
+  "fitForPurpose": {
+    "label": "worker_inhalation_external_art_import",
+    "suitable_for": [
+      "external occupational inhalation result normalization",
+      "ART-aligned worker inhalation refinement with preserved screening comparison",
+      "PBPK-ready external inhalation dose handoff after expert review"
+    ],
+    "not_suitable_for": [
+      "independent solver verification",
+      "final occupational compliance determination",
+      "raw ART report replacement"
+    ]
+  },
+  "tierSemantics": {
+    "tier_claimed": "tier_2",
+    "tier_earned": "tier_2",
+    "tier_rationale": "This result imports an external occupational inhalation execution payload and normalizes it into the governed MCP execution contract while preserving the internal screening baseline for comparison.",
+    "assumption_checks_passed": true,
+    "required_caveats": [
+      "Keep the external raw artifacts, quality notes, and import provenance attached to any downstream PBPK or NGRA use.",
+      "Treat the imported dose as externally produced occupational model output that was normalized here, not independently solved here."
+    ],
+    "forbidden_interpretations": [
+      "Do not treat this import as independent validation of the external solver.",
+      "Do not use the normalized output as a final occupational compliance conclusion."
+    ]
+  },
+  "validationSummary": {
+    "validationStatus": "external_validation_partial",
+    "routeMechanism": "worker_inhalation_external_art_import",
+    "benchmarkCaseIds": [],
+    "externalDatasetIds": [
+      "ART:art-run-001"
+    ],
+    "evidenceReadiness": "external_partial",
+    "heuristicAssumptionNames": [],
+    "validationGapIds": [
+      "worker_inhalation_external_validation_partial_only"
+    ],
+    "executedValidationChecks": [],
+    "highestSupportedUncertaintyTier": "tier_b",
+    "probabilisticEnablement": "blocked",
+    "notes": [
+      "This result was imported from an external occupational execution source rather than re-solved inside Exposure Scenario MCP.",
+      "Review the attached rawArtifacts and any external qualityNotes before using the normalized dose downstream."
+    ]
+  },
+  "interpretationNotes": [
+    "The imported worker inhalation dose came from the external ART-side result when available, with internal derivation used only when the external result omitted a normalized dose.",
+    "The preserved screening baseline remains attached for context and comparison, not as a replacement for the imported Tier 2 result.",
+    "Review the attached raw artifacts before relying on the imported concentration or dose."
+  ]
+}

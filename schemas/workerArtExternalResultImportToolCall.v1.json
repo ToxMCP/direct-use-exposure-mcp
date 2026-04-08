@@ -1,0 +1,50 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "workerArtExternalResultImportToolCall.v1",
+      "default": "workerArtExternalResultImportToolCall.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "toolName": {
+      "const": "worker_import_inhalation_art_execution_result",
+      "default": "worker_import_inhalation_art_execution_result",
+      "title": "Toolname",
+      "type": "string"
+    },
+    "argumentTemplate": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Argumenttemplate",
+      "type": "object"
+    }
+  },
+  "title": "WorkerArtExternalResultImportToolCall",
+  "type": "object"
+}
