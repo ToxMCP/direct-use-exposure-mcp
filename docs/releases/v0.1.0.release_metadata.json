@@ -60,6 +60,7 @@
     "docs://security-provenance-review",
     "docs://goldset-benchmark-guide",
     "docs://capability-maturity-matrix",
+    "docs://toxmcp-suite-index",
     "docs/releases/v0.1.0.md"
   ],
   "validationCommands": [

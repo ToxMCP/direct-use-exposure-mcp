@@ -4,6 +4,8 @@ Direct-Use Exposure MCP is intended to act as the external-dose engine inside th
 
 See [exposure_platform_architecture.md](./exposure_platform_architecture.md) for the recommended
 multi-MCP architecture and phased build order across exposure, fate, dietary, and worker domains.
+See [toxmcp_suite_index.md](./toxmcp_suite_index.md) for the one-page public-facing map of the
+current ToxMCP service family.
 
 ## Boundary
 

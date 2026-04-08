@@ -309,6 +309,10 @@
       "description": "Guide to routing questions and handoffs across Exposure, Fate, Dietary, PBPK, and ToxClaw."
     },
     {
+      "uri": "docs://toxmcp-suite-index",
+      "description": "One-page orientation guide to the current ToxMCP service family and its shared boundaries."
+    },
+    {
       "uri": "docs://worker-routing-guide",
       "description": "Guide to the worker-task router and occupational escalation hooks."
     },

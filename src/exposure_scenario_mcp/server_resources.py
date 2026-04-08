@@ -42,6 +42,7 @@ from exposure_scenario_mcp.guidance import (
     security_provenance_review_markdown,
     service_selection_guide,
     tier1_inhalation_parameter_guide,
+    toxmcp_suite_index_guide,
     troubleshooting_guide,
     uncertainty_framework,
     validation_coverage_report_markdown,
@@ -244,6 +245,12 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """Guide to routing questions and handoffs across the ToxMCP service boundaries."""
 
         return service_selection_guide()
+
+    @mcp.resource("docs://toxmcp-suite-index")
+    def docs_toxmcp_suite_index() -> str:
+        """One-page orientation guide to the current ToxMCP service family."""
+
+        return toxmcp_suite_index_guide()
 
     @mcp.resource("docs://worker-routing-guide")
     def docs_worker_routing_guide() -> str:

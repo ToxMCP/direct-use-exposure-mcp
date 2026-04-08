@@ -443,6 +443,65 @@ Use this guide when routing a question to the right ToxMCP service.
 """
 
 
+def toxmcp_suite_index_guide() -> str:
+    return """# ToxMCP Suite Index
+
+Use this guide as the one-page orientation layer for the current ToxMCP family.
+
+## Current Service Map
+
+- `Direct-Use Exposure MCP`
+  owns deterministic direct-use and near-field external-dose construction, evidence
+  reconciliation, bounded worker screening, and PBPK-ready external handoff packaging.
+- `PBPK MCP`
+  owns toxicokinetic simulation, internal-dose translation, and downstream TK-facing outputs.
+- `Bioactivity-PoD MCP`
+  owns bioactivity normalization, PoD/BER interpretation support, and curated downstream
+  qualification.
+- `ToxClaw`
+  owns orchestration, evidence handling, refinement policy, and final NGRA-facing reporting.
+- `Fate MCP` (planned sibling)
+  should own environmental release, multimedia transfer, and compartment concentration surfaces.
+- `Dietary MCP` (planned sibling)
+  should own commodity residues, food-consumption mappings, and dietary oral intake.
+- `Literature MCP` (optional future sibling)
+  should own source normalization, extraction review, and evidence-pack curation rather than
+  dose math.
+
+## Shared Cross-MCP Contracts
+
+- `chemicalIdentity.v1`
+- `productUseEvidenceRecord.v1`
+- `exposureScenarioDefinition.v1`
+- `routeDoseEstimate.v1`
+- `environmentalReleaseScenario.v1`
+- `concentrationSurface.v1`
+- `pbpkExternalImportBundle.v1`
+
+Use these contracts to keep sibling MCPs interoperable without leaking tool-native payloads
+across domain boundaries.
+
+## Routing Summary
+
+- Product-use, direct-use oral, residual-air reentry, indoor aerosol, and near-field worker
+  screening -> `Direct-Use Exposure MCP`
+- Environmental source term or multimedia concentration question -> `Fate MCP`
+- Dietary oral intake question -> `Dietary MCP`
+- Internal dose or TK simulation question -> `PBPK MCP`
+- Bioactivity/PoD interpretation question -> `Bioactivity-PoD MCP`
+- Cross-service case assembly, refinement choice, or reporting question -> `ToxClaw`
+
+## How To Read This Repo In The Suite
+
+- Start with `docs://service-selection-guide` for service ownership.
+- Use `docs://cross-mcp-contract-guide` for the shared handoff shapes.
+- Use `docs://capability-maturity-matrix` for maturity/readiness of the released surface.
+- Use `docs://suite-integration-guide` for detailed Direct-Use Exposure MCP boundary notes.
+
+Static companion: `docs/toxmcp_suite_index.md`
+"""
+
+
 def capability_maturity_matrix_guide() -> str:
     return """# Capability Maturity Matrix
 

@@ -73,6 +73,8 @@ bounded worker, exchange, and validation surfaces:
 
 For a one-page maturity framing of the full released surface, see
 [docs/capability_maturity_matrix.md](./docs/capability_maturity_matrix.md).
+For a suite-level map of sibling services and shared handoff contracts, see
+[docs/toxmcp_suite_index.md](./docs/toxmcp_suite_index.md).
 
 ## What's in v0.1.0
 

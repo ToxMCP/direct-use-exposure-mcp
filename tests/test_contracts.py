@@ -285,6 +285,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://repository-slug-decision",
         "docs://cross-mcp-contract-guide",
         "docs://service-selection-guide",
+        "docs://toxmcp-suite-index",
         "docs://integrated-exposure-workflow-guide",
         "docs://worker-routing-guide",
         "docs://worker-tier2-bridge-guide",

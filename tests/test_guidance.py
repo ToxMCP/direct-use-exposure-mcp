@@ -25,6 +25,7 @@ from exposure_scenario_mcp.guidance import (
     repository_slug_decision_guide,
     service_selection_guide,
     tier1_inhalation_parameter_guide,
+    toxmcp_suite_index_guide,
     uncertainty_framework,
     validation_coverage_report_markdown,
     validation_dossier_markdown,
@@ -88,6 +89,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     slug_decision = repository_slug_decision_guide()
     cross_mcp_contracts = cross_mcp_contract_guide()
     service_selection = service_selection_guide()
+    suite_index = toxmcp_suite_index_guide()
     worker_routing = worker_routing_guide()
     worker_tier2 = worker_tier2_bridge_guide()
     worker_art = worker_art_adapter_guide()
@@ -218,6 +220,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Exposure Platform Architecture" in architecture
     assert "Fate MCP" in architecture
     assert "Dietary MCP" in architecture
+    assert "Bioactivity-PoD MCP" in suite_index
+    assert "docs://cross-mcp-contract-guide" in suite_index
+    assert "docs/toxmcp_suite_index.md" in suite_index
     assert "Worker Exposure Mode" in architecture
     assert "PBPK remains a separate MCP boundary" in architecture
     assert "Capability Maturity Matrix" in capability_matrix
