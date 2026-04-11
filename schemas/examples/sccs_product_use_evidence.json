@@ -1,0 +1,54 @@
+{
+  "schema_version": "productUseEvidenceRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Solvent A",
+  "casrn": "123-45-6",
+  "source_name": "EU SCCS",
+  "source_kind": "sccs",
+  "review_status": "reviewed",
+  "source_record_id": "sccs_nog_12th_revision_face_cream_2023",
+  "source_locator": "https://health.ec.europa.eu/publications/sccs-notes-guidance-testing-cosmetic-ingredients-and-their-safety-evaluation-12th-revision_en",
+  "product_name": "Face cream",
+  "product_subtype": "face_cream",
+  "product_use_categories": [
+    "personal_care"
+  ],
+  "physical_forms": [
+    "cream"
+  ],
+  "application_methods": [
+    "hand_application"
+  ],
+  "retention_types": [
+    "leave_on"
+  ],
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU",
+    "SCCS"
+  ],
+  "physchem_summary": {},
+  "particleMaterialContext": null,
+  "productUseProfileOverrides": {
+    "use_amount_per_event": 0.71962617,
+    "use_amount_unit": "g",
+    "use_events_per_day": 2.14
+  },
+  "populationProfileOverrides": {
+    "body_weight_kg": 63.79453,
+    "exposed_surface_area_cm2": 565.0,
+    "region": "EU"
+  },
+  "evidence_sources": [
+    "SCCS:NotesOfGuidance:12thRevision:FaceCream"
+  ],
+  "notes": [
+    "Illustrative SCCS cosmetics guidance evidence mapped into the generic contract.",
+    "Mapped from SCCS cosmetics guidance product type `Face cream` to internal categories ['personal_care'].",
+    "SCCS product_family: skin_care.",
+    "SCCS table references: Table 3A, Table 4.",
+    "SCCS supported routes: dermal."
+  ]
+}

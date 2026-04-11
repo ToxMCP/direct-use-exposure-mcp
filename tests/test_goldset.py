@@ -8,7 +8,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     benchmark_ids = {case["id"] for case in load_benchmark_manifest()["cases"]}
 
     assert goldset["schema_version"] == "benchmarkGoldsetManifest.v1"
-    assert goldset["goldset_version"] == "2026.04.08.v12"
+    assert goldset["goldset_version"] == "2026.04.10.v13"
     assert len(goldset["cases"]) >= 6
 
     coverage_statuses = {case["coverage_status"] for case in goldset["cases"]}
@@ -78,6 +78,12 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     assert dermal_worker_case["benchmark_case_ids"] == [
         "worker_dermal_handheld_biocidal_trigger_spray_execution"
     ]
+    face_cream_case = next(
+        case
+        for case in goldset["cases"]
+        if case["id"] == "consumer_face_cream_sccs_guidance_alignment"
+    )
+    assert face_cream_case["benchmark_case_ids"] == ["dermal_face_cream_sccs_screening"]
     aerosol_case = next(
         case
         for case in goldset["cases"]

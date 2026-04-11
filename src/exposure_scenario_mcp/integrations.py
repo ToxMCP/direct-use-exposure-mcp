@@ -25,7 +25,10 @@ from exposure_scenario_mcp.models import (
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
     LimitationNote,
+    ParticleMaterialContext,
     PbpkScenarioInput,
+    PopulationProfile,
+    ProductUseProfile,
     ProvenanceBundle,
     QualityFlag,
     Route,
@@ -161,8 +164,8 @@ def _workflow_provenance(
         notes=[
             "Workflow result preserves evidence reconciliation, scenario construction, and "
             "optional PBPK handoff generation as one auditable response.",
-            "CompTox and ConsExpo records are normalized locally into the generic evidence "
-            "contract; no external MCP call is executed inside this workflow helper.",
+            "CompTox, SCCS, and ConsExpo records are normalized locally into the generic "
+            "evidence contract; no external MCP call is executed inside this workflow helper.",
         ],
     )
 
@@ -374,6 +377,219 @@ class ConsExpoEvidenceRecord(StrictModel):
     )
 
 
+class SccsCosmeticsEvidenceRecord(StrictModel):
+    schema_version: Literal["sccsCosmeticsEvidenceRecord.v1"] = (
+        "sccsCosmeticsEvidenceRecord.v1"
+    )
+    chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
+    preferred_name: str | None = Field(
+        default=None,
+        description="Preferred chemical name when the SCCS source is already tied to identity.",
+    )
+    casrn: str | None = Field(default=None, description="CAS Registry Number when known.")
+    guidance_id: str = Field(..., alias="guidanceId")
+    guidance_title: str = Field(..., alias="guidanceTitle")
+    guidance_version: str = Field(..., alias="guidanceVersion")
+    guidance_locator: str = Field(..., alias="guidanceLocator")
+    cosmetic_product_type: str = Field(
+        ...,
+        alias="cosmeticProductType",
+        description="Cosmetic product type label from SCCS guidance, for example face cream.",
+    )
+    product_family: str | None = Field(
+        default=None,
+        alias="productFamily",
+        description="Optional broader SCCS product family such as skin_care or hair_care.",
+    )
+    table_references: list[str] = Field(
+        default_factory=list,
+        alias="tableReferences",
+        description="Notes of Guidance table or section references backing the record.",
+    )
+    supported_routes: list[Route] = Field(
+        default_factory=lambda: [Route.DERMAL],
+        alias="supportedRoutes",
+        description="Routes explicitly supported by the cited SCCS guidance context.",
+    )
+    physical_forms: list[str] = Field(
+        default_factory=list,
+        description="Physical forms supported by the SCCS source.",
+    )
+    application_methods: list[str] = Field(
+        default_factory=list,
+        description="Application methods supported by the SCCS source.",
+    )
+    retention_types: list[str] = Field(
+        default_factory=list,
+        description="Retention or contact semantics supported by the SCCS source.",
+    )
+    product_use_profile_overrides: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        alias="productUseProfileOverrides",
+        description=(
+            "Reviewed product-use profile fields such as use_amount_per_event, "
+            "use_amount_unit, or use_events_per_day."
+        ),
+    )
+    population_profile_overrides: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        alias="populationProfileOverrides",
+        description=(
+            "Reviewed population-profile fields such as exposed_surface_area_cm2 or "
+            "body_weight_kg."
+        ),
+    )
+    region_scopes: list[str] = Field(
+        default_factory=lambda: ["EU"],
+        description="Regions where the SCCS evidence is considered applicable.",
+    )
+    jurisdictions: list[str] = Field(
+        default_factory=lambda: ["EU", "SCCS"],
+        description="Jurisdictions or programs where the SCCS evidence is relevant.",
+    )
+    evidence_sources: list[str] = Field(
+        default_factory=list,
+        description="Stable upstream evidence references backing the SCCS record.",
+    )
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Additional notes preserved from the SCCS source.",
+    )
+
+
+class SccsOpinionEvidenceRecord(StrictModel):
+    schema_version: Literal["sccsOpinionEvidenceRecord.v1"] = "sccsOpinionEvidenceRecord.v1"
+    chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
+    preferred_name: str | None = Field(default=None, description="Preferred chemical name.")
+    casrn: str | None = Field(default=None, description="CAS Registry Number when known.")
+    opinion_id: str = Field(..., alias="opinionId")
+    opinion_title: str = Field(..., alias="opinionTitle")
+    opinion_version: str = Field(..., alias="opinionVersion")
+    opinion_locator: str = Field(..., alias="opinionLocator")
+    cosmetic_product_types: list[str] = Field(
+        default_factory=list,
+        alias="cosmeticProductTypes",
+        description="Cosmetic product types or families referenced in the opinion.",
+    )
+    supported_routes: list[Route] = Field(
+        default_factory=list, alias="supportedRoutes", description="Opinion-relevant routes."
+    )
+    physical_forms: list[str] = Field(default_factory=list)
+    application_methods: list[str] = Field(default_factory=list)
+    retention_types: list[str] = Field(default_factory=list)
+    particle_material_context: ParticleMaterialContext | None = Field(
+        default=None,
+        alias="particleMaterialContext",
+        description="Optional particle-aware context preserved from the SCCS opinion.",
+    )
+    region_scopes: list[str] = Field(default_factory=lambda: ["EU"])
+    jurisdictions: list[str] = Field(default_factory=lambda: ["EU", "SCCS"])
+    evidence_sources: list[str] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)
+
+
+class CosIngIngredientRecord(StrictModel):
+    schema_version: Literal["cosIngIngredientRecord.v1"] = "cosIngIngredientRecord.v1"
+    chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
+    preferred_name: str | None = Field(default=None, description="Preferred chemical name.")
+    inci_name: str | None = Field(default=None, alias="inciName")
+    casrn: str | None = Field(default=None, description="CAS Registry Number when known.")
+    ec_number: str | None = Field(default=None, alias="ecNumber")
+    cosing_locator: str = Field(..., alias="cosingLocator")
+    functions: list[str] = Field(
+        default_factory=list, description="Cosmetic ingredient functions listed in CosIng."
+    )
+    annex_references: list[str] = Field(
+        default_factory=list,
+        alias="annexReferences",
+        description="EU Cosmetics Regulation annex references when listed in CosIng.",
+    )
+    nanomaterial_flag: bool | None = Field(
+        default=None,
+        alias="nanomaterialFlag",
+        description="Whether the CosIng context indicates a nanomaterial-relevant entry.",
+    )
+    particle_material_context: ParticleMaterialContext | None = Field(
+        default=None,
+        alias="particleMaterialContext",
+        description="Optional particle-aware context preserved from CosIng metadata.",
+    )
+    region_scopes: list[str] = Field(default_factory=lambda: ["EU"])
+    jurisdictions: list[str] = Field(default_factory=lambda: ["EU", "CosIng"])
+    evidence_sources: list[str] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)
+
+
+class NanoMaterialEvidenceRecord(StrictModel):
+    schema_version: Literal["nanoMaterialEvidenceRecord.v1"] = "nanoMaterialEvidenceRecord.v1"
+    chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
+    preferred_name: str | None = Field(default=None, description="Preferred chemical name.")
+    casrn: str | None = Field(default=None, description="CAS Registry Number when known.")
+    source_record_id: str = Field(..., alias="sourceRecordId")
+    source_title: str = Field(..., alias="sourceTitle")
+    source_version: str = Field(..., alias="sourceVersion")
+    source_locator: str = Field(..., alias="sourceLocator")
+    source_program: str = Field(
+        ..., alias="sourceProgram", description="Source program such as SCCS or CPNP/EC catalogue."
+    )
+    cosmetic_product_types: list[str] = Field(
+        default_factory=list,
+        alias="cosmeticProductTypes",
+        description="Cosmetic product types or families linked to the nanomaterial context.",
+    )
+    supported_routes: list[Route] = Field(
+        default_factory=list,
+        alias="supportedRoutes",
+        description="Routes relevant to this nano context.",
+    )
+    physical_forms: list[str] = Field(default_factory=list)
+    application_methods: list[str] = Field(default_factory=list)
+    retention_types: list[str] = Field(default_factory=list)
+    particle_material_context: ParticleMaterialContext = Field(
+        ...,
+        alias="particleMaterialContext",
+        description="Structured particle-aware material context.",
+    )
+    region_scopes: list[str] = Field(default_factory=lambda: ["EU"])
+    jurisdictions: list[str] = Field(default_factory=lambda: ["EU"])
+    evidence_sources: list[str] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)
+
+
+class SyntheticPolymerMicroparticleEvidenceRecord(StrictModel):
+    schema_version: Literal["syntheticPolymerMicroparticleEvidenceRecord.v1"] = (
+        "syntheticPolymerMicroparticleEvidenceRecord.v1"
+    )
+    chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
+    preferred_name: str | None = Field(default=None, description="Preferred chemical name.")
+    casrn: str | None = Field(default=None, description="CAS Registry Number when known.")
+    source_record_id: str = Field(..., alias="sourceRecordId")
+    source_title: str = Field(..., alias="sourceTitle")
+    source_version: str = Field(..., alias="sourceVersion")
+    source_locator: str = Field(..., alias="sourceLocator")
+    restriction_scope: str = Field(
+        ..., alias="restrictionScope", description="Restriction or reporting scope description."
+    )
+    product_use_categories: list[str] = Field(
+        default_factory=lambda: ["personal_care"],
+        alias="productUseCategories",
+        description="Direct-use categories linked to the synthetic polymer microparticle context.",
+    )
+    supported_routes: list[Route] = Field(default_factory=list, alias="supportedRoutes")
+    physical_forms: list[str] = Field(default_factory=list)
+    application_methods: list[str] = Field(default_factory=list)
+    retention_types: list[str] = Field(default_factory=list)
+    particle_material_context: ParticleMaterialContext = Field(
+        ...,
+        alias="particleMaterialContext",
+        description="Structured particle-aware material context.",
+    )
+    region_scopes: list[str] = Field(default_factory=lambda: ["EU"])
+    jurisdictions: list[str] = Field(default_factory=lambda: ["EU", "ECHA", "REACH"])
+    evidence_sources: list[str] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)
+
+
 class ProductUseEvidenceRecord(StrictModel):
     schema_version: Literal["productUseEvidenceRecord.v1"] = "productUseEvidenceRecord.v1"
     chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
@@ -386,6 +602,10 @@ class ProductUseEvidenceRecord(StrictModel):
     source_kind: Literal[
         "comptox",
         "consexpo",
+        "sccs",
+        "cosing",
+        "nanomaterial_guidance",
+        "microplastics_regulatory",
         "regulatory_dossier",
         "literature_pack",
         "user_upload",
@@ -441,6 +661,25 @@ class ProductUseEvidenceRecord(StrictModel):
     physchem_summary: dict[str, ScalarValue] = Field(
         default_factory=dict,
         description="Optional physicochemical context preserved for downstream review.",
+    )
+    particle_material_context: ParticleMaterialContext | None = Field(
+        default=None,
+        alias="particleMaterialContext",
+        description="Optional structured particle-aware material context.",
+    )
+    product_use_profile_overrides: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        alias="productUseProfileOverrides",
+        description=(
+            "Reviewed product-use profile fields suggested by the evidence source."
+        ),
+    )
+    population_profile_overrides: dict[str, ScalarValue] = Field(
+        default_factory=dict,
+        alias="populationProfileOverrides",
+        description=(
+            "Reviewed population-profile fields suggested by the evidence source."
+        ),
     )
     evidence_sources: list[str] = Field(
         default_factory=list,
@@ -524,6 +763,62 @@ class BuildProductUseEvidenceFromConsExpoInput(StrictModel):
     evidence: ConsExpoEvidenceRecord = Field(
         ...,
         description="Typed ConsExpo evidence record to map into the generic evidence contract.",
+    )
+
+
+class BuildProductUseEvidenceFromSccsInput(StrictModel):
+    schema_version: Literal["buildProductUseEvidenceFromSccsInput.v1"] = (
+        "buildProductUseEvidenceFromSccsInput.v1"
+    )
+    evidence: SccsCosmeticsEvidenceRecord = Field(
+        ...,
+        description=(
+            "Typed SCCS cosmetics evidence record to map into the generic "
+            "evidence contract."
+        ),
+    )
+
+
+class BuildProductUseEvidenceFromSccsOpinionInput(StrictModel):
+    schema_version: Literal["buildProductUseEvidenceFromSccsOpinionInput.v1"] = (
+        "buildProductUseEvidenceFromSccsOpinionInput.v1"
+    )
+    evidence: SccsOpinionEvidenceRecord = Field(
+        ...,
+        description="Typed SCCS opinion record to map into the generic evidence contract.",
+    )
+
+
+class BuildProductUseEvidenceFromCosIngInput(StrictModel):
+    schema_version: Literal["buildProductUseEvidenceFromCosIngInput.v1"] = (
+        "buildProductUseEvidenceFromCosIngInput.v1"
+    )
+    evidence: CosIngIngredientRecord = Field(
+        ...,
+        description="Typed CosIng ingredient record to map into the generic evidence contract.",
+    )
+
+
+class BuildProductUseEvidenceFromNanoMaterialInput(StrictModel):
+    schema_version: Literal["buildProductUseEvidenceFromNanoMaterialInput.v1"] = (
+        "buildProductUseEvidenceFromNanoMaterialInput.v1"
+    )
+    evidence: NanoMaterialEvidenceRecord = Field(
+        ...,
+        description="Typed nanomaterial evidence record to map into the generic evidence contract.",
+    )
+
+
+class BuildProductUseEvidenceFromSyntheticPolymerMicroparticleInput(StrictModel):
+    schema_version: Literal[
+        "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1"
+    ] = "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1"
+    evidence: SyntheticPolymerMicroparticleEvidenceRecord = Field(
+        ...,
+        description=(
+            "Typed synthetic polymer microparticle evidence record to map into the generic "
+            "evidence contract."
+        ),
     )
 
 
@@ -946,6 +1241,38 @@ class RunIntegratedExposureWorkflowInput(StrictModel):
         alias="consExpoRecords",
         description="Optional ConsExpo records to normalize into product-use evidence.",
     )
+    sccs_records: list[SccsCosmeticsEvidenceRecord] = Field(
+        default_factory=list,
+        alias="sccsRecords",
+        description="Optional SCCS cosmetics records to normalize into product-use evidence.",
+    )
+    sccs_opinion_records: list[SccsOpinionEvidenceRecord] = Field(
+        default_factory=list,
+        alias="sccsOpinionRecords",
+        description="Optional SCCS opinion records to normalize into product-use evidence.",
+    )
+    cosing_records: list[CosIngIngredientRecord] = Field(
+        default_factory=list,
+        alias="cosingRecords",
+        description="Optional CosIng ingredient records to normalize into product-use evidence.",
+    )
+    nanomaterial_records: list[NanoMaterialEvidenceRecord] = Field(
+        default_factory=list,
+        alias="nanomaterialRecords",
+        description=(
+            "Optional nanomaterial evidence records to normalize into product-use evidence."
+        ),
+    )
+    synthetic_polymer_microparticle_records: list[
+        SyntheticPolymerMicroparticleEvidenceRecord
+    ] = Field(
+        default_factory=list,
+        alias="syntheticPolymerMicroparticleRecords",
+        description=(
+            "Optional synthetic polymer microparticle records to normalize into product-use "
+            "evidence."
+        ),
+    )
     evidence_records: list[ProductUseEvidenceRecord] = Field(
         default_factory=list,
         alias="evidenceRecords",
@@ -1168,6 +1495,20 @@ CONSEXPO_PRODUCT_GROUP_CATEGORY_MAP: dict[str, list[str]] = {
     "pest_control": ["pest_control", "pesticide", "biocide"],
 }
 
+SCCS_PRODUCT_TYPE_CATEGORY_MAP: dict[str, list[str]] = {
+    "face_cream": ["personal_care"],
+    "face_moisturizer": ["personal_care"],
+    "body_lotion": ["personal_care"],
+    "body_cream": ["personal_care"],
+    "hand_cream": ["personal_care"],
+    "deodorant_spray": ["personal_care"],
+    "pump_spray_hair_product": ["personal_care"],
+}
+
+
+def _normalize_sccs_product_type(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", value.strip().lower()).strip("_")
+
 
 def build_product_use_evidence_from_consexpo(
     record: ConsExpoEvidenceRecord,
@@ -1229,6 +1570,224 @@ def build_product_use_evidence_from_consexpo(
     )
 
 
+def build_product_use_evidence_from_sccs(
+    record: SccsCosmeticsEvidenceRecord,
+) -> ProductUseEvidenceRecord:
+    """Map an SCCS cosmetics guidance record into the generic product-use evidence contract."""
+
+    normalized_type = _normalize_sccs_product_type(record.cosmetic_product_type)
+    mapped_categories = list(
+        SCCS_PRODUCT_TYPE_CATEGORY_MAP.get(normalized_type, ["personal_care"])
+    )
+    notes = list(record.notes)
+    notes.append(
+        "Mapped from SCCS cosmetics guidance product type "
+        f"`{record.cosmetic_product_type}` to internal categories {mapped_categories}."
+    )
+    if record.product_family:
+        notes.append(f"SCCS product_family: {record.product_family}.")
+    if record.table_references:
+        notes.append(
+            "SCCS table references: " + ", ".join(record.table_references) + "."
+        )
+    if record.supported_routes:
+        notes.append(
+            "SCCS supported routes: "
+            + ", ".join(route.value for route in record.supported_routes)
+            + "."
+        )
+
+    evidence_sources = list(record.evidence_sources)
+    if not evidence_sources:
+        evidence_sources = [f"SCCS:{record.guidance_id}"]
+
+    product_use_profile_overrides = _coerce_supported_profile_overrides(
+        record.product_use_profile_overrides,
+        _PRODUCT_USE_OVERRIDE_FIELDS,
+    )
+    population_profile_overrides = _coerce_supported_profile_overrides(
+        record.population_profile_overrides,
+        _POPULATION_OVERRIDE_FIELDS,
+    )
+
+    return ProductUseEvidenceRecord(
+        chemical_id=record.chemical_id,
+        preferred_name=record.preferred_name,
+        casrn=record.casrn,
+        source_name="EU SCCS",
+        source_kind="sccs",
+        review_status="reviewed",
+        source_record_id=record.guidance_id,
+        source_locator=record.guidance_locator,
+        product_name=record.cosmetic_product_type,
+        product_subtype=normalized_type or None,
+        product_use_categories=mapped_categories,
+        physical_forms=list(record.physical_forms),
+        application_methods=list(record.application_methods),
+        retention_types=list(record.retention_types),
+        region_scopes=list(record.region_scopes),
+        jurisdictions=list(record.jurisdictions),
+        product_use_profile_overrides=product_use_profile_overrides,
+        population_profile_overrides=population_profile_overrides,
+        evidence_sources=evidence_sources,
+        notes=notes,
+    )
+
+
+def build_product_use_evidence_from_sccs_opinion(
+    record: SccsOpinionEvidenceRecord,
+) -> ProductUseEvidenceRecord:
+    """Map an SCCS opinion record into the generic product-use evidence contract."""
+
+    notes = list(record.notes)
+    notes.append(f"SCCS opinion title: {record.opinion_title}.")
+    if record.cosmetic_product_types:
+        notes.append(
+            "SCCS opinion cosmetic product types: "
+            + ", ".join(record.cosmetic_product_types)
+            + "."
+        )
+    evidence_sources = list(record.evidence_sources) or [f"SCCS:{record.opinion_id}"]
+
+    product_name = record.cosmetic_product_types[0] if record.cosmetic_product_types else None
+    product_subtype = (
+        _normalize_sccs_product_type(product_name) if isinstance(product_name, str) else None
+    )
+
+    return ProductUseEvidenceRecord(
+        chemical_id=record.chemical_id,
+        preferred_name=record.preferred_name,
+        casrn=record.casrn,
+        source_name="EU SCCS Opinion",
+        source_kind="sccs",
+        review_status="reviewed",
+        source_record_id=record.opinion_id,
+        source_locator=record.opinion_locator,
+        product_name=product_name,
+        product_subtype=product_subtype,
+        product_use_categories=["personal_care"],
+        physical_forms=list(record.physical_forms),
+        application_methods=list(record.application_methods),
+        retention_types=list(record.retention_types),
+        region_scopes=list(record.region_scopes),
+        jurisdictions=list(record.jurisdictions),
+        particle_material_context=record.particle_material_context,
+        evidence_sources=evidence_sources,
+        notes=notes,
+    )
+
+
+def build_product_use_evidence_from_cosing(
+    record: CosIngIngredientRecord,
+) -> ProductUseEvidenceRecord:
+    """Map a CosIng ingredient record into the generic product-use evidence contract."""
+
+    notes = list(record.notes)
+    if record.inci_name:
+        notes.append(f"CosIng INCI name: {record.inci_name}.")
+    if record.functions:
+        notes.append("CosIng functions: " + ", ".join(record.functions) + ".")
+    if record.annex_references:
+        notes.append("CosIng annex references: " + ", ".join(record.annex_references) + ".")
+    if record.nanomaterial_flag is not None:
+        notes.append(f"CosIng nanomaterial flag: {record.nanomaterial_flag}.")
+    evidence_sources = list(record.evidence_sources) or [
+        f"CosIng:{record.inci_name or record.chemical_id}"
+    ]
+
+    return ProductUseEvidenceRecord(
+        chemical_id=record.chemical_id,
+        preferred_name=record.preferred_name or record.inci_name,
+        casrn=record.casrn,
+        source_name="EU CosIng",
+        source_kind="cosing",
+        review_status="reviewed",
+        source_record_id=record.inci_name or record.chemical_id,
+        source_locator=record.cosing_locator,
+        product_use_categories=["personal_care"],
+        region_scopes=list(record.region_scopes),
+        jurisdictions=list(record.jurisdictions),
+        particle_material_context=record.particle_material_context,
+        evidence_sources=evidence_sources,
+        notes=notes,
+    )
+
+
+def build_product_use_evidence_from_nanomaterial(
+    record: NanoMaterialEvidenceRecord,
+) -> ProductUseEvidenceRecord:
+    """Map a nanomaterial guidance record into the generic product-use evidence contract."""
+
+    notes = list(record.notes)
+    notes.append(f"Nanomaterial source program: {record.source_program}.")
+    if record.cosmetic_product_types:
+        notes.append(
+            "Nanomaterial cosmetic product types: "
+            + ", ".join(record.cosmetic_product_types)
+            + "."
+        )
+    evidence_sources = list(record.evidence_sources) or [
+        f"{record.source_program}:{record.source_record_id}"
+    ]
+
+    product_name = record.cosmetic_product_types[0] if record.cosmetic_product_types else None
+    product_subtype = (
+        _normalize_sccs_product_type(product_name) if isinstance(product_name, str) else None
+    )
+
+    return ProductUseEvidenceRecord(
+        chemical_id=record.chemical_id,
+        preferred_name=record.preferred_name,
+        casrn=record.casrn,
+        source_name="EU Nanomaterial Guidance",
+        source_kind="nanomaterial_guidance",
+        review_status="reviewed",
+        source_record_id=record.source_record_id,
+        source_locator=record.source_locator,
+        product_name=product_name,
+        product_subtype=product_subtype,
+        product_use_categories=["personal_care"],
+        physical_forms=list(record.physical_forms),
+        application_methods=list(record.application_methods),
+        retention_types=list(record.retention_types),
+        region_scopes=list(record.region_scopes),
+        jurisdictions=list(record.jurisdictions),
+        particle_material_context=record.particle_material_context,
+        evidence_sources=evidence_sources,
+        notes=notes,
+    )
+
+
+def build_product_use_evidence_from_synthetic_polymer_microparticle(
+    record: SyntheticPolymerMicroparticleEvidenceRecord,
+) -> ProductUseEvidenceRecord:
+    """Map a synthetic polymer microparticle record into the generic evidence contract."""
+
+    notes = list(record.notes)
+    notes.append(f"Synthetic polymer microparticle scope: {record.restriction_scope}.")
+    evidence_sources = list(record.evidence_sources) or [f"ECHA:{record.source_record_id}"]
+
+    return ProductUseEvidenceRecord(
+        chemical_id=record.chemical_id,
+        preferred_name=record.preferred_name,
+        casrn=record.casrn,
+        source_name="ECHA Microplastics",
+        source_kind="microplastics_regulatory",
+        review_status="reviewed",
+        source_record_id=record.source_record_id,
+        source_locator=record.source_locator,
+        product_use_categories=list(record.product_use_categories),
+        physical_forms=list(record.physical_forms),
+        application_methods=list(record.application_methods),
+        retention_types=list(record.retention_types),
+        region_scopes=list(record.region_scopes),
+        jurisdictions=list(record.jurisdictions),
+        particle_material_context=record.particle_material_context,
+        evidence_sources=evidence_sources,
+        notes=notes,
+    )
+
+
 def _coerce_base_request(request: ExposureScenarioRequest) -> ExposureScenarioRequest:
     """Drop request-subclass-only fields so enrichment outputs stay on the base contract."""
 
@@ -1266,6 +1825,10 @@ def _source_kind_rank(
     source_kind: Literal[
         "comptox",
         "consexpo",
+        "sccs",
+        "cosing",
+        "nanomaterial_guidance",
+        "microplastics_regulatory",
         "regulatory_dossier",
         "literature_pack",
         "user_upload",
@@ -1274,7 +1837,11 @@ def _source_kind_rank(
 ) -> int:
     return {
         "regulatory_dossier": 4,
+        "sccs": 4,
+        "nanomaterial_guidance": 4,
         "consexpo": 3,
+        "microplastics_regulatory": 3,
+        "cosing": 2,
         "literature_pack": 2,
         "user_upload": 2,
         "comptox": 1,
@@ -1291,10 +1858,10 @@ def _fit_rank_key(
         int(report.compatible),
         _region_match_score(request.population_profile.region, evidence),
         _review_status_rank(evidence.review_status),
+        _source_kind_rank(evidence.source_kind),
         int(report.auto_apply_safe),
         len(report.matched_fields),
         -len(report.warnings),
-        _source_kind_rank(evidence.source_kind),
         len(evidence.evidence_sources),
     )
 
@@ -1304,6 +1871,43 @@ def _normalized_conflict_value(values: list[str]) -> str | None:
     if not normalized:
         return None
     return ",".join(normalized)
+
+
+_PRODUCT_USE_OVERRIDE_FIELDS = set(ProductUseProfile.model_fields) - {"schema_version"}
+_POPULATION_OVERRIDE_FIELDS = set(PopulationProfile.model_fields) - {"schema_version"}
+
+
+def _validated_product_use_profile_update(
+    profile: ProductUseProfile,
+    updates: dict[str, ScalarValue],
+) -> ProductUseProfile:
+    payload = profile.model_dump(mode="json", by_alias=False)
+    payload.update(updates)
+    return ProductUseProfile.model_validate(payload)
+
+
+def _validated_population_profile_update(
+    profile: PopulationProfile,
+    updates: dict[str, ScalarValue],
+) -> PopulationProfile:
+    payload = profile.model_dump(mode="json", by_alias=False)
+    payload.update(updates)
+    return PopulationProfile.model_validate(payload)
+
+
+def _normalized_scalar_conflict_value(value: ScalarValue) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return value.strip().lower()
+    return json.dumps(value, sort_keys=True)
+
+
+def _coerce_supported_profile_overrides(
+    overrides: dict[str, ScalarValue],
+    supported_fields: set[str],
+) -> dict[str, ScalarValue]:
+    return {key: value for key, value in overrides.items() if key in supported_fields}
 
 
 def _build_product_use_conflicts(
@@ -1373,6 +1977,67 @@ def _build_product_use_conflicts(
             )
         )
 
+    particle_context_values = {
+        json.dumps(
+            evidence.particle_material_context.model_dump(mode="json", by_alias=True),
+            sort_keys=True,
+        ): evidence.source_name
+        for evidence, _ in compatible_pairs
+        if evidence.particle_material_context is not None
+    }
+    if len(particle_context_values) > 1:
+        conflicts.append(
+            "Compatible evidence sources disagree on particle_material_context: "
+            + "; ".join(
+                f"{source_name}={value}"
+                for value, source_name in sorted(particle_context_values.items())
+            )
+        )
+
+    for field_name in sorted(_PRODUCT_USE_OVERRIDE_FIELDS):
+        override_values = {
+            normalized: evidence.source_name
+            for evidence, _ in compatible_pairs
+            if field_name in evidence.product_use_profile_overrides
+            and (
+                normalized := _normalized_scalar_conflict_value(
+                    evidence.product_use_profile_overrides[field_name]
+                )
+            )
+            is not None
+        }
+        if len(override_values) > 1:
+            conflicts.append(
+                "Compatible evidence sources disagree on "
+                f"product_use_profile.{field_name}: "
+                + "; ".join(
+                    f"{source_name}={value}"
+                    for value, source_name in sorted(override_values.items())
+                )
+            )
+
+    for field_name in sorted(_POPULATION_OVERRIDE_FIELDS):
+        override_values = {
+            normalized: evidence.source_name
+            for evidence, _ in compatible_pairs
+            if field_name in evidence.population_profile_overrides
+            and (
+                normalized := _normalized_scalar_conflict_value(
+                    evidence.population_profile_overrides[field_name]
+                )
+            )
+            is not None
+        }
+        if len(override_values) > 1:
+            conflicts.append(
+                "Compatible evidence sources disagree on "
+                f"population_profile.{field_name}: "
+                + "; ".join(
+                    f"{source_name}={value}"
+                    for value, source_name in sorted(override_values.items())
+                )
+            )
+
     return conflicts
 
 
@@ -1393,6 +2058,7 @@ def assess_product_use_evidence_fit(
         )
 
     updated_product_profile = request.product_use_profile
+    updated_population_profile = request.population_profile
     updated_request_name = request.chemical_name
 
     request_region = request.population_profile.region
@@ -1506,9 +2172,58 @@ def assess_product_use_evidence_fit(
                 "value."
             )
 
+    if evidence.particle_material_context is not None:
+        current_particle_context = updated_product_profile.particle_material_context
+        if current_particle_context is None:
+            updated_product_profile = updated_product_profile.model_copy(
+                update={"particle_material_context": evidence.particle_material_context}
+            )
+            suggested_updates.append("product_use_profile.particle_material_context")
+        elif current_particle_context == evidence.particle_material_context:
+            matched_fields.append("particle_material_context")
+        else:
+            warnings.append(
+                "Request particle_material_context differs from the evidence-backed context; "
+                "keeping the explicit request value."
+            )
+
     if evidence.preferred_name and not updated_request_name:
         updated_request_name = evidence.preferred_name
         suggested_updates.append("chemical_name")
+
+    for field_name, override_value in sorted(evidence.product_use_profile_overrides.items()):
+        current_value = getattr(updated_product_profile, field_name)
+        if current_value == override_value:
+            matched_fields.append(f"product_use_profile.{field_name}")
+            continue
+        updated_product_profile = _validated_product_use_profile_update(
+            updated_product_profile,
+            {field_name: override_value},
+        )
+        suggested_updates.append(f"product_use_profile.{field_name}")
+        if current_value is not None:
+            warnings.append(
+                "Reviewed evidence suggests product_use_profile."
+                f"{field_name}={override_value!r} instead of the current request value "
+                f"{current_value!r}."
+            )
+
+    for field_name, override_value in sorted(evidence.population_profile_overrides.items()):
+        current_value = getattr(updated_population_profile, field_name)
+        if current_value == override_value:
+            matched_fields.append(f"population_profile.{field_name}")
+            continue
+        updated_population_profile = _validated_population_profile_update(
+            updated_population_profile,
+            {field_name: override_value},
+        )
+        suggested_updates.append(f"population_profile.{field_name}")
+        if current_value is not None:
+            warnings.append(
+                "Reviewed evidence suggests population_profile."
+                f"{field_name}={override_value!r} instead of the current request value "
+                f"{current_value!r}."
+            )
 
     overrides = dict(request.assumption_overrides)
     overrides["external_product_use_source_name"] = evidence.source_name
@@ -1533,12 +2248,26 @@ def assess_product_use_evidence_fit(
         overrides["external_product_use_subtype"] = evidence.product_subtype
     for key, value in sorted(evidence.physchem_summary.items()):
         overrides[f"external_product_use_physchem_{key}"] = value
+    if evidence.particle_material_context is not None:
+        particle_payload = evidence.particle_material_context.model_dump(
+            mode="json",
+            by_alias=True,
+            exclude_none=True,
+        )
+        for key, value in sorted(particle_payload.items()):
+            if isinstance(value, (str, float, int, bool)):
+                overrides[f"external_product_use_particle_material_context_{key}"] = value
+    for key, value in sorted(evidence.product_use_profile_overrides.items()):
+        overrides[f"external_product_use_override_product_{key}"] = value
+    for key, value in sorted(evidence.population_profile_overrides.items()):
+        overrides[f"external_product_use_override_population_{key}"] = value
 
     suggested_request = _coerce_base_request(
         request.model_copy(
             update={
                 "chemical_name": updated_request_name,
                 "product_use_profile": updated_product_profile,
+                "population_profile": updated_population_profile,
                 "assumption_overrides": overrides,
             }
         )
@@ -1654,6 +2383,7 @@ def reconcile_product_use_evidence(
     primary_evidence, primary_report = ranked_pairs[0]
     merged_request = primary_report.suggested_request
     updated_product_profile = merged_request.product_use_profile
+    updated_population_profile = merged_request.population_profile
     updated_request_name = merged_request.chemical_name
     field_sources: dict[str, str] = {}
 
@@ -1680,6 +2410,23 @@ def reconcile_product_use_evidence(
         and updated_product_profile.density_g_per_ml is not None
     ):
         field_sources["product_use_profile.density_g_per_ml"] = primary_evidence.source_name
+    if (
+        request.product_use_profile.particle_material_context is None
+        and updated_product_profile.particle_material_context is not None
+    ):
+        field_sources["product_use_profile.particle_material_context"] = (
+            primary_evidence.source_name
+        )
+    for field_name, override_value in sorted(
+        primary_evidence.product_use_profile_overrides.items()
+    ):
+        if getattr(request.product_use_profile, field_name) != override_value:
+            field_sources[f"product_use_profile.{field_name}"] = primary_evidence.source_name
+    for field_name, override_value in sorted(
+        primary_evidence.population_profile_overrides.items()
+    ):
+        if getattr(request.population_profile, field_name) != override_value:
+            field_sources[f"population_profile.{field_name}"] = primary_evidence.source_name
 
     secondary_sources: list[str] = []
     for evidence, _report in ranked_pairs[1:]:
@@ -1711,6 +2458,31 @@ def reconcile_product_use_evidence(
             )
             field_sources["product_use_profile.density_g_per_ml"] = evidence.source_name
             contributed = True
+        if (
+            updated_product_profile.particle_material_context is None
+            and evidence.particle_material_context is not None
+        ):
+            updated_product_profile = updated_product_profile.model_copy(
+                update={"particle_material_context": evidence.particle_material_context}
+            )
+            field_sources["product_use_profile.particle_material_context"] = evidence.source_name
+            contributed = True
+        for field_name, override_value in sorted(evidence.product_use_profile_overrides.items()):
+            if getattr(updated_product_profile, field_name) is None:
+                updated_product_profile = _validated_product_use_profile_update(
+                    updated_product_profile,
+                    {field_name: override_value},
+                )
+                field_sources[f"product_use_profile.{field_name}"] = evidence.source_name
+                contributed = True
+        for field_name, override_value in sorted(evidence.population_profile_overrides.items()):
+            if getattr(updated_population_profile, field_name) is None:
+                updated_population_profile = _validated_population_profile_update(
+                    updated_population_profile,
+                    {field_name: override_value},
+                )
+                field_sources[f"population_profile.{field_name}"] = evidence.source_name
+                contributed = True
         if contributed:
             secondary_sources.append(evidence.source_name)
 
@@ -1730,6 +2502,7 @@ def reconcile_product_use_evidence(
             update={
                 "chemical_name": updated_request_name,
                 "product_use_profile": updated_product_profile,
+                "population_profile": updated_population_profile,
                 "assumption_overrides": overrides,
             }
         )
@@ -2431,6 +3204,80 @@ def run_integrated_exposure_workflow(
                 message=(
                     f"Normalized {len(params.cons_expo_records)} ConsExpo record(s) into the "
                     "generic evidence contract."
+                ),
+            )
+        )
+    if params.sccs_records:
+        normalized_evidence_records.extend(
+            build_product_use_evidence_from_sccs(record) for record in params.sccs_records
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_sccs_normalized",
+                severity=Severity.INFO,
+                message=(
+                    f"Normalized {len(params.sccs_records)} SCCS record(s) into the "
+                    "generic evidence contract."
+                ),
+            )
+        )
+    if params.sccs_opinion_records:
+        normalized_evidence_records.extend(
+            build_product_use_evidence_from_sccs_opinion(record)
+            for record in params.sccs_opinion_records
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_sccs_opinion_normalized",
+                severity=Severity.INFO,
+                message=(
+                    f"Normalized {len(params.sccs_opinion_records)} SCCS opinion record(s) "
+                    "into the generic evidence contract."
+                ),
+            )
+        )
+    if params.cosing_records:
+        normalized_evidence_records.extend(
+            build_product_use_evidence_from_cosing(record) for record in params.cosing_records
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_cosing_normalized",
+                severity=Severity.INFO,
+                message=(
+                    f"Normalized {len(params.cosing_records)} CosIng record(s) into the "
+                    "generic evidence contract."
+                ),
+            )
+        )
+    if params.nanomaterial_records:
+        normalized_evidence_records.extend(
+            build_product_use_evidence_from_nanomaterial(record)
+            for record in params.nanomaterial_records
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_nanomaterial_normalized",
+                severity=Severity.INFO,
+                message=(
+                    f"Normalized {len(params.nanomaterial_records)} nanomaterial record(s) "
+                    "into the generic evidence contract."
+                ),
+            )
+        )
+    if params.synthetic_polymer_microparticle_records:
+        normalized_evidence_records.extend(
+            build_product_use_evidence_from_synthetic_polymer_microparticle(record)
+            for record in params.synthetic_polymer_microparticle_records
+        )
+        quality_flags.append(
+            QualityFlag(
+                code="integrated_workflow_microplastics_normalized",
+                severity=Severity.INFO,
+                message=(
+                    "Normalized "
+                    f"{len(params.synthetic_polymer_microparticle_records)} synthetic polymer "
+                    "microparticle record(s) into the generic evidence contract."
                 ),
             )
         )

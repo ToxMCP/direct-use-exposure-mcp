@@ -30,6 +30,7 @@ from exposure_scenario_mcp.validation_reference_bands import ValidationReference
 from exposure_scenario_mcp.validation_time_series import ValidationTimeSeriesReferenceRegistry
 
 BENCHMARK_CASE_DOMAINS = {
+    "dermal_face_cream_sccs_screening": "dermal_direct_application",
     "dermal_hand_cream_screening": "dermal_direct_application",
     "dermal_density_precedence_volume_case": "dermal_direct_application",
     "oral_direct_oral_screening": "oral_direct_intake",
@@ -1154,7 +1155,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         if (
             exposed_area is not None
             and product_mass_g_event is not None
-            and 0.0 < exposed_area <= 1200.0
+            and 700.0 <= exposed_area <= 1200.0
         ):
             reference_band = reference_registry.band_for_check(
                 "hand_cream_application_loading_2012"

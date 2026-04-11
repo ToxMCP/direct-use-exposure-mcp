@@ -6,7 +6,7 @@
   "scenarioClass": "inhalation",
   "label": "Example Tier 1 library-backed inhalation envelope",
   "archetypeLibrarySetId": "adult_personal_care_pump_spray_tier1",
-  "archetypeLibraryVersion": "2026.03.25.v2",
+  "archetypeLibraryVersion": "2026.04.10.v3",
   "uncertaintyTier": "tier_b",
   "archetypes": [
     {
@@ -38,6 +38,7 @@
           "use_amount_unit": "mL",
           "use_events_per_day": 1.0,
           "density_g_per_ml": null,
+          "particleMaterialContext": null,
           "transfer_efficiency": null,
           "retention_factor": null,
           "ingestion_fraction": null,
@@ -112,7 +113,7 @@
               "title": "Direct-Use Exposure MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -279,7 +280,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1054,7 +1055,7 @@
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
           "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1456,6 +1457,7 @@
           "use_amount_unit": "mL",
           "use_events_per_day": 2.0,
           "density_g_per_ml": null,
+          "particleMaterialContext": null,
           "transfer_efficiency": null,
           "retention_factor": null,
           "ingestion_fraction": null,
@@ -1530,7 +1532,7 @@
               "title": "Direct-Use Exposure MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1697,7 +1699,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2472,7 +2474,7 @@
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
           "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -2874,6 +2876,7 @@
           "use_amount_unit": "mL",
           "use_events_per_day": 3.0,
           "density_g_per_ml": null,
+          "particleMaterialContext": null,
           "transfer_efficiency": null,
           "retention_factor": null,
           "ingestion_fraction": null,
@@ -2948,7 +2951,7 @@
               "title": "Direct-Use Exposure MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3115,7 +3118,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3890,7 +3893,7 @@
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
           "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -4408,7 +4411,7 @@
       "quantificationStatus": "bounded",
       "biasDirection": "bidirectional",
       "impactLevel": "medium",
-      "summary": "Envelope archetypes came from packaged set `adult_personal_care_pump_spray_tier1` in library version `2026.03.25.v2`.",
+      "summary": "Envelope archetypes came from packaged set `adult_personal_care_pump_spray_tier1` in library version `2026.04.10.v3`.",
       "recommendation": "Treat the packaged library as a governed screening starting point and replace it with scenario-specific evidence when higher-fidelity context exists."
     }
   ],
@@ -4509,13 +4512,13 @@
     "plugin_id": "deterministic_envelope_service",
     "plugin_version": "0.1.0",
     "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
       "All defaults are surfaced through exposureAssumptionRecord entries.",
       "Archetype library set: adult_personal_care_pump_spray_tier1",
-      "Archetype library version: 2026.03.25.v2"
+      "Archetype library version: 2026.04.10.v3"
     ]
   },
   "interpretation_notes": [

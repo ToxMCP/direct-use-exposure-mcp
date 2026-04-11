@@ -58,6 +58,7 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 ## Benchmark Matrix
 
 - `dermal_hand_cream_screening` [scenario] Adult leave-on hand cream screening case with default body weight, surface area, curated hand-application transfer, and route-semantics retention.
+- `dermal_face_cream_sccs_screening` [scenario] Adult leave-on face cream screening case aligned to SCCS Notes of Guidance Table 3A daily amount and Table 4 application frequency.
 - `inhalation_trigger_spray_screening` [scenario] Adult EU trigger spray inhalation case with explicit room volume and regional default ventilation/duration.
 - `inhalation_tier1_trigger_spray_nf_ff` [scenario] Adult EU trigger spray Tier 1 NF/FF case with explicit source distance, spray duration, near-field volume, and airflow class.
 - `oral_direct_oral_screening` [scenario] Child direct-oral liquid case covering oral screening semantics and volume-to-mass conversion defaults.

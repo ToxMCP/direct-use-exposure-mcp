@@ -8,9 +8,10 @@
   "defaultsVersion": "2026.04.07.v18",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
-  "benchmarkCaseCount": 22,
+  "benchmarkCaseCount": 23,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
+    "dermal_face_cream_sccs_screening",
     "inhalation_trigger_spray_screening",
     "inhalation_air_space_insecticide_aerosol_screening",
     "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001",
@@ -33,8 +34,8 @@
     "worker_dermal_wet_wipe_gloved_hands_execution",
     "worker_dermal_handheld_biocidal_trigger_spray_execution"
   ],
-  "contractSchemaCount": 137,
-  "contractExampleCount": 67,
+  "contractSchemaCount": 148,
+  "contractExampleCount": 79,
   "distributionArtifacts": [
     {
       "kind": "wheel",

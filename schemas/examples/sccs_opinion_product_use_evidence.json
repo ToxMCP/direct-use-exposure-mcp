@@ -1,0 +1,67 @@
+{
+  "schema_version": "productUseEvidenceRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Nano UV Filter",
+  "casrn": "123-45-6",
+  "source_name": "EU SCCS Opinion",
+  "source_kind": "sccs",
+  "review_status": "reviewed",
+  "source_record_id": "sccs_opinion_nano_uv_filter_mock_2026",
+  "source_locator": "https://health.ec.europa.eu/scientific-committees/scientific-committee-consumer-safety-sccs_en",
+  "product_name": "Spray sunscreen",
+  "product_subtype": "spray_sunscreen",
+  "product_use_categories": [
+    "personal_care"
+  ],
+  "physical_forms": [
+    "spray"
+  ],
+  "application_methods": [
+    "aerosol_spray"
+  ],
+  "retention_types": [
+    "leave_on"
+  ],
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU",
+    "SCCS"
+  ],
+  "physchem_summary": {},
+  "particleMaterialContext": {
+    "schema_version": "particleMaterialContext.v1",
+    "materialClass": "nanomaterial",
+    "nanoStatus": "nano_specific",
+    "particleSizeDomain": "nano",
+    "compositionFamily": "metal_oxide",
+    "intentionallyManufacturedParticle": true,
+    "insolubleOrBiopersistent": true,
+    "solubilityClass": "insoluble",
+    "agglomerationState": "agglomerated",
+    "shapeFamily": "irregular",
+    "surfaceTreated": true,
+    "surfaceTreatmentNotes": "Illustrative alumina/silica-coated UV filter particle.",
+    "medianPrimaryParticleSizeNm": 35.0,
+    "sizeRangeNmLow": 20.0,
+    "sizeRangeNmHigh": 80.0,
+    "respirableFractionRelevance": true,
+    "dermalPenetrationConcern": true,
+    "article16NotificationRelevant": true,
+    "echaSpmRestrictionRelevant": false,
+    "notes": [
+      "Illustrative nano TiO2 / ZnO-style cosmetics particle context."
+    ]
+  },
+  "productUseProfileOverrides": {},
+  "populationProfileOverrides": {},
+  "evidence_sources": [
+    "SCCS:sccs_opinion_nano_uv_filter_mock_2026"
+  ],
+  "notes": [
+    "Illustrative SCCS opinion record for nano-enabled cosmetics.",
+    "SCCS opinion title: SCCS scientific advice on a nano UV filter used in cosmetic products.",
+    "SCCS opinion cosmetic product types: Spray sunscreen."
+  ]
+}

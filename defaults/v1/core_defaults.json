@@ -20,10 +20,10 @@
       "version": "2026.03.25.v6"
     },
     {
-      "source_id": "fda_sccs_retention_factor_defaults_2024",
-      "title": "FDA PFAS cosmetics report using SCCS retention-factor conventions",
-      "locator": "https://www.fda.gov/media/190319/download",
-      "version": "FDA report 2024 with SCCS 2023 retention-factor conventions"
+      "source_id": "sccs_notes_of_guidance_12th_revision_2023",
+      "title": "SCCS Notes of Guidance for the Testing of Cosmetic Ingredients and their Safety Evaluation, 12th revision",
+      "locator": "https://health.ec.europa.eu/document/download/32a999f7-d820-496a-b659-d8c296cc99c1_en?filename=sccs_o_273_final.pdf",
+      "version": "SCCS/1647/22, adopted 15 May 2023, corrigendum 2 on 21 December 2023"
     },
     {
       "source_id": "heuristic_retention_defaults_v1",
@@ -250,7 +250,7 @@
       },
       "rinse_off": {
         "value": 0.01,
-        "source_id": "fda_sccs_retention_factor_defaults_2024"
+        "source_id": "sccs_notes_of_guidance_12th_revision_2023"
       },
       "surface_contact": {
         "value": 0.2,

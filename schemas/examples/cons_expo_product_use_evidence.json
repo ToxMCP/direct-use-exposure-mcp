@@ -33,6 +33,9 @@
   "physchem_summary": {
     "density_g_per_ml": 1.08
   },
+  "particleMaterialContext": null,
+  "productUseProfileOverrides": {},
+  "populationProfileOverrides": {},
   "evidence_sources": [
     "ConsExpo:pest_control_products_fact_sheet_2006"
   ],

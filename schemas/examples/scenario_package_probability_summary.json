@@ -19,7 +19,7 @@
   "handlingStrategy": "scenario_packaged",
   "profileVersion": "2026.03.25.v3",
   "archetypeLibrarySetId": "adult_leave_on_hand_cream",
-  "archetypeLibraryVersion": "2026.03.25.v2",
+  "archetypeLibraryVersion": "2026.04.10.v3",
   "supportPoints": [
     {
       "pointId": "lower_package",
@@ -52,6 +52,7 @@
           "use_amount_unit": "g",
           "use_events_per_day": 2.0,
           "density_g_per_ml": null,
+          "particleMaterialContext": null,
           "transfer_efficiency": null,
           "retention_factor": null,
           "ingestion_fraction": null,
@@ -258,7 +259,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -288,7 +289,7 @@
               "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
               "locator": "docs://defaults-evidence-map#screening-route-semantics",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -321,7 +322,7 @@
               "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -391,7 +392,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -456,7 +457,7 @@
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
           "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -642,6 +643,7 @@
           "routeMechanism": "dermal_direct_application",
           "benchmarkCaseIds": [
             "dermal_density_precedence_volume_case",
+            "dermal_face_cream_sccs_screening",
             "dermal_hand_cream_screening"
           ],
           "externalDatasetIds": [
@@ -699,6 +701,7 @@
           "use_amount_unit": "g",
           "use_events_per_day": 3.0,
           "density_g_per_ml": null,
+          "particleMaterialContext": null,
           "transfer_efficiency": null,
           "retention_factor": null,
           "ingestion_fraction": null,
@@ -905,7 +908,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -935,7 +938,7 @@
               "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
               "locator": "docs://defaults-evidence-map#screening-route-semantics",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -968,7 +971,7 @@
               "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1038,7 +1041,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1103,7 +1106,7 @@
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
           "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1289,6 +1292,7 @@
           "routeMechanism": "dermal_direct_application",
           "benchmarkCaseIds": [
             "dermal_density_precedence_volume_case",
+            "dermal_face_cream_sccs_screening",
             "dermal_hand_cream_screening"
           ],
           "externalDatasetIds": [
@@ -1346,6 +1350,7 @@
           "use_amount_unit": "g",
           "use_events_per_day": 4.0,
           "density_g_per_ml": null,
+          "particleMaterialContext": null,
           "transfer_efficiency": null,
           "retention_factor": null,
           "ingestion_fraction": null,
@@ -1552,7 +1557,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1582,7 +1587,7 @@
               "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
               "locator": "docs://defaults-evidence-map#screening-route-semantics",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1615,7 +1620,7 @@
               "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1685,7 +1690,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1750,7 +1755,7 @@
           "plugin_id": "screening_scenario_plugin",
           "plugin_version": "0.1.0",
           "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1936,6 +1941,7 @@
           "routeMechanism": "dermal_direct_application",
           "benchmarkCaseIds": [
             "dermal_density_precedence_volume_case",
+            "dermal_face_cream_sccs_screening",
             "dermal_hand_cream_screening"
           ],
           "externalDatasetIds": [
@@ -2040,6 +2046,7 @@
     "routeMechanism": "dermal_direct_application",
     "benchmarkCaseIds": [
       "dermal_density_precedence_volume_case",
+      "dermal_face_cream_sccs_screening",
       "dermal_hand_cream_screening"
     ],
     "externalDatasetIds": [
@@ -2067,7 +2074,7 @@
     "plugin_id": "scenario_package_probability_service",
     "plugin_version": "0.1.0",
     "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

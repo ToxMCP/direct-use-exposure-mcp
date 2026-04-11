@@ -20,7 +20,8 @@ Owns human external-dose construction for direct-use and near-field scenarios.
 - Near-field inhalation and indoor aerosol screening
 - Dermal plus direct-use/incidental oral external-dose construction
 - Worker exposure routing when the inputs still look like task/use scenarios
-- Evidence reconciliation across CompTox, ConsExpo, dossiers, and user uploads
+- Evidence reconciliation across CompTox, SCCS, SCCS opinions, CosIng, ConsExpo,
+  nanomaterial guidance, microplastics regulatory records, dossiers, and user uploads
 - PBPK-ready external-dose handoff objects
 
 This is the current repo and should remain the deterministic external-dose backbone.
@@ -86,7 +87,8 @@ can build against them before Fate MCP and Dietary MCP are fully implemented.
 - `chemical_identity`
   DTXSID, CASRN, preferred name, synonyms, source provenance
 - `product_use_evidence_record`
-  Existing reviewed evidence contract for use categories, subtype, region, and physchem context
+  Existing reviewed evidence contract for use categories, subtype, region, physchem context,
+  and particle-aware material context
 - `exposure_scenario_definition`
   Product/use, population, route, timing, frequency, environment, and evidence context
 - `environmental_release_scenario`
@@ -102,7 +104,8 @@ can build against them before Fate MCP and Dietary MCP are fully implemented.
 
 Route by domain, not by brand name.
 
-- Consumer spray or cleaner task -> Direct-Use Exposure MCP direct-use engine or ConsExpo-aligned pack
+- Consumer spray, cosmetic, cleaner, or particle-aware cosmetic task -> Direct-Use Exposure MCP
+  direct-use engine or SCCS/SCCS-opinion/ConsExpo-aligned pack
 - Direct-use oral or incidental oral question -> Direct-Use Exposure MCP
 - Worker task with limited data -> Direct-Use Exposure MCP worker router plus current screening/Tier 1 path
 - Worker task needing higher-tier refinement -> ART/Stoffenmanager adapter path
@@ -126,7 +129,8 @@ Strengthen the current Direct-Use Exposure MCP.
 
 - Consumer direct-use coverage
 - Indoor aerosol and subtype-aware inhalation
-- Evidence reconciliation across CompTox, ConsExpo, and uploaded dossiers
+- Evidence reconciliation across CompTox, SCCS, SCCS opinions, CosIng, ConsExpo,
+  nanomaterial/microplastics records, and uploaded dossiers
 - Stable PBPK export boundary
 
 ### Phase 2

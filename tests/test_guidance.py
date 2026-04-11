@@ -310,4 +310,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "runIntegratedExposureWorkflowInput.v1" in integrated_workflow
     assert "integratedExposureWorkflowResult.v1" in integrated_workflow
     assert "docs://integrated-exposure-workflow-guide" in integrated_workflow
-    assert "CompTox and ConsExpo records are normalized" in integrated_workflow
+    assert (
+        "CompTox, SCCS, SCCS opinion, CosIng, ConsExpo, nanomaterial, and microplastics"
+        in integrated_workflow
+    )

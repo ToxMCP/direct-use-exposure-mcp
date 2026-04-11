@@ -278,6 +278,151 @@
       "title": "ConsExpoEvidenceRecord",
       "type": "object"
     },
+    "CosIngIngredientRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "cosIngIngredientRecord.v1",
+          "default": "cosIngIngredientRecord.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier shared with the request.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "preferred_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred chemical name.",
+          "title": "Preferred Name"
+        },
+        "inciName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inciname"
+        },
+        "casrn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "CAS Registry Number when known.",
+          "title": "Casrn"
+        },
+        "ecNumber": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ecnumber"
+        },
+        "cosingLocator": {
+          "title": "Cosinglocator",
+          "type": "string"
+        },
+        "functions": {
+          "description": "Cosmetic ingredient functions listed in CosIng.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Functions",
+          "type": "array"
+        },
+        "annexReferences": {
+          "description": "EU Cosmetics Regulation annex references when listed in CosIng.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Annexreferences",
+          "type": "array"
+        },
+        "nanomaterialFlag": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the CosIng context indicates a nanomaterial-relevant entry.",
+          "title": "Nanomaterialflag"
+        },
+        "particleMaterialContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleMaterialContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional particle-aware context preserved from CosIng metadata."
+        },
+        "region_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Region Scopes",
+          "type": "array"
+        },
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "evidence_sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Sources",
+          "type": "array"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "cosingLocator"
+      ],
+      "title": "CosIngIngredientRecord",
+      "type": "object"
+    },
     "ExposureScenarioRequest": {
       "additionalProperties": false,
       "properties": {
@@ -555,6 +700,439 @@
       "title": "InhalationTier1ScenarioRequest",
       "type": "object"
     },
+    "NanoMaterialEvidenceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "nanoMaterialEvidenceRecord.v1",
+          "default": "nanoMaterialEvidenceRecord.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier shared with the request.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "preferred_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred chemical name.",
+          "title": "Preferred Name"
+        },
+        "casrn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "CAS Registry Number when known.",
+          "title": "Casrn"
+        },
+        "sourceRecordId": {
+          "title": "Sourcerecordid",
+          "type": "string"
+        },
+        "sourceTitle": {
+          "title": "Sourcetitle",
+          "type": "string"
+        },
+        "sourceVersion": {
+          "title": "Sourceversion",
+          "type": "string"
+        },
+        "sourceLocator": {
+          "title": "Sourcelocator",
+          "type": "string"
+        },
+        "sourceProgram": {
+          "description": "Source program such as SCCS or CPNP/EC catalogue.",
+          "title": "Sourceprogram",
+          "type": "string"
+        },
+        "cosmeticProductTypes": {
+          "description": "Cosmetic product types or families linked to the nanomaterial context.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Cosmeticproducttypes",
+          "type": "array"
+        },
+        "supportedRoutes": {
+          "description": "Routes relevant to this nano context.",
+          "items": {
+            "$ref": "#/$defs/Route"
+          },
+          "title": "Supportedroutes",
+          "type": "array"
+        },
+        "physical_forms": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Physical Forms",
+          "type": "array"
+        },
+        "application_methods": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Application Methods",
+          "type": "array"
+        },
+        "retention_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Retention Types",
+          "type": "array"
+        },
+        "particleMaterialContext": {
+          "$ref": "#/$defs/ParticleMaterialContext",
+          "description": "Structured particle-aware material context."
+        },
+        "region_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Region Scopes",
+          "type": "array"
+        },
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "evidence_sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Sources",
+          "type": "array"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "sourceRecordId",
+        "sourceTitle",
+        "sourceVersion",
+        "sourceLocator",
+        "sourceProgram",
+        "particleMaterialContext"
+      ],
+      "title": "NanoMaterialEvidenceRecord",
+      "type": "object"
+    },
+    "ParticleAgglomerationState": {
+      "enum": [
+        "primary_particles",
+        "agglomerated",
+        "aggregated",
+        "mixed",
+        "unknown"
+      ],
+      "title": "ParticleAgglomerationState",
+      "type": "string"
+    },
+    "ParticleCompositionFamily": {
+      "enum": [
+        "polymer",
+        "metal_oxide",
+        "silica",
+        "pigment",
+        "hydroxyapatite",
+        "carbon_based",
+        "other"
+      ],
+      "title": "ParticleCompositionFamily",
+      "type": "string"
+    },
+    "ParticleMaterialClass": {
+      "enum": [
+        "nanomaterial",
+        "synthetic_polymer_microparticle",
+        "non_plastic_micro_nano_particle"
+      ],
+      "title": "ParticleMaterialClass",
+      "type": "string"
+    },
+    "ParticleMaterialContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "particleMaterialContext.v1",
+          "default": "particleMaterialContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "materialClass": {
+          "$ref": "#/$defs/ParticleMaterialClass",
+          "description": "High-level particle material class."
+        },
+        "nanoStatus": {
+          "$ref": "#/$defs/ParticleNanoStatus",
+          "description": "Whether the context is nano-specific."
+        },
+        "particleSizeDomain": {
+          "$ref": "#/$defs/ParticleSizeDomain",
+          "description": "Primary size-domain classification."
+        },
+        "compositionFamily": {
+          "$ref": "#/$defs/ParticleCompositionFamily",
+          "description": "Broad composition family."
+        },
+        "intentionallyManufacturedParticle": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the material is an intentionally manufactured particle.",
+          "title": "Intentionallymanufacturedparticle"
+        },
+        "insolubleOrBiopersistent": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the particle is treated as insoluble or biopersistent.",
+          "title": "Insolubleorbiopersistent"
+        },
+        "solubilityClass": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleSolubilityClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Screening solubility class."
+        },
+        "agglomerationState": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleAgglomerationState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Agglomeration or aggregation state relevant to use."
+        },
+        "shapeFamily": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleShapeFamily"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Particle shape family."
+        },
+        "surfaceTreated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the particle has a relevant surface treatment or coating.",
+          "title": "Surfacetreated"
+        },
+        "surfaceTreatmentNotes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short notes on coatings or surface treatment when known.",
+          "title": "Surfacetreatmentnotes"
+        },
+        "medianPrimaryParticleSizeNm": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Median primary particle size in nm when known.",
+          "title": "Medianprimaryparticlesizenm"
+        },
+        "sizeRangeNmLow": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Lower particle size bound in nm.",
+          "title": "Sizerangenmlow"
+        },
+        "sizeRangeNmHigh": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Upper particle size bound in nm.",
+          "title": "Sizerangenmhigh"
+        },
+        "respirableFractionRelevance": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether inhalation respirable-fraction context is materially relevant.",
+          "title": "Respirablefractionrelevance"
+        },
+        "dermalPenetrationConcern": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether dermal particle penetration or retention is a relevant concern.",
+          "title": "Dermalpenetrationconcern"
+        },
+        "article16NotificationRelevant": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether EU cosmetics Article 16 nanomaterial notification context applies.",
+          "title": "Article16Notificationrelevant"
+        },
+        "echaSpmRestrictionRelevant": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether EU synthetic polymer microparticle restriction/reporting context applies.",
+          "title": "Echaspmrestrictionrelevant"
+        },
+        "notes": {
+          "description": "Additional material-context notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "materialClass",
+        "nanoStatus",
+        "particleSizeDomain",
+        "compositionFamily"
+      ],
+      "title": "ParticleMaterialContext",
+      "type": "object"
+    },
+    "ParticleNanoStatus": {
+      "enum": [
+        "nano_specific",
+        "contains_nano_fraction",
+        "non_nano",
+        "unknown"
+      ],
+      "title": "ParticleNanoStatus",
+      "type": "string"
+    },
+    "ParticleShapeFamily": {
+      "enum": [
+        "spherical",
+        "fibrous",
+        "platelet",
+        "irregular",
+        "rod_like",
+        "unknown"
+      ],
+      "title": "ParticleShapeFamily",
+      "type": "string"
+    },
+    "ParticleSizeDomain": {
+      "enum": [
+        "nano",
+        "micro",
+        "mixed_micro_nano",
+        "unknown"
+      ],
+      "title": "ParticleSizeDomain",
+      "type": "string"
+    },
     "ParticleSizeRegime": {
       "enum": [
         "fine_aerosol",
@@ -562,6 +1140,17 @@
         "coarse_spray"
       ],
       "title": "ParticleSizeRegime",
+      "type": "string"
+    },
+    "ParticleSolubilityClass": {
+      "enum": [
+        "insoluble",
+        "poorly_soluble",
+        "soluble",
+        "dissolves_rapidly",
+        "unknown"
+      ],
+      "title": "ParticleSolubilityClass",
       "type": "string"
     },
     "PopulationProfile": {
@@ -700,6 +1289,10 @@
           "enum": [
             "comptox",
             "consexpo",
+            "sccs",
+            "cosing",
+            "nanomaterial_guidance",
+            "microplastics_regulatory",
             "regulatory_dossier",
             "literature_pack",
             "user_upload",
@@ -843,6 +1436,66 @@
           "title": "Physchem Summary",
           "type": "object"
         },
+        "particleMaterialContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleMaterialContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional structured particle-aware material context."
+        },
+        "productUseProfileOverrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Reviewed product-use profile fields suggested by the evidence source.",
+          "title": "Productuseprofileoverrides",
+          "type": "object"
+        },
+        "populationProfileOverrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Reviewed population-profile fields suggested by the evidence source.",
+          "title": "Populationprofileoverrides",
+          "type": "object"
+        },
         "evidence_sources": {
           "description": "Stable upstream evidence references backing the record.",
           "items": {
@@ -959,6 +1612,18 @@
           "default": null,
           "description": "Density when the product amount is in mL.",
           "title": "Density G Per Ml"
+        },
+        "particleMaterialContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleMaterialContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional particle or nanomaterial context carried with the use profile."
         },
         "transfer_efficiency": {
           "anyOf": [
@@ -1084,6 +1749,356 @@
       "title": "Route",
       "type": "string"
     },
+    "SccsCosmeticsEvidenceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sccsCosmeticsEvidenceRecord.v1",
+          "default": "sccsCosmeticsEvidenceRecord.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier shared with the request.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "preferred_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred chemical name when the SCCS source is already tied to identity.",
+          "title": "Preferred Name"
+        },
+        "casrn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "CAS Registry Number when known.",
+          "title": "Casrn"
+        },
+        "guidanceId": {
+          "title": "Guidanceid",
+          "type": "string"
+        },
+        "guidanceTitle": {
+          "title": "Guidancetitle",
+          "type": "string"
+        },
+        "guidanceVersion": {
+          "title": "Guidanceversion",
+          "type": "string"
+        },
+        "guidanceLocator": {
+          "title": "Guidancelocator",
+          "type": "string"
+        },
+        "cosmeticProductType": {
+          "description": "Cosmetic product type label from SCCS guidance, for example face cream.",
+          "title": "Cosmeticproducttype",
+          "type": "string"
+        },
+        "productFamily": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional broader SCCS product family such as skin_care or hair_care.",
+          "title": "Productfamily"
+        },
+        "tableReferences": {
+          "description": "Notes of Guidance table or section references backing the record.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Tablereferences",
+          "type": "array"
+        },
+        "supportedRoutes": {
+          "description": "Routes explicitly supported by the cited SCCS guidance context.",
+          "items": {
+            "$ref": "#/$defs/Route"
+          },
+          "title": "Supportedroutes",
+          "type": "array"
+        },
+        "physical_forms": {
+          "description": "Physical forms supported by the SCCS source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Physical Forms",
+          "type": "array"
+        },
+        "application_methods": {
+          "description": "Application methods supported by the SCCS source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Application Methods",
+          "type": "array"
+        },
+        "retention_types": {
+          "description": "Retention or contact semantics supported by the SCCS source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Retention Types",
+          "type": "array"
+        },
+        "productUseProfileOverrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Reviewed product-use profile fields such as use_amount_per_event, use_amount_unit, or use_events_per_day.",
+          "title": "Productuseprofileoverrides",
+          "type": "object"
+        },
+        "populationProfileOverrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Reviewed population-profile fields such as exposed_surface_area_cm2 or body_weight_kg.",
+          "title": "Populationprofileoverrides",
+          "type": "object"
+        },
+        "region_scopes": {
+          "description": "Regions where the SCCS evidence is considered applicable.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Region Scopes",
+          "type": "array"
+        },
+        "jurisdictions": {
+          "description": "Jurisdictions or programs where the SCCS evidence is relevant.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "evidence_sources": {
+          "description": "Stable upstream evidence references backing the SCCS record.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Sources",
+          "type": "array"
+        },
+        "notes": {
+          "description": "Additional notes preserved from the SCCS source.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "guidanceId",
+        "guidanceTitle",
+        "guidanceVersion",
+        "guidanceLocator",
+        "cosmeticProductType"
+      ],
+      "title": "SccsCosmeticsEvidenceRecord",
+      "type": "object"
+    },
+    "SccsOpinionEvidenceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sccsOpinionEvidenceRecord.v1",
+          "default": "sccsOpinionEvidenceRecord.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier shared with the request.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "preferred_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred chemical name.",
+          "title": "Preferred Name"
+        },
+        "casrn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "CAS Registry Number when known.",
+          "title": "Casrn"
+        },
+        "opinionId": {
+          "title": "Opinionid",
+          "type": "string"
+        },
+        "opinionTitle": {
+          "title": "Opiniontitle",
+          "type": "string"
+        },
+        "opinionVersion": {
+          "title": "Opinionversion",
+          "type": "string"
+        },
+        "opinionLocator": {
+          "title": "Opinionlocator",
+          "type": "string"
+        },
+        "cosmeticProductTypes": {
+          "description": "Cosmetic product types or families referenced in the opinion.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Cosmeticproducttypes",
+          "type": "array"
+        },
+        "supportedRoutes": {
+          "description": "Opinion-relevant routes.",
+          "items": {
+            "$ref": "#/$defs/Route"
+          },
+          "title": "Supportedroutes",
+          "type": "array"
+        },
+        "physical_forms": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Physical Forms",
+          "type": "array"
+        },
+        "application_methods": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Application Methods",
+          "type": "array"
+        },
+        "retention_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Retention Types",
+          "type": "array"
+        },
+        "particleMaterialContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleMaterialContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional particle-aware context preserved from the SCCS opinion."
+        },
+        "region_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Region Scopes",
+          "type": "array"
+        },
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "evidence_sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Sources",
+          "type": "array"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "opinionId",
+        "opinionTitle",
+        "opinionVersion",
+        "opinionLocator"
+      ],
+      "title": "SccsOpinionEvidenceRecord",
+      "type": "object"
+    },
     "ScenarioClass": {
       "enum": [
         "screening",
@@ -1094,6 +2109,148 @@
       ],
       "title": "ScenarioClass",
       "type": "string"
+    },
+    "SyntheticPolymerMicroparticleEvidenceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "syntheticPolymerMicroparticleEvidenceRecord.v1",
+          "default": "syntheticPolymerMicroparticleEvidenceRecord.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier shared with the request.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "preferred_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred chemical name.",
+          "title": "Preferred Name"
+        },
+        "casrn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "CAS Registry Number when known.",
+          "title": "Casrn"
+        },
+        "sourceRecordId": {
+          "title": "Sourcerecordid",
+          "type": "string"
+        },
+        "sourceTitle": {
+          "title": "Sourcetitle",
+          "type": "string"
+        },
+        "sourceVersion": {
+          "title": "Sourceversion",
+          "type": "string"
+        },
+        "sourceLocator": {
+          "title": "Sourcelocator",
+          "type": "string"
+        },
+        "restrictionScope": {
+          "description": "Restriction or reporting scope description.",
+          "title": "Restrictionscope",
+          "type": "string"
+        },
+        "productUseCategories": {
+          "description": "Direct-use categories linked to the synthetic polymer microparticle context.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Productusecategories",
+          "type": "array"
+        },
+        "supportedRoutes": {
+          "items": {
+            "$ref": "#/$defs/Route"
+          },
+          "title": "Supportedroutes",
+          "type": "array"
+        },
+        "physical_forms": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Physical Forms",
+          "type": "array"
+        },
+        "application_methods": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Application Methods",
+          "type": "array"
+        },
+        "retention_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Retention Types",
+          "type": "array"
+        },
+        "particleMaterialContext": {
+          "$ref": "#/$defs/ParticleMaterialContext",
+          "description": "Structured particle-aware material context."
+        },
+        "region_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Region Scopes",
+          "type": "array"
+        },
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "evidence_sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Sources",
+          "type": "array"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "sourceRecordId",
+        "sourceTitle",
+        "sourceVersion",
+        "sourceLocator",
+        "restrictionScope",
+        "particleMaterialContext"
+      ],
+      "title": "SyntheticPolymerMicroparticleEvidenceRecord",
+      "type": "object"
     },
     "TierLevel": {
       "enum": [
@@ -1147,6 +2304,46 @@
         "$ref": "#/$defs/ConsExpoEvidenceRecord"
       },
       "title": "Consexporecords",
+      "type": "array"
+    },
+    "sccsRecords": {
+      "description": "Optional SCCS cosmetics records to normalize into product-use evidence.",
+      "items": {
+        "$ref": "#/$defs/SccsCosmeticsEvidenceRecord"
+      },
+      "title": "Sccsrecords",
+      "type": "array"
+    },
+    "sccsOpinionRecords": {
+      "description": "Optional SCCS opinion records to normalize into product-use evidence.",
+      "items": {
+        "$ref": "#/$defs/SccsOpinionEvidenceRecord"
+      },
+      "title": "Sccsopinionrecords",
+      "type": "array"
+    },
+    "cosingRecords": {
+      "description": "Optional CosIng ingredient records to normalize into product-use evidence.",
+      "items": {
+        "$ref": "#/$defs/CosIngIngredientRecord"
+      },
+      "title": "Cosingrecords",
+      "type": "array"
+    },
+    "nanomaterialRecords": {
+      "description": "Optional nanomaterial evidence records to normalize into product-use evidence.",
+      "items": {
+        "$ref": "#/$defs/NanoMaterialEvidenceRecord"
+      },
+      "title": "Nanomaterialrecords",
+      "type": "array"
+    },
+    "syntheticPolymerMicroparticleRecords": {
+      "description": "Optional synthetic polymer microparticle records to normalize into product-use evidence.",
+      "items": {
+        "$ref": "#/$defs/SyntheticPolymerMicroparticleEvidenceRecord"
+      },
+      "title": "Syntheticpolymermicroparticlerecords",
       "type": "array"
     },
     "evidenceRecords": {

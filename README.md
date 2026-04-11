@@ -89,7 +89,8 @@ For a suite-level map of sibling services and shared handoff contracts, see
 - Machine-actionable Tier 1 inhalation upgrade advisories for spray scenarios
 - Packaged Tier 1 inhalation airflow, particle, and product-family screening profiles
 - Curated RIVM-backed dermal contact defaults plus product-family spray airborne-fraction defaults for personal-care and household-cleaner contexts
-- Evidence reconciliation across CompTox, ConsExpo, and reviewed user-supplied product-use records
+- Evidence reconciliation across CompTox, SCCS, SCCS opinions, CosIng, ConsExpo, nano/micro guidance, and reviewed user-supplied product-use records
+- Particle-aware evidence lanes for EU cosmetic nanomaterials, synthetic polymer microparticles, and non-plastic micro/nanoparticles
 - Integrated evidence-to-scenario-to-PBPK workflow execution as one audited MCP response
 - Simple additive aggregate exposure summaries
 - Scenario comparison and refinement deltas
@@ -146,7 +147,8 @@ The detailed maturity matrix is in
 | `Tier C scenario packages` | Publishes dependency-aware packaged scenario states with cumulative probability bounds, curated package taxonomy, and preserved coupled drivers without Monte Carlo claims, including governed Tier 1 NF/FF archetype-backed packages for selected spray contexts. |
 | `Tier 1 inhalation screening` | Publishes machine-actionable upgrade advisories for spray inhalation scenarios, preserves the `requestedTier` routing hook on Tier 0 requests, ships a deterministic Tier 1 NF/FF screening tool, exposes packaged airflow, particle, and product-family screening profiles through a machine-readable manifest, and warns when caller geometry or regime inputs diverge materially from matched profile anchors. |
 | `Residual-air reentry inhalation` | Builds post-application room-air screening scenarios from a concentration at reentry start plus bounded first-order decay, keeping reentry screening separate from application-plume semantics. |
-| `Evidence reconciliation and workflow` | Normalizes CompTox, ConsExpo, and user-reviewed evidence into a shared product-use contract, ranks fit, builds merged requests, and can run an audited evidence-to-scenario-to-PBPK workflow in one response. |
+| `Evidence reconciliation and workflow` | Normalizes CompTox, SCCS, SCCS opinions, CosIng, ConsExpo, nanomaterial guidance, microplastics regulatory records, and user-reviewed evidence into a shared product-use contract, ranks fit, builds merged requests, and can run an audited evidence-to-scenario-to-PBPK workflow in one response. |
+| `Particle-aware cosmetics and materials context` | Publishes particle material context for EU cosmetic nanomaterials, synthetic polymer microparticles, and non-plastic micro/nanoparticles so route relevance, regulatory flags, and direct-use assumptions stay explicit without drifting into fate or toxicology claims. |
 | `Worker task routing` | Routes worker-tagged tasks to the strongest current MCP path, emits worker-specific scenario guardrails when the shared screening engines are reused, and points higher-tier occupational cases toward future adapter hooks. |
 | `Worker Tier 2 bridge` | Exports a typed worker inhalation handoff package, compatibility checklist, and future adapter tool-call envelope for ART-style Tier 2 refinement without pretending the occupational solver already exists. |
 | `Worker Tier 2 execution` | Executes a governed control-aware worker inhalation surrogate, supports deterministic benchmark regression, and preserves comparability with external ART imports without claiming a native ART solver run. |
@@ -204,6 +206,11 @@ The detailed maturity matrix is in
 ### Evidence fit and enrichment
 
 - `exposure_build_product_use_evidence_from_consexpo`
+- `exposure_build_product_use_evidence_from_sccs`
+- `exposure_build_product_use_evidence_from_sccs_opinion`
+- `exposure_build_product_use_evidence_from_cosing`
+- `exposure_build_product_use_evidence_from_nanomaterial`
+- `exposure_build_product_use_evidence_from_synthetic_polymer_microparticle`
 - `exposure_assess_product_use_evidence_fit`
 - `exposure_apply_product_use_evidence`
 - `exposure_reconcile_product_use_evidence`

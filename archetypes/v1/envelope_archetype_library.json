@@ -1,5 +1,5 @@
 {
-  "library_version": "2026.03.25.v2",
+  "library_version": "2026.04.10.v3",
   "notes": [
     "Packaged Tier B archetype sets are deterministic screening templates, not population distributions.",
     "Each set uses caller-supplied chemical identity and fixed route/scenario semantics.",
@@ -92,6 +92,112 @@
           },
           "populationProfile": {
             "population_group": "adult",
+            "demographic_tags": [
+              "consumer",
+              "general_population"
+            ],
+            "region": "EU"
+          }
+        }
+      ]
+    },
+    {
+      "setId": "adult_leave_on_face_cream_sccs",
+      "label": "Adult leave-on face cream SCCS envelope",
+      "description": "Tier B dermal screening archetypes for adult leave-on face cream use aligned to SCCS Notes of Guidance Table 3A and Table 4 application-area variants.",
+      "route": "dermal",
+      "scenarioClass": "screening",
+      "chemicalScope": "caller_supplied",
+      "intendedUse": "Tier B dermal screening envelope for SCCS-governed face cream daily amount and application frequency, with application-area variants for face and neck coverage.",
+      "driverParameters": [
+        "exposed_surface_area_cm2"
+      ],
+      "interpretationNotes": [
+        "The packaged daily amount of 1.54 g/day and application frequency of 2.14/day follow SCCS Notes of Guidance Table 3A and Table 4 for face cream.",
+        "Use amount per event is derived deterministically as daily amount divided by daily application frequency."
+      ],
+      "limitations": [
+        "These archetypes encode SCCS face-cream use-pattern anchors, not a population distribution.",
+        "The 2% concentration fraction is an illustrative screening input; replace it with the scenario-specific ingredient fraction when needed."
+      ],
+      "archetypes": [
+        {
+          "templateId": "adult_leave_on_face_cream_sccs_face_only",
+          "label": "Face only",
+          "description": "SCCS face cream use pattern with the default face-only application area.",
+          "productUseProfile": {
+            "product_name": "Example Face Cream",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 0.71962617,
+            "use_amount_unit": "g",
+            "use_events_per_day": 2.14,
+            "transfer_efficiency": 1.0,
+            "retention_factor": 1.0
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 63.79453,
+            "exposed_surface_area_cm2": 565.0,
+            "demographic_tags": [
+              "consumer",
+              "general_population"
+            ],
+            "region": "EU"
+          }
+        },
+        {
+          "templateId": "adult_leave_on_face_cream_sccs_face_and_neck",
+          "label": "Face and neck",
+          "description": "SCCS face cream use pattern with added neck application area.",
+          "productUseProfile": {
+            "product_name": "Example Face Cream",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 0.71962617,
+            "use_amount_unit": "g",
+            "use_events_per_day": 2.14,
+            "transfer_efficiency": 1.0,
+            "retention_factor": 1.0
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 63.79453,
+            "exposed_surface_area_cm2": 885.0,
+            "demographic_tags": [
+              "consumer",
+              "general_population"
+            ],
+            "region": "EU"
+          }
+        },
+        {
+          "templateId": "adult_leave_on_face_cream_sccs_face_neck_back_neck",
+          "label": "Face, neck, and back of neck",
+          "description": "SCCS face cream use pattern with face, neck, and back-of-neck application area.",
+          "productUseProfile": {
+            "product_name": "Example Face Cream",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 0.71962617,
+            "use_amount_unit": "g",
+            "use_events_per_day": 2.14,
+            "transfer_efficiency": 1.0,
+            "retention_factor": 1.0
+          },
+          "populationProfile": {
+            "population_group": "adult",
+            "body_weight_kg": 63.79453,
+            "exposed_surface_area_cm2": 965.0,
             "demographic_tags": [
               "consumer",
               "general_population"

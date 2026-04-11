@@ -67,6 +67,22 @@ EXAMPLE_SCHEMA_MAP = {
     "comp_tox_enriched_request": "exposureScenarioRequest.v1",
     "cons_expo_evidence_record": "consExpoEvidenceRecord.v1",
     "cons_expo_product_use_evidence": "productUseEvidenceRecord.v1",
+    "sccs_evidence_record": "sccsCosmeticsEvidenceRecord.v1",
+    "sccs_product_use_evidence": "productUseEvidenceRecord.v1",
+    "sccs_opinion_evidence_record": "sccsOpinionEvidenceRecord.v1",
+    "sccs_opinion_product_use_evidence": "productUseEvidenceRecord.v1",
+    "cosing_ingredient_record": "cosIngIngredientRecord.v1",
+    "cosing_product_use_evidence": "productUseEvidenceRecord.v1",
+    "nanomaterial_evidence_record": "nanoMaterialEvidenceRecord.v1",
+    "nanomaterial_product_use_evidence": "productUseEvidenceRecord.v1",
+    "synthetic_polymer_microparticle_evidence_record": (
+        "syntheticPolymerMicroparticleEvidenceRecord.v1"
+    ),
+    "synthetic_polymer_microparticle_product_use_evidence": (
+        "productUseEvidenceRecord.v1"
+    ),
+    "non_plastic_particle_product_use_evidence_record": "nanoMaterialEvidenceRecord.v1",
+    "non_plastic_particle_product_use_evidence": "productUseEvidenceRecord.v1",
     "product_use_evidence_record": "productUseEvidenceRecord.v1",
     "product_use_evidence_fit_report": "productUseEvidenceFitReport.v1",
     "product_use_evidence_enriched_request": "exposureScenarioRequest.v1",
@@ -127,7 +143,7 @@ def test_contract_manifest_and_server_boot() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
-    assert len(manifest["tools"]) == 29
+    assert len(manifest["tools"]) == 34
     assert "chemicalIdentity.v1" in manifest["schemas"]
     assert "exposureScenarioDefinition.v1" in manifest["schemas"]
     assert "routeDoseEstimate.v1" in manifest["schemas"]
@@ -136,7 +152,20 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "exposureScenario.v1" in manifest["schemas"]
     assert "inhalationTier1ScenarioRequest.v1" in manifest["schemas"]
     assert "consExpoEvidenceRecord.v1" in manifest["schemas"]
+    assert "sccsCosmeticsEvidenceRecord.v1" in manifest["schemas"]
+    assert "sccsOpinionEvidenceRecord.v1" in manifest["schemas"]
+    assert "cosIngIngredientRecord.v1" in manifest["schemas"]
+    assert "nanoMaterialEvidenceRecord.v1" in manifest["schemas"]
+    assert "syntheticPolymerMicroparticleEvidenceRecord.v1" in manifest["schemas"]
+    assert "particleMaterialContext.v1" in manifest["schemas"]
     assert "buildProductUseEvidenceFromConsExpoInput.v1" in manifest["schemas"]
+    assert "buildProductUseEvidenceFromSccsInput.v1" in manifest["schemas"]
+    assert "buildProductUseEvidenceFromSccsOpinionInput.v1" in manifest["schemas"]
+    assert "buildProductUseEvidenceFromCosIngInput.v1" in manifest["schemas"]
+    assert "buildProductUseEvidenceFromNanoMaterialInput.v1" in manifest["schemas"]
+    assert "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1" in (
+        manifest["schemas"]
+    )
     assert "productUseEvidenceRecord.v1" in manifest["schemas"]
     assert "productUseEvidenceFitReport.v1" in manifest["schemas"]
     assert "assessProductUseEvidenceFitInput.v1" in manifest["schemas"]
@@ -239,6 +268,18 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "inhalation_tier1_scenario_package_probability_summary" in manifest["examples"]
     assert "cons_expo_evidence_record" in manifest["examples"]
     assert "cons_expo_product_use_evidence" in manifest["examples"]
+    assert "sccs_evidence_record" in manifest["examples"]
+    assert "sccs_product_use_evidence" in manifest["examples"]
+    assert "sccs_opinion_evidence_record" in manifest["examples"]
+    assert "sccs_opinion_product_use_evidence" in manifest["examples"]
+    assert "cosing_ingredient_record" in manifest["examples"]
+    assert "cosing_product_use_evidence" in manifest["examples"]
+    assert "nanomaterial_evidence_record" in manifest["examples"]
+    assert "nanomaterial_product_use_evidence" in manifest["examples"]
+    assert "synthetic_polymer_microparticle_evidence_record" in manifest["examples"]
+    assert "synthetic_polymer_microparticle_product_use_evidence" in manifest["examples"]
+    assert "non_plastic_particle_product_use_evidence_record" in manifest["examples"]
+    assert "non_plastic_particle_product_use_evidence" in manifest["examples"]
     assert "product_use_evidence_record" in manifest["examples"]
     assert "product_use_evidence_fit_report" in manifest["examples"]
     assert "product_use_evidence_enriched_request" in manifest["examples"]
@@ -373,13 +414,13 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     validate(instance=report, schema=schema)
     assert report["policyVersion"] == "2026.03.25.v4"
     assert report["domainCount"] == 11
-    assert report["benchmarkCaseCount"] == 22
+    assert report["benchmarkCaseCount"] == 23
     assert report["externalDatasetCount"] == 14
     assert report["referenceBandCount"] == 10
     assert report["timeSeriesPackCount"] == 3
-    assert report["goldsetCaseCount"] == 13
+    assert report["goldsetCaseCount"] == 14
     assert report["goldsetCoverageCounts"] == {
-        "benchmark_regressed_showcase": 11,
+        "benchmark_regressed_showcase": 12,
         "challenge_case": 1,
         "integration_showcase": 1,
     }

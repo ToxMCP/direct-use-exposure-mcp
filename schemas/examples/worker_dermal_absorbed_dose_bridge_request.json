@@ -19,6 +19,7 @@
       "use_amount_unit": "g",
       "use_events_per_day": 3.0,
       "density_g_per_ml": null,
+      "particleMaterialContext": null,
       "transfer_efficiency": null,
       "retention_factor": null,
       "ingestion_fraction": null,

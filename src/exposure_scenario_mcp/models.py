@@ -221,6 +221,61 @@ class ValidationGapSeverity(StrEnum):
     HIGH = "high"
 
 
+class ParticleMaterialClass(StrEnum):
+    NANOMATERIAL = "nanomaterial"
+    SYNTHETIC_POLYMER_MICROPARTICLE = "synthetic_polymer_microparticle"
+    NON_PLASTIC_MICRO_NANO_PARTICLE = "non_plastic_micro_nano_particle"
+
+
+class ParticleNanoStatus(StrEnum):
+    NANO_SPECIFIC = "nano_specific"
+    CONTAINS_NANO_FRACTION = "contains_nano_fraction"
+    NON_NANO = "non_nano"
+    UNKNOWN = "unknown"
+
+
+class ParticleSizeDomain(StrEnum):
+    NANO = "nano"
+    MICRO = "micro"
+    MIXED_MICRO_NANO = "mixed_micro_nano"
+    UNKNOWN = "unknown"
+
+
+class ParticleCompositionFamily(StrEnum):
+    POLYMER = "polymer"
+    METAL_OXIDE = "metal_oxide"
+    SILICA = "silica"
+    PIGMENT = "pigment"
+    HYDROXYAPATITE = "hydroxyapatite"
+    CARBON_BASED = "carbon_based"
+    OTHER = "other"
+
+
+class ParticleSolubilityClass(StrEnum):
+    INSOLUBLE = "insoluble"
+    POORLY_SOLUBLE = "poorly_soluble"
+    SOLUBLE = "soluble"
+    DISSOLVES_RAPIDLY = "dissolves_rapidly"
+    UNKNOWN = "unknown"
+
+
+class ParticleAgglomerationState(StrEnum):
+    PRIMARY_PARTICLES = "primary_particles"
+    AGGLOMERATED = "agglomerated"
+    AGGREGATED = "aggregated"
+    MIXED = "mixed"
+    UNKNOWN = "unknown"
+
+
+class ParticleShapeFamily(StrEnum):
+    SPHERICAL = "spherical"
+    FIBROUS = "fibrous"
+    PLATELET = "platelet"
+    IRREGULAR = "irregular"
+    ROD_LIKE = "rod_like"
+    UNKNOWN = "unknown"
+
+
 class ValidationCheckStatus(StrEnum):
     PASS = "pass"
     WARNING = "warning"
@@ -865,6 +920,91 @@ class ProvenanceBundle(StrictModel):
     notes: list[str] = Field(default_factory=list, description="Additional provenance notes.")
 
 
+class ParticleMaterialContext(StrictModel):
+    schema_version: Literal["particleMaterialContext.v1"] = "particleMaterialContext.v1"
+    material_class: ParticleMaterialClass = Field(
+        ..., alias="materialClass", description="High-level particle material class."
+    )
+    nano_status: ParticleNanoStatus = Field(
+        ..., alias="nanoStatus", description="Whether the context is nano-specific."
+    )
+    particle_size_domain: ParticleSizeDomain = Field(
+        ..., alias="particleSizeDomain", description="Primary size-domain classification."
+    )
+    composition_family: ParticleCompositionFamily = Field(
+        ..., alias="compositionFamily", description="Broad composition family."
+    )
+    intentionally_manufactured_particle: bool | None = Field(
+        default=None,
+        alias="intentionallyManufacturedParticle",
+        description="Whether the material is an intentionally manufactured particle.",
+    )
+    insoluble_or_biopersistent: bool | None = Field(
+        default=None,
+        alias="insolubleOrBiopersistent",
+        description="Whether the particle is treated as insoluble or biopersistent.",
+    )
+    solubility_class: ParticleSolubilityClass | None = Field(
+        default=None, alias="solubilityClass", description="Screening solubility class."
+    )
+    agglomeration_state: ParticleAgglomerationState | None = Field(
+        default=None,
+        alias="agglomerationState",
+        description="Agglomeration or aggregation state relevant to use.",
+    )
+    shape_family: ParticleShapeFamily | None = Field(
+        default=None, alias="shapeFamily", description="Particle shape family."
+    )
+    surface_treated: bool | None = Field(
+        default=None,
+        alias="surfaceTreated",
+        description="Whether the particle has a relevant surface treatment or coating.",
+    )
+    surface_treatment_notes: str | None = Field(
+        default=None,
+        alias="surfaceTreatmentNotes",
+        description="Short notes on coatings or surface treatment when known.",
+    )
+    median_primary_particle_size_nm: float | None = Field(
+        default=None,
+        alias="medianPrimaryParticleSizeNm",
+        description="Median primary particle size in nm when known.",
+        gt=0.0,
+    )
+    size_range_nm_low: float | None = Field(
+        default=None, alias="sizeRangeNmLow", description="Lower particle size bound in nm.", gt=0.0
+    )
+    size_range_nm_high: float | None = Field(
+        default=None,
+        alias="sizeRangeNmHigh",
+        description="Upper particle size bound in nm.",
+        gt=0.0,
+    )
+    respirable_fraction_relevance: bool | None = Field(
+        default=None,
+        alias="respirableFractionRelevance",
+        description="Whether inhalation respirable-fraction context is materially relevant.",
+    )
+    dermal_penetration_concern: bool | None = Field(
+        default=None,
+        alias="dermalPenetrationConcern",
+        description="Whether dermal particle penetration or retention is a relevant concern.",
+    )
+    article16_notification_relevant: bool | None = Field(
+        default=None,
+        alias="article16NotificationRelevant",
+        description="Whether EU cosmetics Article 16 nanomaterial notification context applies.",
+    )
+    echa_spm_restriction_relevant: bool | None = Field(
+        default=None,
+        alias="echaSpmRestrictionRelevant",
+        description=(
+            "Whether EU synthetic polymer microparticle restriction/reporting context applies."
+        ),
+    )
+    notes: list[str] = Field(default_factory=list, description="Additional material-context notes.")
+
+
 class ProductUseProfile(StrictModel):
     schema_version: Literal["productUseProfile.v1"] = "productUseProfile.v1"
     product_name: str | None = Field(
@@ -900,6 +1040,11 @@ class ProductUseProfile(StrictModel):
     )
     density_g_per_ml: float | None = Field(
         default=None, description="Density when the product amount is in mL.", gt=0.0
+    )
+    particle_material_context: ParticleMaterialContext | None = Field(
+        default=None,
+        alias="particleMaterialContext",
+        description="Optional particle or nanomaterial context carried with the use profile.",
     )
     transfer_efficiency: float | None = Field(
         default=None, description="Route modifier for external transfer.", gt=0.0, le=1.0

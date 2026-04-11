@@ -32,6 +32,7 @@
     "use_amount_unit": "mL",
     "use_events_per_day": 2.0,
     "density_g_per_ml": null,
+    "particleMaterialContext": null,
     "transfer_efficiency": null,
     "retention_factor": null,
     "ingestion_fraction": null,
@@ -242,7 +243,7 @@
         "title": "Direct-Use Exposure MCP heuristic density screening defaults",
         "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -409,7 +410,7 @@
         "title": "RIVM Disinfectant Products Fact Sheet trigger-spray airborne-fraction default for surface sprays",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005003.pdf",
         "version": "RIVM report 320005003 / 2006",
-        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -1436,7 +1437,7 @@
     "plugin_id": "worker_inhalation_art_execution_surrogate",
     "plugin_version": "0.1.0",
     "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Execution reuses the existing inhalation screening kernels and then applies bounded worker control and respiratory-protection modifiers.",

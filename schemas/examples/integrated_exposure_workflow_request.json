@@ -19,6 +19,7 @@
       "use_amount_unit": "mL",
       "use_events_per_day": 1.0,
       "density_g_per_ml": null,
+      "particleMaterialContext": null,
       "transfer_efficiency": null,
       "retention_factor": null,
       "ingestion_fraction": null,
@@ -99,6 +100,11 @@
       ]
     }
   ],
+  "sccsRecords": [],
+  "sccsOpinionRecords": [],
+  "cosingRecords": [],
+  "nanomaterialRecords": [],
+  "syntheticPolymerMicroparticleRecords": [],
   "evidenceRecords": [
     {
       "schema_version": "productUseEvidenceRecord.v1",
@@ -133,6 +139,9 @@
       "physchem_summary": {
         "density_g_per_ml": 1.08
       },
+      "particleMaterialContext": null,
+      "productUseProfileOverrides": {},
+      "populationProfileOverrides": {},
       "evidence_sources": [
         "EU-Dossier:mock-001"
       ],

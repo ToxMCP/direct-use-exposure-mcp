@@ -1,0 +1,66 @@
+{
+  "schema_version": "nanoMaterialEvidenceRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Nano UV Filter",
+  "casrn": "13463-67-7",
+  "sourceRecordId": "sccs_nano_guidance_uv_filter_mock_2026",
+  "sourceTitle": "SCCS Guidance on the safety assessment of nanomaterials in cosmetics",
+  "sourceVersion": "2nd revision",
+  "sourceLocator": "https://health.ec.europa.eu/publications/sccs-guidance-safety-assessment-nanomaterials-cosmetics-2nd-revision_en",
+  "sourceProgram": "SCCS",
+  "cosmeticProductTypes": [
+    "Spray sunscreen",
+    "Face cream"
+  ],
+  "supportedRoutes": [
+    "dermal",
+    "inhalation"
+  ],
+  "physical_forms": [
+    "spray",
+    "cream"
+  ],
+  "application_methods": [
+    "aerosol_spray",
+    "hand_application"
+  ],
+  "retention_types": [
+    "leave_on"
+  ],
+  "particleMaterialContext": {
+    "schema_version": "particleMaterialContext.v1",
+    "materialClass": "nanomaterial",
+    "nanoStatus": "nano_specific",
+    "particleSizeDomain": "nano",
+    "compositionFamily": "metal_oxide",
+    "intentionallyManufacturedParticle": true,
+    "insolubleOrBiopersistent": true,
+    "solubilityClass": "insoluble",
+    "agglomerationState": "agglomerated",
+    "shapeFamily": "irregular",
+    "surfaceTreated": true,
+    "surfaceTreatmentNotes": "Illustrative alumina/silica-coated UV filter particle.",
+    "medianPrimaryParticleSizeNm": 35.0,
+    "sizeRangeNmLow": 20.0,
+    "sizeRangeNmHigh": 80.0,
+    "respirableFractionRelevance": true,
+    "dermalPenetrationConcern": true,
+    "article16NotificationRelevant": true,
+    "echaSpmRestrictionRelevant": false,
+    "notes": [
+      "Illustrative nano TiO2 / ZnO-style cosmetics particle context."
+    ]
+  },
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU",
+    "SCCS",
+    "CPNP"
+  ],
+  "evidence_sources": [],
+  "notes": [
+    "Illustrative nanomaterial guidance record for EU cosmetic products."
+  ]
+}

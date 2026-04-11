@@ -65,6 +65,36 @@
       "description": "Map a typed ConsExpo fact-sheet record into the generic product-use evidence contract."
     },
     {
+      "name": "exposure_build_product_use_evidence_from_sccs",
+      "request_schema": "buildProductUseEvidenceFromSccsInput.v1",
+      "response_schema": "productUseEvidenceRecord.v1",
+      "description": "Map a typed SCCS cosmetics guidance record into the generic product-use evidence contract."
+    },
+    {
+      "name": "exposure_build_product_use_evidence_from_sccs_opinion",
+      "request_schema": "buildProductUseEvidenceFromSccsOpinionInput.v1",
+      "response_schema": "productUseEvidenceRecord.v1",
+      "description": "Map a typed SCCS opinion record into the generic product-use evidence contract."
+    },
+    {
+      "name": "exposure_build_product_use_evidence_from_cosing",
+      "request_schema": "buildProductUseEvidenceFromCosIngInput.v1",
+      "response_schema": "productUseEvidenceRecord.v1",
+      "description": "Map a typed CosIng ingredient record into the generic product-use evidence contract."
+    },
+    {
+      "name": "exposure_build_product_use_evidence_from_nanomaterial",
+      "request_schema": "buildProductUseEvidenceFromNanoMaterialInput.v1",
+      "response_schema": "productUseEvidenceRecord.v1",
+      "description": "Map a typed nanomaterial guidance record into the generic product-use evidence contract."
+    },
+    {
+      "name": "exposure_build_product_use_evidence_from_synthetic_polymer_microparticle",
+      "request_schema": "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1",
+      "response_schema": "productUseEvidenceRecord.v1",
+      "description": "Map a typed synthetic polymer microparticle record into the generic product-use evidence contract."
+    },
+    {
       "name": "exposure_reconcile_product_use_evidence",
       "request_schema": "reconcileProductUseEvidenceInput.v1",
       "response_schema": "productUseEvidenceReconciliationReport.v1",
@@ -513,6 +543,7 @@
     "monotonicityCheck.v1": "schemas/monotonicityCheck.v1.json",
     "buildParameterBoundsInput.v1": "schemas/buildParameterBoundsInput.v1.json",
     "parameterBoundsSummary.v1": "schemas/parameterBoundsSummary.v1.json",
+    "particleMaterialContext.v1": "schemas/particleMaterialContext.v1.json",
     "aggregateExposureSummary.v1": "schemas/aggregateExposureSummary.v1.json",
     "exposureAssumptionRecord.v1": "schemas/exposureAssumptionRecord.v1.json",
     "assumptionGovernance.v1": "schemas/assumptionGovernance.v1.json",
@@ -533,7 +564,17 @@
     "compareExposureScenariosInput.v1": "schemas/compareExposureScenariosInput.v1.json",
     "compToxChemicalRecord.v1": "schemas/compToxChemicalRecord.v1.json",
     "consExpoEvidenceRecord.v1": "schemas/consExpoEvidenceRecord.v1.json",
+    "sccsCosmeticsEvidenceRecord.v1": "schemas/sccsCosmeticsEvidenceRecord.v1.json",
+    "sccsOpinionEvidenceRecord.v1": "schemas/sccsOpinionEvidenceRecord.v1.json",
+    "cosIngIngredientRecord.v1": "schemas/cosIngIngredientRecord.v1.json",
+    "nanoMaterialEvidenceRecord.v1": "schemas/nanoMaterialEvidenceRecord.v1.json",
+    "syntheticPolymerMicroparticleEvidenceRecord.v1": "schemas/syntheticPolymerMicroparticleEvidenceRecord.v1.json",
     "buildProductUseEvidenceFromConsExpoInput.v1": "schemas/buildProductUseEvidenceFromConsExpoInput.v1.json",
+    "buildProductUseEvidenceFromSccsInput.v1": "schemas/buildProductUseEvidenceFromSccsInput.v1.json",
+    "buildProductUseEvidenceFromSccsOpinionInput.v1": "schemas/buildProductUseEvidenceFromSccsOpinionInput.v1.json",
+    "buildProductUseEvidenceFromCosIngInput.v1": "schemas/buildProductUseEvidenceFromCosIngInput.v1.json",
+    "buildProductUseEvidenceFromNanoMaterialInput.v1": "schemas/buildProductUseEvidenceFromNanoMaterialInput.v1.json",
+    "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1": "schemas/buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1.json",
     "productUseEvidenceRecord.v1": "schemas/productUseEvidenceRecord.v1.json",
     "productUseEvidenceFitReport.v1": "schemas/productUseEvidenceFitReport.v1.json",
     "assessProductUseEvidenceFitInput.v1": "schemas/assessProductUseEvidenceFitInput.v1.json",
@@ -599,6 +640,18 @@
     "comp_tox_enriched_request": "schemas/examples/comp_tox_enriched_request.json",
     "cons_expo_evidence_record": "schemas/examples/cons_expo_evidence_record.json",
     "cons_expo_product_use_evidence": "schemas/examples/cons_expo_product_use_evidence.json",
+    "sccs_evidence_record": "schemas/examples/sccs_evidence_record.json",
+    "sccs_product_use_evidence": "schemas/examples/sccs_product_use_evidence.json",
+    "sccs_opinion_evidence_record": "schemas/examples/sccs_opinion_evidence_record.json",
+    "sccs_opinion_product_use_evidence": "schemas/examples/sccs_opinion_product_use_evidence.json",
+    "cosing_ingredient_record": "schemas/examples/cosing_ingredient_record.json",
+    "cosing_product_use_evidence": "schemas/examples/cosing_product_use_evidence.json",
+    "nanomaterial_evidence_record": "schemas/examples/nanomaterial_evidence_record.json",
+    "nanomaterial_product_use_evidence": "schemas/examples/nanomaterial_product_use_evidence.json",
+    "synthetic_polymer_microparticle_evidence_record": "schemas/examples/synthetic_polymer_microparticle_evidence_record.json",
+    "synthetic_polymer_microparticle_product_use_evidence": "schemas/examples/synthetic_polymer_microparticle_product_use_evidence.json",
+    "non_plastic_particle_product_use_evidence_record": "schemas/examples/non_plastic_particle_product_use_evidence_record.json",
+    "non_plastic_particle_product_use_evidence": "schemas/examples/non_plastic_particle_product_use_evidence.json",
     "product_use_evidence_record": "schemas/examples/product_use_evidence_record.json",
     "product_use_evidence_fit_report": "schemas/examples/product_use_evidence_fit_report.json",
     "product_use_evidence_enriched_request": "schemas/examples/product_use_evidence_enriched_request.json",

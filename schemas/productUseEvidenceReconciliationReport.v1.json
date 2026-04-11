@@ -78,6 +78,307 @@
       "title": "ExposureScenarioRequest",
       "type": "object"
     },
+    "ParticleAgglomerationState": {
+      "enum": [
+        "primary_particles",
+        "agglomerated",
+        "aggregated",
+        "mixed",
+        "unknown"
+      ],
+      "title": "ParticleAgglomerationState",
+      "type": "string"
+    },
+    "ParticleCompositionFamily": {
+      "enum": [
+        "polymer",
+        "metal_oxide",
+        "silica",
+        "pigment",
+        "hydroxyapatite",
+        "carbon_based",
+        "other"
+      ],
+      "title": "ParticleCompositionFamily",
+      "type": "string"
+    },
+    "ParticleMaterialClass": {
+      "enum": [
+        "nanomaterial",
+        "synthetic_polymer_microparticle",
+        "non_plastic_micro_nano_particle"
+      ],
+      "title": "ParticleMaterialClass",
+      "type": "string"
+    },
+    "ParticleMaterialContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "particleMaterialContext.v1",
+          "default": "particleMaterialContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "materialClass": {
+          "$ref": "#/$defs/ParticleMaterialClass",
+          "description": "High-level particle material class."
+        },
+        "nanoStatus": {
+          "$ref": "#/$defs/ParticleNanoStatus",
+          "description": "Whether the context is nano-specific."
+        },
+        "particleSizeDomain": {
+          "$ref": "#/$defs/ParticleSizeDomain",
+          "description": "Primary size-domain classification."
+        },
+        "compositionFamily": {
+          "$ref": "#/$defs/ParticleCompositionFamily",
+          "description": "Broad composition family."
+        },
+        "intentionallyManufacturedParticle": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the material is an intentionally manufactured particle.",
+          "title": "Intentionallymanufacturedparticle"
+        },
+        "insolubleOrBiopersistent": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the particle is treated as insoluble or biopersistent.",
+          "title": "Insolubleorbiopersistent"
+        },
+        "solubilityClass": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleSolubilityClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Screening solubility class."
+        },
+        "agglomerationState": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleAgglomerationState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Agglomeration or aggregation state relevant to use."
+        },
+        "shapeFamily": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleShapeFamily"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Particle shape family."
+        },
+        "surfaceTreated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the particle has a relevant surface treatment or coating.",
+          "title": "Surfacetreated"
+        },
+        "surfaceTreatmentNotes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short notes on coatings or surface treatment when known.",
+          "title": "Surfacetreatmentnotes"
+        },
+        "medianPrimaryParticleSizeNm": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Median primary particle size in nm when known.",
+          "title": "Medianprimaryparticlesizenm"
+        },
+        "sizeRangeNmLow": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Lower particle size bound in nm.",
+          "title": "Sizerangenmlow"
+        },
+        "sizeRangeNmHigh": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Upper particle size bound in nm.",
+          "title": "Sizerangenmhigh"
+        },
+        "respirableFractionRelevance": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether inhalation respirable-fraction context is materially relevant.",
+          "title": "Respirablefractionrelevance"
+        },
+        "dermalPenetrationConcern": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether dermal particle penetration or retention is a relevant concern.",
+          "title": "Dermalpenetrationconcern"
+        },
+        "article16NotificationRelevant": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether EU cosmetics Article 16 nanomaterial notification context applies.",
+          "title": "Article16Notificationrelevant"
+        },
+        "echaSpmRestrictionRelevant": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether EU synthetic polymer microparticle restriction/reporting context applies.",
+          "title": "Echaspmrestrictionrelevant"
+        },
+        "notes": {
+          "description": "Additional material-context notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "materialClass",
+        "nanoStatus",
+        "particleSizeDomain",
+        "compositionFamily"
+      ],
+      "title": "ParticleMaterialContext",
+      "type": "object"
+    },
+    "ParticleNanoStatus": {
+      "enum": [
+        "nano_specific",
+        "contains_nano_fraction",
+        "non_nano",
+        "unknown"
+      ],
+      "title": "ParticleNanoStatus",
+      "type": "string"
+    },
+    "ParticleShapeFamily": {
+      "enum": [
+        "spherical",
+        "fibrous",
+        "platelet",
+        "irregular",
+        "rod_like",
+        "unknown"
+      ],
+      "title": "ParticleShapeFamily",
+      "type": "string"
+    },
+    "ParticleSizeDomain": {
+      "enum": [
+        "nano",
+        "micro",
+        "mixed_micro_nano",
+        "unknown"
+      ],
+      "title": "ParticleSizeDomain",
+      "type": "string"
+    },
+    "ParticleSolubilityClass": {
+      "enum": [
+        "insoluble",
+        "poorly_soluble",
+        "soluble",
+        "dissolves_rapidly",
+        "unknown"
+      ],
+      "title": "ParticleSolubilityClass",
+      "type": "string"
+    },
     "PopulationProfile": {
       "additionalProperties": false,
       "properties": {
@@ -355,6 +656,18 @@
           "default": null,
           "description": "Density when the product amount is in mL.",
           "title": "Density G Per Ml"
+        },
+        "particleMaterialContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleMaterialContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional particle or nanomaterial context carried with the use profile."
         },
         "transfer_efficiency": {
           "anyOf": [

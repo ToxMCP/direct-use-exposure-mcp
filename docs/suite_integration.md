@@ -47,6 +47,15 @@ summarized in `docs://cross-mcp-contract-guide`.
 - Internal dose and TK simulation -> PBPK MCP
 - Cross-service orchestration and final reporting -> ToxClaw
 
+## Environmental-media oral seam
+
+- Environmental-media oral intake from water or soil is intentionally not routed into
+  Direct-Use Exposure MCP by default.
+- That seam should start from Fate MCP `concentrationSurface.v1` outputs and move into a future
+  concentration-to-intake consumer.
+- It should only enter Dietary MCP when the workflow becomes food-mediated residue plus
+  consumption rather than generic media ingestion.
+
 ## Literature MCP (future/optional)
 
 - Direct-Use Exposure MCP should consume only reviewed, machine-readable evidence packs from a
@@ -78,6 +87,46 @@ summarized in `docs://cross-mcp-contract-guide`.
   cleaning products, disinfecting products, DIY/paint contexts, and pest control products.
 - Preserve the underlying fact-sheet identifier, version, and locator in source metadata so
   downstream review can distinguish current and legacy ConsExpo packs.
+
+## SCCS
+
+- Treat SCCS as the primary EU cosmetics evidence and reviewed use-profile source.
+- Use the dedicated SCCS mapping workflow to translate Notes of Guidance or opinion-backed
+  cosmetic product types into the generic `productUseEvidenceRecord` contract before fit,
+  apply, or reconciliation.
+- Prefer SCCS over CompTox or generic dossier evidence when the question is specifically about
+  EU cosmetic use assumptions such as amount, frequency, leave-on versus rinse-off context,
+  or exposed body-surface context.
+- Use ConsExpo as a supporting mechanistic consumer-model layer for cosmetics when the workflow
+  needs explicit consumer scenario structure in addition to SCCS use-pattern guidance.
+- Preserve the underlying guidance identifier, version, locator, and table references in
+  source metadata so downstream review can distinguish Notes of Guidance revisions and
+  ingredient-specific SCCS opinions.
+
+## SCCS opinions and CosIng
+
+- Use SCCS opinions as the reviewed ingredient-specific cosmetics lane when the workflow needs
+  opinion-bound product types, route relevance, nanomaterial context, or other ingredient-level
+  constraints in addition to Notes of Guidance defaults.
+- Use CosIng as a supporting identity and function source for INCI name, ingredient function,
+  Annex references, and nanomaterial flag context. Do not treat CosIng as a quantitative
+  use-profile source.
+- Preserve opinion IDs, CosIng locators, and any particle-aware material context so downstream
+  reviewers can distinguish regulatory use-pattern guidance from identity/function metadata.
+
+## Nanomaterials and microparticles
+
+- Treat EU cosmetic nanomaterials as a first-class direct-use evidence lane, primarily backed by
+  SCCS nano guidance, SCCS opinions, CPNP Article 16 context, and the Commission nanomaterials
+  catalogue context.
+- Treat synthetic polymer microparticles as a separate evidence lane with ECHA restriction and
+  reporting context, not as generic cosmetics defaults.
+- Treat non-plastic micro/nanoparticles such as TiO2, ZnO, silica, and pigment particles as
+  particle-aware material contexts that can inform route relevance and direct-use assumptions
+  without expanding this MCP into fate or toxicology interpretation.
+- Preserve `particleMaterialContext.v1` when reconciling reviewed evidence so particle class,
+  nano status, size-domain, composition family, and regulatory flags survive handoff into the
+  built request.
 
 ## ToxClaw
 

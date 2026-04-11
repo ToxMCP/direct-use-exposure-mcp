@@ -8,14 +8,24 @@ from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.integrations import (
     CompToxChemicalRecord,
     ConsExpoEvidenceRecord,
+    CosIngIngredientRecord,
+    NanoMaterialEvidenceRecord,
     ProductUseEvidenceRecord,
     RunIntegratedExposureWorkflowInput,
+    SccsCosmeticsEvidenceRecord,
+    SccsOpinionEvidenceRecord,
+    SyntheticPolymerMicroparticleEvidenceRecord,
     apply_comptox_enrichment,
     apply_product_use_evidence,
     assess_product_use_evidence_fit,
     build_pbpk_external_import_package,
     build_product_use_evidence_from_comptox,
     build_product_use_evidence_from_consexpo,
+    build_product_use_evidence_from_cosing,
+    build_product_use_evidence_from_nanomaterial,
+    build_product_use_evidence_from_sccs,
+    build_product_use_evidence_from_sccs_opinion,
+    build_product_use_evidence_from_synthetic_polymer_microparticle,
     build_toxclaw_evidence_bundle,
     build_toxclaw_evidence_envelope,
     build_toxclaw_refinement_bundle,
@@ -49,6 +59,14 @@ from exposure_scenario_mcp.models import (
     LimitationNote,
     ParameterBoundInput,
     ParameterBoundsSummary,
+    ParticleAgglomerationState,
+    ParticleCompositionFamily,
+    ParticleMaterialClass,
+    ParticleMaterialContext,
+    ParticleNanoStatus,
+    ParticleShapeFamily,
+    ParticleSizeDomain,
+    ParticleSolubilityClass,
     PopulationProfile,
     ProbabilityBoundsProfileSummary,
     ProductUseProfile,
@@ -887,6 +905,210 @@ def build_examples() -> dict[str, dict]:
     cons_expo_product_use_evidence = build_product_use_evidence_from_consexpo(
         cons_expo_evidence_record
     )
+    sccs_evidence_record = SccsCosmeticsEvidenceRecord(
+        chemical_id="DTXSID7020182",
+        preferred_name="Example Solvent A",
+        casrn="123-45-6",
+        guidanceId="sccs_nog_12th_revision_face_cream_2023",
+        guidanceTitle=(
+            "SCCS Notes of Guidance for the Testing of Cosmetic Ingredients and their "
+            "Safety Evaluation, 12th revision"
+        ),
+        guidanceVersion="12th revision / 2023",
+        guidanceLocator=(
+            "https://health.ec.europa.eu/publications/"
+            "sccs-notes-guidance-testing-cosmetic-ingredients-and-their-safety-"
+            "evaluation-12th-revision_en"
+        ),
+        cosmeticProductType="Face cream",
+        productFamily="skin_care",
+        tableReferences=["Table 3A", "Table 4"],
+        supportedRoutes=[Route.DERMAL],
+        physical_forms=["cream"],
+        application_methods=["hand_application"],
+        retention_types=["leave_on"],
+        productUseProfileOverrides={
+            "use_amount_per_event": 0.71962617,
+            "use_amount_unit": "g",
+            "use_events_per_day": 2.14,
+        },
+        populationProfileOverrides={
+            "body_weight_kg": 63.79453,
+            "exposed_surface_area_cm2": 565.0,
+            "region": "EU",
+        },
+        evidence_sources=["SCCS:NotesOfGuidance:12thRevision:FaceCream"],
+        notes=[
+            "Illustrative SCCS cosmetics guidance evidence mapped into the generic contract."
+        ],
+    )
+    sccs_product_use_evidence = build_product_use_evidence_from_sccs(sccs_evidence_record)
+    nano_particle_material_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.NANOMATERIAL,
+        nanoStatus=ParticleNanoStatus.NANO_SPECIFIC,
+        particleSizeDomain=ParticleSizeDomain.NANO,
+        compositionFamily=ParticleCompositionFamily.METAL_OXIDE,
+        intentionallyManufacturedParticle=True,
+        insolubleOrBiopersistent=True,
+        solubilityClass=ParticleSolubilityClass.INSOLUBLE,
+        agglomerationState=ParticleAgglomerationState.AGGLOMERATED,
+        shapeFamily=ParticleShapeFamily.IRREGULAR,
+        surfaceTreated=True,
+        surfaceTreatmentNotes="Illustrative alumina/silica-coated UV filter particle.",
+        medianPrimaryParticleSizeNm=35.0,
+        sizeRangeNmLow=20.0,
+        sizeRangeNmHigh=80.0,
+        respirableFractionRelevance=True,
+        dermalPenetrationConcern=True,
+        article16NotificationRelevant=True,
+        echaSpmRestrictionRelevant=False,
+        notes=[
+            "Illustrative nano TiO2 / ZnO-style cosmetics particle context.",
+        ],
+    )
+    microplastic_particle_material_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.SYNTHETIC_POLYMER_MICROPARTICLE,
+        nanoStatus=ParticleNanoStatus.NON_NANO,
+        particleSizeDomain=ParticleSizeDomain.MICRO,
+        compositionFamily=ParticleCompositionFamily.POLYMER,
+        intentionallyManufacturedParticle=True,
+        insolubleOrBiopersistent=True,
+        solubilityClass=ParticleSolubilityClass.INSOLUBLE,
+        agglomerationState=ParticleAgglomerationState.MIXED,
+        shapeFamily=ParticleShapeFamily.IRREGULAR,
+        surfaceTreated=False,
+        medianPrimaryParticleSizeNm=5000.0,
+        sizeRangeNmLow=1000.0,
+        sizeRangeNmHigh=10000.0,
+        respirableFractionRelevance=False,
+        dermalPenetrationConcern=False,
+        article16NotificationRelevant=False,
+        echaSpmRestrictionRelevant=True,
+        notes=[
+            "Illustrative synthetic polymer microparticle context for direct-use cosmetics."
+        ],
+    )
+    non_plastic_particle_material_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.NON_PLASTIC_MICRO_NANO_PARTICLE,
+        nanoStatus=ParticleNanoStatus.CONTAINS_NANO_FRACTION,
+        particleSizeDomain=ParticleSizeDomain.MIXED_MICRO_NANO,
+        compositionFamily=ParticleCompositionFamily.SILICA,
+        intentionallyManufacturedParticle=True,
+        insolubleOrBiopersistent=True,
+        solubilityClass=ParticleSolubilityClass.POORLY_SOLUBLE,
+        agglomerationState=ParticleAgglomerationState.MIXED,
+        shapeFamily=ParticleShapeFamily.IRREGULAR,
+        surfaceTreated=False,
+        medianPrimaryParticleSizeNm=150.0,
+        sizeRangeNmLow=40.0,
+        sizeRangeNmHigh=2000.0,
+        respirableFractionRelevance=True,
+        dermalPenetrationConcern=False,
+        article16NotificationRelevant=False,
+        echaSpmRestrictionRelevant=False,
+        notes=[
+            "Illustrative non-plastic particle context such as silica or pigment particles."
+        ],
+    )
+    sccs_opinion_evidence_record = SccsOpinionEvidenceRecord(
+        chemical_id="DTXSID7020182",
+        preferred_name="Example Nano UV Filter",
+        casrn="123-45-6",
+        opinionId="sccs_opinion_nano_uv_filter_mock_2026",
+        opinionTitle="SCCS scientific advice on a nano UV filter used in cosmetic products",
+        opinionVersion="2026 mock example",
+        opinionLocator="https://health.ec.europa.eu/scientific-committees/scientific-committee-consumer-safety-sccs_en",
+        cosmeticProductTypes=["Spray sunscreen"],
+        supportedRoutes=[Route.DERMAL, Route.INHALATION],
+        physical_forms=["spray"],
+        application_methods=["aerosol_spray"],
+        retention_types=["leave_on"],
+        particleMaterialContext=nano_particle_material_context,
+        notes=["Illustrative SCCS opinion record for nano-enabled cosmetics."],
+    )
+    sccs_opinion_product_use_evidence = build_product_use_evidence_from_sccs_opinion(
+        sccs_opinion_evidence_record
+    )
+    cosing_ingredient_record = CosIngIngredientRecord(
+        chemical_id="DTXSID7020182",
+        preferred_name="Example Nano UV Filter",
+        inciName="Titanium Dioxide",
+        casrn="13463-67-7",
+        ecNumber="236-675-5",
+        cosingLocator="https://single-market-economy.ec.europa.eu/sectors/cosmetics/cosmetic-ingredient-database_en",
+        functions=["UV filter", "Opacifying"],
+        annexReferences=["Annex VI"],
+        nanomaterialFlag=True,
+        particleMaterialContext=nano_particle_material_context,
+        notes=["Illustrative CosIng identity/function record for a cosmetic UV filter."],
+    )
+    cosing_product_use_evidence = build_product_use_evidence_from_cosing(
+        cosing_ingredient_record
+    )
+    nanomaterial_evidence_record = NanoMaterialEvidenceRecord(
+        chemical_id="DTXSID7020182",
+        preferred_name="Example Nano UV Filter",
+        casrn="13463-67-7",
+        sourceRecordId="sccs_nano_guidance_uv_filter_mock_2026",
+        sourceTitle="SCCS Guidance on the safety assessment of nanomaterials in cosmetics",
+        sourceVersion="2nd revision",
+        sourceLocator="https://health.ec.europa.eu/publications/sccs-guidance-safety-assessment-nanomaterials-cosmetics-2nd-revision_en",
+        sourceProgram="SCCS",
+        cosmeticProductTypes=["Spray sunscreen", "Face cream"],
+        supportedRoutes=[Route.DERMAL, Route.INHALATION],
+        physical_forms=["spray", "cream"],
+        application_methods=["aerosol_spray", "hand_application"],
+        retention_types=["leave_on"],
+        particleMaterialContext=nano_particle_material_context,
+        jurisdictions=["EU", "SCCS", "CPNP"],
+        notes=["Illustrative nanomaterial guidance record for EU cosmetic products."],
+    )
+    nanomaterial_product_use_evidence = build_product_use_evidence_from_nanomaterial(
+        nanomaterial_evidence_record
+    )
+    synthetic_polymer_microparticle_evidence_record = (
+        SyntheticPolymerMicroparticleEvidenceRecord(
+            chemical_id="DTXSID7020182",
+            preferred_name="Example Polymeric Glitter Particle",
+            sourceRecordId="echa_microplastics_personal_care_mock_2026",
+            sourceTitle="ECHA microplastics restriction and reporting context",
+            sourceVersion="2026 guidance context",
+            sourceLocator="https://echa.europa.eu/hot-topics/microplastics",
+            restrictionScope="Synthetic polymer microparticles in direct-use cosmetic products",
+            productUseCategories=["personal_care"],
+            supportedRoutes=[Route.DERMAL, Route.ORAL],
+            physical_forms=["gel", "cream"],
+            application_methods=["hand_application"],
+            retention_types=["leave_on", "rinse_off"],
+            particleMaterialContext=microplastic_particle_material_context,
+            notes=["Illustrative synthetic polymer microparticle regulatory context."],
+        )
+    )
+    synthetic_polymer_microparticle_product_use_evidence = (
+        build_product_use_evidence_from_synthetic_polymer_microparticle(
+            synthetic_polymer_microparticle_evidence_record
+        )
+    )
+    non_plastic_particle_product_use_evidence_record = NanoMaterialEvidenceRecord(
+        chemical_id="DTXSID7020182",
+        preferred_name="Example Silica Particle",
+        casrn="7631-86-9",
+        sourceRecordId="non_plastic_particle_guidance_mock_2026",
+        sourceTitle="Illustrative non-plastic micro/nanoparticle cosmetics context",
+        sourceVersion="2026 mock example",
+        sourceLocator="https://health.ec.europa.eu/scientific-committees/scientific-committee-consumer-safety-sccs_en",
+        sourceProgram="SCCS",
+        cosmeticProductTypes=["Loose powder cosmetic"],
+        supportedRoutes=[Route.DERMAL, Route.INHALATION],
+        physical_forms=["powder"],
+        application_methods=["dusting"],
+        retention_types=["leave_on"],
+        particleMaterialContext=non_plastic_particle_material_context,
+        notes=["Illustrative non-plastic particle context for powders and pigments."],
+    )
+    non_plastic_particle_product_use_evidence = build_product_use_evidence_from_nanomaterial(
+        non_plastic_particle_product_use_evidence_record
+    )
     product_use_evidence_record = ProductUseEvidenceRecord(
         chemical_id="DTXSID7020182",
         preferred_name="Example Solvent A",
@@ -1285,6 +1507,46 @@ def build_examples() -> dict[str, dict]:
         ),
         "cons_expo_product_use_evidence": cons_expo_product_use_evidence.model_dump(
             mode="json", by_alias=True
+        ),
+        "sccs_evidence_record": sccs_evidence_record.model_dump(mode="json", by_alias=True),
+        "sccs_product_use_evidence": sccs_product_use_evidence.model_dump(
+            mode="json", by_alias=True
+        ),
+        "sccs_opinion_evidence_record": sccs_opinion_evidence_record.model_dump(
+            mode="json", by_alias=True
+        ),
+        "sccs_opinion_product_use_evidence": sccs_opinion_product_use_evidence.model_dump(
+            mode="json", by_alias=True
+        ),
+        "cosing_ingredient_record": cosing_ingredient_record.model_dump(
+            mode="json", by_alias=True
+        ),
+        "cosing_product_use_evidence": cosing_product_use_evidence.model_dump(
+            mode="json", by_alias=True
+        ),
+        "nanomaterial_evidence_record": nanomaterial_evidence_record.model_dump(
+            mode="json", by_alias=True
+        ),
+        "nanomaterial_product_use_evidence": nanomaterial_product_use_evidence.model_dump(
+            mode="json", by_alias=True
+        ),
+        "synthetic_polymer_microparticle_evidence_record": (
+            synthetic_polymer_microparticle_evidence_record.model_dump(
+                mode="json", by_alias=True
+            )
+        ),
+        "synthetic_polymer_microparticle_product_use_evidence": (
+            synthetic_polymer_microparticle_product_use_evidence.model_dump(
+                mode="json", by_alias=True
+            )
+        ),
+        "non_plastic_particle_product_use_evidence_record": (
+            non_plastic_particle_product_use_evidence_record.model_dump(
+                mode="json", by_alias=True
+            )
+        ),
+        "non_plastic_particle_product_use_evidence": (
+            non_plastic_particle_product_use_evidence.model_dump(mode="json", by_alias=True)
         ),
         "product_use_evidence_record": product_use_evidence_record.model_dump(
             mode="json", by_alias=True

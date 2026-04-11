@@ -14,10 +14,17 @@ from exposure_scenario_mcp.integrations import (
     ApplyProductUseEvidenceInput,
     AssessProductUseEvidenceFitInput,
     BuildProductUseEvidenceFromConsExpoInput,
+    BuildProductUseEvidenceFromCosIngInput,
+    BuildProductUseEvidenceFromNanoMaterialInput,
+    BuildProductUseEvidenceFromSccsInput,
+    BuildProductUseEvidenceFromSccsOpinionInput,
+    BuildProductUseEvidenceFromSyntheticPolymerMicroparticleInput,
     CompToxChemicalRecord,
     ConsExpoEvidenceRecord,
+    CosIngIngredientRecord,
     ExposureWorkflowHook,
     IntegratedExposureWorkflowResult,
+    NanoMaterialEvidenceRecord,
     PbpkCompatibilityReport,
     PbpkExternalImportBundle,
     PbpkExternalImportPackage,
@@ -28,6 +35,9 @@ from exposure_scenario_mcp.integrations import (
     ProductUseEvidenceRecord,
     ReconcileProductUseEvidenceInput,
     RunIntegratedExposureWorkflowInput,
+    SccsCosmeticsEvidenceRecord,
+    SccsOpinionEvidenceRecord,
+    SyntheticPolymerMicroparticleEvidenceRecord,
     ToxClawEvidenceBundle,
     ToxClawEvidenceEnvelope,
     ToxClawEvidenceRecord,
@@ -81,6 +91,7 @@ from exposure_scenario_mcp.models import (
     MonotonicityCheck,
     ParameterBoundInput,
     ParameterBoundsSummary,
+    ParticleMaterialContext,
     PbpkScenarioInput,
     PopulationProfile,
     ProbabilityBoundDosePoint,
@@ -270,6 +281,7 @@ SCHEMA_MODELS = {
     "monotonicityCheck.v1": MonotonicityCheck,
     "buildParameterBoundsInput.v1": BuildParameterBoundsInput,
     "parameterBoundsSummary.v1": ParameterBoundsSummary,
+    "particleMaterialContext.v1": ParticleMaterialContext,
     "aggregateExposureSummary.v1": AggregateExposureSummary,
     "exposureAssumptionRecord.v1": ExposureAssumptionRecord,
     "assumptionGovernance.v1": AssumptionGovernance,
@@ -290,7 +302,25 @@ SCHEMA_MODELS = {
     "compareExposureScenariosInput.v1": CompareExposureScenariosInput,
     "compToxChemicalRecord.v1": CompToxChemicalRecord,
     "consExpoEvidenceRecord.v1": ConsExpoEvidenceRecord,
+    "sccsCosmeticsEvidenceRecord.v1": SccsCosmeticsEvidenceRecord,
+    "sccsOpinionEvidenceRecord.v1": SccsOpinionEvidenceRecord,
+    "cosIngIngredientRecord.v1": CosIngIngredientRecord,
+    "nanoMaterialEvidenceRecord.v1": NanoMaterialEvidenceRecord,
+    "syntheticPolymerMicroparticleEvidenceRecord.v1": (
+        SyntheticPolymerMicroparticleEvidenceRecord
+    ),
     "buildProductUseEvidenceFromConsExpoInput.v1": BuildProductUseEvidenceFromConsExpoInput,
+    "buildProductUseEvidenceFromSccsInput.v1": BuildProductUseEvidenceFromSccsInput,
+    "buildProductUseEvidenceFromSccsOpinionInput.v1": (
+        BuildProductUseEvidenceFromSccsOpinionInput
+    ),
+    "buildProductUseEvidenceFromCosIngInput.v1": BuildProductUseEvidenceFromCosIngInput,
+    "buildProductUseEvidenceFromNanoMaterialInput.v1": (
+        BuildProductUseEvidenceFromNanoMaterialInput
+    ),
+    "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1": (
+        BuildProductUseEvidenceFromSyntheticPolymerMicroparticleInput
+    ),
     "productUseEvidenceRecord.v1": ProductUseEvidenceRecord,
     "productUseEvidenceFitReport.v1": ProductUseEvidenceFitReport,
     "assessProductUseEvidenceFitInput.v1": AssessProductUseEvidenceFitInput,
@@ -412,6 +442,51 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description=(
                     "Map a typed ConsExpo fact-sheet record into the generic product-use "
                     "evidence contract."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_build_product_use_evidence_from_sccs",
+                request_schema="buildProductUseEvidenceFromSccsInput.v1",
+                response_schema="productUseEvidenceRecord.v1",
+                description=(
+                    "Map a typed SCCS cosmetics guidance record into the generic "
+                    "product-use evidence contract."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_build_product_use_evidence_from_sccs_opinion",
+                request_schema="buildProductUseEvidenceFromSccsOpinionInput.v1",
+                response_schema="productUseEvidenceRecord.v1",
+                description=(
+                    "Map a typed SCCS opinion record into the generic product-use "
+                    "evidence contract."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_build_product_use_evidence_from_cosing",
+                request_schema="buildProductUseEvidenceFromCosIngInput.v1",
+                response_schema="productUseEvidenceRecord.v1",
+                description=(
+                    "Map a typed CosIng ingredient record into the generic product-use "
+                    "evidence contract."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_build_product_use_evidence_from_nanomaterial",
+                request_schema="buildProductUseEvidenceFromNanoMaterialInput.v1",
+                response_schema="productUseEvidenceRecord.v1",
+                description=(
+                    "Map a typed nanomaterial guidance record into the generic product-use "
+                    "evidence contract."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_build_product_use_evidence_from_synthetic_polymer_microparticle",
+                request_schema="buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1",
+                response_schema="productUseEvidenceRecord.v1",
+                description=(
+                    "Map a typed synthetic polymer microparticle record into the generic "
+                    "product-use evidence contract."
                 ),
             ),
             ContractToolEntry(

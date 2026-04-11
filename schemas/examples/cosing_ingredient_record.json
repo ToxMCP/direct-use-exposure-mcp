@@ -1,0 +1,52 @@
+{
+  "schema_version": "cosIngIngredientRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Nano UV Filter",
+  "inciName": "Titanium Dioxide",
+  "casrn": "13463-67-7",
+  "ecNumber": "236-675-5",
+  "cosingLocator": "https://single-market-economy.ec.europa.eu/sectors/cosmetics/cosmetic-ingredient-database_en",
+  "functions": [
+    "UV filter",
+    "Opacifying"
+  ],
+  "annexReferences": [
+    "Annex VI"
+  ],
+  "nanomaterialFlag": true,
+  "particleMaterialContext": {
+    "schema_version": "particleMaterialContext.v1",
+    "materialClass": "nanomaterial",
+    "nanoStatus": "nano_specific",
+    "particleSizeDomain": "nano",
+    "compositionFamily": "metal_oxide",
+    "intentionallyManufacturedParticle": true,
+    "insolubleOrBiopersistent": true,
+    "solubilityClass": "insoluble",
+    "agglomerationState": "agglomerated",
+    "shapeFamily": "irregular",
+    "surfaceTreated": true,
+    "surfaceTreatmentNotes": "Illustrative alumina/silica-coated UV filter particle.",
+    "medianPrimaryParticleSizeNm": 35.0,
+    "sizeRangeNmLow": 20.0,
+    "sizeRangeNmHigh": 80.0,
+    "respirableFractionRelevance": true,
+    "dermalPenetrationConcern": true,
+    "article16NotificationRelevant": true,
+    "echaSpmRestrictionRelevant": false,
+    "notes": [
+      "Illustrative nano TiO2 / ZnO-style cosmetics particle context."
+    ]
+  },
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU",
+    "CosIng"
+  ],
+  "evidence_sources": [],
+  "notes": [
+    "Illustrative CosIng identity/function record for a cosmetic UV filter."
+  ]
+}

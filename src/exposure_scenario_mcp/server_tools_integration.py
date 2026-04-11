@@ -12,6 +12,11 @@ from exposure_scenario_mcp.integrations import (
     ApplyProductUseEvidenceInput,
     AssessProductUseEvidenceFitInput,
     BuildProductUseEvidenceFromConsExpoInput,
+    BuildProductUseEvidenceFromCosIngInput,
+    BuildProductUseEvidenceFromNanoMaterialInput,
+    BuildProductUseEvidenceFromSccsInput,
+    BuildProductUseEvidenceFromSccsOpinionInput,
+    BuildProductUseEvidenceFromSyntheticPolymerMicroparticleInput,
     IntegratedExposureWorkflowResult,
     ProductUseEvidenceFitReport,
     ProductUseEvidenceReconciliationReport,
@@ -21,6 +26,11 @@ from exposure_scenario_mcp.integrations import (
     apply_product_use_evidence,
     assess_product_use_evidence_fit,
     build_product_use_evidence_from_consexpo,
+    build_product_use_evidence_from_cosing,
+    build_product_use_evidence_from_nanomaterial,
+    build_product_use_evidence_from_sccs,
+    build_product_use_evidence_from_sccs_opinion,
+    build_product_use_evidence_from_synthetic_polymer_microparticle,
     reconcile_product_use_evidence,
     run_integrated_exposure_workflow,
 )
@@ -94,6 +104,101 @@ def register_integration_tools(
             evidence = build_product_use_evidence_from_consexpo(params.evidence)
             return success_result(
                 f"Built product-use evidence from ConsExpo for {evidence.chemical_id}.",
+                evidence,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_product_use_evidence_from_sccs",
+        annotations=read_only_tool_annotations("Build Product Use Evidence From SCCS"),
+    )
+    def exposure_build_product_use_evidence_from_sccs(
+        params: BuildProductUseEvidenceFromSccsInput,
+    ) -> Annotated[CallToolResult, ProductUseEvidenceRecord]:
+        """Map an SCCS cosmetics guidance record into the generic evidence contract."""
+
+        try:
+            evidence = build_product_use_evidence_from_sccs(params.evidence)
+            return success_result(
+                f"Built product-use evidence from SCCS for {evidence.chemical_id}.",
+                evidence,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_product_use_evidence_from_sccs_opinion",
+        annotations=read_only_tool_annotations("Build Product Use Evidence From SCCS Opinion"),
+    )
+    def exposure_build_product_use_evidence_from_sccs_opinion(
+        params: BuildProductUseEvidenceFromSccsOpinionInput,
+    ) -> Annotated[CallToolResult, ProductUseEvidenceRecord]:
+        """Map an SCCS opinion record into the generic evidence contract."""
+
+        try:
+            evidence = build_product_use_evidence_from_sccs_opinion(params.evidence)
+            return success_result(
+                f"Built product-use evidence from SCCS opinion for {evidence.chemical_id}.",
+                evidence,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_product_use_evidence_from_cosing",
+        annotations=read_only_tool_annotations("Build Product Use Evidence From CosIng"),
+    )
+    def exposure_build_product_use_evidence_from_cosing(
+        params: BuildProductUseEvidenceFromCosIngInput,
+    ) -> Annotated[CallToolResult, ProductUseEvidenceRecord]:
+        """Map a CosIng ingredient record into the generic evidence contract."""
+
+        try:
+            evidence = build_product_use_evidence_from_cosing(params.evidence)
+            return success_result(
+                f"Built product-use evidence from CosIng for {evidence.chemical_id}.",
+                evidence,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_product_use_evidence_from_nanomaterial",
+        annotations=read_only_tool_annotations("Build Product Use Evidence From Nanomaterial"),
+    )
+    def exposure_build_product_use_evidence_from_nanomaterial(
+        params: BuildProductUseEvidenceFromNanoMaterialInput,
+    ) -> Annotated[CallToolResult, ProductUseEvidenceRecord]:
+        """Map a nanomaterial evidence record into the generic evidence contract."""
+
+        try:
+            evidence = build_product_use_evidence_from_nanomaterial(params.evidence)
+            return success_result(
+                f"Built product-use evidence from nanomaterial context for {evidence.chemical_id}.",
+                evidence,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+
+    @mcp.tool(
+        name="exposure_build_product_use_evidence_from_synthetic_polymer_microparticle",
+        annotations=read_only_tool_annotations(
+            "Build Product Use Evidence From Synthetic Polymer Microparticle"
+        ),
+    )
+    def exposure_build_product_use_evidence_from_synthetic_polymer_microparticle(
+        params: BuildProductUseEvidenceFromSyntheticPolymerMicroparticleInput,
+    ) -> Annotated[CallToolResult, ProductUseEvidenceRecord]:
+        """Map a synthetic polymer microparticle record into the generic evidence contract."""
+
+        try:
+            evidence = build_product_use_evidence_from_synthetic_polymer_microparticle(
+                params.evidence
+            )
+            return success_result(
+                "Built product-use evidence from synthetic polymer microparticle context for "
+                f"{evidence.chemical_id}.",
                 evidence,
             )
         except ExposureScenarioError as error:

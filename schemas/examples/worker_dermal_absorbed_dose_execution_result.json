@@ -32,6 +32,7 @@
     "use_amount_unit": "g",
     "use_events_per_day": 3.0,
     "density_g_per_ml": null,
+    "particleMaterialContext": null,
     "transfer_efficiency": null,
     "retention_factor": null,
     "ingestion_fraction": null,
@@ -332,7 +333,7 @@
         "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening surface-contact retention",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
         "version": "RIVM report 2016-0179 / 2018",
-        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
       },
       "confidence": "curated_default",
       "default_applied": true,
@@ -367,7 +368,7 @@
         "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening transfer efficiency",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
         "version": "RIVM report 2016-0179 / 2018",
-        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
       },
       "confidence": "curated_default",
       "default_applied": true,
@@ -540,7 +541,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -575,7 +576,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -610,7 +611,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal contact-duration scaling defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-contact-duration-scaling-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -645,7 +646,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab"
+        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -895,7 +896,7 @@
     "plugin_id": "worker_dermal_absorbed_dose_execution",
     "plugin_version": "0.1.0",
     "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "78027d13520c2466addd1d1b9d9331c3301593b1f8776685d118333add064aab",
+    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Execution starts from screening-style skin-boundary mass semantics and then applies PPE penetration and generic dermal absorption factors.",

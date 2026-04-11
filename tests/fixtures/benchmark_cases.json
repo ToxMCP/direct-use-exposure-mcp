@@ -41,6 +41,49 @@
       }
     },
     {
+      "id": "dermal_face_cream_sccs_screening",
+      "kind": "scenario",
+      "description": "Adult leave-on face cream screening case aligned to SCCS Notes of Guidance Table 3A daily amount and Table 4 application frequency.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "chemical_name": "Benchmark Solvent A",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Face Cream",
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 0.71962617,
+          "use_amount_unit": "g",
+          "use_events_per_day": 2.14,
+          "transfer_efficiency": 1.0,
+          "retention_factor": 1.0
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 63.79453,
+          "exposed_surface_area_cm2": 565.0,
+          "region": "EU",
+          "demographic_tags": ["consumer"]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.48280001,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "external_mass_mg_per_day": 30.80000008,
+          "surface_loading_mg_per_cm2_day": 0.05451327
+        }
+      }
+    },
+    {
       "id": "inhalation_trigger_spray_screening",
       "kind": "scenario",
       "description": "Adult EU trigger spray inhalation case with explicit room volume and regional default ventilation/duration.",

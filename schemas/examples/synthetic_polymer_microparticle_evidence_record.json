@@ -1,0 +1,65 @@
+{
+  "schema_version": "syntheticPolymerMicroparticleEvidenceRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Polymeric Glitter Particle",
+  "casrn": null,
+  "sourceRecordId": "echa_microplastics_personal_care_mock_2026",
+  "sourceTitle": "ECHA microplastics restriction and reporting context",
+  "sourceVersion": "2026 guidance context",
+  "sourceLocator": "https://echa.europa.eu/hot-topics/microplastics",
+  "restrictionScope": "Synthetic polymer microparticles in direct-use cosmetic products",
+  "productUseCategories": [
+    "personal_care"
+  ],
+  "supportedRoutes": [
+    "dermal",
+    "oral"
+  ],
+  "physical_forms": [
+    "gel",
+    "cream"
+  ],
+  "application_methods": [
+    "hand_application"
+  ],
+  "retention_types": [
+    "leave_on",
+    "rinse_off"
+  ],
+  "particleMaterialContext": {
+    "schema_version": "particleMaterialContext.v1",
+    "materialClass": "synthetic_polymer_microparticle",
+    "nanoStatus": "non_nano",
+    "particleSizeDomain": "micro",
+    "compositionFamily": "polymer",
+    "intentionallyManufacturedParticle": true,
+    "insolubleOrBiopersistent": true,
+    "solubilityClass": "insoluble",
+    "agglomerationState": "mixed",
+    "shapeFamily": "irregular",
+    "surfaceTreated": false,
+    "surfaceTreatmentNotes": null,
+    "medianPrimaryParticleSizeNm": 5000.0,
+    "sizeRangeNmLow": 1000.0,
+    "sizeRangeNmHigh": 10000.0,
+    "respirableFractionRelevance": false,
+    "dermalPenetrationConcern": false,
+    "article16NotificationRelevant": false,
+    "echaSpmRestrictionRelevant": true,
+    "notes": [
+      "Illustrative synthetic polymer microparticle context for direct-use cosmetics."
+    ]
+  },
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU",
+    "ECHA",
+    "REACH"
+  ],
+  "evidence_sources": [],
+  "notes": [
+    "Illustrative synthetic polymer microparticle regulatory context."
+  ]
+}

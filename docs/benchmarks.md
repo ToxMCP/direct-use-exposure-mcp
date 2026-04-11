@@ -14,6 +14,7 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
 ## Current Coverage
 
 - Adult dermal leave-on hand cream screening
+- Adult dermal leave-on face cream screening aligned to SCCS Notes of Guidance
 - Adult inhalation trigger spray screening
 - Adult inhalation trigger spray screening linked to a narrow aerosol room-decay half-life anchor
 - Adult air-space insecticide aerosol screening linked to a narrow indoor-air validation band

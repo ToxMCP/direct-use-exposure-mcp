@@ -1,0 +1,61 @@
+{
+  "schema_version": "nanoMaterialEvidenceRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Silica Particle",
+  "casrn": "7631-86-9",
+  "sourceRecordId": "non_plastic_particle_guidance_mock_2026",
+  "sourceTitle": "Illustrative non-plastic micro/nanoparticle cosmetics context",
+  "sourceVersion": "2026 mock example",
+  "sourceLocator": "https://health.ec.europa.eu/scientific-committees/scientific-committee-consumer-safety-sccs_en",
+  "sourceProgram": "SCCS",
+  "cosmeticProductTypes": [
+    "Loose powder cosmetic"
+  ],
+  "supportedRoutes": [
+    "dermal",
+    "inhalation"
+  ],
+  "physical_forms": [
+    "powder"
+  ],
+  "application_methods": [
+    "dusting"
+  ],
+  "retention_types": [
+    "leave_on"
+  ],
+  "particleMaterialContext": {
+    "schema_version": "particleMaterialContext.v1",
+    "materialClass": "non_plastic_micro_nano_particle",
+    "nanoStatus": "contains_nano_fraction",
+    "particleSizeDomain": "mixed_micro_nano",
+    "compositionFamily": "silica",
+    "intentionallyManufacturedParticle": true,
+    "insolubleOrBiopersistent": true,
+    "solubilityClass": "poorly_soluble",
+    "agglomerationState": "mixed",
+    "shapeFamily": "irregular",
+    "surfaceTreated": false,
+    "surfaceTreatmentNotes": null,
+    "medianPrimaryParticleSizeNm": 150.0,
+    "sizeRangeNmLow": 40.0,
+    "sizeRangeNmHigh": 2000.0,
+    "respirableFractionRelevance": true,
+    "dermalPenetrationConcern": false,
+    "article16NotificationRelevant": false,
+    "echaSpmRestrictionRelevant": false,
+    "notes": [
+      "Illustrative non-plastic particle context such as silica or pigment particles."
+    ]
+  },
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU"
+  ],
+  "evidence_sources": [],
+  "notes": [
+    "Illustrative non-plastic particle context for powders and pigments."
+  ]
+}

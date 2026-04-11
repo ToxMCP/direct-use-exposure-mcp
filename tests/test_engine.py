@@ -131,7 +131,44 @@ def test_dermal_screening_defaults_and_dose() -> None:
     assert scenario.validation_summary.executed_validation_checks == []
 
 
-def test_rinse_off_retention_uses_fda_sccs_source() -> None:
+def test_face_cream_sccs_guidance_alignment() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=0.71962617,
+            use_amount_unit="g",
+            use_events_per_day=2.14,
+            transfer_efficiency=1.0,
+            retention_factor=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=63.79453,
+            exposed_surface_area_cm2=565.0,
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(
+        30.80000008, rel=1e-6
+    )
+    assert scenario.route_metrics["surface_loading_mg_per_cm2_day"] == pytest.approx(
+        0.05451327, rel=1e-6
+    )
+    assert scenario.external_dose.value == pytest.approx(0.48280001, rel=1e-6)
+    assert scenario.validation_summary.executed_validation_checks == []
+
+
+def test_rinse_off_retention_uses_sccs_guidance_source() -> None:
     engine = build_engine()
     request = ExposureScenarioRequest(
         chemical_id="DTXSID123",
@@ -154,7 +191,7 @@ def test_rinse_off_retention_uses_fda_sccs_source() -> None:
     retention = next(item for item in scenario.assumptions if item.name == "retention_factor")
 
     assert retention.value == pytest.approx(0.01, rel=1e-6)
-    assert retention.source.source_id == "fda_sccs_retention_factor_defaults_2024"
+    assert retention.source.source_id == "sccs_notes_of_guidance_12th_revision_2023"
     assert retention.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
     assert retention.governance.evidence_grade == EvidenceGrade.GRADE_4
 

@@ -8,14 +8,24 @@ from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.integrations import (
     CompToxChemicalRecord,
     ConsExpoEvidenceRecord,
+    CosIngIngredientRecord,
+    NanoMaterialEvidenceRecord,
     ProductUseEvidenceRecord,
     RunIntegratedExposureWorkflowInput,
+    SccsCosmeticsEvidenceRecord,
+    SccsOpinionEvidenceRecord,
+    SyntheticPolymerMicroparticleEvidenceRecord,
     apply_comptox_enrichment,
     apply_product_use_evidence,
     assess_product_use_evidence_fit,
     build_pbpk_external_import_package,
     build_product_use_evidence_from_comptox,
     build_product_use_evidence_from_consexpo,
+    build_product_use_evidence_from_cosing,
+    build_product_use_evidence_from_nanomaterial,
+    build_product_use_evidence_from_sccs,
+    build_product_use_evidence_from_sccs_opinion,
+    build_product_use_evidence_from_synthetic_polymer_microparticle,
     build_toxclaw_evidence_bundle,
     build_toxclaw_evidence_envelope,
     build_toxclaw_refinement_bundle,
@@ -31,7 +41,15 @@ from exposure_scenario_mcp.models import (
     ExposureScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
+    ParticleAgglomerationState,
+    ParticleCompositionFamily,
+    ParticleMaterialClass,
+    ParticleMaterialContext,
+    ParticleNanoStatus,
+    ParticleShapeFamily,
+    ParticleSizeDomain,
     ParticleSizeRegime,
+    ParticleSolubilityClass,
     PopulationProfile,
     ProductUseProfile,
     Route,
@@ -393,6 +411,355 @@ def test_build_product_use_evidence_from_consexpo_maps_air_space_subtype() -> No
     assert evidence.application_methods == ["aerosol_spray"]
 
 
+def test_build_product_use_evidence_from_sccs_maps_face_cream_profile() -> None:
+    record = SccsCosmeticsEvidenceRecord(
+        chemical_id="DTXSID123",
+        preferred_name="Example Cosmetic Ingredient",
+        casrn="123-45-6",
+        guidanceId="sccs_nog_12th_revision_face_cream_2023",
+        guidanceTitle=(
+            "SCCS Notes of Guidance for the Testing of Cosmetic Ingredients and their "
+            "Safety Evaluation, 12th revision"
+        ),
+        guidanceVersion="12th revision / 2023",
+        guidanceLocator=(
+            "https://health.ec.europa.eu/publications/"
+            "sccs-notes-guidance-testing-cosmetic-ingredients-and-their-safety-"
+            "evaluation-12th-revision_en"
+        ),
+        cosmeticProductType="Face cream",
+        productFamily="skin_care",
+        tableReferences=["Table 3A", "Table 4"],
+        supportedRoutes=[Route.DERMAL],
+        physical_forms=["cream"],
+        application_methods=["hand_application"],
+        retention_types=["leave_on"],
+        productUseProfileOverrides={
+            "use_amount_per_event": 0.71962617,
+            "use_amount_unit": "g",
+            "use_events_per_day": 2.14,
+        },
+        populationProfileOverrides={
+            "body_weight_kg": 63.79453,
+            "exposed_surface_area_cm2": 565.0,
+            "region": "EU",
+        },
+    )
+
+    evidence = build_product_use_evidence_from_sccs(record)
+
+    assert evidence.source_kind == "sccs"
+    assert evidence.source_name == "EU SCCS"
+    assert evidence.product_use_categories == ["personal_care"]
+    assert evidence.product_subtype == "face_cream"
+    assert evidence.product_use_profile_overrides["use_amount_per_event"] == 0.71962617
+    assert evidence.population_profile_overrides["exposed_surface_area_cm2"] == 565.0
+    assert evidence.evidence_sources == ["SCCS:sccs_nog_12th_revision_face_cream_2023"]
+
+
+def test_build_product_use_evidence_from_sccs_opinion_preserves_particle_context() -> None:
+    particle_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.NON_PLASTIC_MICRO_NANO_PARTICLE,
+        nanoStatus=ParticleNanoStatus.NANO_SPECIFIC,
+        particleSizeDomain=ParticleSizeDomain.NANO,
+        compositionFamily=ParticleCompositionFamily.METAL_OXIDE,
+        intentionallyManufacturedParticle=True,
+        insolubleOrBiopersistent=True,
+        solubilityClass=ParticleSolubilityClass.INSOLUBLE,
+        agglomerationState=ParticleAgglomerationState.AGGLOMERATED,
+        shapeFamily=ParticleShapeFamily.SPHERICAL,
+        article16NotificationRelevant=True,
+        dermalPenetrationConcern=False,
+        respirableFractionRelevance=True,
+    )
+    record = SccsOpinionEvidenceRecord(
+        chemical_id="DTXSID123",
+        preferred_name="Titanium dioxide",
+        casrn="13463-67-7",
+        opinionId="sccs-opinion-tio2-nano-2026",
+        opinionTitle="SCCS Opinion on Titanium Dioxide (nano)",
+        opinionVersion="2026",
+        opinionLocator="https://health.ec.europa.eu/",
+        cosmeticProductTypes=["Spray sunscreen"],
+        supportedRoutes=[Route.DERMAL, Route.INHALATION],
+        physical_forms=["spray"],
+        application_methods=["aerosol_spray"],
+        retention_types=["leave_on"],
+        particleMaterialContext=particle_context,
+    )
+
+    evidence = build_product_use_evidence_from_sccs_opinion(record)
+
+    assert evidence.source_kind == "sccs"
+    assert evidence.source_name == "EU SCCS Opinion"
+    assert evidence.product_use_categories == ["personal_care"]
+    assert evidence.particle_material_context == particle_context
+    assert evidence.source_record_id == "sccs-opinion-tio2-nano-2026"
+
+
+def test_build_product_use_evidence_from_cosing_maps_identity_and_particle_context() -> None:
+    particle_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.NON_PLASTIC_MICRO_NANO_PARTICLE,
+        nanoStatus=ParticleNanoStatus.NANO_SPECIFIC,
+        particleSizeDomain=ParticleSizeDomain.NANO,
+        compositionFamily=ParticleCompositionFamily.METAL_OXIDE,
+        intentionallyManufacturedParticle=True,
+        solubilityClass=ParticleSolubilityClass.INSOLUBLE,
+        agglomerationState=ParticleAgglomerationState.AGGLOMERATED,
+        shapeFamily=ParticleShapeFamily.SPHERICAL,
+    )
+    record = CosIngIngredientRecord(
+        chemical_id="DTXSID123",
+        preferred_name="Titanium dioxide",
+        inci_name="Titanium Dioxide",
+        casrn="13463-67-7",
+        ec_number="236-675-5",
+        cosing_locator="https://single-market-economy.ec.europa.eu/",
+        functions=["UV filter", "colorant"],
+        annex_references=["Annex VI"],
+        nanomaterial_flag=True,
+        particle_material_context=particle_context,
+    )
+
+    evidence = build_product_use_evidence_from_cosing(record)
+
+    assert evidence.source_kind == "cosing"
+    assert evidence.preferred_name == "Titanium dioxide"
+    assert evidence.product_use_categories == ["personal_care"]
+    assert evidence.particle_material_context == particle_context
+    assert evidence.source_locator == "https://single-market-economy.ec.europa.eu/"
+
+
+def test_build_product_use_evidence_from_nanomaterial_maps_particle_context() -> None:
+    particle_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.NANOMATERIAL,
+        nanoStatus=ParticleNanoStatus.NANO_SPECIFIC,
+        particleSizeDomain=ParticleSizeDomain.NANO,
+        compositionFamily=ParticleCompositionFamily.METAL_OXIDE,
+        intentionallyManufacturedParticle=True,
+        insolubleOrBiopersistent=True,
+        solubilityClass=ParticleSolubilityClass.INSOLUBLE,
+        agglomerationState=ParticleAgglomerationState.AGGLOMERATED,
+        shapeFamily=ParticleShapeFamily.SPHERICAL,
+        article16NotificationRelevant=True,
+        respirableFractionRelevance=True,
+    )
+    record = NanoMaterialEvidenceRecord(
+        chemical_id="DTXSID123",
+        preferred_name="Titanium dioxide",
+        casrn="13463-67-7",
+        sourceRecordId="sccs-nano-guidance-sunscreen-2026",
+        sourceTitle="SCCS Guidance on nanomaterials in cosmetics",
+        sourceVersion="2nd revision",
+        sourceLocator="https://health.ec.europa.eu/",
+        sourceProgram="SCCS",
+        cosmeticProductTypes=["Spray sunscreen"],
+        supportedRoutes=[Route.DERMAL, Route.INHALATION],
+        physical_forms=["spray"],
+        application_methods=["aerosol_spray"],
+        retention_types=["leave_on"],
+        particleMaterialContext=particle_context,
+    )
+
+    evidence = build_product_use_evidence_from_nanomaterial(record)
+
+    assert evidence.source_kind == "nanomaterial_guidance"
+    assert evidence.source_name == "EU Nanomaterial Guidance"
+    assert evidence.product_use_categories == ["personal_care"]
+    assert evidence.particle_material_context == particle_context
+
+
+def test_build_product_use_evidence_from_microplastic_maps_particle_context() -> None:
+    particle_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.SYNTHETIC_POLYMER_MICROPARTICLE,
+        nanoStatus=ParticleNanoStatus.NON_NANO,
+        particleSizeDomain=ParticleSizeDomain.MICRO,
+        compositionFamily=ParticleCompositionFamily.POLYMER,
+        intentionallyManufacturedParticle=True,
+        insolubleOrBiopersistent=True,
+        solubilityClass=ParticleSolubilityClass.INSOLUBLE,
+        agglomerationState=ParticleAgglomerationState.PRIMARY_PARTICLES,
+        shapeFamily=ParticleShapeFamily.IRREGULAR,
+        echaSpmRestrictionRelevant=True,
+    )
+    record = SyntheticPolymerMicroparticleEvidenceRecord(
+        chemical_id="DTXSID123",
+        preferred_name="Synthetic polymer microparticles",
+        sourceRecordId="echa-spm-restriction-2026",
+        sourceTitle="ECHA microplastics restriction guidance",
+        sourceVersion="2026",
+        sourceLocator="https://echa.europa.eu/hot-topics/microplastics",
+        restrictionScope="EU microplastics restriction",
+        productUseCategories=["personal_care"],
+        supportedRoutes=[Route.DERMAL, Route.ORAL],
+        physical_forms=["cream"],
+        application_methods=["hand_application"],
+        retention_types=["rinse_off"],
+        particleMaterialContext=particle_context,
+    )
+
+    evidence = build_product_use_evidence_from_synthetic_polymer_microparticle(record)
+
+    assert evidence.source_kind == "microplastics_regulatory"
+    assert evidence.product_use_categories == ["personal_care"]
+    assert evidence.particle_material_context == particle_context
+    assert evidence.source_name == "ECHA Microplastics"
+
+
+def test_sccs_product_use_evidence_applies_quantitative_profile_overrides() -> None:
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.2,
+            use_amount_unit="g",
+            use_events_per_day=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            region="EU",
+        ),
+    )
+    evidence = build_product_use_evidence_from_sccs(
+        SccsCosmeticsEvidenceRecord(
+            chemical_id="DTXSID123",
+            preferred_name="Example Cosmetic Ingredient",
+            casrn="123-45-6",
+            guidanceId="sccs_nog_12th_revision_face_cream_2023",
+            guidanceTitle="SCCS Notes of Guidance, 12th revision",
+            guidanceVersion="12th revision / 2023",
+            guidanceLocator="https://health.ec.europa.eu/",
+            cosmeticProductType="Face cream",
+            supportedRoutes=[Route.DERMAL],
+            physical_forms=["cream"],
+            application_methods=["hand_application"],
+            retention_types=["leave_on"],
+            productUseProfileOverrides={
+                "use_amount_per_event": 0.71962617,
+                "use_amount_unit": "g",
+                "use_events_per_day": 2.14,
+            },
+            populationProfileOverrides={
+                "body_weight_kg": 63.79453,
+                "exposed_surface_area_cm2": 565.0,
+                "region": "EU",
+            },
+        )
+    )
+
+    report = assess_product_use_evidence_fit(request, evidence)
+
+    assert report.compatible is True
+    assert report.recommendation == "accept_with_review"
+    assert report.suggested_request.product_use_profile.use_amount_per_event == 0.71962617
+    assert report.suggested_request.product_use_profile.use_events_per_day == 2.14
+    assert report.suggested_request.population_profile.body_weight_kg == 63.79453
+    assert report.suggested_request.population_profile.exposed_surface_area_cm2 == 565.0
+    assert any(
+        item == "product_use_profile.use_amount_per_event"
+        for item in report.suggested_updates
+    )
+    assert any(
+        item == "population_profile.exposed_surface_area_cm2"
+        for item in report.suggested_updates
+    )
+
+    enriched = apply_product_use_evidence(request, evidence)
+    assert enriched.product_use_profile.use_amount_per_event == 0.71962617
+    assert enriched.product_use_profile.use_events_per_day == 2.14
+    assert enriched.population_profile.body_weight_kg == 63.79453
+    assert enriched.population_profile.exposed_surface_area_cm2 == 565.0
+    assert (
+        enriched.assumption_overrides["external_product_use_override_product_use_amount_per_event"]
+        == 0.71962617
+    )
+    assert (
+        enriched.assumption_overrides[
+            "external_product_use_override_population_exposed_surface_area_cm2"
+        ]
+        == 565.0
+    )
+
+
+def test_product_use_evidence_applies_particle_material_context_when_missing() -> None:
+    particle_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.NANOMATERIAL,
+        nanoStatus=ParticleNanoStatus.NANO_SPECIFIC,
+        particleSizeDomain=ParticleSizeDomain.NANO,
+        compositionFamily=ParticleCompositionFamily.METAL_OXIDE,
+        intentionallyManufacturedParticle=True,
+        insolubleOrBiopersistent=True,
+        solubilityClass=ParticleSolubilityClass.INSOLUBLE,
+        agglomerationState=ParticleAgglomerationState.AGGLOMERATED,
+        shapeFamily=ParticleShapeFamily.SPHERICAL,
+        article16NotificationRelevant=True,
+        respirableFractionRelevance=True,
+    )
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        scenario_class=ScenarioClass.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=2.0,
+            use_amount_unit="g",
+            use_events_per_day=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            region="EU",
+        ),
+    )
+    evidence = build_product_use_evidence_from_nanomaterial(
+        NanoMaterialEvidenceRecord(
+            chemical_id="DTXSID123",
+            preferred_name="Titanium dioxide",
+            casrn="13463-67-7",
+            sourceRecordId="sccs-nano-guidance-sunscreen-2026",
+            sourceTitle="SCCS Guidance on nanomaterials in cosmetics",
+            sourceVersion="2nd revision",
+            sourceLocator="https://health.ec.europa.eu/",
+            sourceProgram="SCCS",
+            cosmeticProductTypes=["Spray sunscreen"],
+            supportedRoutes=[Route.DERMAL, Route.INHALATION],
+            physical_forms=["spray"],
+            application_methods=["aerosol_spray"],
+            retention_types=["leave_on"],
+            particleMaterialContext=particle_context,
+        )
+    )
+
+    report = assess_product_use_evidence_fit(request, evidence)
+
+    assert report.compatible is True
+    assert report.suggested_request.product_use_profile.particle_material_context == (
+        particle_context
+    )
+    assert "product_use_profile.particle_material_context" in report.suggested_updates
+
+    enriched = apply_product_use_evidence(request, evidence)
+
+    assert enriched.product_use_profile.particle_material_context == particle_context
+    assert (
+        enriched.assumption_overrides[
+            "external_product_use_particle_material_context_materialClass"
+        ]
+        == ParticleMaterialClass.NANOMATERIAL.value
+    )
+
+
 def test_reconcile_product_use_evidence_prefers_region_specific_reviewed_source() -> None:
     request = ExposureScenarioRequest(
         chemical_id="DTXSID123",
@@ -502,6 +869,98 @@ def test_reconcile_product_use_evidence_prefers_consexpo_over_comptox_in_eu() ->
     assert report.recommendation == "apply"
     assert report.merged_request is not None
     assert report.merged_request.product_use_profile.density_g_per_ml == 1.08
+
+
+def test_reconcile_product_use_evidence_prefers_sccs_for_eu_cosmetics() -> None:
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.2,
+            use_amount_unit="g",
+            use_events_per_day=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            region="EU",
+        ),
+    )
+    comptox_record = CompToxChemicalRecord(
+        chemical_id="DTXSID123",
+        preferred_name="Example Cosmetic Ingredient",
+        casrn="123-45-6",
+        product_use_categories=["personal_care"],
+        evidence_sources=["CompTox:mock-record-001"],
+    )
+    cons_expo_record = ConsExpoEvidenceRecord(
+        chemical_id="DTXSID123",
+        preferred_name="Example Cosmetic Ingredient",
+        casrn="123-45-6",
+        factSheetId="cosmetics_skin_care_2024",
+        factSheetTitle="ConsExpo Cosmetics Skin Care Fact Sheet",
+        factSheetVersion="2024",
+        factSheetLocator="https://www.rivm.nl/en/consexpo/fact-sheets",
+        productGroup="cosmetics",
+        productSubgroup="Face cream",
+        modelFamily="direct_application",
+        supportedRoutes=[Route.DERMAL],
+        physical_forms=["cream"],
+        application_methods=["hand_application"],
+        retention_types=["leave_on"],
+    )
+    sccs_evidence = build_product_use_evidence_from_sccs(
+        SccsCosmeticsEvidenceRecord(
+            chemical_id="DTXSID123",
+            preferred_name="Example Cosmetic Ingredient",
+            casrn="123-45-6",
+            guidanceId="sccs_nog_12th_revision_face_cream_2023",
+            guidanceTitle="SCCS Notes of Guidance, 12th revision",
+            guidanceVersion="12th revision / 2023",
+            guidanceLocator="https://health.ec.europa.eu/",
+            cosmeticProductType="Face cream",
+            productFamily="skin_care",
+            tableReferences=["Table 3A", "Table 4"],
+            supportedRoutes=[Route.DERMAL],
+            physical_forms=["cream"],
+            application_methods=["hand_application"],
+            retention_types=["leave_on"],
+            productUseProfileOverrides={
+                "use_amount_per_event": 0.71962617,
+                "use_amount_unit": "g",
+                "use_events_per_day": 2.14,
+            },
+            populationProfileOverrides={
+                "body_weight_kg": 63.79453,
+                "exposed_surface_area_cm2": 565.0,
+                "region": "EU",
+            },
+        )
+    )
+
+    report = reconcile_product_use_evidence(
+        request,
+        [
+            build_product_use_evidence_from_comptox(comptox_record),
+            build_product_use_evidence_from_consexpo(cons_expo_record),
+            sccs_evidence,
+        ],
+    )
+
+    assert report.recommended_source_name == "EU SCCS"
+    assert report.recommended_source_kind == "sccs"
+    assert report.recommendation == "apply_with_review"
+    assert report.merged_request is not None
+    assert report.merged_request.product_use_profile.use_amount_per_event == 0.71962617
+    assert report.merged_request.population_profile.exposed_surface_area_cm2 == 565.0
+    assert report.field_sources["product_use_profile.use_amount_per_event"] == "EU SCCS"
+    assert report.field_sources["population_profile.exposed_surface_area_cm2"] == "EU SCCS"
 
 
 def test_reconcile_product_use_evidence_rejects_when_no_source_fits() -> None:
@@ -771,6 +1230,163 @@ def test_integrated_workflow_reconciles_evidence_builds_scenario_and_exports_pbp
     assert result.pbpk_external_import_package.compatibility_report.ready_for_external_pbpk_import
     assert any(
         flag.code == "integrated_workflow_pbpk_external_import_bundle_exported"
+        for flag in result.quality_flags
+    )
+
+
+def test_integrated_workflow_normalizes_sccs_records_for_eu_cosmetics() -> None:
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        chemical_name="Example Cosmetic Ingredient",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.2,
+            use_amount_unit="g",
+            use_events_per_day=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            region="EU",
+        ),
+    )
+    sccs_record = SccsCosmeticsEvidenceRecord(
+        chemical_id="DTXSID123",
+        preferred_name="Example Cosmetic Ingredient",
+        casrn="123-45-6",
+        guidanceId="sccs_nog_12th_revision_face_cream_2023",
+        guidanceTitle="SCCS Notes of Guidance, 12th revision",
+        guidanceVersion="12th revision / 2023",
+        guidanceLocator="https://health.ec.europa.eu/",
+        cosmeticProductType="Face cream",
+        productFamily="skin_care",
+        tableReferences=["Table 3A", "Table 4"],
+        supportedRoutes=[Route.DERMAL],
+        physical_forms=["cream"],
+        application_methods=["hand_application"],
+        retention_types=["leave_on"],
+        productUseProfileOverrides={
+            "use_amount_per_event": 0.71962617,
+            "use_amount_unit": "g",
+            "use_events_per_day": 2.14,
+        },
+        populationProfileOverrides={
+            "body_weight_kg": 63.79453,
+            "exposed_surface_area_cm2": 565.0,
+            "region": "EU",
+        },
+    )
+
+    result = run_integrated_exposure_workflow(
+        RunIntegratedExposureWorkflowInput(
+            request=request,
+            sccs_records=[sccs_record],
+            export_pbpk_external_import_bundle=False,
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert result.selected_evidence_source_name == "EU SCCS"
+    assert result.selected_evidence_source_kind == "sccs"
+    assert result.effective_request.product_use_profile.use_amount_per_event == 0.71962617
+    assert result.effective_request.population_profile.exposed_surface_area_cm2 == 565.0
+    assert any(
+        flag.code == "integrated_workflow_sccs_normalized" for flag in result.quality_flags
+    )
+
+
+def test_integrated_workflow_normalizes_particle_aware_records_for_eu_cosmetics() -> None:
+    particle_context = ParticleMaterialContext(
+        materialClass=ParticleMaterialClass.NANOMATERIAL,
+        nanoStatus=ParticleNanoStatus.NANO_SPECIFIC,
+        particleSizeDomain=ParticleSizeDomain.NANO,
+        compositionFamily=ParticleCompositionFamily.METAL_OXIDE,
+        intentionallyManufacturedParticle=True,
+        insolubleOrBiopersistent=True,
+        solubilityClass=ParticleSolubilityClass.INSOLUBLE,
+        agglomerationState=ParticleAgglomerationState.AGGLOMERATED,
+        shapeFamily=ParticleShapeFamily.SPHERICAL,
+        article16NotificationRelevant=True,
+        respirableFractionRelevance=True,
+    )
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        chemical_name="Titanium dioxide",
+        route=Route.INHALATION,
+        scenario_class=ScenarioClass.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=2.0,
+            use_amount_unit="g",
+            use_events_per_day=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+    )
+    result = run_integrated_exposure_workflow(
+        RunIntegratedExposureWorkflowInput(
+            request=request,
+            cosing_records=[
+                CosIngIngredientRecord(
+                    chemical_id="DTXSID123",
+                    preferred_name="Titanium dioxide",
+                    inci_name="Titanium Dioxide",
+                    casrn="13463-67-7",
+                    ec_number="236-675-5",
+                    cosing_locator="https://single-market-economy.ec.europa.eu/",
+                    functions=["UV filter"],
+                    annex_references=["Annex VI"],
+                    nanomaterial_flag=True,
+                    particle_material_context=particle_context,
+                )
+            ],
+            nanomaterial_records=[
+                NanoMaterialEvidenceRecord(
+                    chemical_id="DTXSID123",
+                    preferred_name="Titanium dioxide",
+                    casrn="13463-67-7",
+                    sourceRecordId="sccs-nano-guidance-sunscreen-2026",
+                    sourceTitle="SCCS Guidance on nanomaterials in cosmetics",
+                    sourceVersion="2nd revision",
+                    sourceLocator="https://health.ec.europa.eu/",
+                    sourceProgram="SCCS",
+                    cosmeticProductTypes=["Spray sunscreen"],
+                    supportedRoutes=[Route.DERMAL, Route.INHALATION],
+                    physical_forms=["spray"],
+                    application_methods=["aerosol_spray"],
+                    retention_types=["leave_on"],
+                    particleMaterialContext=particle_context,
+                )
+            ],
+            export_pbpk_external_import_bundle=False,
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert result.selected_evidence_source_kind == "nanomaterial_guidance"
+    assert result.effective_request.product_use_profile.particle_material_context == (
+        particle_context
+    )
+    assert any(
+        flag.code == "integrated_workflow_nanomaterial_normalized"
+        for flag in result.quality_flags
+    )
+    assert any(
+        flag.code == "integrated_workflow_cosing_normalized"
         for flag in result.quality_flags
     )
 

@@ -31,6 +31,9 @@
   "physchem_summary": {
     "density_g_per_ml": 1.08
   },
+  "particleMaterialContext": null,
+  "productUseProfileOverrides": {},
+  "populationProfileOverrides": {},
   "evidence_sources": [
     "EU-Dossier:mock-001"
   ],

@@ -1,0 +1,217 @@
+{
+  "$defs": {
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "sccsCosmeticsEvidenceRecord.v1",
+      "default": "sccsCosmeticsEvidenceRecord.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "chemical_id": {
+      "description": "Stable chemical identifier shared with the request.",
+      "title": "Chemical Id",
+      "type": "string"
+    },
+    "preferred_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Preferred chemical name when the SCCS source is already tied to identity.",
+      "title": "Preferred Name"
+    },
+    "casrn": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "CAS Registry Number when known.",
+      "title": "Casrn"
+    },
+    "guidanceId": {
+      "title": "Guidanceid",
+      "type": "string"
+    },
+    "guidanceTitle": {
+      "title": "Guidancetitle",
+      "type": "string"
+    },
+    "guidanceVersion": {
+      "title": "Guidanceversion",
+      "type": "string"
+    },
+    "guidanceLocator": {
+      "title": "Guidancelocator",
+      "type": "string"
+    },
+    "cosmeticProductType": {
+      "description": "Cosmetic product type label from SCCS guidance, for example face cream.",
+      "title": "Cosmeticproducttype",
+      "type": "string"
+    },
+    "productFamily": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional broader SCCS product family such as skin_care or hair_care.",
+      "title": "Productfamily"
+    },
+    "tableReferences": {
+      "description": "Notes of Guidance table or section references backing the record.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Tablereferences",
+      "type": "array"
+    },
+    "supportedRoutes": {
+      "description": "Routes explicitly supported by the cited SCCS guidance context.",
+      "items": {
+        "$ref": "#/$defs/Route"
+      },
+      "title": "Supportedroutes",
+      "type": "array"
+    },
+    "physical_forms": {
+      "description": "Physical forms supported by the SCCS source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Physical Forms",
+      "type": "array"
+    },
+    "application_methods": {
+      "description": "Application methods supported by the SCCS source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Application Methods",
+      "type": "array"
+    },
+    "retention_types": {
+      "description": "Retention or contact semantics supported by the SCCS source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Retention Types",
+      "type": "array"
+    },
+    "productUseProfileOverrides": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Reviewed product-use profile fields such as use_amount_per_event, use_amount_unit, or use_events_per_day.",
+      "title": "Productuseprofileoverrides",
+      "type": "object"
+    },
+    "populationProfileOverrides": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "Reviewed population-profile fields such as exposed_surface_area_cm2 or body_weight_kg.",
+      "title": "Populationprofileoverrides",
+      "type": "object"
+    },
+    "region_scopes": {
+      "description": "Regions where the SCCS evidence is considered applicable.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Region Scopes",
+      "type": "array"
+    },
+    "jurisdictions": {
+      "description": "Jurisdictions or programs where the SCCS evidence is relevant.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Jurisdictions",
+      "type": "array"
+    },
+    "evidence_sources": {
+      "description": "Stable upstream evidence references backing the SCCS record.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Sources",
+      "type": "array"
+    },
+    "notes": {
+      "description": "Additional notes preserved from the SCCS source.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "chemical_id",
+    "guidanceId",
+    "guidanceTitle",
+    "guidanceVersion",
+    "guidanceLocator",
+    "cosmeticProductType"
+  ],
+  "title": "SccsCosmeticsEvidenceRecord",
+  "type": "object"
+}

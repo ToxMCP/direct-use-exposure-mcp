@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.08.v12",
+  "goldset_version": "2026.04.10.v13",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -27,6 +27,28 @@
           "locator": "https://pubmed.ncbi.nlm.nih.gov/22709142/",
           "publisher": "PubMed",
           "source_type": "journal_article"
+        }
+      ]
+    },
+    {
+      "id": "consumer_face_cream_sccs_guidance_alignment",
+      "title": "Face cream SCCS guidance alignment",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["dermal_face_cream_sccs_screening"],
+      "recognizable_examples": ["face cream", "moisturizer"],
+      "challenge_tags": ["sccs_guidance", "daily_amount", "application_frequency", "surface_normalization"],
+      "why_it_matters": "Face cream is a canonical cosmetic use case, and the MCP should be able to reproduce the official SCCS guidance values rather than only internal screening examples.",
+      "showcase_story": "Shows that the MCP can encode the SCCS Notes of Guidance face cream use pattern with the published daily amount, frequency, and application-area semantics kept explicit.",
+      "evidence_gaps": [
+        "The SCCS tables anchor the use pattern, but they do not by themselves validate ingredient-specific transfer, dermal absorption, or product-specific formulation effects."
+      ],
+      "external_sources": [
+        {
+          "source_id": "sccs_nog_12th_revision_face_cream_2023",
+          "title": "SCCS Notes of Guidance for the Testing of Cosmetic Ingredients and their Safety Evaluation, 12th revision",
+          "locator": "https://health.ec.europa.eu/document/download/32a999f7-d820-496a-b659-d8c296cc99c1_en?filename=sccs_o_273_final.pdf",
+          "publisher": "European Commission / SCCS",
+          "source_type": "regulatory_guidance"
         }
       ]
     },

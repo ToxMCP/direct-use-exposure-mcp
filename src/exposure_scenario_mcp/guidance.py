@@ -238,7 +238,8 @@ wrap every exposure tool directly.
 - Covers consumer product-use scenarios, dermal plus direct-use/incidental oral screening,
   indoor aerosol screening,
   and worker task routing while the shared task/use abstractions still hold.
-- Accepts reviewed evidence packs from CompTox, ConsExpo, dossiers, and user uploads.
+- Accepts reviewed evidence packs from CompTox, SCCS, SCCS opinions, CosIng, ConsExpo,
+  nanomaterial/microplastics records, dossiers, and user uploads.
 - Emits PBPK-ready external-dose handoff objects.
 
 ### Fate MCP
@@ -280,8 +281,8 @@ and Dietary services can build against stable handoff shapes before their own ru
 
 ## Routing Model
 
-- Consumer spray or cleaner task -> Direct-Use Exposure MCP direct-use engine
-  or ConsExpo-aligned pack
+- Consumer spray, cosmetic, cleaner, or particle-aware cosmetic task -> Direct-Use Exposure MCP
+  direct-use engine or SCCS/SCCS-opinion/ConsExpo-aligned pack
 - Direct-use oral or incidental oral question -> Direct-Use Exposure MCP
 - Worker task with limited data -> Direct-Use Exposure MCP worker router plus the current
   screening or Tier 1 path
@@ -304,8 +305,8 @@ and Dietary services can build against stable handoff shapes before their own ru
 ### Phase 1
 
 - Strengthen the current Direct-Use Exposure MCP.
-- Finish consumer direct-use coverage, indoor aerosol refinement, evidence reconciliation, and
-  stable PBPK export.
+- Finish consumer direct-use coverage, indoor aerosol refinement, evidence reconciliation,
+  particle-aware cosmetics/material context, and stable PBPK export.
 
 ### Phase 2
 
@@ -357,6 +358,13 @@ should build against instead of inventing parallel handoff shapes.
 
 - Stable identity handoff for CompTox, Fate, Dietary, Exposure, and PBPK orchestration.
 - Carries the suite chemical identifier plus optional CASRN, DTXSID, and other external IDs.
+
+### `productUseEvidenceRecord.v1`
+
+- Shared evidence contract for product-use, reviewed dossier, SCCS, SCCS opinion, CosIng,
+  ConsExpo, nanomaterial, microplastics, and other source-normalized records.
+- Can carry quantitative product/population overrides plus `particleMaterialContext.v1` when
+  the direct-use semantics depend on nano or microparticle properties.
 
 ### `exposureScenarioDefinition.v1`
 
@@ -439,6 +447,9 @@ Use this guide when routing a question to the right ToxMCP service.
 
 - Exposure MCP already publishes the shared schemas needed to coordinate with future Fate and
   Dietary siblings.
+- EU cosmetic nanomaterial, microplastic, and non-plastic particle direct-use questions stay in
+  Direct-Use Exposure MCP while the workflow is about direct-use assumptions and external dose,
+  not multimedia fate or final toxicology interpretation.
 - Publishing these schemas here does not mean Fate or Dietary logic now belongs inside this repo.
 """
 
@@ -1057,9 +1068,9 @@ def integrated_exposure_workflow_guide() -> str:
     return """# Integrated Exposure Workflow Guide
 
 The integrated exposure workflow runs the local evidence-to-scenario-to-PBPK handoff chain in
-one auditable call. It normalizes CompTox and ConsExpo records into the generic evidence
-contract, reconciles them against the source request, builds the effective scenario, and can
-emit the PBPK-side handoff objects immediately.
+one auditable call. It normalizes CompTox, SCCS, SCCS opinion, CosIng, ConsExpo, nanomaterial,
+and microplastics records into the generic evidence contract, reconciles them against the source
+request, builds the effective scenario, and can emit the PBPK-side handoff objects immediately.
 
 ## Tool Surface
 
@@ -1070,8 +1081,10 @@ emit the PBPK-side handoff objects immediately.
 
 ## What the Workflow Does
 
-- Accepts one source request plus optional CompTox, ConsExpo, and additional evidence records
-- CompTox and ConsExpo records are normalized into `productUseEvidenceRecord.v1`
+- Accepts one source request plus optional CompTox, SCCS, SCCS opinion, CosIng, ConsExpo,
+  nanomaterial, microplastics, and additional evidence records
+- CompTox, SCCS, SCCS opinion, CosIng, ConsExpo, nanomaterial, and microplastics records are
+  normalized into `productUseEvidenceRecord.v1`
 - Reconciles the evidence against the source request and selects an effective request
 - Preserves inhalation request subtypes so Tier 1 spray requests stay Tier 1 after enrichment
 - Builds the scenario from the effective request using the existing deterministic engines
@@ -1080,8 +1093,8 @@ emit the PBPK-side handoff objects immediately.
 
 ## Current Guardrails
 
-- The workflow does not call a live external CompTox or ConsExpo MCP. It only uses the typed
-  records supplied by the caller.
+- The workflow does not call a live external CompTox, SCCS, CosIng, or ConsExpo MCP. It only uses
+  the typed records supplied by the caller.
 - Incompatible evidence does not have to stop the workflow. When allowed, the source request is
   retained and the evidence rejection is surfaced explicitly.
 - PBPK exports remain upstream external-exposure handoffs only. They are not PBPK execution or
@@ -1093,8 +1106,13 @@ emit the PBPK-side handoff objects immediately.
 
 - Use this tool when you want a single audited response instead of separate evidence,
   scenario-build, and PBPK-export calls.
-- Prefer supplying regional evidence packs such as ConsExpo or reviewed dossier records when the
-  product-use context is jurisdiction-sensitive.
+- Prefer supplying regional evidence packs such as SCCS, ConsExpo, or reviewed dossier records
+  when the product-use context is jurisdiction-sensitive.
+- For EU cosmetics, prefer SCCS guidance records as the primary reviewed use-profile source and
+  use ConsExpo as a supporting mechanistic consumer-model source.
+- Use SCCS opinions when ingredient-specific cosmetics context matters, CosIng for identity and
+  function metadata, and particle-aware evidence records when nano or microparticle properties
+  affect the direct-use scenario semantics.
 - Use `continueOnEvidenceReject=false` only when incompatible evidence should hard-stop the
   workflow.
 - Keep the returned `effectiveRequest`, `scenario`, and PBPK handoffs together so the chain

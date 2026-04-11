@@ -1,0 +1,66 @@
+{
+  "schema_version": "productUseEvidenceRecord.v1",
+  "chemical_id": "DTXSID7020182",
+  "preferred_name": "Example Silica Particle",
+  "casrn": "7631-86-9",
+  "source_name": "EU Nanomaterial Guidance",
+  "source_kind": "nanomaterial_guidance",
+  "review_status": "reviewed",
+  "source_record_id": "non_plastic_particle_guidance_mock_2026",
+  "source_locator": "https://health.ec.europa.eu/scientific-committees/scientific-committee-consumer-safety-sccs_en",
+  "product_name": "Loose powder cosmetic",
+  "product_subtype": "loose_powder_cosmetic",
+  "product_use_categories": [
+    "personal_care"
+  ],
+  "physical_forms": [
+    "powder"
+  ],
+  "application_methods": [
+    "dusting"
+  ],
+  "retention_types": [
+    "leave_on"
+  ],
+  "region_scopes": [
+    "EU"
+  ],
+  "jurisdictions": [
+    "EU"
+  ],
+  "physchem_summary": {},
+  "particleMaterialContext": {
+    "schema_version": "particleMaterialContext.v1",
+    "materialClass": "non_plastic_micro_nano_particle",
+    "nanoStatus": "contains_nano_fraction",
+    "particleSizeDomain": "mixed_micro_nano",
+    "compositionFamily": "silica",
+    "intentionallyManufacturedParticle": true,
+    "insolubleOrBiopersistent": true,
+    "solubilityClass": "poorly_soluble",
+    "agglomerationState": "mixed",
+    "shapeFamily": "irregular",
+    "surfaceTreated": false,
+    "surfaceTreatmentNotes": null,
+    "medianPrimaryParticleSizeNm": 150.0,
+    "sizeRangeNmLow": 40.0,
+    "sizeRangeNmHigh": 2000.0,
+    "respirableFractionRelevance": true,
+    "dermalPenetrationConcern": false,
+    "article16NotificationRelevant": false,
+    "echaSpmRestrictionRelevant": false,
+    "notes": [
+      "Illustrative non-plastic particle context such as silica or pigment particles."
+    ]
+  },
+  "productUseProfileOverrides": {},
+  "populationProfileOverrides": {},
+  "evidence_sources": [
+    "SCCS:non_plastic_particle_guidance_mock_2026"
+  ],
+  "notes": [
+    "Illustrative non-plastic particle context for powders and pigments.",
+    "Nanomaterial source program: SCCS.",
+    "Nanomaterial cosmetic product types: Loose powder cosmetic."
+  ]
+}
