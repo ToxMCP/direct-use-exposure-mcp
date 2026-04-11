@@ -487,6 +487,28 @@ class DefaultsRegistry:
         entry = profile_values.get(material_key, profile_values["unknown"])
         return profile, float(entry["value"]), self._source(entry["source_id"])
 
+    def worker_dermal_barrier_breakthrough_lag_hours(
+        self,
+        barrier_material: str,
+        *,
+        chemistry_profile: str = "generic",
+    ) -> tuple[float, AssumptionSourceReference]:
+        values = self.payload["worker_dermal_execution_defaults"][
+            "barrier_breakthrough_lag_hours"
+        ]
+        profile_values = values.get(chemistry_profile, values["generic"])
+        material_key = barrier_material.lower()
+        entry = profile_values.get(material_key, profile_values["unknown"])
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def worker_dermal_barrier_breakthrough_transition_hours(
+        self,
+    ) -> tuple[float, AssumptionSourceReference]:
+        entry = self.payload["worker_dermal_execution_defaults"][
+            "barrier_breakthrough_transition_hours"
+        ]
+        return float(entry["value"]), self._source(entry["source_id"])
+
     def worker_dermal_skin_condition_factor(
         self, skin_condition: str
     ) -> tuple[float, AssumptionSourceReference]:
@@ -574,11 +596,11 @@ class DefaultsRegistry:
             water_solubility_mg_per_l,
         )
 
-    def worker_dermal_vapor_pressure_factor(
+    def worker_dermal_evaporation_rate_per_hour(
         self, vapor_pressure_mmhg: float
     ) -> tuple[float, AssumptionSourceReference]:
         return self._worker_dermal_threshold_factor(
-            "vapor_pressure_factor",
+            "evaporation_competition_rate_per_hour",
             vapor_pressure_mmhg,
         )
 
@@ -776,10 +798,18 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "- `worker_dermal_barrier_material_heuristics_2026` adds bounded material-specific",
             "  modifiers for nitrile, latex, neoprene, butyl, PVC, laminate, and textile",
             "  barriers. These refine the residual penetration factor but still do not model",
-            "  breakthrough timing, degradation, or certification performance.",
+            "  certified glove performance or full permeation kinetics.",
             "- The same source family now also carries bounded barrier-chemistry interaction",
             "  profiles so solvent-like versus aqueous contexts can refine the effective",
             "  barrier assumption without claiming certified glove permeation data.",
+            "",
+            "### Worker Dermal Breakthrough-Timing Heuristics 2026",
+            "",
+            "- `worker_dermal_breakthrough_timing_heuristics_2026` adds bounded lag-time and",
+            "  transition-window defaults so short-duration worker contacts can attenuate the",
+            "  effective PPE penetration factor before steady residual penetration is assumed.",
+            "  These are screening timing profiles, not certified EN 374 breakthrough curves",
+            "  or material-specific permeation kinetics.",
             "",
             "### Worker Dermal Absorption Fraction Heuristics 2026",
             "",
@@ -794,9 +824,13 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  caller-supplied `logKow`, molecular weight, and water solubility so worker",
             "  dermal execution can be chemistry-aware without claiming a true permeation",
             "  model.",
-            "- The same source family now includes a bounded volatility modifier from vapor",
-            "  pressure so high-volatility liquid contacts do not silently inherit the same",
-            "  absorbed-fraction assumption as persistent residues.",
+            "",
+            "### Worker Dermal Evaporation-Competition Heuristics 2026",
+            "",
+            "- `worker_dermal_evaporation_competition_heuristics_2026` adds a bounded",
+            "  vapor-pressure-driven evaporation rate so high-volatility contacts can reduce",
+            "  effective dermal absorption as contact time increases. This is a screening",
+            "  competition term, not a full mass-transfer or finite-dose evaporation model.",
             "",
             "### Worker Dermal Contact Duration Scaling Heuristics 2026",
             "",

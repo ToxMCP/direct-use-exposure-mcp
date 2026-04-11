@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.11.v20",
+  "defaults_version": "2026.04.11.v21",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -182,10 +182,22 @@
       "version": "2026.04.07.v1"
     },
     {
+      "source_id": "worker_dermal_breakthrough_timing_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded worker dermal breakthrough-timing heuristics",
+      "locator": "docs://defaults-evidence-map#worker-dermal-breakthrough-timing-heuristics-2026",
+      "version": "2026.04.11.v1"
+    },
+    {
       "source_id": "worker_dermal_physchem_modifier_heuristics_2026",
       "title": "Direct-Use Exposure MCP heuristic worker dermal physchem modifiers",
       "locator": "docs://defaults-evidence-map#worker-dermal-physchem-modifier-heuristics-2026",
       "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_dermal_evaporation_competition_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded worker dermal evaporation-competition heuristics",
+      "locator": "docs://defaults-evidence-map#worker-dermal-evaporation-competition-heuristics-2026",
+      "version": "2026.04.11.v1"
     },
     {
       "source_id": "worker_dermal_surface_loading_cap_heuristics_2026",
@@ -745,6 +757,180 @@
         }
       }
     },
+    "barrier_breakthrough_lag_hours": {
+      "generic": {
+        "unknown": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "generic_work_glove": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "nitrile": {
+          "value": 0.15,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "latex": {
+          "value": 0.05,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "neoprene": {
+          "value": 0.2,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "butyl": {
+          "value": 0.35,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "pvc": {
+          "value": 0.1,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "laminate": {
+          "value": 0.5,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "textile": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "coated_textile": {
+          "value": 0.05,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        }
+      },
+      "aqueous_polar": {
+        "unknown": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "generic_work_glove": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "nitrile": {
+          "value": 0.5,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "latex": {
+          "value": 0.15,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "neoprene": {
+          "value": 0.35,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "butyl": {
+          "value": 0.6,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "pvc": {
+          "value": 0.25,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "laminate": {
+          "value": 0.75,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "textile": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "coated_textile": {
+          "value": 0.15,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        }
+      },
+      "mixed_organic": {
+        "unknown": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "generic_work_glove": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "nitrile": {
+          "value": 0.25,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "latex": {
+          "value": 0.05,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "neoprene": {
+          "value": 0.2,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "butyl": {
+          "value": 0.45,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "pvc": {
+          "value": 0.1,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "laminate": {
+          "value": 0.55,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "textile": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "coated_textile": {
+          "value": 0.05,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        }
+      },
+      "hydrophobic_solvent_like": {
+        "unknown": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "generic_work_glove": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "nitrile": {
+          "value": 0.15,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "latex": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "neoprene": {
+          "value": 0.1,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "butyl": {
+          "value": 0.35,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "pvc": {
+          "value": 0.05,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "laminate": {
+          "value": 0.45,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "textile": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        },
+        "coated_textile": {
+          "value": 0.0,
+          "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+        }
+      }
+    },
+    "barrier_breakthrough_transition_hours": {
+      "value": 0.25,
+      "source_id": "worker_dermal_breakthrough_timing_heuristics_2026"
+    },
     "skin_condition_factor": {
       "unknown": {
         "value": 1.0,
@@ -892,26 +1078,26 @@
         }
       ]
     },
-    "vapor_pressure_factor": {
+    "evaporation_competition_rate_per_hour": {
       "default": {
-        "value": 1.0,
-        "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+        "value": 0.0,
+        "source_id": "worker_dermal_evaporation_competition_heuristics_2026"
       },
       "thresholds": [
         {
           "minimum": 1.0,
-          "value": 0.95,
-          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+          "value": 0.10258659,
+          "source_id": "worker_dermal_evaporation_competition_heuristics_2026"
         },
         {
           "minimum": 10.0,
-          "value": 0.85,
-          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+          "value": 0.32503786,
+          "source_id": "worker_dermal_evaporation_competition_heuristics_2026"
         },
         {
           "minimum": 100.0,
-          "value": 0.7,
-          "source_id": "worker_dermal_physchem_modifier_heuristics_2026"
+          "value": 0.71334989,
+          "source_id": "worker_dermal_evaporation_competition_heuristics_2026"
         }
       ]
     },

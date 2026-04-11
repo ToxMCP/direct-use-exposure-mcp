@@ -154,7 +154,7 @@ The detailed maturity matrix is in
 | `Worker Tier 2 bridge` | Exports a typed worker inhalation handoff package, compatibility checklist, and future adapter tool-call envelope for ART-style Tier 2 refinement without pretending the occupational solver already exists. |
 | `Worker Tier 2 execution` | Executes a governed control-aware worker inhalation surrogate, supports deterministic benchmark regression, and preserves comparability with external ART imports without claiming a native ART solver run. |
 | `Worker ART external exchange` | Exports normalized external ART execution packages and imports reviewed external results or runner artifacts through a bounded, provenance-preserving adapter surface. |
-| `Worker dermal absorbed-dose execution` | Exports and ingests dermal absorbed-dose/PPE handoffs, then executes a bounded dermal kernel with retained-loading/runoff caps plus material-aware and physchem-aware modifiers while keeping glove breakthrough and full permeation modeling explicitly out of scope. |
+| `Worker dermal absorbed-dose execution` | Exports and ingests dermal absorbed-dose/PPE handoffs, then executes a bounded dermal kernel with retained-loading/runoff caps, barrier-material and chemistry modifiers, bounded breakthrough-lag timing, and duration-aware evaporation competition while keeping certified glove performance and full permeation modeling explicitly out of scope. |
 | `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
@@ -388,7 +388,7 @@ The current `v0.1.0` release is intentionally honest about what it does not do:
 - Some screening factors still resolve from heuristic defaults packs and should be treated as screening-level assumptions.
 - Inhalation branches now apply bounded volatility saturation caps and deposition sinks, but they are still screening-scale first-order physics rather than full aerosol dynamics.
 - Worker inhalation Tier 2 execution is a governed surrogate plus external ART exchange boundary, not a native ART solver.
-- Worker dermal execution is bounded, chemistry/material aware, and finite-loading capped, but it is not a full glove-breakthrough or chemical-specific permeation engine.
+- Worker dermal execution is bounded, chemistry/material aware, finite-loading capped, and now includes bounded breakthrough-lag and evaporation-competition logic, but it is not a full glove-permeation or chemical-specific dermal kinetics engine.
 - Remote `streamable-http` deployment still requires external authentication and origin hardening.
 - PBPK request alignment should be re-validated whenever PBPK MCP changes its published contract version.
 

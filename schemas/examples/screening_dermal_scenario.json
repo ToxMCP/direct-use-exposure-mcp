@@ -230,7 +230,7 @@
         "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
         "locator": "docs://defaults-evidence-map#population-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "89d3a52ee4541ba28329678c83c984c708f052ff3ffb48d5c96e4d589e3dad8b"
+        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -260,7 +260,7 @@
         "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
         "locator": "docs://defaults-evidence-map#screening-route-semantics",
         "version": "2026.03.25.v6",
-        "hash_sha256": "89d3a52ee4541ba28329678c83c984c708f052ff3ffb48d5c96e4d589e3dad8b"
+        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -293,7 +293,7 @@
         "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
         "version": "RIVM report 2025-0099 / 2025",
-        "hash_sha256": "89d3a52ee4541ba28329678c83c984c708f052ff3ffb48d5c96e4d589e3dad8b"
+        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -363,7 +363,7 @@
         "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
         "locator": "docs://defaults-evidence-map#population-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "89d3a52ee4541ba28329678c83c984c708f052ff3ffb48d5c96e4d589e3dad8b"
+        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -427,8 +427,8 @@
     "algorithm_id": "screening.external_dose.v1",
     "plugin_id": "screening_scenario_plugin",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.11.v20",
-    "defaults_hash_sha256": "89d3a52ee4541ba28329678c83c984c708f052ff3ffb48d5c96e4d589e3dad8b",
+    "defaults_version": "2026.04.11.v21",
+    "defaults_hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

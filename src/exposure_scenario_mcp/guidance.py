@@ -1027,11 +1027,13 @@ external mass override, then applies PPE penetration and bounded dermal absorpti
 - Reuses the normalized dermal adapter request as the executable input contract
 - Re-derives or accepts external skin mass per day at the skin boundary
 - Applies a bounded retained-loading cap and reports excess mass as runoff or non-retained contact
-- Applies residual PPE penetration before absorption is calculated
+- Applies residual PPE penetration before absorption is calculated, with a bounded
+  breakthrough-lag profile when barrier material and contact duration are available
 - Applies bounded absorption logic from physical form, contact pattern, contact duration, and
   skin condition unless the caller overrides those factors
 - Applies optional bounded `barrierMaterial` and `chemicalContext` modifiers when those
-  descriptors are supplied
+  descriptors are supplied, including a duration-aware evaporation-competition term for
+  volatile contacts
 - Returns both normalized external skin dose and normalized absorbed dermal dose
 - Preserves the determinant-template match, assumptions ledger, limitations, and provenance
 
@@ -1041,11 +1043,12 @@ external mass override, then applies PPE penetration and bounded dermal absorpti
 - The execution kernel is intentionally bounded and transparent, not a chemical-specific
   permeability solver
 - PPE effects are represented as residual penetration factors with optional bounded
-  `barrierMaterial` modifiers, not glove-breakthrough kinetics
+  `barrierMaterial`, chemistry, and lag-time modifiers, not certified glove-breakthrough
+  curves
 - Skin-boundary loading is capped by a retained surface-loading heuristic before PPE and
   absorption are applied
 - Absorption is represented by screening factors with optional bounded `chemicalContext`
-  modifiers, not measured permeability data
+  and evaporation-competition modifiers, not measured permeability data
 - Callers can override `externalSkinMassMgPerDay`, `bodyZoneSurfaceAreaCm2`,
   `ppePenetrationFactor`, `dermalAbsorptionFraction`, and `contactDurationFactor`
 

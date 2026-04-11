@@ -593,6 +593,21 @@ def _execution_algorithm_source() -> AssumptionSourceReference:
     )
 
 
+def _bounded_transition_fraction(
+    *,
+    duration_hours: float,
+    lag_hours: float,
+    transition_hours: float,
+) -> float:
+    if duration_hours <= lag_hours:
+        return 0.0
+    if transition_hours <= 0.0:
+        return 1.0
+    if duration_hours >= lag_hours + transition_hours:
+        return 1.0
+    return min(max((duration_hours - lag_hours) / transition_hours, 0.0), 1.0)
+
+
 def _worker_benchmark_case(case_id: str) -> dict | None:
     fixture = load_benchmark_manifest()
     for case in fixture.get("cases", []):
@@ -2452,6 +2467,16 @@ def execute_worker_dermal_absorbed_dose_task(
                 )
             )
 
+    explicit_contact_duration_hours = task_context.contact_duration_hours
+    barrier_like_ppe = False
+    barrier_chemistry_profile = "generic"
+    barrier_breakthrough_profile = "not_applied"
+    barrier_breakthrough_lag_hours = 0.0
+    barrier_breakthrough_transition_hours = 0.0
+    barrier_breakthrough_fraction = 1.0
+    evaporation_rate_per_hour = 0.0
+    evaporation_competition_factor = 1.0
+
     ppe_penetration_override = None if overrides is None else overrides.ppe_penetration_factor
     if ppe_penetration_override is not None:
         ppe_penetration_factor = float(ppe_penetration_override)
@@ -2493,7 +2518,6 @@ def execute_worker_dermal_absorbed_dose_task(
         )
         barrier_material_factor = 1.0
         barrier_chemistry_factor = 1.0
-        barrier_chemistry_profile = "generic"
         barrier_like_ppe = task_context.ppe_state in {
             WorkerDermalPpeState.WORK_GLOVES,
             WorkerDermalPpeState.CHEMICAL_RESISTANT_GLOVES,
@@ -2580,6 +2604,79 @@ def execute_worker_dermal_absorbed_dose_task(
                         applicability_domain=applicability_domain,
                     )
                 )
+                if explicit_contact_duration_hours is not None:
+                    (
+                        barrier_breakthrough_lag_hours,
+                        barrier_breakthrough_source,
+                    ) = registry.worker_dermal_barrier_breakthrough_lag_hours(
+                        task_context.barrier_material.value,
+                        chemistry_profile=barrier_chemistry_profile,
+                    )
+                    (
+                        barrier_breakthrough_transition_hours,
+                        barrier_breakthrough_transition_source,
+                    ) = registry.worker_dermal_barrier_breakthrough_transition_hours()
+                    barrier_breakthrough_profile = barrier_chemistry_profile
+                    barrier_breakthrough_fraction = _bounded_transition_fraction(
+                        duration_hours=explicit_contact_duration_hours,
+                        lag_hours=barrier_breakthrough_lag_hours,
+                        transition_hours=barrier_breakthrough_transition_hours,
+                    )
+                    assumptions.append(
+                        _assumption_record(
+                            name="barrier_breakthrough_lag_hours",
+                            value=barrier_breakthrough_lag_hours,
+                            unit="hours",
+                            source_kind=SourceKind.DEFAULT_REGISTRY,
+                            source=barrier_breakthrough_source,
+                            rationale=(
+                                "Barrier breakthrough lag time defaulted from the bounded "
+                                "worker dermal timing heuristic pack."
+                            ),
+                            applicability_domain=applicability_domain,
+                        )
+                    )
+                    assumptions.append(
+                        _assumption_record(
+                            name="barrier_breakthrough_transition_hours",
+                            value=barrier_breakthrough_transition_hours,
+                            unit="hours",
+                            source_kind=SourceKind.DEFAULT_REGISTRY,
+                            source=barrier_breakthrough_transition_source,
+                            rationale=(
+                                "Barrier breakthrough transition window defaulted from the "
+                                "bounded worker dermal timing heuristic pack."
+                            ),
+                            applicability_domain=applicability_domain,
+                        )
+                    )
+                    assumptions.append(
+                        _assumption_record(
+                            name="barrier_breakthrough_fraction",
+                            value=round(barrier_breakthrough_fraction, 8),
+                            unit="fraction",
+                            source_kind=SourceKind.DERIVED,
+                            source=_execution_algorithm_source(),
+                            rationale=(
+                                "Barrier breakthrough fraction was derived from declared "
+                                "contact duration, lag time, and the bounded breakthrough "
+                                "transition window."
+                            ),
+                            applicability_domain=applicability_domain,
+                        )
+                    )
+                    if barrier_breakthrough_fraction < 1.0:
+                        quality_flags.append(
+                            QualityFlag(
+                                code="worker_dermal_breakthrough_lag_applied",
+                                severity=Severity.WARNING,
+                                message=(
+                                    "Worker dermal execution attenuated PPE penetration using "
+                                    "a bounded barrier breakthrough-lag profile for a short-"
+                                    "duration contact."
+                                ),
+                            )
+                        )
             else:
                 quality_flags.append(
                     QualityFlag(
@@ -2598,7 +2695,8 @@ def execute_worker_dermal_absorbed_dose_task(
                 * barrier_material_factor
                 * barrier_chemistry_factor,
                 0.0,
-            ),
+            )
+            * barrier_breakthrough_fraction,
             1.0,
         )
         assumptions.append(
@@ -2610,7 +2708,8 @@ def execute_worker_dermal_absorbed_dose_task(
                 source=_execution_algorithm_source(),
                 rationale=(
                     "Effective PPE penetration factor was derived from the base PPE state "
-                    "and any applicable barrier-material and barrier-chemistry modifiers."
+                    "plus any applicable barrier-material, barrier-chemistry, and bounded "
+                    "breakthrough-timing modifiers."
                 ),
                 applicability_domain=applicability_domain,
             )
@@ -2854,36 +2953,57 @@ def execute_worker_dermal_absorbed_dose_task(
                         applicability_domain=applicability_domain,
                     )
                 )
-                (
-                    vapor_pressure_factor,
-                    vapor_pressure_source,
-                ) = registry.worker_dermal_vapor_pressure_factor(
-                    chemical_context.vapor_pressure_mmhg
-                )
-                assumptions.append(
-                    _assumption_record(
-                        name="vapor_pressure_factor",
-                        value=vapor_pressure_factor,
-                        unit="factor",
-                        source_kind=SourceKind.DEFAULT_REGISTRY,
-                        source=vapor_pressure_source,
-                        rationale=(
-                            "Volatility modifier defaulted from the worker dermal physchem "
-                            "heuristic pack."
-                        ),
-                        applicability_domain=applicability_domain,
+                if explicit_contact_duration_hours is not None:
+                    (
+                        evaporation_rate_per_hour,
+                        evaporation_source,
+                    ) = registry.worker_dermal_evaporation_rate_per_hour(
+                        chemical_context.vapor_pressure_mmhg
                     )
-                )
+                    evaporation_competition_factor = math.exp(
+                        -evaporation_rate_per_hour * explicit_contact_duration_hours
+                    )
+                    assumptions.append(
+                        _assumption_record(
+                            name="evaporation_rate_per_hour",
+                            value=round(evaporation_rate_per_hour, 8),
+                            unit="per hour",
+                            source_kind=SourceKind.DEFAULT_REGISTRY,
+                            source=evaporation_source,
+                            rationale=(
+                                "Evaporation competition rate defaulted from the worker "
+                                "dermal volatility heuristic pack."
+                            ),
+                            applicability_domain=applicability_domain,
+                        )
+                    )
+                    assumptions.append(
+                        _assumption_record(
+                            name="evaporation_competition_factor",
+                            value=round(evaporation_competition_factor, 8),
+                            unit="factor",
+                            source_kind=SourceKind.DERIVED,
+                            source=_execution_algorithm_source(),
+                            rationale=(
+                                "Evaporation competition factor was derived from vapor "
+                                "pressure and declared contact duration so high-volatility "
+                                "contacts can reduce effective dermal uptake."
+                            ),
+                            applicability_domain=applicability_domain,
+                        )
+                    )
+                vapor_pressure_factor = evaporation_competition_factor
             (
                 chemical_context_bounds,
                 chemical_context_bounds_source,
             ) = registry.worker_dermal_chemical_context_factor_bounds()
             chemical_context_factor = min(
                 max(
-                    log_kow_factor
-                    * molecular_weight_factor
-                    * water_solubility_factor
-                    * vapor_pressure_factor,
+                    (
+                        log_kow_factor
+                        * molecular_weight_factor
+                        * water_solubility_factor
+                    ),
                     chemical_context_bounds[0],
                 ),
                 chemical_context_bounds[1],
@@ -2895,13 +3015,12 @@ def execute_worker_dermal_absorbed_dose_task(
                     unit="factor",
                     source_kind=SourceKind.DERIVED,
                     source=chemical_context_bounds_source,
-                    rationale=(
-                        "Chemical-context modifier was derived from bounded logKow, "
-                        "molecular-weight, water-solubility, and volatility heuristic "
-                        "factors."
-                    ),
-                    applicability_domain=applicability_domain,
-                )
+                rationale=(
+                    "Chemical-context modifier was derived from bounded logKow, "
+                    "molecular-weight, and water-solubility heuristic factors."
+                ),
+                applicability_domain=applicability_domain,
+            )
             )
         else:
             quality_flags.append(
@@ -2922,6 +3041,10 @@ def execute_worker_dermal_absorbed_dose_task(
             * chemical_context_factor,
             1.0,
         )
+        dermal_absorption_fraction = min(
+            dermal_absorption_fraction * evaporation_competition_factor,
+            1.0,
+        )
         assumptions.append(
             _assumption_record(
                 name="dermal_absorption_fraction",
@@ -2932,7 +3055,8 @@ def execute_worker_dermal_absorbed_dose_task(
                 rationale=(
                     "Effective dermal absorption fraction was derived from the base physical-"
                     "form fraction, contact-pattern factor, contact-duration factor, "
-                    "skin-condition factor, and any bounded chemical-context modifier."
+                    "skin-condition factor, any bounded chemical-context modifier, and any "
+                    "bounded evaporation-competition attenuation."
                 ),
                 applicability_domain=applicability_domain,
             )
@@ -3033,6 +3157,24 @@ def execute_worker_dermal_absorbed_dose_task(
             route_metrics["barrierMaterialFactor"] = round(barrier_material_factor, 8)
             route_metrics["barrierChemistryProfile"] = barrier_chemistry_profile
             route_metrics["barrierChemistryFactor"] = round(barrier_chemistry_factor, 8)
+            if (
+                barrier_like_ppe
+                and task_context.barrier_material != WorkerDermalBarrierMaterial.UNKNOWN
+                and explicit_contact_duration_hours is not None
+            ):
+                route_metrics["barrierBreakthroughProfile"] = barrier_breakthrough_profile
+                route_metrics["barrierBreakthroughLagHours"] = round(
+                    barrier_breakthrough_lag_hours,
+                    8,
+                )
+                route_metrics["barrierBreakthroughTransitionHours"] = round(
+                    barrier_breakthrough_transition_hours,
+                    8,
+                )
+                route_metrics["barrierBreakthroughFraction"] = round(
+                    barrier_breakthrough_fraction,
+                    8,
+                )
         if absorption_override is None:
             route_metrics["baseDermalAbsorptionFraction"] = round(base_absorption_fraction, 8)
             route_metrics["contactPatternFactor"] = round(contact_pattern_factor, 8)
@@ -3072,6 +3214,15 @@ def execute_worker_dermal_absorbed_dose_task(
                     8,
                 )
                 route_metrics["vaporPressureFactor"] = round(vapor_pressure_factor, 8)
+                route_metrics["evaporationCompetitionFactor"] = round(
+                    evaporation_competition_factor,
+                    8,
+                )
+                if explicit_contact_duration_hours is not None:
+                    route_metrics["evaporationRatePerHour"] = round(
+                        evaporation_rate_per_hour,
+                        8,
+                    )
 
         if body_weight is not None:
             normalized_external = retained_external_mass_mg_day / body_weight
@@ -3142,6 +3293,26 @@ def execute_worker_dermal_absorbed_dose_task(
                     "absorption factors rather than chemical-specific dermal permeability data."
                 ),
             ),
+            *(
+                [
+                    LimitationNote(
+                        code="worker_dermal_execution_bounded_evaporation_competition",
+                        severity=Severity.WARNING,
+                        message=(
+                            "Volatility-aware contacts apply a bounded evaporation-competition "
+                            "term derived from vapor pressure and contact duration, but this "
+                            "is still not a full finite-dose mass-transfer or skin-surface "
+                            "evaporation model."
+                        ),
+                    )
+                ]
+                if (
+                    chemical_context is not None
+                    and chemical_context.vapor_pressure_mmhg is not None
+                    and explicit_contact_duration_hours is not None
+                )
+                else []
+            ),
             LimitationNote(
                 code=(
                     "worker_dermal_execution_bounded_barrier_material"
@@ -3150,15 +3321,34 @@ def execute_worker_dermal_absorbed_dose_task(
                 ),
                 severity=Severity.WARNING,
                 message=(
-                    "PPE effects include bounded barrier-material modifiers layered onto "
-                    "residual penetration factors, but they still do not capture glove "
-                    "breakthrough timing, degradation, or certification-specific "
-                    "performance."
+                    "PPE effects include bounded barrier-material and barrier-chemistry "
+                    "modifiers layered onto residual penetration factors, but they still do "
+                    "not represent certified protection factors, degradation, or full "
+                    "permeation kinetics."
                     if task_context.barrier_material != WorkerDermalBarrierMaterial.UNKNOWN
                     else "PPE effects are represented as residual penetration factors and do "
                     "not capture glove material selection, breakthrough timing, or "
                     "degradation."
                 ),
+            ),
+            *(
+                [
+                    LimitationNote(
+                        code="worker_dermal_execution_bounded_breakthrough_timing",
+                        severity=Severity.WARNING,
+                        message=(
+                            "Barrier timing effects use a bounded lag-and-transition profile "
+                            "derived from contact duration and broad material/chemistry "
+                            "classes, not certified glove breakthrough curves."
+                        ),
+                    )
+                ]
+                if (
+                    barrier_like_ppe
+                    and task_context.barrier_material != WorkerDermalBarrierMaterial.UNKNOWN
+                    and explicit_contact_duration_hours is not None
+                )
+                else []
             ),
             LimitationNote(
                 code="worker_dermal_execution_not_compliance_ready",
@@ -3225,9 +3415,12 @@ def execute_worker_dermal_absorbed_dose_task(
         "product-use inputs or an explicit external mass override.",
         "Retained skin loading is bounded before PPE and absorption are applied; excess mass "
         "is treated as runoff or non-retained contact.",
-        "PPE is represented as a residual penetration factor before absorption is applied.",
+        "PPE is represented as a residual penetration factor, with a bounded breakthrough-lag "
+        "profile applied when barrier material and contact duration are available.",
         "Absorption is driven by bounded physical-form, contact-pattern, duration, and "
         "skin-condition modifiers unless the caller overrides it explicitly.",
+        "When vapor pressure and contact duration are available, a bounded evaporation-"
+        "competition term can further suppress effective dermal absorption.",
     ]
 
     resolved_population = population_profile

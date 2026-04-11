@@ -505,6 +505,10 @@ def test_worker_dermal_execution_applies_barrier_material_and_chemical_context_m
     assert result.route_metrics["barrierMaterialFactor"] == 0.75
     assert result.route_metrics["barrierChemistryProfile"] == "mixed_organic"
     assert result.route_metrics["barrierChemistryFactor"] == 0.9
+    assert result.route_metrics["barrierBreakthroughProfile"] == "mixed_organic"
+    assert result.route_metrics["barrierBreakthroughLagHours"] == 0.25
+    assert result.route_metrics["barrierBreakthroughTransitionHours"] == 0.25
+    assert result.route_metrics["barrierBreakthroughFraction"] == 1.0
     assert result.route_metrics["ppePenetrationFactor"] == 0.0675
     assert result.route_metrics["baseDermalAbsorptionFraction"] == 0.1
     assert result.route_metrics["contactPatternFactor"] == 1.0
@@ -578,7 +582,9 @@ def test_worker_dermal_execution_applies_vapor_pressure_modifier() -> None:
     assert result.absorbed_dose.value == 0.00435476
     assert result.route_metrics["vaporPressureMmhg"] == 15.0
     assert result.route_metrics["vaporPressureFactor"] == 0.85
-    assert result.route_metrics["chemicalContextFactor"] == 1.07525
+    assert result.route_metrics["evaporationCompetitionFactor"] == 0.85
+    assert result.route_metrics["evaporationRatePerHour"] == 0.32503786
+    assert result.route_metrics["chemicalContextFactor"] == 1.265
     assert result.route_metrics["dermalAbsorptionFraction"] == 0.0537625
 
 
@@ -631,4 +637,157 @@ def test_worker_dermal_execution_caps_surface_loading_and_reports_runoff() -> No
     assert any(
         limitation.code == "worker_dermal_execution_surface_loading_cap"
         for limitation in result.limitations
+    )
+
+
+def test_worker_dermal_execution_applies_breakthrough_lag_for_short_contact() -> None:
+    bridge_package = build_worker_dermal_absorbed_dose_bridge(
+        ExportWorkerDermalAbsorbedDoseBridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "product_use_profile": _base_request().product_use_profile.model_copy(
+                        update={"exposure_duration_hours": 0.1}
+                    )
+                }
+            ),
+            task_description="Short worker solvent transfer with nitrile glove contact",
+            workplace_setting="parts washer bay",
+            contact_duration_hours=0.1,
+            contact_pattern=WorkerDermalContactPattern.DIRECT_HANDLING,
+            exposed_body_areas=["hands"],
+            ppe_state=WorkerDermalPpeState.CHEMICAL_RESISTANT_GLOVES,
+            barrier_material=WorkerDermalBarrierMaterial.NITRILE,
+            control_measures=["closed transfer connection"],
+            surface_loading_context="brief liquid contact during solvent transfer",
+            skin_condition=WorkerSkinCondition.INTACT,
+            chemical_context=WorkerDermalChemicalContext(
+                log_kow=3.0,
+                molecular_weight_g_per_mol=250.0,
+                water_solubility_mg_per_l=20000.0,
+            ),
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_dermal_absorbed_dose_task(
+        ExecuteWorkerDermalAbsorbedDoseRequest(
+            adapter_request=bridge_package.tool_call.arguments,
+            context_of_use="worker-dermal-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert result.absorbed_dose is not None
+    assert result.absorbed_dose.value == 0.0
+    assert result.route_metrics["barrierBreakthroughLagHours"] == 0.25
+    assert result.route_metrics["barrierBreakthroughTransitionHours"] == 0.25
+    assert result.route_metrics["barrierBreakthroughFraction"] == 0.0
+    assert result.route_metrics["ppePenetrationFactor"] == 0.0
+    assert any(
+        flag.code == "worker_dermal_breakthrough_lag_applied"
+        for flag in result.quality_flags
+    )
+    assert any(
+        limitation.code == "worker_dermal_execution_bounded_breakthrough_timing"
+        for limitation in result.limitations
+    )
+
+
+def test_worker_dermal_execution_applies_duration_aware_evaporation_competition() -> None:
+    short_contact_package = build_worker_dermal_absorbed_dose_bridge(
+        ExportWorkerDermalAbsorbedDoseBridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "product_use_profile": _base_request().product_use_profile.model_copy(
+                        update={
+                            "product_category": "automotive_maintenance",
+                            "application_method": "pour_transfer",
+                            "concentration_fraction": 0.05,
+                            "use_amount_per_event": 5.0,
+                            "use_events_per_day": 2.0,
+                            "exposure_duration_hours": 0.5,
+                        }
+                    )
+                }
+            ),
+            task_description="Worker solvent transfer with volatile liquid contact",
+            workplace_setting="parts washer bay",
+            contact_duration_hours=0.5,
+            contact_pattern=WorkerDermalContactPattern.DIRECT_HANDLING,
+            exposed_body_areas=["hands"],
+            ppe_state=WorkerDermalPpeState.CHEMICAL_RESISTANT_GLOVES,
+            barrier_material=WorkerDermalBarrierMaterial.NITRILE,
+            control_measures=["closed transfer connection"],
+            surface_loading_context="direct liquid contact during solvent transfer",
+            skin_condition=WorkerSkinCondition.INTACT,
+            chemical_context=WorkerDermalChemicalContext(
+                log_kow=3.0,
+                molecular_weight_g_per_mol=250.0,
+                water_solubility_mg_per_l=20000.0,
+                vapor_pressure_mmhg=150.0,
+            ),
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+    long_contact_package = build_worker_dermal_absorbed_dose_bridge(
+        ExportWorkerDermalAbsorbedDoseBridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "product_use_profile": _base_request().product_use_profile.model_copy(
+                        update={
+                            "product_category": "automotive_maintenance",
+                            "application_method": "pour_transfer",
+                            "concentration_fraction": 0.05,
+                            "use_amount_per_event": 5.0,
+                            "use_events_per_day": 2.0,
+                            "exposure_duration_hours": 4.0,
+                        }
+                    )
+                }
+            ),
+            task_description="Worker solvent transfer with prolonged volatile liquid contact",
+            workplace_setting="parts washer bay",
+            contact_duration_hours=4.0,
+            contact_pattern=WorkerDermalContactPattern.DIRECT_HANDLING,
+            exposed_body_areas=["hands"],
+            ppe_state=WorkerDermalPpeState.CHEMICAL_RESISTANT_GLOVES,
+            barrier_material=WorkerDermalBarrierMaterial.NITRILE,
+            control_measures=["closed transfer connection"],
+            surface_loading_context="direct liquid contact during solvent transfer",
+            skin_condition=WorkerSkinCondition.INTACT,
+            chemical_context=WorkerDermalChemicalContext(
+                log_kow=3.0,
+                molecular_weight_g_per_mol=250.0,
+                water_solubility_mg_per_l=20000.0,
+                vapor_pressure_mmhg=150.0,
+            ),
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    short_result = execute_worker_dermal_absorbed_dose_task(
+        ExecuteWorkerDermalAbsorbedDoseRequest(
+            adapter_request=short_contact_package.tool_call.arguments,
+            context_of_use="worker-dermal-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+    long_result = execute_worker_dermal_absorbed_dose_task(
+        ExecuteWorkerDermalAbsorbedDoseRequest(
+            adapter_request=long_contact_package.tool_call.arguments,
+            context_of_use="worker-dermal-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert short_result.absorbed_dose is not None
+    assert long_result.absorbed_dose is not None
+    assert short_result.route_metrics["evaporationRatePerHour"] == 0.71334989
+    assert long_result.route_metrics["evaporationRatePerHour"] == 0.71334989
+    assert short_result.route_metrics["evaporationCompetitionFactor"] == 0.7
+    assert long_result.route_metrics["evaporationCompetitionFactor"] < 0.1
+    assert long_result.absorbed_dose.value < short_result.absorbed_dose.value
+    assert any(
+        limitation.code == "worker_dermal_execution_bounded_evaporation_competition"
+        for limitation in long_result.limitations
     )
