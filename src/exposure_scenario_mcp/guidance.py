@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest, load_goldset_manifest
-from exposure_scenario_mcp.defaults import build_defaults_curation_report
+from exposure_scenario_mcp.contracts import build_verification_summary_report
+from exposure_scenario_mcp.defaults import DefaultsRegistry, build_defaults_curation_report
 from exposure_scenario_mcp.models import (
     ReleaseMetadataReport,
     ReleaseReadinessReport,
@@ -1789,6 +1790,63 @@ def goldset_benchmark_guide() -> str:
             "  but still highlights a meaningful validation or determinant-pack gap.",
         ]
     )
+    return "\n".join(lines)
+
+
+def verification_summary_guide() -> str:
+    report = build_verification_summary_report(DefaultsRegistry.load())
+    lines = [
+        "# Verification Summary",
+        "",
+        "This resource consolidates the release, benchmark, validation, and trust-surface",
+        "checks that reviewers otherwise have to assemble from multiple machine-readable",
+        "resources.",
+        "",
+        "## Status",
+        "",
+        f"- Verification status: `{report.status}`",
+        f"- Server: `{report.server_name}` `{report.server_version}`",
+        f"- Release version: `{report.release_version}`",
+        f"- Defaults version: `{report.defaults_version}`",
+        f"- Release readiness: `{report.release_readiness_status}`",
+        f"- Security/provenance review: `{report.security_review_status}`",
+        "",
+        "## Public Surface",
+        "",
+        f"- Tools: `{report.public_surface.tool_count}`",
+        f"- Resources: `{report.public_surface.resource_count}`",
+        f"- Prompts: `{report.public_surface.prompt_count}`",
+        f"- Transports: {', '.join(f'`{item}`' for item in report.public_surface.transports)}",
+        "",
+        "## Trust Counts",
+        "",
+        f"- Validation domains: `{report.validation_domain_count}`",
+        f"- Benchmark cases: `{report.benchmark_case_count}`",
+        f"- External datasets: `{report.external_dataset_count}`",
+        f"- Reference bands: `{report.reference_band_count}`",
+        f"- Time-series packs: `{report.time_series_pack_count}`",
+        f"- Goldset cases: `{report.goldset_case_count}`",
+    ]
+    if report.unmapped_goldset_case_ids:
+        lines.append(
+            "- Unmapped goldset cases: "
+            + ", ".join(f"`{item}`" for item in report.unmapped_goldset_case_ids)
+        )
+    lines.extend(["", "## Checks", ""])
+    for check in report.checks:
+        lines.append(f"- `{check.check_id}` [{check.status.upper()}] {check.title}")
+        lines.append(f"  evidence: {check.evidence}")
+        if check.related_resources:
+            lines.append(
+                "  resources: "
+                + ", ".join(f"`{item}`" for item in check.related_resources)
+            )
+        if check.recommendation:
+            lines.append(f"  next step: {check.recommendation}")
+    lines.extend(["", "## Validation Commands", ""])
+    lines.extend(f"- `{command}`" for command in report.validation_commands)
+    lines.extend(["", "## Notes", ""])
+    lines.extend(f"- {item}" for item in report.notes)
     return "\n".join(lines)
 
 

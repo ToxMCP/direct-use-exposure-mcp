@@ -7,6 +7,7 @@ from typing import Annotated
 from mcp.server.fastmcp import FastMCP
 from mcp.types import CallToolResult
 
+from exposure_scenario_mcp.contracts import build_verification_summary_report
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.integrations import (
     PbpkExternalImportPackage,
@@ -40,6 +41,7 @@ from exposure_scenario_mcp.models import (
     ProbabilityBoundsProfileSummary,
     ScenarioComparisonRecord,
     ScenarioPackageProbabilitySummary,
+    VerificationSummaryReport,
 )
 from exposure_scenario_mcp.plugins.inhalation import (
     build_inhalation_residual_air_reentry_scenario,
@@ -375,3 +377,16 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+
+    @mcp.tool(
+        name="exposure_run_verification_checks",
+        annotations=read_only_tool_annotations("Run Verification Checks"),
+    )
+    def exposure_run_verification_checks() -> Annotated[CallToolResult, VerificationSummaryReport]:
+        """Build a deterministic verification summary over release and trust resources."""
+
+        report = build_verification_summary_report(context.defaults_registry)
+        return success_result(
+            f"Built verification summary with status {report.status}.",
+            report,
+        )

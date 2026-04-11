@@ -1422,7 +1422,6 @@ def build_examples() -> dict[str, dict]:
             message="Illustrative failure for result-status metadata.",
         ),
     )
-
     return {
         "chemical_identity": chemical_identity.model_dump(mode="json", by_alias=True),
         "exposure_scenario_definition": exposure_scenario_definition.model_dump(

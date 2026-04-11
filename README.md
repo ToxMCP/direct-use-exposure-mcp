@@ -106,6 +106,7 @@ For a suite-level map of sibling services and shared handoff contracts, see
 - Worker inhalation Tier 2 execution plus governed ART external exchange packages and imports
 - Worker dermal absorbed-dose and PPE bridge export, adapter-ingest boundary, and bounded execution kernel
 - Validation dossier, validation coverage report, executable reference bands, executable time-series packs, and showcase goldset resources
+- Consolidated verification summary surface for release, benchmark, validation, and trust-resource checks
 - Assumption-level evidence/applicability governance and explicit Tier-0 interpretation bounds
 
 ## Why this project exists
@@ -160,6 +161,7 @@ The detailed maturity matrix is in
 | `Refinement workflow support` | Emits comparison/refinement bundles with explicit `refine_exposure` semantics and workflow hooks. |
 | `Validation dossier` | Publishes a typed validation dossier with benchmark domains, cited external validation datasets, heuristic-source families, and open evidence gaps, and threads evidence-readiness, executed validation checks, and gap IDs into every scenario-level `validationSummary`. |
 | `Validation coverage report` | Publishes a typed cross-domain trust summary over benchmark cases, external datasets, executable bands, time-series packs, and goldset mappings so validation posture is explicit instead of inferred. |
+| `Verification summary` | Publishes and executes a consolidated consistency check across release metadata, contract counts, benchmark coverage, validation assets, and published trust resources. |
 | `Executable validation bands` | Publishes a typed, versioned manifest for the narrow executable reference bands used by `validationSummary.executedValidationChecks`, so screening acceptance anchors are data-driven rather than hardcoded. |
 | `Executable time-series packs` | Publishes sparse governed time-series anchors for domains like residual-air reentry and air-space aerosol decay, so time-resolved validation is versioned and machine-readable. |
 | `Goldset showcase corpus` | Publishes a separate, source-backed showcase set for recognizable cases while keeping the deterministic regression fixture stable and auditable. |
@@ -232,6 +234,10 @@ The detailed maturity matrix is in
 - `exposure_export_toxclaw_evidence_bundle`
 - `exposure_export_toxclaw_refinement_bundle`
 
+### Verification and trust
+
+- `exposure_run_verification_checks`
+
 ## Resource catalog
 
 ### Contracts and examples
@@ -252,6 +258,7 @@ The detailed maturity matrix is in
 - `validation://coverage-report`
 - `validation://reference-bands`
 - `validation://time-series-packs`
+- `verification://summary`
 
 ### Operator and scientific documentation
 
@@ -272,6 +279,7 @@ The detailed maturity matrix is in
 - `docs://validation-coverage-report`
 - `docs://validation-reference-bands`
 - `docs://validation-time-series-packs`
+- `docs://verification-summary`
 - `docs://goldset-benchmark-guide`
 - `docs://suite-integration-guide`
 - `docs://integrated-exposure-workflow-guide`
@@ -334,11 +342,11 @@ uv run exposure-scenario-mcp --transport streamable-http --host 127.0.0.1 --port
 
 Current published surface from `docs/contracts/contract_manifest.json`:
 
-- `29` tools
-- `57` resources
+- `35` tools
+- `60` resources
 - `2` prompts
-- `137` schemas
-- `67` examples
+- `150` schemas
+- `79` examples
 
 Legacy `Exposure_Scenario_MCP_tasks.*` planning artifacts at the repo root are now archived
 status notes, not the live implementation backlog.
@@ -352,6 +360,11 @@ uv build
 uv run generate-exposure-contracts
 uv run check-exposure-release-artifacts
 ```
+
+The MCP also publishes a consolidated runtime trust surface through:
+
+- `verification://summary`
+- `docs://verification-summary`
 
 Current published package version: `0.1.0`
 

@@ -32,6 +32,7 @@ from exposure_scenario_mcp.guidance import (
     validation_framework,
     validation_reference_bands_guide,
     validation_time_series_packs_guide,
+    verification_summary_guide,
     worker_art_adapter_guide,
     worker_art_execution_guide,
     worker_art_external_exchange_guide,
@@ -85,6 +86,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     architecture = exposure_platform_architecture_guide()
     validation_bands = validation_reference_bands_guide()
     validation_time_series = validation_time_series_packs_guide()
+    verification_summary = verification_summary_guide()
     capability_matrix = capability_maturity_matrix_guide()
     slug_decision = repository_slug_decision_guide()
     cross_mcp_contracts = cross_mcp_contract_guide()
@@ -170,6 +172,12 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`chlorpyrifos_residual_air_reentry_24h_concentration_1990`" in validation_time_series
     assert "`diazinon_office_residual_air_series_1990`" in validation_time_series
     assert "`diazinon_residual_air_reentry_48h_concentration_1990`" in validation_time_series
+    assert "Verification Summary" in verification_summary
+    assert "verification://summary" in verification_summary
+    assert "contract-surface-alignment" in verification_summary
+    assert "validation-resource-publication" in verification_summary
+    assert "release://metadata-report" in verification_summary
+    assert "validation://coverage-report" in verification_summary
     assert "validation://time-series-packs" in validation
     assert "Validation Dossier" in dossier
     assert "Validation Coverage Report" in coverage_report

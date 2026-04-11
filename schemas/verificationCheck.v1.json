@@ -1,0 +1,58 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "checkId": {
+      "title": "Checkid",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "warning",
+        "blocked"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "blocking": {
+      "default": false,
+      "title": "Blocking",
+      "type": "boolean"
+    },
+    "evidence": {
+      "title": "Evidence",
+      "type": "string"
+    },
+    "relatedResources": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Relatedresources",
+      "type": "array"
+    },
+    "recommendation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Recommendation"
+    }
+  },
+  "required": [
+    "checkId",
+    "title",
+    "status",
+    "evidence"
+  ],
+  "title": "VerificationCheck",
+  "type": "object"
+}

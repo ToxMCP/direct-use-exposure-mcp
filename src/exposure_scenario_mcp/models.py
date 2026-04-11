@@ -2712,6 +2712,48 @@ class ReleaseMetadataReport(StrictModel):
     known_limitations: list[str] = Field(default_factory=list, alias="knownLimitations")
 
 
+class VerificationCheck(StrictModel):
+    check_id: str = Field(..., alias="checkId")
+    title: str
+    status: Literal["pass", "warning", "blocked"]
+    blocking: bool = False
+    evidence: str
+    related_resources: list[str] = Field(default_factory=list, alias="relatedResources")
+    recommendation: str | None = None
+
+
+class VerificationSummaryReport(StrictModel):
+    schema_version: Literal["verificationSummaryReport.v1"] = Field(
+        default="verificationSummaryReport.v1", alias="schemaVersion"
+    )
+    server_name: str = Field(..., alias="serverName")
+    server_version: str = Field(..., alias="serverVersion")
+    release_version: str = Field(..., alias="releaseVersion")
+    defaults_version: str = Field(..., alias="defaultsVersion")
+    status: Literal["pass", "warning", "blocked"]
+    summary: str
+    public_surface: PublicSurfaceSummary = Field(..., alias="publicSurface")
+    release_readiness_status: Literal["ready", "ready_with_known_limitations", "blocked"] = Field(
+        ..., alias="releaseReadinessStatus"
+    )
+    security_review_status: Literal["acceptable", "acceptable_with_warnings", "blocked"] = Field(
+        ..., alias="securityReviewStatus"
+    )
+    validation_domain_count: int = Field(..., alias="validationDomainCount", ge=0)
+    benchmark_case_count: int = Field(..., alias="benchmarkCaseCount", ge=0)
+    external_dataset_count: int = Field(..., alias="externalDatasetCount", ge=0)
+    reference_band_count: int = Field(..., alias="referenceBandCount", ge=0)
+    time_series_pack_count: int = Field(..., alias="timeSeriesPackCount", ge=0)
+    goldset_case_count: int = Field(..., alias="goldsetCaseCount", ge=0)
+    unmapped_goldset_case_ids: list[str] = Field(
+        default_factory=list, alias="unmappedGoldsetCaseIds"
+    )
+    published_resources: list[str] = Field(default_factory=list, alias="publishedResources")
+    validation_commands: list[str] = Field(default_factory=list, alias="validationCommands")
+    checks: list[VerificationCheck] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)
+
+
 class ContractToolEntry(StrictModel):
     name: str
     request_schema: str | None = None

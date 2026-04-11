@@ -15,6 +15,7 @@ from exposure_scenario_mcp.contracts import (
     build_release_metadata_report,
     build_release_readiness_report,
     build_security_provenance_review_report,
+    build_verification_summary_report,
     probability_bounds_profile_manifest,
     scenario_probability_package_manifest,
     schema_payloads,
@@ -50,6 +51,7 @@ from exposure_scenario_mcp.guidance import (
     validation_framework,
     validation_reference_bands_guide,
     validation_time_series_packs_guide,
+    verification_summary_guide,
     worker_art_adapter_guide,
     worker_art_execution_guide,
     worker_art_external_exchange_guide,
@@ -383,6 +385,16 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
 
         return json.dumps(validation_time_series_reference_manifest(), indent=2)
 
+    @mcp.resource("verification://summary")
+    def verification_summary_resource() -> str:
+        """Machine-readable consolidated verification summary."""
+
+        payload = build_verification_summary_report(context.defaults_registry).model_dump(
+            mode="json",
+            by_alias=True,
+        )
+        return json.dumps(payload, indent=2)
+
     @mcp.resource("docs://validation-dossier")
     def docs_validation_dossier() -> str:
         """Human-readable validation dossier with open evidence gaps and priorities."""
@@ -406,6 +418,12 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """Human-readable executable validation time-series reference-pack guide."""
 
         return validation_time_series_packs_guide()
+
+    @mcp.resource("docs://verification-summary")
+    def docs_verification_summary() -> str:
+        """Human-readable guide to the consolidated verification summary surface."""
+
+        return verification_summary_guide()
 
     @mcp.resource("release://readiness-report")
     def release_readiness_report() -> str:

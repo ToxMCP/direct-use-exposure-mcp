@@ -10,6 +10,7 @@ from exposure_scenario_mcp.contracts import (
     build_release_metadata_report,
     build_release_readiness_report,
     build_security_provenance_review_report,
+    build_verification_summary_report,
 )
 from exposure_scenario_mcp.defaults import DefaultsRegistry, build_defaults_curation_report
 from exposure_scenario_mcp.server import create_mcp_server
@@ -143,7 +144,7 @@ def test_contract_manifest_and_server_boot() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
-    assert len(manifest["tools"]) == 34
+    assert len(manifest["tools"]) == 35
     assert "chemicalIdentity.v1" in manifest["schemas"]
     assert "exposureScenarioDefinition.v1" in manifest["schemas"]
     assert "routeDoseEstimate.v1" in manifest["schemas"]
@@ -243,6 +244,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "pbpkExternalImportPackage.v1" in manifest["schemas"]
     assert "pbpkExternalImportRequest.v1" in manifest["schemas"]
     assert "releaseMetadataReport.v1" in manifest["schemas"]
+    assert "verificationCheck.v1" in manifest["schemas"]
+    assert "verificationSummaryReport.v1" in manifest["schemas"]
     assert "releaseReadinessReport.v1" in manifest["schemas"]
     assert "securityProvenanceReviewReport.v1" in manifest["schemas"]
     assert "tierSemantics.v1" in manifest["schemas"]
@@ -320,6 +323,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://validation-coverage-report",
         "docs://validation-reference-bands",
         "docs://validation-time-series-packs",
+        "docs://verification-summary",
         "docs://goldset-benchmark-guide",
         "docs://exposure-platform-architecture",
         "docs://capability-maturity-matrix",
@@ -351,6 +355,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "validation://coverage-report",
         "validation://reference-bands",
         "validation://time-series-packs",
+        "verification://summary",
         "release://metadata-report",
         "release://readiness-report",
         "release://security-provenance-review-report",
@@ -674,3 +679,29 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert "uv build" in artifact["validationCommands"]
     assert "uv run check-exposure-release-artifacts" in artifact["validationCommands"]
     assert report["contractSchemaCount"] >= 1
+
+
+def test_verification_summary_report_matches_schema_and_surface() -> None:
+    generate_contract_assets()
+    schema = json.loads(
+        (SCHEMA_DIR / "verificationSummaryReport.v1.json").read_text(encoding="utf-8")
+    )
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    report = build_verification_summary_report(DefaultsRegistry.load()).model_dump(
+        mode="json", by_alias=True
+    )
+
+    validate(instance=report, schema=schema)
+    assert report["publicSurface"]["toolCount"] == len(manifest["tools"])
+    assert report["publicSurface"]["resourceCount"] == len(manifest["resources"])
+    assert report["validationDomainCount"] == 11
+    assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
+    assert report["referenceBandCount"] == 10
+    assert report["timeSeriesPackCount"] == 3
+    assert report["goldsetCaseCount"] >= 1
+    check_ids = {item["checkId"] for item in report["checks"]}
+    assert "contract-surface-alignment" in check_ids
+    assert "validation-resource-publication" in check_ids
+    assert "suite-boundary-guides-published" in check_ids
+    assert "verification://summary" in report["publishedResources"]
+    assert "docs://verification-summary" in report["publishedResources"]

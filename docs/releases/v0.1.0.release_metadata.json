@@ -34,7 +34,7 @@
     "worker_dermal_wet_wipe_gloved_hands_execution",
     "worker_dermal_handheld_biocidal_trigger_spray_execution"
   ],
-  "contractSchemaCount": 148,
+  "contractSchemaCount": 150,
   "contractExampleCount": 79,
   "distributionArtifacts": [
     {
@@ -59,6 +59,7 @@
     "docs://conformance-report",
     "docs://release-readiness",
     "docs://security-provenance-review",
+    "docs://verification-summary",
     "docs://goldset-benchmark-guide",
     "docs://capability-maturity-matrix",
     "docs://toxmcp-suite-index",

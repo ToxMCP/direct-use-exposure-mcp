@@ -207,6 +207,12 @@
       "request_schema": "compareExposureScenariosInput.v1",
       "response_schema": "scenarioComparisonRecord.v1",
       "description": "Compare two scenarios and surface dose and assumption deltas."
+    },
+    {
+      "name": "exposure_run_verification_checks",
+      "request_schema": null,
+      "response_schema": "verificationSummaryReport.v1",
+      "description": "Build a deterministic verification summary over the published release, validation, benchmark, and trust resources."
     }
   ],
   "resources": [
@@ -305,6 +311,10 @@
     {
       "uri": "docs://validation-time-series-packs",
       "description": "Human-readable guide to sparse executable validation time-series packs."
+    },
+    {
+      "uri": "docs://verification-summary",
+      "description": "Human-readable guide to the consolidated verification summary surface."
     },
     {
       "uri": "docs://goldset-benchmark-guide",
@@ -421,6 +431,10 @@
     {
       "uri": "validation://time-series-packs",
       "description": "Machine-readable executable validation time-series reference-pack manifest."
+    },
+    {
+      "uri": "verification://summary",
+      "description": "Machine-readable consolidated verification summary across release, validation, benchmark, and trust resources."
     },
     {
       "uri": "release://readiness-report",
@@ -599,6 +613,8 @@
     "pbpkExternalImportPackage.v1": "schemas/pbpkExternalImportPackage.v1.json",
     "toxclawPbpkModuleParams.v1": "schemas/toxclawPbpkModuleParams.v1.json",
     "toolResultMeta.v1": "schemas/toolResultMeta.v1.json",
+    "verificationCheck.v1": "schemas/verificationCheck.v1.json",
+    "verificationSummaryReport.v1": "schemas/verificationSummaryReport.v1.json",
     "releaseMetadataReport.v1": "schemas/releaseMetadataReport.v1.json",
     "releaseReadinessReport.v1": "schemas/releaseReadinessReport.v1.json",
     "securityProvenanceReviewReport.v1": "schemas/securityProvenanceReviewReport.v1.json"

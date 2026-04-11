@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.assets import repo_path
-from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
+from exposure_scenario_mcp.benchmarks import load_benchmark_manifest, load_goldset_manifest
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.examples import build_examples
 from exposure_scenario_mcp.integrations import (
@@ -138,6 +138,8 @@ from exposure_scenario_mcp.models import (
     ValidationTimeSeriesReferenceManifest,
     ValidationTimeSeriesReferencePack,
     ValidationTimeSeriesReferencePoint,
+    VerificationCheck,
+    VerificationSummaryReport,
     WorkerTaskRoutingDecision,
     WorkerTaskRoutingInput,
 )
@@ -146,6 +148,9 @@ from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileR
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
+from exposure_scenario_mcp.validation import build_validation_coverage_report
+from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
+from exposure_scenario_mcp.validation_time_series import ValidationTimeSeriesReferenceRegistry
 from exposure_scenario_mcp.worker_dermal import (
     ExecuteWorkerDermalAbsorbedDoseRequest,
     ExportWorkerDermalAbsorbedDoseBridgeRequest,
@@ -345,6 +350,8 @@ SCHEMA_MODELS = {
     "pbpkExternalImportPackage.v1": PbpkExternalImportPackage,
     "toxclawPbpkModuleParams.v1": ToxClawPbpkModuleParams,
     "toolResultMeta.v1": ToolResultMeta,
+    "verificationCheck.v1": VerificationCheck,
+    "verificationSummaryReport.v1": VerificationSummaryReport,
     "releaseMetadataReport.v1": ReleaseMetadataReport,
     "releaseReadinessReport.v1": ReleaseReadinessReport,
     "securityProvenanceReviewReport.v1": SecurityProvenanceReviewReport,
@@ -650,6 +657,15 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 response_schema="scenarioComparisonRecord.v1",
                 description="Compare two scenarios and surface dose and assumption deltas.",
             ),
+            ContractToolEntry(
+                name="exposure_run_verification_checks",
+                request_schema=None,
+                response_schema="verificationSummaryReport.v1",
+                description=(
+                    "Build a deterministic verification summary over the published "
+                    "release, validation, benchmark, and trust resources."
+                ),
+            ),
         ],
         resources=[
             ContractResourceEntry(
@@ -766,6 +782,12 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 uri="docs://validation-time-series-packs",
                 description=(
                     "Human-readable guide to sparse executable validation time-series packs."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="docs://verification-summary",
+                description=(
+                    "Human-readable guide to the consolidated verification summary surface."
                 ),
             ),
             ContractResourceEntry(
@@ -922,6 +944,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 uri="validation://time-series-packs",
                 description=(
                     "Machine-readable executable validation time-series reference-pack manifest."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="verification://summary",
+                description=(
+                    "Machine-readable consolidated verification summary across release, "
+                    "validation, benchmark, and trust resources."
                 ),
             ),
             ContractResourceEntry(
@@ -1366,6 +1395,7 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://conformance-report",
             "docs://release-readiness",
             "docs://security-provenance-review",
+            "docs://verification-summary",
             "docs://goldset-benchmark-guide",
             "docs://capability-maturity-matrix",
             "docs://toxmcp-suite-index",
@@ -1380,6 +1410,312 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             ),
         ],
         known_limitations=readiness.known_limitations,
+    )
+
+
+def build_verification_summary_report(
+    defaults_registry: DefaultsRegistry,
+) -> VerificationSummaryReport:
+    manifest = build_contract_manifest(defaults_registry)
+    metadata = build_release_metadata_report(defaults_registry)
+    readiness = build_release_readiness_report(defaults_registry)
+    security_review = build_security_provenance_review_report(defaults_registry)
+    coverage = build_validation_coverage_report()
+    benchmark_fixture = load_benchmark_manifest()
+    goldset_manifest = load_goldset_manifest()
+    reference_manifest = ValidationReferenceBandRegistry.load().manifest()
+    time_series_manifest = ValidationTimeSeriesReferenceRegistry.load().manifest()
+    published_resource_uris = {entry.uri for entry in manifest.resources}
+    example_payloads = build_examples()
+
+    benchmark_case_ids = [str(case["id"]) for case in benchmark_fixture.get("cases", [])]
+    benchmark_case_count = len(benchmark_case_ids)
+    goldset_case_count = len(goldset_manifest.get("cases", []))
+
+    checks: list[VerificationCheck] = []
+
+    contract_surface_aligned = (
+        metadata.contract_schema_count == len(manifest.schemas)
+        and metadata.contract_example_count == len(example_payloads)
+    )
+    checks.append(
+        VerificationCheck(
+            checkId="contract-surface-alignment",
+            title="Contract manifest counts match generated schemas and examples",
+            status="pass" if contract_surface_aligned else "blocked",
+            blocking=not contract_surface_aligned,
+            evidence=(
+                f"Manifest publishes {len(manifest.tools)} tools, {len(manifest.resources)} "
+                f"resources, {len(manifest.prompts)} prompts, {len(manifest.schemas)} schemas, "
+                f"and {len(example_payloads)} examples."
+            ),
+            relatedResources=["contracts://manifest", "release://metadata-report"],
+        )
+    )
+
+    defaults_aligned = (
+        metadata.defaults_version == defaults_registry.version
+        and manifest.defaults_version == defaults_registry.version
+        and coverage.benchmark_defaults_version == defaults_registry.version
+    )
+    checks.append(
+        VerificationCheck(
+            checkId="defaults-version-alignment",
+            title="Defaults version stays aligned across manifest, release, and validation",
+            status="pass" if defaults_aligned else "blocked",
+            blocking=not defaults_aligned,
+            evidence=(
+                f"Defaults version is `{defaults_registry.version}` across release metadata, "
+                "contract manifest, and benchmark coverage."
+            ),
+            relatedResources=[
+                "defaults://manifest",
+                "release://metadata-report",
+                "validation://coverage-report",
+            ],
+        )
+    )
+
+    benchmark_aligned = (
+        metadata.benchmark_case_count == benchmark_case_count
+        and coverage.benchmark_case_count == benchmark_case_count
+        and metadata.benchmark_case_ids == benchmark_case_ids
+    )
+    checks.append(
+        VerificationCheck(
+            checkId="benchmark-corpus-alignment",
+            title="Benchmark corpus counts align across release and validation surfaces",
+            status="pass" if benchmark_aligned else "blocked",
+            blocking=not benchmark_aligned,
+            evidence=(
+                f"Benchmark corpus contains {benchmark_case_count} deterministic cases, "
+                f"{coverage.external_dataset_count} external datasets, "
+                f"{coverage.reference_band_count} executable reference bands, and "
+                f"{coverage.time_series_pack_count} time-series packs."
+            ),
+            relatedResources=[
+                "benchmarks://manifest",
+                "validation://coverage-report",
+                "release://metadata-report",
+            ],
+        )
+    )
+
+    expected_verification_resources = {
+        "validation://manifest",
+        "validation://dossier-report",
+        "validation://coverage-report",
+        "validation://reference-bands",
+        "validation://time-series-packs",
+        "verification://summary",
+        "docs://validation-framework",
+        "docs://validation-dossier",
+        "docs://validation-coverage-report",
+        "docs://validation-reference-bands",
+        "docs://validation-time-series-packs",
+        "docs://verification-summary",
+    }
+    validation_surface_published = (
+        expected_verification_resources <= published_resource_uris
+        and coverage.reference_band_count == reference_manifest.band_count
+        and coverage.time_series_pack_count == time_series_manifest.pack_count
+    )
+    checks.append(
+        VerificationCheck(
+            checkId="validation-resource-publication",
+            title="Validation and verification resources are published on the MCP surface",
+            status="pass" if validation_surface_published else "blocked",
+            blocking=not validation_surface_published,
+            evidence=(
+                f"Published validation resources cover {coverage.domain_count} domains, "
+                f"{reference_manifest.band_count} reference bands, and "
+                f"{time_series_manifest.pack_count} time-series packs."
+            ),
+            relatedResources=[
+                "validation://coverage-report",
+                "validation://reference-bands",
+                "validation://time-series-packs",
+                "verification://summary",
+            ],
+        )
+    )
+
+    release_status = (
+        "blocked"
+        if readiness.status == "blocked"
+        else "warning"
+        if readiness.status == "ready_with_known_limitations"
+        else "pass"
+    )
+    checks.append(
+        VerificationCheck(
+            checkId="release-readiness-status",
+            title="Release readiness remains within the published acceptable posture",
+            status=release_status,
+            blocking=release_status == "blocked",
+            evidence=(
+                f"Release readiness is `{readiness.status}` with "
+                f"{len(readiness.checks)} governed checks."
+            ),
+            recommendation=(
+                None
+                if release_status == "pass"
+                else "Review `release://readiness-report` before broadening claims."
+            ),
+            relatedResources=["release://readiness-report", "docs://release-readiness"],
+        )
+    )
+
+    security_status = (
+        "blocked"
+        if security_review.status == "blocked"
+        else "warning"
+        if security_review.status == "acceptable_with_warnings"
+        else "pass"
+    )
+    checks.append(
+        VerificationCheck(
+            checkId="security-provenance-status",
+            title="Security and provenance review remains within the published posture",
+            status=security_status,
+            blocking=security_status == "blocked",
+            evidence=(
+                f"Security/provenance review is `{security_review.status}` with "
+                f"{len(security_review.findings)} findings across "
+                f"{len(security_review.reviewed_surface.tool_names)} tools."
+            ),
+            recommendation=(
+                None
+                if security_status == "pass"
+                else (
+                    "Review `release://security-provenance-review-report` before "
+                    "remote deployment."
+                )
+            ),
+            relatedResources=[
+                "release://security-provenance-review-report",
+                "docs://security-provenance-review",
+            ],
+        )
+    )
+
+    boundary_guides_published = {
+        "docs://cross-mcp-contract-guide",
+        "docs://service-selection-guide",
+        "docs://suite-integration-guide",
+        "docs://toxmcp-suite-index",
+    } <= published_resource_uris
+    checks.append(
+        VerificationCheck(
+            checkId="suite-boundary-guides-published",
+            title="Cross-MCP boundary and routing guides are published",
+            status="pass" if boundary_guides_published else "blocked",
+            blocking=not boundary_guides_published,
+            evidence=(
+                "The published resource surface includes explicit service-selection, "
+                "cross-contract, suite-integration, and suite-index guides."
+            ),
+            relatedResources=[
+                "docs://cross-mcp-contract-guide",
+                "docs://service-selection-guide",
+                "docs://suite-integration-guide",
+                "docs://toxmcp-suite-index",
+            ],
+        )
+    )
+
+    checks.append(
+        VerificationCheck(
+            checkId="goldset-mapping-posture",
+            title="Goldset mapping posture is explicit",
+            status="warning" if coverage.unmapped_goldset_case_ids else "pass",
+            blocking=False,
+            evidence=(
+                f"Goldset publishes {goldset_case_count} showcase cases; "
+                f"{len(coverage.unmapped_goldset_case_ids)} remain challenge or "
+                "integration-only and are intentionally unmapped to benchmark domains."
+            ),
+            recommendation=(
+                None
+                if not coverage.unmapped_goldset_case_ids
+                else (
+                    "Promote high-value unmapped goldset cases into executable "
+                    "benchmark domains when evidence supports it."
+                )
+            ),
+            relatedResources=["benchmarks://goldset", "validation://coverage-report"],
+        )
+    )
+
+    status = (
+        "blocked"
+        if any(item.status == "blocked" for item in checks)
+        else "warning"
+        if any(item.status == "warning" for item in checks)
+        else "pass"
+    )
+    summary = (
+        f"Verification summary `{status}` for {len(manifest.tools)} tools, "
+        f"{len(manifest.resources)} resources, {benchmark_case_count} benchmark cases, "
+        f"{coverage.external_dataset_count} external datasets, "
+        f"{coverage.reference_band_count} reference bands, and "
+        f"{coverage.time_series_pack_count} time-series packs."
+    )
+
+    notes = [
+        (
+            "This report is a deterministic consistency and trust-surface summary over the "
+            "published contract, release, benchmark, and validation artifacts."
+        ),
+        (
+            "It does not replace local command execution such as `uv run ruff check .`, "
+            "`uv run pytest`, or release artifact verification."
+        ),
+    ]
+    if coverage.unmapped_goldset_case_ids:
+        notes.append(
+            "Unmapped goldset cases are expected where challenge or integration showcase items "
+            "do not yet have executable benchmark-domain coverage."
+        )
+
+    return VerificationSummaryReport(
+        serverName=manifest.server_name,
+        serverVersion=manifest.server_version,
+        releaseVersion=metadata.release_version,
+        defaultsVersion=defaults_registry.version,
+        status=status,
+        summary=summary,
+        publicSurface=PublicSurfaceSummary(
+            toolCount=len(manifest.tools),
+            resourceCount=len(manifest.resources),
+            promptCount=len(manifest.prompts),
+            transports=["stdio", "streamable-http"],
+        ),
+        releaseReadinessStatus=readiness.status,
+        securityReviewStatus=security_review.status,
+        validationDomainCount=coverage.domain_count,
+        benchmarkCaseCount=benchmark_case_count,
+        externalDatasetCount=coverage.external_dataset_count,
+        referenceBandCount=coverage.reference_band_count,
+        timeSeriesPackCount=coverage.time_series_pack_count,
+        goldsetCaseCount=goldset_case_count,
+        unmappedGoldsetCaseIds=coverage.unmapped_goldset_case_ids,
+        publishedResources=sorted(
+            [
+                "contracts://manifest",
+                "validation://coverage-report",
+                "validation://reference-bands",
+                "validation://time-series-packs",
+                "release://metadata-report",
+                "release://readiness-report",
+                "release://security-provenance-review-report",
+                "verification://summary",
+                "docs://verification-summary",
+            ]
+        ),
+        validationCommands=metadata.validation_commands,
+        checks=checks,
+        notes=notes,
     )
 
 

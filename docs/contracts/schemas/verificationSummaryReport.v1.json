@@ -1,0 +1,243 @@
+{
+  "$defs": {
+    "PublicSurfaceSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "toolCount": {
+          "minimum": 0,
+          "title": "Toolcount",
+          "type": "integer"
+        },
+        "resourceCount": {
+          "minimum": 0,
+          "title": "Resourcecount",
+          "type": "integer"
+        },
+        "promptCount": {
+          "minimum": 0,
+          "title": "Promptcount",
+          "type": "integer"
+        },
+        "transports": {
+          "items": {
+            "enum": [
+              "stdio",
+              "streamable-http"
+            ],
+            "type": "string"
+          },
+          "title": "Transports",
+          "type": "array"
+        }
+      },
+      "required": [
+        "toolCount",
+        "resourceCount",
+        "promptCount"
+      ],
+      "title": "PublicSurfaceSummary",
+      "type": "object"
+    },
+    "VerificationCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "checkId": {
+          "title": "Checkid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "warning",
+            "blocked"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "blocking": {
+          "default": false,
+          "title": "Blocking",
+          "type": "boolean"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        },
+        "relatedResources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Relatedresources",
+          "type": "array"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommendation"
+        }
+      },
+      "required": [
+        "checkId",
+        "title",
+        "status",
+        "evidence"
+      ],
+      "title": "VerificationCheck",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "verificationSummaryReport.v1",
+      "default": "verificationSummaryReport.v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "serverName": {
+      "title": "Servername",
+      "type": "string"
+    },
+    "serverVersion": {
+      "title": "Serverversion",
+      "type": "string"
+    },
+    "releaseVersion": {
+      "title": "Releaseversion",
+      "type": "string"
+    },
+    "defaultsVersion": {
+      "title": "Defaultsversion",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "warning",
+        "blocked"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "publicSurface": {
+      "$ref": "#/$defs/PublicSurfaceSummary"
+    },
+    "releaseReadinessStatus": {
+      "enum": [
+        "ready",
+        "ready_with_known_limitations",
+        "blocked"
+      ],
+      "title": "Releasereadinessstatus",
+      "type": "string"
+    },
+    "securityReviewStatus": {
+      "enum": [
+        "acceptable",
+        "acceptable_with_warnings",
+        "blocked"
+      ],
+      "title": "Securityreviewstatus",
+      "type": "string"
+    },
+    "validationDomainCount": {
+      "minimum": 0,
+      "title": "Validationdomaincount",
+      "type": "integer"
+    },
+    "benchmarkCaseCount": {
+      "minimum": 0,
+      "title": "Benchmarkcasecount",
+      "type": "integer"
+    },
+    "externalDatasetCount": {
+      "minimum": 0,
+      "title": "Externaldatasetcount",
+      "type": "integer"
+    },
+    "referenceBandCount": {
+      "minimum": 0,
+      "title": "Referencebandcount",
+      "type": "integer"
+    },
+    "timeSeriesPackCount": {
+      "minimum": 0,
+      "title": "Timeseriespackcount",
+      "type": "integer"
+    },
+    "goldsetCaseCount": {
+      "minimum": 0,
+      "title": "Goldsetcasecount",
+      "type": "integer"
+    },
+    "unmappedGoldsetCaseIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unmappedgoldsetcaseids",
+      "type": "array"
+    },
+    "publishedResources": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Publishedresources",
+      "type": "array"
+    },
+    "validationCommands": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Validationcommands",
+      "type": "array"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/VerificationCheck"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "serverName",
+    "serverVersion",
+    "releaseVersion",
+    "defaultsVersion",
+    "status",
+    "summary",
+    "publicSurface",
+    "releaseReadinessStatus",
+    "securityReviewStatus",
+    "validationDomainCount",
+    "benchmarkCaseCount",
+    "externalDatasetCount",
+    "referenceBandCount",
+    "timeSeriesPackCount",
+    "goldsetCaseCount"
+  ],
+  "title": "VerificationSummaryReport",
+  "type": "object"
+}

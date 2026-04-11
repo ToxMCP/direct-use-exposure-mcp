@@ -21,7 +21,7 @@
   </qa_pair>
   <qa_pair>
     <question>Count the public tools declared in the machine-readable contract manifest. Respond with the number only.</question>
-    <answer>34</answer>
+    <answer>35</answer>
   </qa_pair>
   <qa_pair>
     <question>Compare the dermal baseline and refined example scenarios using the comparison record. Did the comparison dose increase or decrease relative to baseline? Answer with increase or decrease only.</question>
