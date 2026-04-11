@@ -37,8 +37,10 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
 - Child medicinal-liquid direct-oral screening linked to a narrow ready-to-use dosing benchmark
 - Adult dermal cream volume-to-mass conversion with density override precedence
 - Cross-route aggregate summary with contributor fractions and limitation flagging
+- Cross-route internal-equivalent aggregate summary using route-specific bioavailability fractions
 - Zero-baseline scenario comparison with undefined percentage-delta handling
 - PBPK export packaging from the canonical dermal screening scenario
+- PBPK export packaging from the canonical inhalation screening scenario with transient concentration points
 - Full PBPK external-import package semantics for the canonical dermal screening scenario
 - Tier 1 personal-care pump spray scenario-package probability bounds over governed NF/FF support points
 - Worker inhalation surrogate execution for a controlled janitorial disinfectant trigger spray

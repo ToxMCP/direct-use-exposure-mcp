@@ -854,6 +854,101 @@
       }
     },
     {
+      "id": "cross_route_aggregate_internal_equivalent_summary",
+      "kind": "aggregate",
+      "description": "Aggregate summary that applies route-specific bioavailability fractions to build an internal-equivalent screening total.",
+      "aggregation_mode": "internal_equivalent",
+      "route_bioavailability_adjustments": [
+        {
+          "route": "dermal",
+          "bioavailabilityFraction": 0.1
+        },
+        {
+          "route": "inhalation",
+          "bioavailabilityFraction": 1.0
+        }
+      ],
+      "component_requests": [
+        {
+          "schema_version": "exposureScenarioRequest.v1",
+          "chemical_id": "DTXSID123",
+          "chemical_name": "Benchmark Solvent A",
+          "route": "dermal",
+          "scenario_class": "screening",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Benchmark Hand Cream",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 1.5,
+            "use_amount_unit": "g",
+            "use_events_per_day": 3
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "region": "EU",
+            "demographic_tags": [
+              "consumer"
+            ]
+          },
+          "assumption_overrides": {}
+        },
+        {
+          "schema_version": "exposureScenarioRequest.v1",
+          "chemical_id": "DTXSID123",
+          "chemical_name": "Benchmark Solvent A",
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Benchmark Trigger Spray",
+            "product_category": "household_cleaner",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.05,
+            "use_amount_per_event": 12,
+            "use_amount_unit": "mL",
+            "use_events_per_day": 1,
+            "room_volume_m3": 25
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 68,
+            "inhalation_rate_m3_per_hour": 0.9,
+            "region": "EU",
+            "demographic_tags": []
+          },
+          "assumption_overrides": {}
+        }
+      ],
+      "expected": {
+        "normalized_total_external_dose_value": 1.14313117,
+        "route_totals": {
+          "dermal": 1.125,
+          "inhalation": 0.01813117
+        },
+        "dominant_contributor_fractions": {
+          "dermal": 0.861203,
+          "inhalation": 0.138797
+        },
+        "internal_equivalent_total_dose_value": 0.13063117,
+        "internal_route_totals": {
+          "dermal": 0.1125,
+          "inhalation": 0.01813117
+        },
+        "limitation_codes": [
+          "internal_equivalent_bioavailability_user_supplied",
+          "cross_route_aggregate"
+        ]
+      }
+    },
+    {
       "id": "zero_baseline_comparison",
       "kind": "comparison",
       "description": "Comparison case with a zero baseline dose to lock down undefined percentage-delta handling.",
@@ -966,6 +1061,65 @@
           "region": "EU"
         },
         "supporting_assumption_count": 11
+      }
+    },
+    {
+      "id": "inhalation_pbpk_export_transient_profile",
+      "kind": "pbpk_export",
+      "description": "PBPK export case for the canonical inhalation screening scenario with additive transient concentration points.",
+      "include_transient_concentration_profile": true,
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "chemical_name": "Benchmark Solvent A",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Trigger Spray",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 25
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {}
+      },
+      "regimen_name": "benchmark_daily_use",
+      "expected": {
+        "dose_magnitude": 0.01421282,
+        "dose_unit": "mg/kg-day",
+        "timing_pattern": "benchmark_daily_use",
+        "population_context": {
+          "population_group": "adult",
+          "body_weight_kg": 80.0,
+          "region": "EU"
+        },
+        "supporting_assumption_count": 23,
+        "transient_concentration_profile": [
+          {
+            "timeHours": 0.0,
+            "concentrationMgPerM3": 4.8
+          },
+          {
+            "timeHours": 0.25,
+            "concentrationMgPerM3": 2.73982158
+          },
+          {
+            "timeHours": 0.5,
+            "concentrationMgPerM3": 1.37522302
+          }
+        ]
       }
     },
     {

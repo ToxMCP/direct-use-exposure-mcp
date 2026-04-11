@@ -1856,6 +1856,12 @@
       "default": null,
       "description": "Optional human-readable regimen name.",
       "title": "Regimen Name"
+    },
+    "includeTransientConcentrationProfile": {
+      "default": false,
+      "description": "When true, inhalation scenarios export a simple transient concentration profile if supported.",
+      "title": "Includetransientconcentrationprofile",
+      "type": "boolean"
     }
   },
   "required": [

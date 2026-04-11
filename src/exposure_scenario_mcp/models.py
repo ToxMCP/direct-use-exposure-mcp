@@ -281,6 +281,11 @@ class ResidualAirReentryMode(StrEnum):
     NATIVE_TREATED_SURFACE_REENTRY = "native_treated_surface_reentry"
 
 
+class AggregationMode(StrEnum):
+    EXTERNAL_SUMMARY = "external_summary"
+    INTERNAL_EQUIVALENT = "internal_equivalent"
+
+
 class ValidationCheckStatus(StrEnum):
     PASS = "pass"
     WARNING = "warning"
@@ -2003,6 +2008,17 @@ class AggregateContributor(StrictModel):
     dose_value: float = Field(..., description="Absolute contribution value.")
 
 
+class RouteBioavailabilityAdjustment(StrictModel):
+    route: Route = Field(..., description="Route represented by the bioavailability fraction.")
+    bioavailability_fraction: float = Field(
+        ...,
+        alias="bioavailabilityFraction",
+        ge=0.0,
+        le=1.0,
+        description="Fraction of external dose treated as internal-equivalent for aggregation.",
+    )
+
+
 class AggregateExposureSummary(StrictModel):
     schema_version: Literal["aggregateExposureSummary.v1"] = "aggregateExposureSummary.v1"
     scenario_id: str = Field(..., description="Aggregate scenario identifier.")
@@ -2011,12 +2027,32 @@ class AggregateExposureSummary(StrictModel):
     component_scenarios: list[AggregateComponentReference] = Field(
         ..., description="Component scenario references."
     )
+    aggregation_mode: AggregationMode = Field(
+        default=AggregationMode.EXTERNAL_SUMMARY,
+        alias="aggregationMode",
+        description="Requested aggregation mode for the returned summary.",
+    )
     aggregation_method: str = Field(..., description="Aggregation method description.")
     normalized_total_external_dose: ScenarioDose | None = Field(
         default=None, description="Summed normalized total when units are compatible."
     )
+    internal_equivalent_total_dose: ScenarioDose | None = Field(
+        default=None,
+        alias="internalEquivalentTotalDose",
+        description="Optional route-adjusted internal-equivalent total when requested.",
+    )
     per_route_totals: list[RouteDoseTotal] = Field(
         default_factory=list, description="Route-wise totals."
+    )
+    per_route_internal_equivalent_totals: list[RouteDoseTotal] = Field(
+        default_factory=list,
+        alias="perRouteInternalEquivalentTotals",
+        description="Route-wise internal-equivalent totals when requested.",
+    )
+    route_bioavailability_adjustments: list[RouteBioavailabilityAdjustment] = Field(
+        default_factory=list,
+        alias="routeBioavailabilityAdjustments",
+        description="Route-specific bioavailability fractions used for internal-equivalent mode.",
     )
     dominant_contributors: list[AggregateContributor] = Field(
         default_factory=list, description="Dominant contributors to the total."
@@ -2051,6 +2087,21 @@ class PbpkPopulationContext(StrictModel):
     region: str = Field(..., description="Population region.")
 
 
+class PbpkConcentrationProfilePoint(StrictModel):
+    time_hours: float = Field(
+        ...,
+        alias="timeHours",
+        ge=0.0,
+        description="Elapsed hours from the start of the exposure event.",
+    )
+    concentration_mg_per_m3: float = Field(
+        ...,
+        alias="concentrationMgPerM3",
+        ge=0.0,
+        description="Air concentration at the stated elapsed time.",
+    )
+
+
 class PbpkScenarioInput(StrictModel):
     schema_version: Literal["pbpkScenarioInput.v1"] = "pbpkScenarioInput.v1"
     source_scenario_id: str = Field(..., description="Source scenario identifier.")
@@ -2069,6 +2120,13 @@ class PbpkScenarioInput(StrictModel):
     timing_pattern: str = Field(..., description="Human-readable timing semantics.")
     population_context: PbpkPopulationContext = Field(
         ..., description="Resolved population context."
+    )
+    transient_concentration_profile: list[PbpkConcentrationProfilePoint] = Field(
+        default_factory=list,
+        alias="transientConcentrationProfile",
+        description=(
+            "Optional time-resolved inhalation forcing profile when requested and supported."
+        ),
     )
     supporting_assumption_names: list[str] = Field(
         default_factory=list, description="Names of assumptions backing the handoff."
@@ -2109,6 +2167,19 @@ class ScenarioComparisonRecord(StrictModel):
 class BuildAggregateExposureScenarioInput(StrictModel):
     chemical_id: str = Field(..., description="Chemical ID shared across component scenarios.")
     label: str = Field(..., description="Human-readable aggregate label.")
+    aggregation_mode: AggregationMode = Field(
+        default=AggregationMode.EXTERNAL_SUMMARY,
+        alias="aggregationMode",
+        description="Aggregation mode. Defaults to the existing external-dose summary behavior.",
+    )
+    route_bioavailability_adjustments: list[RouteBioavailabilityAdjustment] = Field(
+        default_factory=list,
+        alias="routeBioavailabilityAdjustments",
+        description=(
+            "Optional route-level bioavailability fractions required for "
+            "internal-equivalent mode."
+        ),
+    )
     component_scenarios: list[ExposureScenario] = Field(
         ..., min_length=1, description="Component scenarios to aggregate."
     )
@@ -2539,6 +2610,14 @@ class ExportPbpkScenarioInputRequest(StrictModel):
     scenario: ExposureScenario = Field(..., description="Scenario to export for PBPK consumption.")
     regimen_name: str | None = Field(
         default=None, description="Optional human-readable regimen name."
+    )
+    include_transient_concentration_profile: bool = Field(
+        default=False,
+        alias="includeTransientConcentrationProfile",
+        description=(
+            "When true, inhalation scenarios export a simple transient concentration "
+            "profile if supported."
+        ),
     )
 
 

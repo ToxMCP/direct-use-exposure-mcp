@@ -13,6 +13,7 @@ from exposure_scenario_mcp.models import (
     AggregateComponentReference,
     AggregateContributor,
     AggregateExposureSummary,
+    AggregationMode,
     AssumptionDelta,
     BuildAggregateExposureScenarioInput,
     CompareExposureScenariosInput,
@@ -20,6 +21,7 @@ from exposure_scenario_mcp.models import (
     ExportPbpkScenarioInputRequest,
     ExposureScenario,
     ExposureScenarioRequest,
+    PbpkConcentrationProfilePoint,
     PbpkPopulationContext,
     PbpkScenarioInput,
     Route,
@@ -200,6 +202,12 @@ def aggregate_scenarios(
         None,
         "Aggregate scenario count derived from the supplied component list.",
     )
+    tracker.add_user(
+        "aggregation_mode",
+        params.aggregation_mode.value,
+        "mode",
+        "Aggregation mode was supplied explicitly or defaulted by schema.",
+    )
 
     component_refs = [
         AggregateComponentReference(
@@ -225,6 +233,94 @@ def aggregate_scenarios(
     ]
 
     total_value = sum(item.external_dose.value for item in params.component_scenarios)
+    route_bioavailability_map = {
+        item.route: item.bioavailability_fraction
+        for item in params.route_bioavailability_adjustments
+    }
+    internal_equivalent_total_dose = None
+    per_route_internal_equivalent_totals: list[RouteDoseTotal] = []
+    contributor_values: dict[str, float] = {
+        item.scenario_id: item.external_dose.value for item in params.component_scenarios
+    }
+
+    if params.aggregation_mode == AggregationMode.INTERNAL_EQUIVALENT:
+        missing_routes = sorted(
+            route.value for route in per_route_map if route not in route_bioavailability_map
+        )
+        ensure(
+            not missing_routes,
+            "aggregate_internal_equivalent_bioavailability_missing",
+            (
+                "Internal-equivalent aggregation requires route bioavailability fractions "
+                "for every route represented in the component scenarios."
+            ),
+            suggestion=(
+                "Provide routeBioavailabilityAdjustments for each represented route or "
+                "use aggregationMode='external_summary'."
+            ),
+            missing_routes=missing_routes,
+        )
+        for adjustment in params.route_bioavailability_adjustments:
+            tracker.add_user(
+                f"bioavailability_fraction_{adjustment.route.value}",
+                adjustment.bioavailability_fraction,
+                "fraction",
+                (
+                    "Route-specific bioavailability fraction supplied for "
+                    "internal-equivalent aggregation."
+                ),
+            )
+        per_route_internal_map = {
+            route: value * route_bioavailability_map[route]
+            for route, value in per_route_map.items()
+        }
+        per_route_internal_equivalent_totals = [
+            RouteDoseTotal(
+                route=route,
+                total_dose=ScenarioDose(
+                    metric="route_internal_equivalent_dose",
+                    value=round(value, 8),
+                    unit=DoseUnit.MG_PER_KG_DAY,
+                ),
+            )
+            for route, value in sorted(
+                per_route_internal_map.items(), key=lambda item: item[0].value
+            )
+        ]
+        internal_total_value = sum(per_route_internal_map.values())
+        internal_equivalent_total_dose = ScenarioDose(
+            metric="aggregate_internal_equivalent_dose",
+            value=round(internal_total_value, 8),
+            unit=DoseUnit.MG_PER_KG_DAY,
+        )
+        contributor_values = {
+            item.scenario_id: item.external_dose.value * route_bioavailability_map[item.route]
+            for item in params.component_scenarios
+        }
+        tracker.add_quality_flag(
+            "aggregate_internal_equivalent_screening",
+            (
+                "Internal-equivalent aggregation applies caller-supplied route bioavailability "
+                "fractions to external doses. It remains a screening transformation, not a PBPK "
+                "substitute."
+            ),
+        )
+        tracker.add_limitation(
+            "internal_equivalent_bioavailability_user_supplied",
+            (
+                "Internal-equivalent totals depend on the supplied route bioavailability "
+                "fractions and do not replace route-specific kinetic modeling."
+            ),
+        )
+    else:
+        if params.route_bioavailability_adjustments:
+            tracker.add_quality_flag(
+                "aggregate_route_bioavailability_ignored",
+                (
+                    "routeBioavailabilityAdjustments were supplied, but aggregationMode "
+                    "remained `external_summary`, so external-dose totals were returned unchanged."
+                ),
+            )
     if len(per_route_map) > 1:
         tracker.add_limitation(
             "cross_route_aggregate",
@@ -236,15 +332,20 @@ def aggregate_scenarios(
         )
 
     dominant_contributors = []
-    if total_value and total_value > 0:
+    dominant_total = sum(contributor_values.values())
+    if dominant_total and dominant_total > 0:
         ranked = sorted(
-            params.component_scenarios, key=lambda item: item.external_dose.value, reverse=True
+            params.component_scenarios,
+            key=lambda item: contributor_values[item.scenario_id],
+            reverse=True,
         )
         dominant_contributors = [
             AggregateContributor(
                 scenario_id=item.scenario_id,
-                contribution_fraction=round(item.external_dose.value / total_value, 6),
-                dose_value=round(item.external_dose.value, 8),
+                contribution_fraction=round(
+                    contributor_values[item.scenario_id] / dominant_total, 6
+                ),
+                dose_value=round(contributor_values[item.scenario_id], 8),
             )
             for item in ranked[:3]
         ]
@@ -255,7 +356,12 @@ def aggregate_scenarios(
         scenario_id=f"agg-{uuid4().hex[:12]}",
         chemical_id=params.chemical_id,
         component_scenarios=component_refs,
-        aggregation_method="simple_additive_screening",
+        aggregation_mode=params.aggregation_mode,
+        aggregation_method=(
+            "simple_additive_screening"
+            if params.aggregation_mode == AggregationMode.EXTERNAL_SUMMARY
+            else "route_bioavailability_adjusted_internal_equivalent_screening"
+        ),
         normalized_total_external_dose=(
             ScenarioDose(
                 metric="aggregate_external_dose",
@@ -263,7 +369,10 @@ def aggregate_scenarios(
                 unit=DoseUnit.MG_PER_KG_DAY,
             )
         ),
+        internal_equivalent_total_dose=internal_equivalent_total_dose,
         per_route_totals=per_route_totals,
+        per_route_internal_equivalent_totals=per_route_internal_equivalent_totals,
+        route_bioavailability_adjustments=params.route_bioavailability_adjustments,
         dominant_contributors=dominant_contributors,
         limitations=tracker.limitations,
         quality_flags=tracker.quality_flags,
@@ -276,6 +385,94 @@ def aggregate_scenarios(
             algorithm_id="aggregate.simple_additive.v1",
         ),
     )
+
+
+def _pbpk_transient_concentration_profile(
+    scenario: ExposureScenario,
+    tracker: AssumptionTracker,
+) -> list[PbpkConcentrationProfilePoint]:
+    if scenario.route != Route.INHALATION:
+        tracker.add_limitation(
+            "pbpk_transient_profile_non_inhalation_unsupported",
+            (
+                "Transient concentration profiles are only exported for inhalation scenarios. "
+                "Other routes continue to export scalar PBPK handoff inputs only."
+            ),
+        )
+        return []
+
+    duration = scenario.product_use_profile.exposure_duration_hours
+    if duration is None:
+        tracker.add_limitation(
+            "pbpk_transient_profile_duration_missing",
+            (
+                "Transient inhalation export requires an explicit event duration on the "
+                "source scenario."
+            ),
+        )
+        return []
+
+    metrics = scenario.route_metrics
+    if (
+        "air_concentration_at_reentry_start_mg_per_m3" in metrics
+        and "air_concentration_at_reentry_end_mg_per_m3" in metrics
+    ):
+        average = float(
+            metrics.get(
+                "average_air_concentration_mg_per_m3",
+                metrics["air_concentration_at_reentry_start_mg_per_m3"],
+            )
+        )
+        return [
+            PbpkConcentrationProfilePoint(
+                timeHours=0.0,
+                concentrationMgPerM3=float(
+                    metrics["air_concentration_at_reentry_start_mg_per_m3"]
+                ),
+            ),
+            PbpkConcentrationProfilePoint(
+                timeHours=round(duration / 2.0, 8),
+                concentrationMgPerM3=round(average, 8),
+            ),
+            PbpkConcentrationProfilePoint(
+                timeHours=round(duration, 8),
+                concentrationMgPerM3=float(metrics["air_concentration_at_reentry_end_mg_per_m3"]),
+            ),
+        ]
+
+    if (
+        "initial_air_concentration_mg_per_m3" in metrics
+        and "air_concentration_at_event_end_mg_per_m3" in metrics
+    ):
+        average = float(
+            metrics.get(
+                "average_air_concentration_mg_per_m3",
+                metrics["initial_air_concentration_mg_per_m3"],
+            )
+        )
+        return [
+            PbpkConcentrationProfilePoint(
+                timeHours=0.0,
+                concentrationMgPerM3=float(metrics["initial_air_concentration_mg_per_m3"]),
+            ),
+            PbpkConcentrationProfilePoint(
+                timeHours=round(duration / 2.0, 8),
+                concentrationMgPerM3=round(average, 8),
+            ),
+            PbpkConcentrationProfilePoint(
+                timeHours=round(duration, 8),
+                concentrationMgPerM3=float(metrics["air_concentration_at_event_end_mg_per_m3"]),
+            ),
+        ]
+
+    tracker.add_limitation(
+        "pbpk_transient_profile_route_metrics_missing",
+        (
+            "Transient inhalation export requires route metrics that expose start and end air "
+            "concentrations. The source scenario did not provide that pair."
+        ),
+    )
+    return []
 
 
 def export_pbpk_input(
@@ -303,6 +500,16 @@ def export_pbpk_input(
             ),
         )
 
+    transient_profile: list[PbpkConcentrationProfilePoint] = []
+    if params.include_transient_concentration_profile:
+        transient_profile = _pbpk_transient_concentration_profile(scenario, tracker)
+        tracker.add_derived(
+            "pbpk_transient_profile_point_count",
+            len(transient_profile),
+            None,
+            "Transient concentration-profile point count derived for additive PBPK export.",
+        )
+
     return PbpkScenarioInput(
         source_scenario_id=scenario.scenario_id,
         chemical_id=scenario.chemical_id,
@@ -323,6 +530,7 @@ def export_pbpk_input(
             inhalation_rate_m3_per_hour=scenario.population_profile.inhalation_rate_m3_per_hour,
             region=scenario.population_profile.region,
         ),
+        transient_concentration_profile=transient_profile,
         supporting_assumption_names=[item.name for item in scenario.assumptions],
         provenance=tracker.provenance(
             plugin_id="pbpk_export_service",

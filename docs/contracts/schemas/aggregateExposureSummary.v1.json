@@ -53,6 +53,14 @@
       "title": "AggregateContributor",
       "type": "object"
     },
+    "AggregationMode": {
+      "enum": [
+        "external_summary",
+        "internal_equivalent"
+      ],
+      "title": "AggregationMode",
+      "type": "string"
+    },
     "BiasDirection": {
       "enum": [
         "likely_overestimate",
@@ -310,6 +318,28 @@
       ],
       "title": "Route",
       "type": "string"
+    },
+    "RouteBioavailabilityAdjustment": {
+      "additionalProperties": false,
+      "properties": {
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Route represented by the bioavailability fraction."
+        },
+        "bioavailabilityFraction": {
+          "description": "Fraction of external dose treated as internal-equivalent for aggregation.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Bioavailabilityfraction",
+          "type": "number"
+        }
+      },
+      "required": [
+        "route",
+        "bioavailabilityFraction"
+      ],
+      "title": "RouteBioavailabilityAdjustment",
+      "type": "object"
     },
     "RouteDoseTotal": {
       "additionalProperties": false,
@@ -605,6 +635,11 @@
       "title": "Component Scenarios",
       "type": "array"
     },
+    "aggregationMode": {
+      "$ref": "#/$defs/AggregationMode",
+      "default": "external_summary",
+      "description": "Requested aggregation mode for the returned summary."
+    },
     "aggregation_method": {
       "description": "Aggregation method description.",
       "title": "Aggregation Method",
@@ -622,12 +657,40 @@
       "default": null,
       "description": "Summed normalized total when units are compatible."
     },
+    "internalEquivalentTotalDose": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ScenarioDose"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional route-adjusted internal-equivalent total when requested."
+    },
     "per_route_totals": {
       "description": "Route-wise totals.",
       "items": {
         "$ref": "#/$defs/RouteDoseTotal"
       },
       "title": "Per Route Totals",
+      "type": "array"
+    },
+    "perRouteInternalEquivalentTotals": {
+      "description": "Route-wise internal-equivalent totals when requested.",
+      "items": {
+        "$ref": "#/$defs/RouteDoseTotal"
+      },
+      "title": "Perrouteinternalequivalenttotals",
+      "type": "array"
+    },
+    "routeBioavailabilityAdjustments": {
+      "description": "Route-specific bioavailability fractions used for internal-equivalent mode.",
+      "items": {
+        "$ref": "#/$defs/RouteBioavailabilityAdjustment"
+      },
+      "title": "Routebioavailabilityadjustments",
       "type": "array"
     },
     "dominant_contributors": {

@@ -1,5 +1,13 @@
 {
   "$defs": {
+    "AggregationMode": {
+      "enum": [
+        "external_summary",
+        "internal_equivalent"
+      ],
+      "title": "AggregationMode",
+      "type": "string"
+    },
     "ApplicabilityStatus": {
       "enum": [
         "user_asserted",
@@ -1322,6 +1330,28 @@
       "title": "Route",
       "type": "string"
     },
+    "RouteBioavailabilityAdjustment": {
+      "additionalProperties": false,
+      "properties": {
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Route represented by the bioavailability fraction."
+        },
+        "bioavailabilityFraction": {
+          "description": "Fraction of external dose treated as internal-equivalent for aggregation.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Bioavailabilityfraction",
+          "type": "number"
+        }
+      },
+      "required": [
+        "route",
+        "bioavailabilityFraction"
+      ],
+      "title": "RouteBioavailabilityAdjustment",
+      "type": "object"
+    },
     "ScenarioClass": {
       "enum": [
         "screening",
@@ -1849,6 +1879,19 @@
       "description": "Human-readable aggregate label.",
       "title": "Label",
       "type": "string"
+    },
+    "aggregationMode": {
+      "$ref": "#/$defs/AggregationMode",
+      "default": "external_summary",
+      "description": "Aggregation mode. Defaults to the existing external-dose summary behavior."
+    },
+    "routeBioavailabilityAdjustments": {
+      "description": "Optional route-level bioavailability fractions required for internal-equivalent mode.",
+      "items": {
+        "$ref": "#/$defs/RouteBioavailabilityAdjustment"
+      },
+      "title": "Routebioavailabilityadjustments",
+      "type": "array"
     },
     "component_scenarios": {
       "description": "Component scenarios to aggregate.",

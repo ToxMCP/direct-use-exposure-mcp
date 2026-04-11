@@ -44,7 +44,7 @@
       "name": "exposure_build_aggregate_exposure_scenario",
       "request_schema": "buildAggregateExposureScenarioInput.v1",
       "response_schema": "aggregateExposureSummary.v1",
-      "description": "Combine component scenarios into a simple additive aggregate summary."
+      "description": "Combine component scenarios into an external-dose summary or an opt-in route-bioavailability-adjusted internal-equivalent screening summary."
     },
     {
       "name": "exposure_assess_product_use_evidence_fit",
@@ -182,7 +182,7 @@
       "name": "exposure_export_pbpk_scenario_input",
       "request_schema": "exportPbpkScenarioInputRequest.v1",
       "response_schema": "pbpkScenarioInput.v1",
-      "description": "Export a PBPK-ready handoff object from a source scenario."
+      "description": "Export a PBPK-ready handoff object from a source scenario, with an optional transient inhalation concentration profile when supported."
     },
     {
       "name": "exposure_export_pbpk_external_import_bundle",
@@ -649,7 +649,9 @@
     "inhalation_tier1_scenario_package_probability_request": "schemas/examples/inhalation_tier1_scenario_package_probability_request.json",
     "inhalation_tier1_scenario_package_probability_summary": "schemas/examples/inhalation_tier1_scenario_package_probability_summary.json",
     "aggregate_summary": "schemas/examples/aggregate_summary.json",
+    "aggregate_internal_equivalent_summary": "schemas/examples/aggregate_internal_equivalent_summary.json",
     "pbpk_input": "schemas/examples/pbpk_input.json",
+    "pbpk_input_transient": "schemas/examples/pbpk_input_transient.json",
     "pbpk_external_import_request": "schemas/examples/pbpk_external_import_request.json",
     "pbpk_external_import_tool_call": "schemas/examples/pbpk_external_import_tool_call.json",
     "toxclaw_pbpk_module_params": "schemas/examples/toxclaw_pbpk_module_params.json",

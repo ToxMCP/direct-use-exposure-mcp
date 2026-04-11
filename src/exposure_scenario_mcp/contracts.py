@@ -424,7 +424,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 name="exposure_build_aggregate_exposure_scenario",
                 request_schema="buildAggregateExposureScenarioInput.v1",
                 response_schema="aggregateExposureSummary.v1",
-                description="Combine component scenarios into a simple additive aggregate summary.",
+                description=(
+                    "Combine component scenarios into an external-dose summary or an "
+                    "opt-in route-bioavailability-adjusted internal-equivalent screening summary."
+                ),
             ),
             ContractToolEntry(
                 name="exposure_assess_product_use_evidence_fit",
@@ -627,7 +630,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 name="exposure_export_pbpk_scenario_input",
                 request_schema="exportPbpkScenarioInputRequest.v1",
                 response_schema="pbpkScenarioInput.v1",
-                description="Export a PBPK-ready handoff object from a source scenario.",
+                description=(
+                    "Export a PBPK-ready handoff object from a source scenario, with an "
+                    "optional transient inhalation concentration profile when supported."
+                ),
             ),
             ContractToolEntry(
                 name="exposure_export_pbpk_external_import_bundle",

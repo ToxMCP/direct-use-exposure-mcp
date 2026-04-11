@@ -63,8 +63,10 @@ BENCHMARK_CASE_DOMAINS = {
     ),
     "inhalation_tier1_scenario_package_probability": "inhalation_near_field_far_field",
     "cross_route_aggregate_summary": "aggregate_cross_route_screening",
+    "cross_route_aggregate_internal_equivalent_summary": "aggregate_cross_route_screening",
     "zero_baseline_comparison": "scenario_delta_comparison",
     "dermal_pbpk_export": "pbpk_external_handoff",
+    "inhalation_pbpk_export_transient_profile": "pbpk_external_handoff",
     "dermal_pbpk_external_import_package": "pbpk_external_handoff",
     "worker_inhalation_janitorial_trigger_spray_execution": (
         "worker_inhalation_control_aware_screening"
@@ -119,13 +121,16 @@ BENCHMARK_DOMAIN_NOTES = {
     "aggregate_cross_route_screening": [
         (
             "Aggregate validation remains bookkeeping-oriented until a broader "
-            "population engine and external proxies are wired in."
+            "population engine and external proxies are wired in. Current coverage "
+            "locks both external-dose summaries and opt-in route-bioavailability-adjusted "
+            "internal-equivalent screening totals."
         )
     ],
     "pbpk_external_handoff": [
         (
             "These benchmarks verify handoff semantics and request-shape fidelity, "
-            "not PBPK model correctness."
+            "including additive transient inhalation concentration profiles when "
+            "requested, not PBPK model correctness."
         )
     ],
     "worker_inhalation_control_aware_screening": [

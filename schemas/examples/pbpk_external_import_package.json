@@ -714,6 +714,7 @@
           "inhalation_rate_m3_per_hour": null,
           "region": "EU"
         },
+        "transientConcentrationProfile": [],
         "supporting_assumption_names": [
           "use_amount_per_event",
           "product_mass_g_per_event",
@@ -1710,6 +1711,7 @@
           "inhalation_rate_m3_per_hour": null,
           "region": "EU"
         },
+        "transientConcentrationProfile": [],
         "supporting_assumption_names": [
           "use_amount_per_event",
           "product_mass_g_per_event",

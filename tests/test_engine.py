@@ -6,7 +6,9 @@ import pytest
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import (
+    AggregationMode,
     AirflowDirectionality,
     ApplicabilityStatus,
     BuildAggregateExposureScenarioInput,
@@ -20,6 +22,7 @@ from exposure_scenario_mcp.models import (
     EnvelopeArchetypeInput,
     EvidenceBasis,
     EvidenceGrade,
+    ExportPbpkScenarioInputRequest,
     ExposureScenarioRequest,
     InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
@@ -31,6 +34,7 @@ from exposure_scenario_mcp.models import (
     ProductUseProfile,
     ResidualAirReentryMode,
     Route,
+    RouteBioavailabilityAdjustment,
     ScenarioClass,
     TierLevel,
     UncertaintyTier,
@@ -50,6 +54,7 @@ from exposure_scenario_mcp.runtime import (
     ScenarioEngine,
     aggregate_scenarios,
     compare_scenarios,
+    export_pbpk_input,
 )
 from exposure_scenario_mcp.scenario_probability_packages import (
     ScenarioProbabilityPackageRegistry,
@@ -1892,6 +1897,176 @@ def test_aggregate_and_compare_flows() -> None:
     assert delta.absolute_delta == pytest.approx(-0.54, rel=1e-6)
     assert delta.percent_delta == pytest.approx(-48.0, rel=1e-6)
     assert any(item.name == "retention_factor" for item in delta.changed_assumptions)
+
+
+def test_internal_equivalent_aggregate_requires_route_bioavailability_fractions() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    dermal_request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="EU"),
+    )
+    inhalation_request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="EU"),
+    )
+    dermal = engine.build(dermal_request)
+    inhalation = engine.build(inhalation_request)
+
+    with pytest.raises(ExposureScenarioError):
+        aggregate_scenarios(
+            BuildAggregateExposureScenarioInput(
+                chemical_id="DTXSID123",
+                label="co-use-internal-equivalent",
+                aggregationMode=AggregationMode.INTERNAL_EQUIVALENT,
+                component_scenarios=[dermal, inhalation],
+            ),
+            defaults_registry,
+        )
+
+
+def test_internal_equivalent_aggregate_builds_adjusted_total() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    dermal_request = ExposureScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="EU"),
+    )
+    inhalation_request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="EU"),
+    )
+    dermal = engine.build(dermal_request)
+    inhalation = engine.build(inhalation_request)
+
+    aggregate = aggregate_scenarios(
+        BuildAggregateExposureScenarioInput(
+            chemical_id="DTXSID123",
+            label="co-use-internal-equivalent",
+            aggregationMode=AggregationMode.INTERNAL_EQUIVALENT,
+            routeBioavailabilityAdjustments=[
+                RouteBioavailabilityAdjustment(
+                    route=Route.DERMAL,
+                    bioavailabilityFraction=0.1,
+                ),
+                RouteBioavailabilityAdjustment(
+                    route=Route.INHALATION,
+                    bioavailabilityFraction=1.0,
+                ),
+            ],
+            component_scenarios=[dermal, inhalation],
+        ),
+        defaults_registry,
+    )
+
+    assert aggregate.aggregation_mode == AggregationMode.INTERNAL_EQUIVALENT
+    assert aggregate.normalized_total_external_dose is not None
+    assert aggregate.normalized_total_external_dose.value == pytest.approx(1.13921282, rel=1e-6)
+    assert aggregate.internal_equivalent_total_dose is not None
+    assert aggregate.internal_equivalent_total_dose.value == pytest.approx(0.12671282, rel=1e-6)
+    internal_by_route = {
+        item.route.value: item.total_dose.value
+        for item in aggregate.per_route_internal_equivalent_totals
+    }
+    assert internal_by_route["dermal"] == pytest.approx(0.1125, rel=1e-6)
+    assert internal_by_route["inhalation"] == pytest.approx(0.01421282, rel=1e-6)
+    assert any(
+        item.code == "internal_equivalent_bioavailability_user_supplied"
+        for item in aggregate.limitations
+    )
+
+
+def test_pbpk_export_can_include_transient_inhalation_profile() -> None:
+    engine = build_engine()
+    defaults_registry = DefaultsRegistry.load()
+    inhalation_request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="EU"),
+    )
+    inhalation = engine.build(inhalation_request)
+
+    exported = export_pbpk_input(
+        ExportPbpkScenarioInputRequest(
+            scenario=inhalation,
+            regimen_name="screening_daily_use",
+            includeTransientConcentrationProfile=True,
+        ),
+        defaults_registry,
+    )
+
+    assert len(exported.transient_concentration_profile) == 3
+    assert exported.transient_concentration_profile[0].time_hours == pytest.approx(0.0, rel=1e-6)
+    assert exported.transient_concentration_profile[0].concentration_mg_per_m3 == pytest.approx(
+        4.8, rel=1e-6
+    )
+    assert exported.transient_concentration_profile[1].time_hours == pytest.approx(0.25, rel=1e-6)
+    assert exported.transient_concentration_profile[1].concentration_mg_per_m3 == pytest.approx(
+        2.73982158, rel=1e-6
+    )
+    assert exported.transient_concentration_profile[-1].time_hours == pytest.approx(0.5, rel=1e-6)
+    assert exported.transient_concentration_profile[-1].concentration_mg_per_m3 == pytest.approx(
+        1.37522302, rel=1e-6
+    )
 
 
 def test_deterministic_exposure_envelope_builds_tier_b_summary() -> None:

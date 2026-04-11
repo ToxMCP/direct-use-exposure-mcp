@@ -129,12 +129,19 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
             component_scenarios = [
                 build_scenario(engine, payload) for payload in case["component_requests"]
             ]
+            aggregate_kwargs = {
+                "chemical_id": component_scenarios[0].chemical_id,
+                "label": case["id"],
+                "component_scenarios": component_scenarios,
+            }
+            if "aggregation_mode" in case:
+                aggregate_kwargs["aggregationMode"] = case["aggregation_mode"]
+            if "route_bioavailability_adjustments" in case:
+                aggregate_kwargs["routeBioavailabilityAdjustments"] = case[
+                    "route_bioavailability_adjustments"
+                ]
             summary = aggregate_scenarios(
-                BuildAggregateExposureScenarioInput(
-                    chemical_id=component_scenarios[0].chemical_id,
-                    label=case["id"],
-                    component_scenarios=component_scenarios,
-                ),
+                BuildAggregateExposureScenarioInput(**aggregate_kwargs),
                 DefaultsRegistry.load(),
             )
             assert summary.normalized_total_external_dose is not None, case["id"]
@@ -159,6 +166,21 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
                 assert actual_contributors[route_name] == pytest.approx(
                     expected_value, rel=1e-6
                 ), case["id"]
+            if "internal_equivalent_total_dose_value" in expected:
+                assert summary.internal_equivalent_total_dose is not None, case["id"]
+                assert summary.internal_equivalent_total_dose.value == pytest.approx(
+                    expected["internal_equivalent_total_dose_value"], rel=1e-6
+                ), case["id"]
+                actual_internal_totals = {
+                    item.route.value: item.total_dose.value
+                    for item in summary.per_route_internal_equivalent_totals
+                }
+                for route_name, expected_value in expected[
+                    "internal_route_totals"
+                ].items():
+                    assert actual_internal_totals[route_name] == pytest.approx(
+                        expected_value, rel=1e-6
+                    ), case["id"]
             assert [item.code for item in summary.limitations] == expected["limitation_codes"], (
                 case["id"]
             )
@@ -185,11 +207,14 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
             continue
 
         if case["kind"] == "pbpk_export":
+            export_kwargs = {
+                "scenario": build_scenario(engine, case["request"]),
+                "regimen_name": case["regimen_name"],
+            }
+            if case.get("include_transient_concentration_profile"):
+                export_kwargs["includeTransientConcentrationProfile"] = True
             exported = export_pbpk_input(
-                ExportPbpkScenarioInputRequest(
-                    scenario=build_scenario(engine, case["request"]),
-                    regimen_name=case["regimen_name"],
-                ),
+                ExportPbpkScenarioInputRequest(**export_kwargs),
                 DefaultsRegistry.load(),
             )
             assert exported.dose_magnitude == pytest.approx(
@@ -209,6 +234,11 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
             assert len(exported.supporting_assumption_names) == expected[
                 "supporting_assumption_count"
             ], case["id"]
+            if "transient_concentration_profile" in expected:
+                assert [
+                    item.model_dump(mode="json", by_alias=True)
+                    for item in exported.transient_concentration_profile
+                ] == expected["transient_concentration_profile"], case["id"]
             assert exported.provenance.defaults_version == fixture["defaults_version"], case["id"]
             continue
 

@@ -58,7 +58,9 @@ EXAMPLE_SCHEMA_MAP = {
         "scenarioPackageProbabilitySummary.v1"
     ),
     "aggregate_summary": "aggregateExposureSummary.v1",
+    "aggregate_internal_equivalent_summary": "aggregateExposureSummary.v1",
     "pbpk_input": "pbpkScenarioInput.v1",
+    "pbpk_input_transient": "pbpkScenarioInput.v1",
     "pbpk_external_import_request": "pbpkExternalImportRequest.v1",
     "pbpk_external_import_tool_call": "pbpkExternalImportToolCall.v1",
     "toxclaw_pbpk_module_params": "toxclawPbpkModuleParams.v1",
@@ -419,7 +421,7 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     validate(instance=report, schema=schema)
     assert report["policyVersion"] == "2026.03.25.v4"
     assert report["domainCount"] == 11
-    assert report["benchmarkCaseCount"] == 27
+    assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
     assert report["externalDatasetCount"] == 14
     assert report["referenceBandCount"] == 10
     assert report["timeSeriesPackCount"] == 3

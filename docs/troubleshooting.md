@@ -5,8 +5,14 @@
 - `comparison_chemical_mismatch`: the compared scenarios do not share the same `chemical_id`.
 - `pbpk_body_weight_missing`: the scenario does not resolve `body_weight_kg`.
 - `pbpk_inhalation_duration_missing`: inhalation PBPK export needs explicit event duration.
+- `aggregate_internal_equivalent_bioavailability_missing`: internal-equivalent aggregation needs
+  route bioavailability fractions for each represented route.
 - `pbpk_unit_unsupported`: PBPK handoff accepts only canonical external dose units.
-- `aggregate_component_duplicate`: aggregate inputs reused the same component scenario.
+- `aggregate_duplicate_component`: aggregate inputs reused the same component scenario.
+- `pbpk_transient_profile_duration_missing`: transient inhalation PBPK export needs explicit event
+  duration.
+- `pbpk_transient_profile_route_metrics_missing`: the source inhalation scenario did not expose
+  start and end air concentrations for transient export.
 
 ## Troubleshooting Sequence
 

@@ -1,6 +1,6 @@
 {
   "schema_version": "aggregateExposureSummary.v1",
-  "scenario_id": "agg-example-couse-001",
+  "scenario_id": "agg-example-couse-internal-001",
   "chemical_id": "DTXSID7020182",
   "scenario_class": "aggregate",
   "component_scenarios": [
@@ -23,14 +23,18 @@
       }
     }
   ],
-  "aggregationMode": "external_summary",
-  "aggregation_method": "simple_additive_screening",
+  "aggregationMode": "internal_equivalent",
+  "aggregation_method": "route_bioavailability_adjusted_internal_equivalent_screening",
   "normalized_total_external_dose": {
     "metric": "aggregate_external_dose",
     "value": 1.14313117,
     "unit": "mg/kg-day"
   },
-  "internalEquivalentTotalDose": null,
+  "internalEquivalentTotalDose": {
+    "metric": "aggregate_internal_equivalent_dose",
+    "value": 0.13063117,
+    "unit": "mg/kg-day"
+  },
   "per_route_totals": [
     {
       "route": "dermal",
@@ -49,28 +53,65 @@
       }
     }
   ],
-  "perRouteInternalEquivalentTotals": [],
-  "routeBioavailabilityAdjustments": [],
+  "perRouteInternalEquivalentTotals": [
+    {
+      "route": "dermal",
+      "total_dose": {
+        "metric": "route_internal_equivalent_dose",
+        "value": 0.1125,
+        "unit": "mg/kg-day"
+      }
+    },
+    {
+      "route": "inhalation",
+      "total_dose": {
+        "metric": "route_internal_equivalent_dose",
+        "value": 0.01813117,
+        "unit": "mg/kg-day"
+      }
+    }
+  ],
+  "routeBioavailabilityAdjustments": [
+    {
+      "route": "dermal",
+      "bioavailabilityFraction": 0.1
+    },
+    {
+      "route": "inhalation",
+      "bioavailabilityFraction": 1.0
+    }
+  ],
   "dominant_contributors": [
     {
       "scenario_id": "exp-example-dermal-001",
-      "contribution_fraction": 0.984139,
-      "dose_value": 1.125
+      "contribution_fraction": 0.861203,
+      "dose_value": 0.1125
     },
     {
       "scenario_id": "inh-example-room-001",
-      "contribution_fraction": 0.015861,
+      "contribution_fraction": 0.138797,
       "dose_value": 0.01813117
     }
   ],
   "limitations": [
+    {
+      "code": "internal_equivalent_bioavailability_user_supplied",
+      "severity": "warning",
+      "message": "Internal-equivalent totals depend on the supplied route bioavailability fractions and do not replace route-specific kinetic modeling."
+    },
     {
       "code": "cross_route_aggregate",
       "severity": "warning",
       "message": "Aggregate total spans multiple exposure routes and should be interpreted as a screening summary rather than a PBPK-ready collapse."
     }
   ],
-  "quality_flags": [],
+  "quality_flags": [
+    {
+      "code": "aggregate_internal_equivalent_screening",
+      "severity": "info",
+      "message": "Internal-equivalent aggregation applies caller-supplied route bioavailability fractions to external doses. It remains a screening transformation, not a PBPK substitute."
+    }
+  ],
   "uncertaintyTier": "tier_a",
   "uncertaintyRegister": [
     {

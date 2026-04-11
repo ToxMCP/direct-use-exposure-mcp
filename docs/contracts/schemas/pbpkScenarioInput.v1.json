@@ -36,6 +36,29 @@
       "title": "LimitationNote",
       "type": "object"
     },
+    "PbpkConcentrationProfilePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "timeHours": {
+          "description": "Elapsed hours from the start of the exposure event.",
+          "minimum": 0.0,
+          "title": "Timehours",
+          "type": "number"
+        },
+        "concentrationMgPerM3": {
+          "description": "Air concentration at the stated elapsed time.",
+          "minimum": 0.0,
+          "title": "Concentrationmgperm3",
+          "type": "number"
+        }
+      },
+      "required": [
+        "timeHours",
+        "concentrationMgPerM3"
+      ],
+      "title": "PbpkConcentrationProfilePoint",
+      "type": "object"
+    },
     "PbpkPopulationContext": {
       "additionalProperties": false,
       "properties": {
@@ -230,6 +253,14 @@
     "population_context": {
       "$ref": "#/$defs/PbpkPopulationContext",
       "description": "Resolved population context."
+    },
+    "transientConcentrationProfile": {
+      "description": "Optional time-resolved inhalation forcing profile when requested and supported.",
+      "items": {
+        "$ref": "#/$defs/PbpkConcentrationProfilePoint"
+      },
+      "title": "Transientconcentrationprofile",
+      "type": "array"
     },
     "supporting_assumption_names": {
       "description": "Names of assumptions backing the handoff.",

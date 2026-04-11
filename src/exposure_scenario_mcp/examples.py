@@ -34,6 +34,7 @@ from exposure_scenario_mcp.integrations import (
     run_integrated_exposure_workflow,
 )
 from exposure_scenario_mcp.models import (
+    AggregationMode,
     BuildAggregateExposureScenarioInput,
     BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
@@ -75,6 +76,7 @@ from exposure_scenario_mcp.models import (
     QualityFlag,
     ResidualAirReentryMode,
     Route,
+    RouteBioavailabilityAdjustment,
     RouteDoseEstimate,
     ScenarioClass,
     ScenarioPackageProbabilitySummary,
@@ -143,6 +145,7 @@ EXAMPLE_IDS = {
     "inhalation_residual_reentry_native_scenario": "inh-example-reentry-native-001",
     "inhalation_tier1_scenario": "inh-tier1-example-001",
     "aggregate_summary": "agg-example-couse-001",
+    "aggregate_internal_equivalent_summary": "agg-example-couse-internal-001",
     "envelope_summary": "env-example-dermal-001",
     "bounds_summary": "bnd-example-dermal-001",
     "envelope_low_scenario": "exp-example-envelope-low-001",
@@ -191,6 +194,16 @@ def _freeze_aggregate(summary):
     return summary.model_copy(
         update={
             "scenario_id": EXAMPLE_IDS["aggregate_summary"],
+            "provenance": _freeze_provenance(summary.provenance),
+        },
+        deep=True,
+    )
+
+
+def _freeze_aggregate_with_id(summary, scenario_id: str):
+    return summary.model_copy(
+        update={
+            "scenario_id": scenario_id,
             "provenance": _freeze_provenance(summary.provenance),
         },
         deep=True,
@@ -920,10 +933,34 @@ def build_examples() -> dict[str, dict]:
         component_scenarios=[dermal_scenario, inhalation_scenario],
     )
     aggregate_summary = _freeze_aggregate(aggregate_scenarios(aggregate_input, defaults_registry))
+    aggregate_internal_equivalent_input = BuildAggregateExposureScenarioInput(
+        chemical_id="DTXSID7020182",
+        label="Example co-use internal-equivalent screening summary",
+        aggregationMode=AggregationMode.INTERNAL_EQUIVALENT,
+        routeBioavailabilityAdjustments=[
+            RouteBioavailabilityAdjustment(route=Route.DERMAL, bioavailabilityFraction=0.1),
+            RouteBioavailabilityAdjustment(route=Route.INHALATION, bioavailabilityFraction=1.0),
+        ],
+        component_scenarios=[dermal_scenario, inhalation_scenario],
+    )
+    aggregate_internal_equivalent_summary = _freeze_aggregate_with_id(
+        aggregate_scenarios(aggregate_internal_equivalent_input, defaults_registry),
+        EXAMPLE_IDS["aggregate_internal_equivalent_summary"],
+    )
     pbpk_input = _freeze_pbpk_input(
         export_pbpk_input(
             ExportPbpkScenarioInputRequest(
                 scenario=dermal_scenario, regimen_name="screening_daily_use"
+            ),
+            defaults_registry,
+        )
+    )
+    pbpk_input_transient = _freeze_pbpk_input(
+        export_pbpk_input(
+            ExportPbpkScenarioInputRequest(
+                scenario=inhalation_scenario,
+                regimen_name="screening_daily_use",
+                includeTransientConcentrationProfile=True,
             ),
             defaults_registry,
         )
@@ -1550,7 +1587,11 @@ def build_examples() -> dict[str, dict]:
             tier1_scenario_package_probability_summary.model_dump(mode="json", by_alias=True)
         ),
         "aggregate_summary": aggregate_summary.model_dump(mode="json", by_alias=True),
+        "aggregate_internal_equivalent_summary": aggregate_internal_equivalent_summary.model_dump(
+            mode="json", by_alias=True
+        ),
         "pbpk_input": pbpk_input.model_dump(mode="json", by_alias=True),
+        "pbpk_input_transient": pbpk_input_transient.model_dump(mode="json", by_alias=True),
         "pbpk_external_import_request": pbpk_external_import_package.request_payload.model_dump(
             mode="json", by_alias=True
         ),

@@ -280,7 +280,7 @@ def register_core_tools(
     def exposure_build_aggregate_exposure_scenario(
         params: BuildAggregateExposureScenarioInput,
     ) -> Annotated[CallToolResult, AggregateExposureSummary]:
-        """Combine component scenarios into a simple additive aggregate exposure summary."""
+        """Combine component scenarios into an external or internal-equivalent summary."""
 
         try:
             summary = aggregate_scenarios(params, context.defaults_registry)

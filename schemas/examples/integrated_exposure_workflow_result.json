@@ -2170,6 +2170,7 @@
       "inhalation_rate_m3_per_hour": 0.9,
       "region": "EU"
     },
+    "transientConcentrationProfile": [],
     "supporting_assumption_names": [
       "use_amount_per_event",
       "density_g_per_ml",
@@ -3807,6 +3808,7 @@
             "inhalation_rate_m3_per_hour": 0.9,
             "region": "EU"
           },
+          "transientConcentrationProfile": [],
           "supporting_assumption_names": [
             "use_amount_per_event",
             "density_g_per_ml",
@@ -5700,6 +5702,7 @@
             "inhalation_rate_m3_per_hour": 0.9,
             "region": "EU"
           },
+          "transientConcentrationProfile": [],
           "supporting_assumption_names": [
             "use_amount_per_event",
             "density_g_per_ml",

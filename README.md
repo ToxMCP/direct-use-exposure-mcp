@@ -92,10 +92,10 @@ For a suite-level map of sibling services and shared handoff contracts, see
 - Evidence reconciliation across CompTox, SCCS, SCCS opinions, CosIng, ConsExpo, nano/micro guidance, and reviewed user-supplied product-use records
 - Particle-aware evidence lanes for EU cosmetic nanomaterials, synthetic polymer microparticles, and non-plastic micro/nanoparticles
 - Integrated evidence-to-scenario-to-PBPK workflow execution as one audited MCP response
-- Simple additive aggregate exposure summaries
+- External-dose aggregate summaries plus opt-in route-bioavailability-adjusted internal-equivalent screening totals
 - Scenario comparison and refinement deltas
 - ToxClaw evidence export and refinement-bundle export
-- PBPK scenario export plus exact external-import payload packaging
+- PBPK scenario export plus exact external-import payload packaging, with optional transient inhalation concentration profiles
 - Published JSON schemas, examples, contract manifest, and release metadata
 - Published shared cross-MCP contracts for identity, scenario-definition, route-dose, and future
   Fate handoffs
@@ -345,8 +345,8 @@ Current published surface from `docs/contracts/contract_manifest.json`:
 - `35` tools
 - `60` resources
 - `2` prompts
-- `150` schemas
-- `79` examples
+- `151` schemas
+- `83` examples
 
 Legacy `Exposure_Scenario_MCP_tasks.*` planning artifacts at the repo root are now archived
 status notes, not the live implementation backlog.
