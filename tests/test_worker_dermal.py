@@ -3,6 +3,7 @@ from __future__ import annotations
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
     ExposureScenarioRequest,
+    PhyschemContext,
     PopulationProfile,
     ProductAmountUnit,
     ProductUseProfile,
@@ -80,6 +81,42 @@ def test_worker_dermal_bridge_builds_ready_package() -> None:
         "support_status"
     ] == "future_adapter_recommended"
     assert any(flag.code == "worker_dermal_bridge_export" for flag in package.quality_flags)
+
+
+def test_worker_dermal_bridge_promotes_shared_physchem_context() -> None:
+    package = build_worker_dermal_absorbed_dose_bridge(
+        ExportWorkerDermalAbsorbedDoseBridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "physchem_context": PhyschemContext(
+                        vapor_pressure_mmhg=8.0,
+                        molecular_weight_g_per_mol=120.15,
+                        log_kow=2.1,
+                        water_solubility_mg_per_l=950.0,
+                    )
+                }
+            ),
+            task_description="Worker wet-wipe cleaning task with gloved hand contact",
+            workplace_setting="custodial closet",
+            contact_duration_hours=0.75,
+            contact_pattern=WorkerDermalContactPattern.SURFACE_TRANSFER,
+            exposed_body_areas=["hands"],
+            ppe_state=WorkerDermalPpeState.WORK_GLOVES,
+            control_measures=["task segregation"],
+            surface_loading_context="wet cleaning cloth transfer to gloved hands",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert package.adapter_request.chemical_context is not None
+    assert package.adapter_request.chemical_context.vapor_pressure_mmhg == 8.0
+    assert package.adapter_request.chemical_context.molecular_weight_g_per_mol == 120.15
+    assert package.adapter_request.chemical_context.log_kow == 2.1
+    assert package.adapter_request.chemical_context.water_solubility_mg_per_l == 950.0
+    assert any(
+        flag.code == "worker_dermal_physchem_context_from_base_request"
+        for flag in package.quality_flags
+    )
 
 
 def test_worker_dermal_bridge_reports_missing_fields() -> None:
@@ -543,3 +580,55 @@ def test_worker_dermal_execution_applies_vapor_pressure_modifier() -> None:
     assert result.route_metrics["vaporPressureFactor"] == 0.85
     assert result.route_metrics["chemicalContextFactor"] == 1.07525
     assert result.route_metrics["dermalAbsorptionFraction"] == 0.0537625
+
+
+def test_worker_dermal_execution_caps_surface_loading_and_reports_runoff() -> None:
+    bridge_package = build_worker_dermal_absorbed_dose_bridge(
+        ExportWorkerDermalAbsorbedDoseBridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "product_use_profile": _base_request().product_use_profile.model_copy(
+                        update={
+                            "application_method": "hand_application",
+                            "use_amount_per_event": 500.0,
+                            "use_events_per_day": 1.0,
+                        }
+                    )
+                }
+            ),
+            task_description="Worker direct liquid handling with heavy splash loading",
+            workplace_setting="mix room",
+            contact_duration_hours=1.0,
+            contact_pattern=WorkerDermalContactPattern.DIRECT_HANDLING,
+            exposed_body_areas=["hands"],
+            ppe_state=WorkerDermalPpeState.NONE,
+            control_measures=["prompt hand washing"],
+            surface_loading_context="high liquid contact on hands",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_dermal_absorbed_dose_task(
+        ExecuteWorkerDermalAbsorbedDoseRequest(
+            adapter_request=bridge_package.tool_call.arguments,
+            context_of_use="worker-dermal-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert result.route_metrics["externalSkinMassMgPerDay"] == 2000.0
+    assert result.route_metrics["surfaceLoadingMgPerCm2Day"] == 2.38095238
+    assert result.route_metrics["maxRetainedLoadingMgPerCm2Day"] == 2.0
+    assert result.route_metrics["retainedExternalSkinMassMgPerDay"] == 1680.0
+    assert result.route_metrics["retainedSurfaceLoadingMgPerCm2Day"] == 2.0
+    assert result.route_metrics["runoffMassMgPerDay"] == 320.0
+    assert result.route_metrics["runoffFraction"] == 0.16
+    assert result.route_metrics["surfaceLoadingCapApplied"] is True
+    assert any(
+        flag.code == "worker_dermal_surface_loading_cap_applied"
+        for flag in result.quality_flags
+    )
+    assert any(
+        limitation.code == "worker_dermal_execution_surface_loading_cap"
+        for limitation in result.limitations
+    )

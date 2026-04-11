@@ -324,7 +324,7 @@
             "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
             "locator": "docs://defaults-evidence-map#population-defaults",
             "version": "2026.03.25.v6",
-            "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+            "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
           },
           "confidence": "registry_default",
           "default_applied": true,
@@ -354,7 +354,7 @@
             "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
             "locator": "docs://defaults-evidence-map#screening-route-semantics",
             "version": "2026.03.25.v6",
-            "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+            "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
           },
           "confidence": "registry_default",
           "default_applied": true,
@@ -387,7 +387,7 @@
             "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
             "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
             "version": "RIVM report 2025-0099 / 2025",
-            "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+            "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
           },
           "confidence": "registry_default",
           "default_applied": true,
@@ -457,7 +457,7 @@
             "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
             "locator": "docs://defaults-evidence-map#population-defaults",
             "version": "2026.03.25.v6",
-            "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+            "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
           },
           "confidence": "registry_default",
           "default_applied": true,
@@ -521,8 +521,8 @@
         "algorithm_id": "screening.external_dose.v1",
         "plugin_id": "screening_scenario_plugin",
         "plugin_version": "0.1.0",
-        "defaults_version": "2026.04.07.v18",
-        "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+        "defaults_version": "2026.04.11.v19",
+        "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
         "generated_at": "2026-03-24T00:00:00+00:00",
         "notes": [
           "Deterministic-first v0.1 engine.",
@@ -770,8 +770,8 @@
         "algorithm_id": "pbpk.export.v1",
         "plugin_id": "pbpk_export_service",
         "plugin_version": "0.1.0",
-        "defaults_version": "2026.04.07.v18",
-        "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+        "defaults_version": "2026.04.11.v19",
+        "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
         "generated_at": "2026-03-24T00:00:00+00:00",
         "notes": [
           "Deterministic-first v0.1 engine.",

@@ -172,11 +172,17 @@
     "contactProfile": "surface_transfer_contact_profile",
     "ppeProfile": "general_work_glove_barrier_profile",
     "externalSkinMassMgPerDay": 60.0,
+    "retainedExternalSkinMassMgPerDay": 60.0,
     "protectedExternalSkinMassMgPerDay": 18.0,
     "absorbedMassMgPerDay": 0.81,
     "bodyZoneSurfaceAreaCm2": 840.0,
     "surfaceLoadingMgPerCm2Day": 0.07142857,
+    "maxRetainedLoadingMgPerCm2Day": 0.8,
+    "retainedSurfaceLoadingMgPerCm2Day": 0.07142857,
     "absorbedLoadingMgPerCm2Day": 0.00096429,
+    "runoffMassMgPerDay": 0.0,
+    "runoffFraction": 0.0,
+    "surfaceLoadingCapApplied": false,
     "ppePenetrationFactor": 0.3,
     "dermalAbsorptionFraction": 0.045,
     "baseDermalAbsorptionFraction": 0.1,
@@ -333,7 +339,7 @@
         "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening surface-contact retention",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
         "version": "RIVM report 2016-0179 / 2018",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "curated_default",
       "default_applied": true,
@@ -368,7 +374,7 @@
         "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening transfer efficiency",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
         "version": "RIVM report 2016-0179 / 2018",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "curated_default",
       "default_applied": true,
@@ -498,6 +504,146 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "max_retained_surface_loading_mg_per_cm2",
+      "value": 0.8,
+      "unit": "mg/cm2-day",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "worker_dermal_surface_loading_cap_heuristics_2026",
+        "title": "Direct-Use Exposure MCP heuristic worker dermal retained surface-loading caps",
+        "locator": "docs://defaults-evidence-map#worker-dermal-surface-cap-heuristics-2026",
+        "version": "2026.04.11.v1",
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+      },
+      "confidence": "heuristic_default",
+      "default_applied": true,
+      "rationale": "Maximum retained surface loading defaulted from the worker dermal surface-cap heuristic pack.",
+      "governance": {
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "retained_external_skin_mass_mg_per_day",
+      "value": 60.0,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Direct-Use Exposure MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Retained external skin mass per day was bounded by the maximum retained surface loading before PPE and absorption were applied.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "runoff_mass_mg_per_day",
+      "value": 0.0,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Direct-Use Exposure MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Runoff mass per day captures external mass above the bounded retained surface-loading ceiling.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "surface_loading_cap_applied",
+      "value": false,
+      "unit": null,
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Direct-Use Exposure MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Indicates whether the bounded retained surface-loading cap constrained the gross external skin mass.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "ppe_penetration_factor",
       "value": 0.3,
       "unit": "fraction",
@@ -541,7 +687,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -576,7 +722,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -611,7 +757,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal contact-duration scaling defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-contact-duration-scaling-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -646,7 +792,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -790,7 +936,7 @@
       },
       "confidence": "derived",
       "default_applied": false,
-      "rationale": "Normalized external dermal dose was derived from external skin mass and body weight.",
+      "rationale": "Normalized external dermal dose was derived from retained skin-boundary mass and body weight.",
       "governance": {
         "evidence_grade": null,
         "evidence_basis": "derived",
@@ -875,6 +1021,11 @@
       "message": "The current ingest path maps screening task fields into a structured occupational dermal envelope, but determinant selection remains packaged or heuristic unless later overridden."
     },
     {
+      "code": "worker_dermal_execution_surface_loading_cap",
+      "severity": "warning",
+      "message": "Retained skin-boundary loading is bounded by a screening surface-cap heuristic before PPE and absorption are applied; excess mass is treated as runoff or non-retained contact."
+    },
+    {
       "code": "worker_dermal_execution_generic_absorption",
       "severity": "warning",
       "message": "The execution kernel uses generic physical-form and contact-pattern absorption factors rather than chemical-specific dermal permeability data."
@@ -895,8 +1046,8 @@
     "algorithm_id": "worker.dermal_absorbed_dose_execution.v1",
     "plugin_id": "worker_dermal_absorbed_dose_execution",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+    "defaults_version": "2026.04.11.v19",
+    "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Execution starts from screening-style skin-boundary mass semantics and then applies PPE penetration and generic dermal absorption factors.",
@@ -945,6 +1096,7 @@
       "base_dermal_absorption_fraction",
       "contact_duration_factor",
       "contact_pattern_factor",
+      "max_retained_surface_loading_mg_per_cm2",
       "skin_condition_factor"
     ],
     "validationGapIds": [
@@ -999,6 +1151,7 @@
   },
   "interpretationNotes": [
     "Execution starts from the skin-boundary external mass implied by the screening-style product-use inputs or an explicit external mass override.",
+    "Retained skin loading is bounded before PPE and absorption are applied; excess mass is treated as runoff or non-retained contact.",
     "PPE is represented as a residual penetration factor before absorption is applied.",
     "Absorption is driven by bounded physical-form, contact-pattern, duration, and skin-condition modifiers unless the caller overrides it explicitly."
   ]

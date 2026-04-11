@@ -67,6 +67,7 @@ from exposure_scenario_mcp.models import (
     ParticleShapeFamily,
     ParticleSizeDomain,
     ParticleSolubilityClass,
+    PhyschemContext,
     PopulationProfile,
     ProbabilityBoundsProfileSummary,
     ProductUseProfile,
@@ -551,6 +552,12 @@ def build_examples() -> dict[str, dict]:
         chemical_id="DTXSID7020182",
         chemical_name="Example Solvent A",
         route=Route.INHALATION,
+        physchem_context=PhyschemContext(
+            vaporPressureMmhg=8.0,
+            molecularWeightGPerMol=120.15,
+            logKow=2.1,
+            waterSolubilityMgPerL=950.0,
+        ),
         product_use_profile=ProductUseProfile(
             product_name="Example Trigger Spray",
             product_category="household_cleaner",
@@ -618,6 +625,12 @@ def build_examples() -> dict[str, dict]:
         chemical_id="DTXSID7020182",
         chemical_name="Example Solvent A",
         route=Route.INHALATION,
+        physchem_context=PhyschemContext(
+            vaporPressureMmhg=8.0,
+            molecularWeightGPerMol=120.15,
+            logKow=2.1,
+            waterSolubilityMgPerL=950.0,
+        ),
         product_use_profile=ProductUseProfile(
             product_name="Example Trigger Spray",
             product_category="household_cleaner",

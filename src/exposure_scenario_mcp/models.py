@@ -1005,6 +1005,33 @@ class ParticleMaterialContext(StrictModel):
     notes: list[str] = Field(default_factory=list, description="Additional material-context notes.")
 
 
+class PhyschemContext(StrictModel):
+    schema_version: Literal["physchemContext.v1"] = "physchemContext.v1"
+    vapor_pressure_mmhg: float | None = Field(
+        default=None,
+        alias="vaporPressureMmhg",
+        ge=0.0,
+        description="Vapor pressure in mmHg for bounded volatility-aware calculations.",
+    )
+    molecular_weight_g_per_mol: float | None = Field(
+        default=None,
+        alias="molecularWeightGPerMol",
+        gt=0.0,
+        description="Molecular weight in g/mol for bounded thermodynamic conversions.",
+    )
+    log_kow: float | None = Field(
+        default=None,
+        alias="logKow",
+        description="logKow descriptor preserved for chemistry-aware screening refinements.",
+    )
+    water_solubility_mg_per_l: float | None = Field(
+        default=None,
+        alias="waterSolubilityMgPerL",
+        ge=0.0,
+        description="Water solubility in mg/L preserved for chemistry-aware screening refinements.",
+    )
+
+
 class ProductUseProfile(StrictModel):
     schema_version: Literal["productUseProfile.v1"] = "productUseProfile.v1"
     product_name: str | None = Field(
@@ -1521,6 +1548,14 @@ class ExposureScenarioRequest(StrictModel):
     )
     population_profile: PopulationProfile = Field(
         ..., description="Population profile for the exposed cohort."
+    )
+    physchem_context: PhyschemContext | None = Field(
+        default=None,
+        alias="physchemContext",
+        description=(
+            "Optional physchem descriptors preserved on direct-use requests for bounded "
+            "mechanistic refinements."
+        ),
     )
     assumption_overrides: dict[str, ScalarValue] = Field(
         default_factory=dict, description="Additional explicit overrides for auditability."

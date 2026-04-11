@@ -5,10 +5,10 @@
   "packageVersion": "0.1.0",
   "serverName": "exposure_scenario_mcp",
   "serverVersion": "0.1.0",
-  "defaultsVersion": "2026.04.07.v18",
+  "defaultsVersion": "2026.04.11.v19",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
-  "benchmarkCaseCount": 23,
+  "benchmarkCaseCount": 26,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
     "dermal_face_cream_sccs_screening",
@@ -32,9 +32,12 @@
     "worker_inhalation_janitorial_trigger_spray_execution",
     "worker_inhalation_handheld_biocidal_trigger_spray_execution",
     "worker_dermal_wet_wipe_gloved_hands_execution",
-    "worker_dermal_handheld_biocidal_trigger_spray_execution"
+    "worker_dermal_handheld_biocidal_trigger_spray_execution",
+    "inhalation_saturation_cap_stress_case",
+    "inhalation_tier1_coarse_spray_settling_sensitivity",
+    "worker_dermal_extreme_loading_surface_cap_execution"
   ],
-  "contractSchemaCount": 150,
+  "contractSchemaCount": 151,
   "contractExampleCount": 79,
   "distributionArtifacts": [
     {

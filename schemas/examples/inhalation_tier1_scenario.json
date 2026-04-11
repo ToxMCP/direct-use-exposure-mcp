@@ -7,7 +7,7 @@
   "scenario_class": "inhalation",
   "external_dose": {
     "metric": "normalized_external_dose",
-    "value": 0.06262114,
+    "value": 0.05899338,
     "unit": "mg/kg-day"
   },
   "product_use_profile": {
@@ -44,12 +44,24 @@
   "route_metrics": {
     "chemical_mass_mg_per_event": 600.0,
     "released_mass_mg_per_event": 120.0,
-    "far_field_average_air_concentration_mg_per_m3": 3.03417868,
-    "near_field_active_spray_concentration_mg_per_m3": 1449.46275011,
-    "average_air_concentration_mg_per_m3": 9.46275011,
-    "breathing_zone_time_weighted_average_mg_per_m3": 9.46275011,
+    "initial_air_concentration_mg_per_m3": 4.8,
+    "uncapped_initial_air_concentration_mg_per_m3": 4.8,
+    "far_field_average_air_concentration_mg_per_m3": 2.48598349,
+    "uncapped_far_field_average_air_concentration_mg_per_m3": 2.48598349,
+    "near_field_active_spray_concentration_mg_per_m3": 1448.91455492,
+    "uncapped_near_field_active_spray_concentration_mg_per_m3": 1448.91455492,
+    "average_air_concentration_mg_per_m3": 8.91455492,
+    "uncapped_average_air_concentration_mg_per_m3": 8.91455492,
+    "breathing_zone_time_weighted_average_mg_per_m3": 8.91455492,
     "interzonal_mixing_rate_m3_per_hour": 68.0,
-    "inhaled_mass_mg_per_day": 4.25823755,
+    "deposition_rate_per_hour": 1.0,
+    "total_loss_rate_per_hour": 3.0,
+    "room_air_decay_half_life_hours": 0.23104906,
+    "saturation_cap_mg_per_m3": 51694.90999577,
+    "saturation_cap_applied": false,
+    "vapor_pressure_mmhg": 8.0,
+    "molecular_weight_g_per_mol": 120.15,
+    "inhaled_mass_mg_per_day": 4.01154971,
     "tier1_product_profile_id": "household_cleaner_trigger_spray_tier1",
     "tier1_profile_alignment_status": "aligned",
     "tier1_profile_divergence_count": 0
@@ -98,7 +110,7 @@
         "title": "Direct-Use Exposure MCP heuristic density screening defaults",
         "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -265,7 +277,7 @@
         "title": "Characterization of airborne particles from cleaning sprays and their corresponding respiratory deposition fractions",
         "locator": "https://pubmed.ncbi.nlm.nih.gov/31361572/",
         "version": "J Aerosol Sci. 2019",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -329,7 +341,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -361,7 +373,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -438,6 +450,146 @@
         ],
         "applicability_domain": {
           "population_group": "adult",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "vapor_pressure_mmhg",
+      "value": 8.0,
+      "unit": "mmHg",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Vapor pressure was supplied explicitly for bounded volatility-aware inhalation screening.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "molecular_weight_g_per_mol",
+      "value": 120.15,
+      "unit": "g/mol",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Molecular weight was supplied explicitly for bounded volatility-aware inhalation screening.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "log_kow",
+      "value": 2.1,
+      "unit": "log10",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "logKow was supplied explicitly for chemistry-aware screening context.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "water_solubility_mg_per_l",
+      "value": 950.0,
+      "unit": "mg/L",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Water solubility was supplied explicitly for chemistry-aware screening context.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
           "region": "EU"
         }
       }
@@ -601,6 +753,111 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "deposition_rate_per_hour",
+      "value": 1.0,
+      "unit": "1/h",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "inhalation_deposition_sink_heuristics_2026",
+        "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
+        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+        "version": "2026.04.11.v1",
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+      "governance": {
+        "evidence_grade": "grade_2",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "saturation_cap_reference_temperature_c",
+      "value": 25.0,
+      "unit": "C",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "inhalation_volatility_saturation_cap_policy_2026",
+        "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
+        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+        "version": "2026.04.11.v1",
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Volatility saturation cap uses the governed room-temperature screening policy.",
+      "governance": {
+        "evidence_grade": "grade_2",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "saturation_cap_mg_per_m3",
+      "value": 51694.90999577034,
+      "unit": "mg/m3",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "inhalation_volatility_saturation_cap_policy_2026",
+        "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
+        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+        "version": "2026.04.11.v1",
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Thermodynamic saturation ceiling derived from vapor pressure, molecular weight, and the governed room-temperature policy.",
+      "governance": {
+        "evidence_grade": "grade_2",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "released_mass_mg_per_event",
       "value": 120.0,
       "unit": "mg/event",
@@ -624,6 +881,41 @@
           "model_uncertainty",
           "scenario_uncertainty"
         ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "total_loss_rate_per_hour",
+      "value": 3.0,
+      "unit": "1/h",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Total room-air loss rate = air exchange rate + deposition sink.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
         "applicability_domain": {
           "route": "inhalation",
           "scenario_class": "inhalation",
@@ -811,7 +1103,7 @@
     {
       "schema_version": "exposureAssumptionRecord.v1",
       "name": "far_field_average_air_concentration_mg_per_m3",
-      "value": 3.034178682377077,
+      "value": 2.4859834875250244,
       "unit": "mg/m3",
       "source_kind": "derived",
       "source": {
@@ -823,7 +1115,7 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Far-field room average derived from the Tier 0 room model over the full exposure window.",
+      "rationale": "Far-field room average derived from the Tier 1 room model over the full exposure window after bounded loss terms are applied.",
       "governance": {
         "evidence_grade": null,
         "evidence_basis": "derived",
@@ -848,8 +1140,43 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "uncapped_far_field_average_air_concentration_mg_per_m3",
+      "value": 2.4859834875250244,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Uncapped far-field room average before any volatility saturation cap is applied.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "near_field_active_spray_concentration_mg_per_m3",
-      "value": 1449.4627501109485,
+      "value": 1448.9145549160964,
       "unit": "mg/m3",
       "source_kind": "derived",
       "source": {
@@ -886,8 +1213,43 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "uncapped_near_field_active_spray_concentration_mg_per_m3",
+      "value": 1448.9145549160964,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Uncapped active-spray breathing-zone concentration before any volatility saturation cap is applied.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "breathing_zone_time_weighted_average_mg_per_m3",
-      "value": 9.462750110948507,
+      "value": 8.914554916096455,
       "unit": "mg/m3",
       "source_kind": "derived",
       "source": {
@@ -924,8 +1286,113 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "uncapped_average_air_concentration_mg_per_m3",
+      "value": 8.914554916096455,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Uncapped breathing-zone time-weighted average before any volatility saturation cap is applied.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "room_air_decay_half_life_hours",
+      "value": 0.23104906018664842,
+      "unit": "h",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Room-air decay half-life implied by air exchange plus the bounded deposition sink.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "saturation_cap_applied",
+      "value": false,
+      "unit": null,
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Whether the volatility saturation cap constrained one or more modeled Tier 1 room-air concentrations.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "inhaled_mass_mg_per_event",
-      "value": 4.258237549926828,
+      "value": 4.011549712243404,
       "unit": "mg/event",
       "source_kind": "derived",
       "source": {
@@ -960,7 +1427,7 @@
     {
       "schema_version": "exposureAssumptionRecord.v1",
       "name": "inhaled_mass_mg_per_day",
-      "value": 4.258237549926828,
+      "value": 4.011549712243404,
       "unit": "mg/day",
       "source_kind": "derived",
       "source": {
@@ -998,7 +1465,7 @@
     {
       "schema_version": "exposureAssumptionRecord.v1",
       "name": "normalized_external_dose_mg_per_kg_day",
-      "value": 0.0626211404401004,
+      "value": 0.058993378121226535,
       "unit": "mg/kg-day",
       "source_kind": "derived",
       "source": {
@@ -1039,8 +1506,8 @@
     "algorithm_id": "inhalation.near_field_far_field.v1",
     "plugin_id": "inhalation_tier_1_nf_ff_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+    "defaults_version": "2026.04.11.v19",
+    "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
@@ -1056,7 +1523,7 @@
     {
       "code": "particle_regime_screening",
       "severity": "warning",
-      "message": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics."
+      "message": "Particle-size effects use bounded screening persistence and deposition terms and do not model droplet evaporation or full aerosol dynamics."
     }
   ],
   "quality_flags": [
@@ -1084,6 +1551,21 @@
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'exposure_duration_hours'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'deposition_rate_per_hour'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'saturation_cap_reference_temperature_c'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'saturation_cap_mg_per_m3'."
     },
     {
       "code": "default_applied",
@@ -1121,7 +1603,8 @@
     "assumption_checks_passed": true,
     "required_caveats": [
       "Interpret the near-field compartment as a governed screening construct rather than a measured CFD domain.",
-      "The airflow directionality and particle regime terms remain screening classifications, not measured aerosol dynamics."
+      "The airflow directionality and particle regime terms remain screening classifications, not measured aerosol dynamics.",
+      "Bounded deposition and volatility caps improve physical realism but do not turn the model into a transient aerosol transport solver."
     ],
     "forbidden_interpretations": [
       "Do not interpret this result as deposited dose, absorbed dose, or a PBPK state.",
@@ -1184,7 +1667,7 @@
       "quantificationStatus": "qualitative_only",
       "biasDirection": "bidirectional",
       "impactLevel": "medium",
-      "summary": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics.",
+      "summary": "Particle-size effects use bounded screening persistence and deposition terms and do not model droplet evaporation or full aerosol dynamics.",
       "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
     },
     {
@@ -1227,9 +1710,9 @@
       "unit": "events/day",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00626211,
-      "percentDelta": 9.999994,
-      "elasticity": 0.999999,
+      "absoluteDelta": 0.00589934,
+      "percentDelta": 10.000003,
+      "elasticity": 1.0,
       "direction": "positive"
     },
     {
@@ -1240,9 +1723,9 @@
       "unit": "mL",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00626211,
-      "percentDelta": 9.999994,
-      "elasticity": 0.999999,
+      "absoluteDelta": 0.00589934,
+      "percentDelta": 10.000003,
+      "elasticity": 1.0,
       "direction": "positive"
     },
     {
@@ -1253,9 +1736,9 @@
       "unit": "m3/h",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00626211,
-      "percentDelta": 9.999994,
-      "elasticity": 0.999999,
+      "absoluteDelta": 0.00589934,
+      "percentDelta": 10.000003,
+      "elasticity": 1.0,
       "direction": "positive"
     },
     {
@@ -1266,9 +1749,9 @@
       "unit": "g/mL",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00626211,
-      "percentDelta": 9.999994,
-      "elasticity": 0.999999,
+      "absoluteDelta": 0.00589934,
+      "percentDelta": 10.000003,
+      "elasticity": 1.0,
       "direction": "positive"
     },
     {
@@ -1279,9 +1762,9 @@
       "unit": "fraction",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00626211,
-      "percentDelta": 9.999994,
-      "elasticity": 0.999999,
+      "absoluteDelta": 0.00589934,
+      "percentDelta": 10.000003,
+      "elasticity": 1.0,
       "direction": "positive"
     },
     {
@@ -1292,9 +1775,9 @@
       "unit": "fraction",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00626211,
-      "percentDelta": 9.999994,
-      "elasticity": 0.999999,
+      "absoluteDelta": 0.00589934,
+      "percentDelta": 10.000003,
+      "elasticity": 1.0,
       "direction": "positive"
     },
     {
@@ -1305,9 +1788,9 @@
       "unit": "kg",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": -0.00569283,
-      "percentDelta": -9.090908,
-      "elasticity": -0.909091,
+      "absoluteDelta": -0.00536304,
+      "percentDelta": -9.090918,
+      "elasticity": -0.909092,
       "direction": "negative"
     },
     {
@@ -1319,8 +1802,8 @@
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
       "absoluteDelta": -0.00386746,
-      "percentDelta": -6.175965,
-      "elasticity": -0.617597,
+      "percentDelta": -6.555753,
+      "elasticity": -0.655575,
       "direction": "negative"
     }
   ],
@@ -1390,6 +1873,7 @@
     "validationStatus": "benchmark_regression",
     "routeMechanism": "inhalation_near_field_far_field",
     "benchmarkCaseIds": [
+      "inhalation_tier1_coarse_spray_settling_sensitivity",
       "inhalation_tier1_disinfectant_trigger_spray_external_2015",
       "inhalation_tier1_scenario_package_probability",
       "inhalation_tier1_trigger_spray_nf_ff"
@@ -1417,6 +1901,18 @@
         "referenceUpper": 0.322,
         "unit": "fraction",
         "note": "Observed aerosolized_fraction is compared against the reported 2.7%-32.2% airborne-mass range for ready-to-use trigger cleaning sprays."
+      },
+      {
+        "checkId": "trigger_spray_aerosol_decay_half_life_2023",
+        "title": "Trigger-spray aerosol decay half-life vs climate-chamber spray study",
+        "referenceDatasetId": "spray_cleaning_disinfection_decay_half_life_2023",
+        "status": "pass",
+        "comparedMetric": "room_air_decay_half_life_hours",
+        "observedValue": 0.23104906,
+        "referenceLower": 0.125,
+        "referenceUpper": 0.375,
+        "unit": "h",
+        "note": "Observed room-air decay half-life is compared against a screening band centered on the reported 0.25 h average trigger-spray aerosol half-life from the 2023 cleaning and disinfection spray chamber study."
       }
     ],
     "highestSupportedUncertaintyTier": "tier_c",

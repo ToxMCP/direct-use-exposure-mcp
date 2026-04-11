@@ -33,12 +33,12 @@ Use this document together with:
 
 | Area | What it owns | Current maturity | Main evidence basis | Main caveats |
 | --- | --- | --- | --- | --- |
-| Core deterministic exposure engine | Dermal, oral, inhalation screening, aggregate summaries, scenario comparison, PBPK-ready export | `benchmark-regressed`, `curated`, `heuristic screening` | Benchmark corpus, defaults registry, executable reference bands | Some branches still depend on heuristic screening defaults. |
+| Core deterministic exposure engine | Dermal, oral, inhalation screening, aggregate summaries, scenario comparison, PBPK-ready export | `benchmark-regressed`, `curated`, `heuristic screening` | Benchmark corpus, defaults registry, executable reference bands | Some branches still depend on heuristic screening defaults, even though inhalation now has bounded saturation/deposition caps and worker dermal now has retained-loading bounds. |
 | Tier B/Tier C bounded uncertainty | Envelopes, parameter bounds, packaged probability-bounds profiles, scenario packages | `curated`, `heuristic screening` | Packaged archetype/profile registries with explicit manifests | Not a probabilistic population engine; no Monte Carlo claims. |
-| Residual-air and Tier 1 NF/FF inhalation | Residual-air reentry mode, Tier 1 screening, packaged Tier 1 profiles | `benchmark-regressed`, `curated`, `heuristic screening` | External reference bands, sparse time-series packs, profile packs | Time-resolved validation is still sparse and product-family selective. |
+| Residual-air and Tier 1 NF/FF inhalation | Residual-air reentry mode, Tier 1 screening, packaged Tier 1 profiles | `benchmark-regressed`, `curated`, `heuristic screening` | External reference bands, sparse time-series packs, profile packs | Time-resolved validation is still sparse and product-family selective, and deposition remains a bounded first-order sink rather than full aerosol dynamics. |
 | Evidence normalization and workflow | CompTox, SCCS, SCCS opinions, CosIng, ConsExpo, nanomaterial guidance, microplastics regulatory records, user-reviewed evidence, integrated evidence-to-scenario workflow | `external-normalized`, `curated` | Typed evidence records, reconciliation reports, particle-aware material context, provenance rules | This layer normalizes evidence; it does not make final scientific judgments. |
 | Worker inhalation routing and execution | Worker routing, Tier 2 bridge, ART-style ingest, bounded execution, ART external exchange | `external-normalized`, `bounded surrogate`, `curated` | Worker determinant templates, external ART package exchange, worker reference bands | Not a native ART solver; external ART results remain imported, not internally solved. |
-| Worker dermal execution | Dermal bridge, PPE-aware ingest, absorbed-dose execution | `bounded surrogate`, `curated`, `heuristic screening` | Dermal defaults packs, barrier-material and physchem modifiers, worker dermal validation anchors | Not full glove-breakthrough or chemical-specific permeation kinetics. |
+| Worker dermal execution | Dermal bridge, PPE-aware ingest, absorbed-dose execution | `bounded surrogate`, `curated`, `heuristic screening` | Dermal defaults packs, retained-loading/runoff bounds, barrier-material and physchem modifiers, worker dermal validation anchors | Not full glove-breakthrough or chemical-specific permeation kinetics. |
 | Validation and goldset surface | Validation dossier, coverage report, executable bands, time-series packs, goldset showcase corpus | `benchmark-regressed`, `external-normalized` | Versioned benchmark fixtures, cited external datasets, goldset case curation | Coverage is strong but still selective by domain and product family. |
 | Release and provenance governance | Release metadata, readiness, conformance, security/provenance review, contracts/examples/resources | `benchmark-regressed`, `curated` | Release artifact checks, manifest generation, provenance/defaults policy | Strong governance does not by itself replace broader scientific validation. |
 
@@ -61,6 +61,7 @@ Three practical rules matter:
 The next improvements should favor legibility and evidence depth over surface growth:
 
 - add more external benchmark datasets across recognizable families
+- keep replacing unconstrained heuristic behavior with bounded physical caps and sinks before adding wider surface area
 - deepen worker dermal kinetics with reviewed material and permeation logic
 - keep worker high-tier execution as explicit external exchange until a true solver
   integration is justified

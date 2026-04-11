@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
 <evaluation>
   <qa_pair>
     <question>Inspect the contract manifest and the example dermal screening scenario. What exact canonical unit is used for the primary external dose? Answer with the unit string only.</question>
@@ -9,11 +10,11 @@
   </qa_pair>
   <qa_pair>
     <question>Read the defaults manifest or any example provenance bundle. What defaults pack version is in force for this server? Answer exactly.</question>
-    <answer>2026.04.07.v18</answer>
+    <answer>2026.04.11.v19</answer>
   </qa_pair>
   <qa_pair>
     <question>From the example inhalation scenario, what is the average air concentration value? Respond with the numeric value only and keep all shown decimal places.</question>
-    <answer>3.03417868</answer>
+    <answer>2.73982158</answer>
   </qa_pair>
   <qa_pair>
     <question>Look at the aggregate summary example and determine which route contributes the larger route-wise total. Answer with one of dermal, oral, or inhalation.</question>

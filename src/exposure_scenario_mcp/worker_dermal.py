@@ -24,6 +24,7 @@ from exposure_scenario_mcp.models import (
     ExposureScenarioRequest,
     FitForPurpose,
     LimitationNote,
+    PhyschemContext,
     PopulationProfile,
     ProductAmountUnit,
     ProductUseProfile,
@@ -56,6 +57,9 @@ WORKER_DERMAL_TEMPLATE_CATALOG_VERSION = "2026.04.07.v1"
 WORKER_DERMAL_BENCHMARK_CASE_ID = "worker_dermal_wet_wipe_gloved_hands_execution"
 WORKER_DERMAL_BIOCIDAL_BENCHMARK_CASE_ID = (
     "worker_dermal_handheld_biocidal_trigger_spray_execution"
+)
+WORKER_DERMAL_SURFACE_CAP_BENCHMARK_CASE_ID = (
+    "worker_dermal_extreme_loading_surface_cap_execution"
 )
 WORKER_DERMAL_BIOCIDAL_EXTERNAL_CHECK_ID = (
     "worker_biocidal_handheld_trigger_spray_dermal_mass_2023"
@@ -114,25 +118,9 @@ class WorkerDermalBarrierMaterial(StrEnum):
     COATED_TEXTILE = "coated_textile"
 
 
-class WorkerDermalChemicalContext(StrictModel):
+class WorkerDermalChemicalContext(PhyschemContext):
     schema_version: Literal["workerDermalChemicalContext.v1"] = (
         "workerDermalChemicalContext.v1"
-    )
-    log_kow: float | None = Field(default=None, alias="logKow")
-    molecular_weight_g_per_mol: float | None = Field(
-        default=None,
-        alias="molecularWeightGPerMol",
-        gt=0.0,
-    )
-    water_solubility_mg_per_l: float | None = Field(
-        default=None,
-        alias="waterSolubilityMgPerL",
-        ge=0.0,
-    )
-    vapor_pressure_mmhg: float | None = Field(
-        default=None,
-        alias="vaporPressureMmhg",
-        ge=0.0,
     )
 
 
@@ -570,6 +558,21 @@ def _has_worker_dermal_chemical_context(
     )
 
 
+def _coerce_worker_dermal_chemical_context(
+    value: WorkerDermalChemicalContext | PhyschemContext | None,
+) -> WorkerDermalChemicalContext | None:
+    if value is None:
+        return None
+    if isinstance(value, WorkerDermalChemicalContext):
+        return value
+    return WorkerDermalChemicalContext(
+        logKow=value.log_kow,
+        molecularWeightGPerMol=value.molecular_weight_g_per_mol,
+        waterSolubilityMgPerL=value.water_solubility_mg_per_l,
+        vaporPressureMmhg=value.vapor_pressure_mmhg,
+    )
+
+
 def _product_amount_unit(value: ScalarValue | object) -> ProductAmountUnit | None:
     if isinstance(value, ProductAmountUnit):
         return value
@@ -648,6 +651,30 @@ def _matches_worker_dermal_handheld_biocidal_benchmark(
         and _normalized_text(task_context.workplace_setting) == "workbench_area"
         and task_context.contact_pattern == WorkerDermalContactPattern.SURFACE_TRANSFER
         and task_context.ppe_state == WorkerDermalPpeState.WORK_GLOVES
+    )
+
+
+def _matches_worker_dermal_surface_cap_benchmark(
+    result: WorkerDermalAbsorbedDoseExecutionResult,
+) -> bool:
+    profile = result.product_use_profile
+    envelope = result.dermal_task_envelope
+    task_context = result.task_context
+    if profile is None or envelope is None or task_context is None:
+        return False
+    return (
+        envelope.determinant_template_match.template_id == "generic_ungloved_hand_contact_v1"
+        and profile.product_category == "household_cleaner"
+        and profile.physical_form == "liquid"
+        and profile.application_method == "hand_application"
+        and math.isclose(float(profile.concentration_fraction), 0.02, rel_tol=1e-9)
+        and math.isclose(float(profile.use_amount_per_event), 500.0, rel_tol=1e-9)
+        and math.isclose(float(profile.use_events_per_day), 1.0, rel_tol=1e-9)
+        and math.isclose(float(profile.exposure_duration_hours or 0.0), 0.75, rel_tol=1e-9)
+        and math.isclose(float(task_context.contact_duration_hours or 0.0), 1.0, rel_tol=1e-9)
+        and _normalized_text(task_context.workplace_setting) == "mix_room"
+        and task_context.contact_pattern == WorkerDermalContactPattern.DIRECT_HANDLING
+        and task_context.ppe_state == WorkerDermalPpeState.NONE
     )
 
 
@@ -820,6 +847,14 @@ def _build_worker_dermal_validation_summary(
                 )
             )
             evidence_readiness = ValidationEvidenceReadiness.EXTERNAL_PARTIAL
+
+    if _matches_worker_dermal_surface_cap_benchmark(result):
+        benchmark_case_ids.append(WORKER_DERMAL_SURFACE_CAP_BENCHMARK_CASE_ID)
+        _append_worker_dermal_benchmark_checks(
+            result,
+            case_id=WORKER_DERMAL_SURFACE_CAP_BENCHMARK_CASE_ID,
+            executed_validation_checks=executed_validation_checks,
+        )
 
     if not benchmark_case_ids:
         benchmark_case_ids = [WORKER_DERMAL_BENCHMARK_CASE_ID]
@@ -1505,6 +1540,20 @@ def build_worker_dermal_absorbed_dose_bridge(
     )
 
     ready_for_adapter = not any(item.severity == Severity.ERROR for item in issues)
+    chemical_context = _coerce_worker_dermal_chemical_context(
+        params.chemical_context or base_request.physchem_context
+    )
+    if params.chemical_context is None and chemical_context is not None:
+        quality_flags.append(
+            QualityFlag(
+                code="worker_dermal_physchem_context_from_base_request",
+                severity=Severity.INFO,
+                message=(
+                    "Worker dermal bridge promoted physchemContext from the base direct-use "
+                    "request into the legacy chemicalContext adapter lane."
+                ),
+            )
+        )
 
     task_context = WorkerDermalTaskContext(
         task_description=params.task_description,
@@ -1552,7 +1601,7 @@ def build_worker_dermal_absorbed_dose_bridge(
             "preferredName": base_request.chemical_name or base_request.chemical_id,
             "sourceModule": "exposure-scenario-mcp",
         },
-        chemical_context=params.chemical_context,
+        chemical_context=chemical_context,
         task_context=task_context,
         exposure_inputs=exposure_inputs,
         supporting_handoffs={
@@ -2312,6 +2361,97 @@ def execute_worker_dermal_absorbed_dose_task(
                 )
             )
 
+    gross_external_mass_mg_day = external_mass_mg_day
+    retained_external_mass_mg_day = external_mass_mg_day
+    runoff_mass_mg_day = 0.0
+    runoff_fraction = 0.0
+    max_retained_loading_mg_per_cm2 = None
+    surface_loading_cap_applied = False
+    if external_mass_mg_day is not None:
+        (
+            max_retained_loading_mg_per_cm2,
+            surface_loading_cap_source,
+        ) = registry.worker_dermal_max_retained_surface_loading_mg_per_cm2(
+            physical_form=str(dermal_inputs.get("physicalForm") or "global"),
+            contact_profile=envelope.contact_profile,
+        )
+        assumptions.append(
+            _assumption_record(
+                name="max_retained_surface_loading_mg_per_cm2",
+                value=max_retained_loading_mg_per_cm2,
+                unit="mg/cm2-day",
+                source_kind=SourceKind.DEFAULT_REGISTRY,
+                source=surface_loading_cap_source,
+                rationale=(
+                    "Maximum retained surface loading defaulted from the worker dermal "
+                    "surface-cap heuristic pack."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
+        retained_external_mass_mg_day = min(
+            external_mass_mg_day,
+            max_retained_loading_mg_per_cm2 * body_zone_area_cm2,
+        )
+        runoff_mass_mg_day = max(external_mass_mg_day - retained_external_mass_mg_day, 0.0)
+        runoff_fraction = (
+            runoff_mass_mg_day / external_mass_mg_day if external_mass_mg_day > 0.0 else 0.0
+        )
+        surface_loading_cap_applied = runoff_mass_mg_day > 1e-12
+        assumptions.append(
+            _assumption_record(
+                name="retained_external_skin_mass_mg_per_day",
+                value=round(retained_external_mass_mg_day, 8),
+                unit="mg/day",
+                source_kind=SourceKind.DERIVED,
+                source=_execution_algorithm_source(),
+                rationale=(
+                    "Retained external skin mass per day was bounded by the maximum retained "
+                    "surface loading before PPE and absorption were applied."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
+        assumptions.append(
+            _assumption_record(
+                name="runoff_mass_mg_per_day",
+                value=round(runoff_mass_mg_day, 8),
+                unit="mg/day",
+                source_kind=SourceKind.DERIVED,
+                source=_execution_algorithm_source(),
+                rationale=(
+                    "Runoff mass per day captures external mass above the bounded retained "
+                    "surface-loading ceiling."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
+        assumptions.append(
+            _assumption_record(
+                name="surface_loading_cap_applied",
+                value=surface_loading_cap_applied,
+                unit=None,
+                source_kind=SourceKind.DERIVED,
+                source=_execution_algorithm_source(),
+                rationale=(
+                    "Indicates whether the bounded retained surface-loading cap constrained "
+                    "the gross external skin mass."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
+        if surface_loading_cap_applied:
+            quality_flags.append(
+                QualityFlag(
+                    code="worker_dermal_surface_loading_cap_applied",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Worker dermal execution capped retained skin-surface loading and "
+                        "treated the excess mass as runoff or non-retained contact."
+                    ),
+                )
+            )
+
     ppe_penetration_override = None if overrides is None else overrides.ppe_penetration_factor
     if ppe_penetration_override is not None:
         ppe_penetration_factor = float(ppe_penetration_override)
@@ -2823,7 +2963,7 @@ def execute_worker_dermal_absorbed_dose_task(
     }
 
     if external_mass_mg_day is not None:
-        protected_external_mass_mg_day = external_mass_mg_day * ppe_penetration_factor
+        protected_external_mass_mg_day = retained_external_mass_mg_day * ppe_penetration_factor
         absorbed_mass_mg_day = protected_external_mass_mg_day * dermal_absorption_fraction
         assumptions.append(
             _assumption_record(
@@ -2854,6 +2994,9 @@ def execute_worker_dermal_absorbed_dose_task(
             )
         )
         route_metrics["externalSkinMassMgPerDay"] = round(external_mass_mg_day, 8)
+        route_metrics["retainedExternalSkinMassMgPerDay"] = round(
+            retained_external_mass_mg_day, 8
+        )
         route_metrics["protectedExternalSkinMassMgPerDay"] = round(
             protected_external_mass_mg_day,
             8,
@@ -2861,13 +3004,24 @@ def execute_worker_dermal_absorbed_dose_task(
         route_metrics["absorbedMassMgPerDay"] = round(absorbed_mass_mg_day, 8)
         route_metrics["bodyZoneSurfaceAreaCm2"] = round(body_zone_area_cm2, 8)
         route_metrics["surfaceLoadingMgPerCm2Day"] = round(
-            external_mass_mg_day / body_zone_area_cm2,
+            gross_external_mass_mg_day / body_zone_area_cm2,
+            8,
+        )
+        route_metrics["maxRetainedLoadingMgPerCm2Day"] = round(
+            max_retained_loading_mg_per_cm2,
+            8,
+        )
+        route_metrics["retainedSurfaceLoadingMgPerCm2Day"] = round(
+            retained_external_mass_mg_day / body_zone_area_cm2,
             8,
         )
         route_metrics["absorbedLoadingMgPerCm2Day"] = round(
             absorbed_mass_mg_day / body_zone_area_cm2,
             8,
         )
+        route_metrics["runoffMassMgPerDay"] = round(runoff_mass_mg_day, 8)
+        route_metrics["runoffFraction"] = round(runoff_fraction, 8)
+        route_metrics["surfaceLoadingCapApplied"] = surface_loading_cap_applied
         route_metrics["ppePenetrationFactor"] = round(ppe_penetration_factor, 8)
         route_metrics["dermalAbsorptionFraction"] = round(dermal_absorption_fraction, 8)
         if ppe_penetration_override is None:
@@ -2920,7 +3074,7 @@ def execute_worker_dermal_absorbed_dose_task(
                 route_metrics["vaporPressureFactor"] = round(vapor_pressure_factor, 8)
 
         if body_weight is not None:
-            normalized_external = external_mass_mg_day / body_weight
+            normalized_external = retained_external_mass_mg_day / body_weight
             normalized_absorbed = absorbed_mass_mg_day / body_weight
             assumptions.append(
                 _assumption_record(
@@ -2930,8 +3084,8 @@ def execute_worker_dermal_absorbed_dose_task(
                     source_kind=SourceKind.DERIVED,
                     source=_execution_algorithm_source(),
                     rationale=(
-                        "Normalized external dermal dose was derived from external skin mass "
-                        "and body weight."
+                        "Normalized external dermal dose was derived from retained skin-"
+                        "boundary mass and body weight."
                     ),
                     applicability_domain=applicability_domain,
                 )
@@ -2963,6 +3117,15 @@ def execute_worker_dermal_absorbed_dose_task(
 
     limitations.extend(
         [
+            LimitationNote(
+                code="worker_dermal_execution_surface_loading_cap",
+                severity=Severity.WARNING,
+                message=(
+                    "Retained skin-boundary loading is bounded by a screening surface-cap "
+                    "heuristic before PPE and absorption are applied; excess mass is treated "
+                    "as runoff or non-retained contact."
+                ),
+            ),
             LimitationNote(
                 code=(
                     "worker_dermal_execution_bounded_physchem_absorption"
@@ -3060,6 +3223,8 @@ def execute_worker_dermal_absorbed_dose_task(
     interpretation_notes = [
         "Execution starts from the skin-boundary external mass implied by the screening-style "
         "product-use inputs or an explicit external mass override.",
+        "Retained skin loading is bounded before PPE and absorption are applied; excess mass "
+        "is treated as runoff or non-retained contact.",
         "PPE is represented as a residual penetration factor before absorption is applied.",
         "Absorption is driven by bounded physical-form, contact-pattern, duration, and "
         "skin-condition modifiers unless the caller overrides it explicitly.",

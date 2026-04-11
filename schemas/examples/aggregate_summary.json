@@ -18,7 +18,7 @@
       "route": "inhalation",
       "dose": {
         "metric": "normalized_external_dose",
-        "value": 0.02007912,
+        "value": 0.01813117,
         "unit": "mg/kg-day"
       }
     }
@@ -26,7 +26,7 @@
   "aggregation_method": "simple_additive_screening",
   "normalized_total_external_dose": {
     "metric": "aggregate_external_dose",
-    "value": 1.14507912,
+    "value": 1.14313117,
     "unit": "mg/kg-day"
   },
   "per_route_totals": [
@@ -42,7 +42,7 @@
       "route": "inhalation",
       "total_dose": {
         "metric": "route_total_external_dose",
-        "value": 0.02007912,
+        "value": 0.01813117,
         "unit": "mg/kg-day"
       }
     }
@@ -50,13 +50,13 @@
   "dominant_contributors": [
     {
       "scenario_id": "exp-example-dermal-001",
-      "contribution_fraction": 0.982465,
+      "contribution_fraction": 0.984139,
       "dose_value": 1.125
     },
     {
       "scenario_id": "inh-example-room-001",
-      "contribution_fraction": 0.017535,
-      "dose_value": 0.02007912
+      "contribution_fraction": 0.015861,
+      "dose_value": 0.01813117
     }
   ],
   "limitations": [
@@ -122,8 +122,8 @@
     "algorithm_id": "aggregate.simple_additive.v1",
     "plugin_id": "aggregate_summary_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+    "defaults_version": "2026.04.11.v19",
+    "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

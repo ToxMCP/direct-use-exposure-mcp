@@ -11,7 +11,7 @@
   "scenarioClass": "refined",
   "baselineDose": {
     "metric": "normalized_external_dose",
-    "value": 0.09455426,
+    "value": 0.09024701,
     "unit": "mg/kg-day"
   },
   "externalDose": {
@@ -203,9 +203,9 @@
     "importedBreathingZoneConcentrationMgPerM3": 0.72,
     "importedInhaledMassMgPerDay": 1.575,
     "importedDoseDerivationMethod": "explicit_normalized_external_dose",
-    "surrogateExternalDoseMgPerKgDay": 0.09455426,
-    "importedDoseDeltaVsSurrogateMgPerKgDay": -0.07355426,
-    "importedDoseRatioVsSurrogate": 0.2220947
+    "surrogateExternalDoseMgPerKgDay": 0.09024701,
+    "importedDoseDeltaVsSurrogateMgPerKgDay": -0.06924701,
+    "importedDoseRatioVsSurrogate": 0.23269469
   },
   "assumptions": [
     {
@@ -502,8 +502,8 @@
     "algorithm_id": "worker.inhalation_art_external_import.v1",
     "plugin_id": "worker_inhalation_art_external_result_import",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+    "defaults_version": "2026.04.11.v19",
+    "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Imports a normalized external ART-side execution result back into the governed worker inhalation execution schema.",

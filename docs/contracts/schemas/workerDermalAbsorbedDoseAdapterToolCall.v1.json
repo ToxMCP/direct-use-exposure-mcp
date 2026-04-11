@@ -164,9 +164,10 @@
           "title": "Schema Version",
           "type": "string"
         },
-        "logKow": {
+        "vaporPressureMmhg": {
           "anyOf": [
             {
+              "minimum": 0.0,
               "type": "number"
             },
             {
@@ -174,7 +175,8 @@
             }
           ],
           "default": null,
-          "title": "Logkow"
+          "description": "Vapor pressure in mmHg for bounded volatility-aware calculations.",
+          "title": "Vaporpressuremmhg"
         },
         "molecularWeightGPerMol": {
           "anyOf": [
@@ -187,7 +189,21 @@
             }
           ],
           "default": null,
+          "description": "Molecular weight in g/mol for bounded thermodynamic conversions.",
           "title": "Molecularweightgpermol"
+        },
+        "logKow": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "logKow descriptor preserved for chemistry-aware screening refinements.",
+          "title": "Logkow"
         },
         "waterSolubilityMgPerL": {
           "anyOf": [
@@ -200,20 +216,8 @@
             }
           ],
           "default": null,
+          "description": "Water solubility in mg/L preserved for chemistry-aware screening refinements.",
           "title": "Watersolubilitymgperl"
-        },
-        "vaporPressureMmhg": {
-          "anyOf": [
-            {
-              "minimum": 0.0,
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Vaporpressuremmhg"
         }
       },
       "title": "WorkerDermalChemicalContext",

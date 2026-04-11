@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.07.v18",
+  "defaults_version": "2026.04.11.v19",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -140,6 +140,18 @@
       "version": "public ECHA dossier entry accessed 2026-03-24"
     },
     {
+      "source_id": "inhalation_deposition_sink_heuristics_2026",
+      "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
+      "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+      "version": "2026.04.11.v1"
+    },
+    {
+      "source_id": "inhalation_volatility_saturation_cap_policy_2026",
+      "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
+      "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+      "version": "2026.04.11.v1"
+    },
+    {
       "source_id": "worker_dermal_body_zone_area_heuristics_2026",
       "title": "Direct-Use Exposure MCP heuristic worker dermal body-zone area defaults",
       "locator": "docs://defaults-evidence-map#worker-dermal-body-zone-area-heuristics-2026",
@@ -174,6 +186,12 @@
       "title": "Direct-Use Exposure MCP heuristic worker dermal physchem modifiers",
       "locator": "docs://defaults-evidence-map#worker-dermal-physchem-modifier-heuristics-2026",
       "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_dermal_surface_loading_cap_heuristics_2026",
+      "title": "Direct-Use Exposure MCP heuristic worker dermal retained surface-loading caps",
+      "locator": "docs://defaults-evidence-map#worker-dermal-surface-cap-heuristics-2026",
+      "version": "2026.04.11.v1"
     },
     {
       "source_id": "worker_inhalation_control_factor_heuristics_2026",
@@ -419,6 +437,68 @@
       "body_zone_not_declared": {
         "value": 840.0,
         "source_id": "worker_dermal_body_zone_area_heuristics_2026"
+      }
+    },
+    "max_retained_surface_loading_mg_per_cm2": {
+      "global": {
+        "value": 1.0,
+        "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+      },
+      "physical_form_overrides": {
+        "liquid": {
+          "value": 1.5,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "gel": {
+          "value": 1.2,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "spray": {
+          "value": 1.25,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "cream": {
+          "value": 1.5,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "foam": {
+          "value": 0.8,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "solid": {
+          "value": 0.3,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "powder": {
+          "value": 0.2,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        }
+      },
+      "contact_profile_overrides": {
+        "direct_handling_contact_profile": {
+          "value": 2.0,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "surface_transfer_contact_profile": {
+          "value": 0.8,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "liquid_splash_contact_profile": {
+          "value": 1.2,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "immersion_contact_profile": {
+          "value": 3.0,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "residual_surface_contact_profile": {
+          "value": 0.6,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        },
+        "contact_pattern_not_declared": {
+          "value": 1.0,
+          "source_id": "worker_dermal_surface_loading_cap_heuristics_2026"
+        }
       }
     },
     "ppe_penetration_factor": {
@@ -945,6 +1025,64 @@
         "exposure_duration_hours": 4.0,
         "exposure_duration_source_id": "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026"
       }
+    }
+  },
+  "inhalation_physical_caps": {
+    "deposition_rate_per_hour": {
+      "global": {
+        "value": 0.05,
+        "source_id": "inhalation_deposition_sink_heuristics_2026"
+      },
+      "physical_form_overrides": {
+        "spray": {
+          "value": 0.3,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        }
+      },
+      "application_method_overrides": {
+        "trigger_spray": {
+          "value": 0.5,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        },
+        "pump_spray": {
+          "value": 0.4,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        },
+        "aerosol_spray": {
+          "value": 0.03,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        },
+        "residual_air_reentry": {
+          "value": 0.005,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        }
+      },
+      "product_subtype_overrides": {
+        "air_space_insecticide": {
+          "value": 0.03,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        }
+      },
+      "particle_size_regime_overrides": {
+        "fine_aerosol": {
+          "value": 0.1,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        },
+        "mixed_spray": {
+          "value": 0.5,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        },
+        "coarse_spray": {
+          "value": 1.0,
+          "source_id": "inhalation_deposition_sink_heuristics_2026"
+        }
+      }
+    },
+    "volatility_saturation_cap_policy": {
+      "reference_temperature_c": 25.0,
+      "requires_fields": ["vapor_pressure_mmhg", "molecular_weight_g_per_mol"],
+      "skip_when_particle_material_context_present": true,
+      "source_id": "inhalation_volatility_saturation_cap_policy_2026"
     }
   }
 }

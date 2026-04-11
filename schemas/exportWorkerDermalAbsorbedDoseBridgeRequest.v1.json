@@ -44,6 +44,18 @@
           "$ref": "#/$defs/PopulationProfile",
           "description": "Population profile for the exposed cohort."
         },
+        "physchemContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PhyschemContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional physchem descriptors preserved on direct-use requests for bounded mechanistic refinements."
+        },
         "assumption_overrides": {
           "additionalProperties": {
             "anyOf": [
@@ -378,6 +390,74 @@
       ],
       "title": "ParticleSolubilityClass",
       "type": "string"
+    },
+    "PhyschemContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "physchemContext.v1",
+          "default": "physchemContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "vaporPressureMmhg": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Vapor pressure in mmHg for bounded volatility-aware calculations.",
+          "title": "Vaporpressuremmhg"
+        },
+        "molecularWeightGPerMol": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Molecular weight in g/mol for bounded thermodynamic conversions.",
+          "title": "Molecularweightgpermol"
+        },
+        "logKow": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "logKow descriptor preserved for chemistry-aware screening refinements.",
+          "title": "Logkow"
+        },
+        "waterSolubilityMgPerL": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Water solubility in mg/L preserved for chemistry-aware screening refinements.",
+          "title": "Watersolubilitymgperl"
+        }
+      },
+      "title": "PhyschemContext",
+      "type": "object"
     },
     "PopulationProfile": {
       "additionalProperties": false,
@@ -729,9 +809,10 @@
           "title": "Schema Version",
           "type": "string"
         },
-        "logKow": {
+        "vaporPressureMmhg": {
           "anyOf": [
             {
+              "minimum": 0.0,
               "type": "number"
             },
             {
@@ -739,7 +820,8 @@
             }
           ],
           "default": null,
-          "title": "Logkow"
+          "description": "Vapor pressure in mmHg for bounded volatility-aware calculations.",
+          "title": "Vaporpressuremmhg"
         },
         "molecularWeightGPerMol": {
           "anyOf": [
@@ -752,7 +834,21 @@
             }
           ],
           "default": null,
+          "description": "Molecular weight in g/mol for bounded thermodynamic conversions.",
           "title": "Molecularweightgpermol"
+        },
+        "logKow": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "logKow descriptor preserved for chemistry-aware screening refinements.",
+          "title": "Logkow"
         },
         "waterSolubilityMgPerL": {
           "anyOf": [
@@ -765,20 +861,8 @@
             }
           ],
           "default": null,
+          "description": "Water solubility in mg/L preserved for chemistry-aware screening refinements.",
           "title": "Watersolubilitymgperl"
-        },
-        "vaporPressureMmhg": {
-          "anyOf": [
-            {
-              "minimum": 0.0,
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Vaporpressuremmhg"
         }
       },
       "title": "WorkerDermalChemicalContext",

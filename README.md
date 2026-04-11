@@ -139,7 +139,7 @@ The detailed maturity matrix is in
 
 | Capability | Description |
 | --- | --- |
-| `Screening scenarios` | Builds route-specific external-dose scenarios for dermal, direct-use/incidental oral, and inhalation screening use cases. |
+| `Screening scenarios` | Builds route-specific external-dose scenarios for dermal, direct-use/incidental oral, and inhalation screening use cases, with bounded volatility saturation caps and first-order deposition sinks on inhalation branches where applicable. |
 | `Tier A uncertainty diagnostics` | Publishes qualitative uncertainty registers, one-at-a-time sensitivity ranking, dependency metadata, and validation posture on each scenario. |
 | `Tier B deterministic envelopes` | Builds named archetype envelopes with bounded min/median/max outputs and explicit driver attribution without probabilistic overclaiming. |
 | `Tier B archetype library` | Publishes governed packaged archetype sets, including Tier 1 inhalation request templates where near-field screening is part of the intended context, and instantiates them into deterministic envelopes with set/version provenance. |
@@ -147,14 +147,14 @@ The detailed maturity matrix is in
 | `Tier C probability bounds` | Publishes packaged single-driver probability-bounds profiles with curated driver taxonomy and evaluates their support points without Monte Carlo or joint-distribution claims. |
 | `Tier C scenario packages` | Publishes dependency-aware packaged scenario states with cumulative probability bounds, curated package taxonomy, and preserved coupled drivers without Monte Carlo claims, including governed Tier 1 NF/FF archetype-backed packages for selected spray contexts. |
 | `Tier 1 inhalation screening` | Publishes machine-actionable upgrade advisories for spray inhalation scenarios, preserves the `requestedTier` routing hook on Tier 0 requests, ships a deterministic Tier 1 NF/FF screening tool, exposes packaged airflow, particle, and product-family screening profiles through a machine-readable manifest, and warns when caller geometry or regime inputs diverge materially from matched profile anchors. |
-| `Residual-air reentry inhalation` | Builds post-application room-air screening scenarios from a concentration at reentry start plus bounded first-order decay, keeping reentry screening separate from application-plume semantics. |
+| `Residual-air reentry inhalation` | Builds post-application room-air screening scenarios from a concentration at reentry start plus bounded first-order decay with a low deposition sink, keeping anchored reentry screening separate from application-plume semantics. |
 | `Evidence reconciliation and workflow` | Normalizes CompTox, SCCS, SCCS opinions, CosIng, ConsExpo, nanomaterial guidance, microplastics regulatory records, and user-reviewed evidence into a shared product-use contract, ranks fit, builds merged requests, and can run an audited evidence-to-scenario-to-PBPK workflow in one response. |
 | `Particle-aware cosmetics and materials context` | Publishes particle material context for EU cosmetic nanomaterials, synthetic polymer microparticles, and non-plastic micro/nanoparticles so route relevance, regulatory flags, and direct-use assumptions stay explicit without drifting into fate or toxicology claims. |
 | `Worker task routing` | Routes worker-tagged tasks to the strongest current MCP path, emits worker-specific scenario guardrails when the shared screening engines are reused, and points higher-tier occupational cases toward future adapter hooks. |
 | `Worker Tier 2 bridge` | Exports a typed worker inhalation handoff package, compatibility checklist, and future adapter tool-call envelope for ART-style Tier 2 refinement without pretending the occupational solver already exists. |
 | `Worker Tier 2 execution` | Executes a governed control-aware worker inhalation surrogate, supports deterministic benchmark regression, and preserves comparability with external ART imports without claiming a native ART solver run. |
 | `Worker ART external exchange` | Exports normalized external ART execution packages and imports reviewed external results or runner artifacts through a bounded, provenance-preserving adapter surface. |
-| `Worker dermal absorbed-dose execution` | Exports and ingests dermal absorbed-dose/PPE handoffs, then executes a bounded dermal kernel with material-aware and physchem-aware modifiers while keeping glove breakthrough and full permeation modeling explicitly out of scope. |
+| `Worker dermal absorbed-dose execution` | Exports and ingests dermal absorbed-dose/PPE handoffs, then executes a bounded dermal kernel with retained-loading/runoff caps plus material-aware and physchem-aware modifiers while keeping glove breakthrough and full permeation modeling explicitly out of scope. |
 | `Aggregate summaries` | Produces additive co-use summaries while preserving route and component transparency. |
 | `PBPK handoff export` | Emits PBPK-ready objects plus an exact external-import package aligned to the upstream PBPK MCP request shape. |
 | `ToxClaw evidence export` | Emits deterministic evidence, claim, and report-section primitives for ToxClaw consumption. |
@@ -386,8 +386,9 @@ The current `v0.1.0` release is intentionally honest about what it does not do:
 - It is deterministic-first and does not ship a probabilistic population engine.
 - It does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.
 - Some screening factors still resolve from heuristic defaults packs and should be treated as screening-level assumptions.
+- Inhalation branches now apply bounded volatility saturation caps and deposition sinks, but they are still screening-scale first-order physics rather than full aerosol dynamics.
 - Worker inhalation Tier 2 execution is a governed surrogate plus external ART exchange boundary, not a native ART solver.
-- Worker dermal execution is bounded and chemistry/material aware, but it is not a full glove-breakthrough or chemical-specific permeation engine.
+- Worker dermal execution is bounded, chemistry/material aware, and finite-loading capped, but it is not a full glove-breakthrough or chemical-specific permeation engine.
 - Remote `streamable-http` deployment still requires external authentication and origin hardening.
 - PBPK request alignment should be re-validated whenever PBPK MCP changes its published contract version.
 

@@ -771,6 +771,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 - Reuses the Tier 1 NF/FF spray kernel when Tier 1 spray geometry is available
 - Reuses the Tier 0 room-average inhalation kernel for supported spray tasks outside Tier 1
 - Falls back to a labeled room-average vapor-release surrogate for vapor-generating tasks
+- Applies bounded volatility saturation caps when vapor pressure and molecular weight are supplied
+- Applies bounded first-order deposition sinks to room-air loss terms
 - Applies worker control and respiratory-protection factors after the baseline kernel
 - Returns both the preserved baseline dose and the control-adjusted worker inhalation dose
 - Preserves determinant-template alignment, quality flags, limitations, and provenance
@@ -780,6 +782,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 - The executable path currently supports `targetModelFamily=art`
 - The execution kernel is intentionally bounded and transparent, not a real ART solver
 - Control and respiratory-protection effects are represented by heuristic adjustment factors
+- Volatility and aerosol removal are represented by bounded screening caps and
+  first-order loss terms
 - Vapor-generating tasks use a room-average surrogate rather than determinant-specific ART vapor
   terms
 - Callers can override `controlFactor`, `respiratoryProtectionFactor`, and
@@ -1022,6 +1026,7 @@ external mass override, then applies PPE penetration and bounded dermal absorpti
 
 - Reuses the normalized dermal adapter request as the executable input contract
 - Re-derives or accepts external skin mass per day at the skin boundary
+- Applies a bounded retained-loading cap and reports excess mass as runoff or non-retained contact
 - Applies residual PPE penetration before absorption is calculated
 - Applies bounded absorption logic from physical form, contact pattern, contact duration, and
   skin condition unless the caller overrides those factors
@@ -1037,6 +1042,8 @@ external mass override, then applies PPE penetration and bounded dermal absorpti
   permeability solver
 - PPE effects are represented as residual penetration factors with optional bounded
   `barrierMaterial` modifiers, not glove-breakthrough kinetics
+- Skin-boundary loading is capped by a retained surface-loading heuristic before PPE and
+  absorption are applied
 - Absorption is represented by screening factors with optional bounded `chemicalContext`
   modifiers, not measured permeability data
 - Callers can override `externalSkinMassMgPerDay`, `bodyZoneSurfaceAreaCm2`,

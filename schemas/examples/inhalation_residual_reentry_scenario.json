@@ -7,7 +7,7 @@
   "scenario_class": "inhalation",
   "external_dose": {
     "metric": "normalized_external_dose",
-    "value": 0.00137806,
+    "value": 0.00136887,
     "unit": "mg/kg-day"
   },
   "product_use_profile": {
@@ -43,10 +43,11 @@
   },
   "route_metrics": {
     "air_concentration_at_reentry_start_mg_per_m3": 0.08,
-    "average_air_concentration_mg_per_m3": 0.03320635,
-    "air_concentration_at_reentry_end_mg_per_m3": 0.00960253,
-    "inhaled_mass_mg_per_day": 0.11024509,
-    "total_decay_rate_per_hour": 0.53,
+    "average_air_concentration_mg_per_m3": 0.03298487,
+    "air_concentration_at_reentry_end_mg_per_m3": 0.00941239,
+    "inhaled_mass_mg_per_day": 0.10950975,
+    "deposition_rate_per_hour": 0.005,
+    "total_decay_rate_per_hour": 0.535,
     "post_application_delay_hours": 4.0
   },
   "assumptions": [
@@ -341,8 +342,44 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "deposition_rate_per_hour",
+      "value": 0.005,
+      "unit": "1/h",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "inhalation_deposition_sink_heuristics_2026",
+        "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
+        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+        "version": "2026.04.11.v1",
+        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+      "governance": {
+        "evidence_grade": "grade_2",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "total_decay_rate_per_hour",
-      "value": 0.53,
+      "value": 0.535,
       "unit": "1/h",
       "source_kind": "derived",
       "source": {
@@ -354,7 +391,7 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Total decay rate = air exchange rate + additional residual-air decay rate.",
+      "rationale": "Total decay rate = air exchange rate + additional residual-air decay rate + deposition sink.",
       "governance": {
         "evidence_grade": null,
         "evidence_basis": "derived",
@@ -375,7 +412,7 @@
     {
       "schema_version": "exposureAssumptionRecord.v1",
       "name": "average_air_concentration_mg_per_m3",
-      "value": 0.0332063536410771,
+      "value": 0.03298486568142881,
       "unit": "mg/m3",
       "source_kind": "derived",
       "source": {
@@ -414,7 +451,7 @@
     {
       "schema_version": "exposureAssumptionRecord.v1",
       "name": "air_concentration_at_reentry_end_mg_per_m3",
-      "value": 0.009602530280916538,
+      "value": 0.009412387441742335,
       "unit": "mg/m3",
       "source_kind": "derived",
       "source": {
@@ -453,7 +490,7 @@
     {
       "schema_version": "exposureAssumptionRecord.v1",
       "name": "inhaled_mass_mg_per_day",
-      "value": 0.11024509408837598,
+      "value": 0.10950975406234364,
       "unit": "mg/day",
       "source_kind": "derived",
       "source": {
@@ -492,7 +529,7 @@
     {
       "schema_version": "exposureAssumptionRecord.v1",
       "name": "normalized_external_dose_mg_per_kg_day",
-      "value": 0.0013780636761046997,
+      "value": 0.0013688719257792955,
       "unit": "mg/kg-day",
       "source_kind": "derived",
       "source": {
@@ -534,8 +571,8 @@
     "algorithm_id": "inhalation.residual_air_reentry.v1",
     "plugin_id": "inhalation_residual_air_reentry_plugin",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+    "defaults_version": "2026.04.11.v19",
+    "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
@@ -556,9 +593,14 @@
   ],
   "quality_flags": [
     {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'deposition_rate_per_hour'."
+    },
+    {
       "code": "residual_air_reentry_screening",
       "severity": "warning",
-      "message": "Residual-air reentry uses a caller-anchored starting air concentration and a bounded first-order decay model rather than a treated-surface emission solver."
+      "message": "Residual-air reentry uses a caller-anchored starting air concentration and a bounded first-order decay model with air exchange and deposition rather than a treated-surface emission solver."
     }
   ],
   "fit_for_purpose": {
@@ -665,9 +707,9 @@
       "unit": "events/day",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00013781,
-      "percentDelta": 10.00029,
-      "elasticity": 1.000029,
+      "absoluteDelta": 0.00013689,
+      "percentDelta": 10.000219,
+      "elasticity": 1.000022,
       "direction": "positive"
     },
     {
@@ -678,9 +720,9 @@
       "unit": "m3/h",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00013781,
-      "percentDelta": 10.00029,
-      "elasticity": 1.000029,
+      "absoluteDelta": 0.00013689,
+      "percentDelta": 10.000219,
+      "elasticity": 1.000022,
       "direction": "positive"
     },
     {
@@ -691,9 +733,9 @@
       "unit": "mg/m3",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 0.00013781,
-      "percentDelta": 10.00029,
-      "elasticity": 1.000029,
+      "absoluteDelta": 0.00013689,
+      "percentDelta": 10.000219,
+      "elasticity": 1.000022,
       "direction": "positive"
     },
     {
@@ -704,9 +746,9 @@
       "unit": "kg",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": -0.00012527,
-      "percentDelta": -9.090315,
-      "elasticity": -0.909032,
+      "absoluteDelta": -0.00012444,
+      "percentDelta": -9.09071,
+      "elasticity": -0.909071,
       "direction": "negative"
     },
     {
@@ -717,9 +759,9 @@
       "unit": "1/h",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": -8.766e-05,
-      "percentDelta": -6.361116,
-      "elasticity": -0.636112,
+      "absoluteDelta": -8.674e-05,
+      "percentDelta": -6.336613,
+      "elasticity": -0.633661,
       "direction": "negative"
     },
     {
@@ -730,9 +772,9 @@
       "unit": "h",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": 3.591e-05,
-      "percentDelta": 2.605837,
-      "elasticity": 0.260584,
+      "absoluteDelta": 3.517e-05,
+      "percentDelta": 2.569272,
+      "elasticity": 0.256927,
       "direction": "positive"
     },
     {
@@ -743,9 +785,9 @@
       "unit": "1/h",
       "perturbationFraction": 0.1,
       "responseMetric": "normalized_external_dose",
-      "absoluteDelta": -5.52e-06,
-      "percentDelta": -0.400563,
-      "elasticity": -0.040056,
+      "absoluteDelta": -5.47e-06,
+      "percentDelta": -0.3996,
+      "elasticity": -0.03996,
       "direction": "negative"
     },
     {

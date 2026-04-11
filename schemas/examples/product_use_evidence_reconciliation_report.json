@@ -87,6 +87,13 @@
           "demographic_tags": [],
           "region": "EU"
         },
+        "physchemContext": {
+          "schema_version": "physchemContext.v1",
+          "vaporPressureMmhg": 8.0,
+          "molecularWeightGPerMol": 120.15,
+          "logKow": 2.1,
+          "waterSolubilityMgPerL": 950.0
+        },
         "assumption_overrides": {
           "external_product_use_source_name": "EPA CompTox",
           "external_product_use_source_kind": "comptox",
@@ -161,6 +168,13 @@
           "exposed_surface_area_cm2": null,
           "demographic_tags": [],
           "region": "EU"
+        },
+        "physchemContext": {
+          "schema_version": "physchemContext.v1",
+          "vaporPressureMmhg": 8.0,
+          "molecularWeightGPerMol": 120.15,
+          "logKow": 2.1,
+          "waterSolubilityMgPerL": 950.0
         },
         "assumption_overrides": {
           "external_product_use_source_name": "RIVM ConsExpo",
@@ -240,6 +254,13 @@
           "demographic_tags": [],
           "region": "EU"
         },
+        "physchemContext": {
+          "schema_version": "physchemContext.v1",
+          "vaporPressureMmhg": 8.0,
+          "molecularWeightGPerMol": 120.15,
+          "logKow": 2.1,
+          "waterSolubilityMgPerL": 950.0
+        },
         "assumption_overrides": {
           "external_product_use_source_name": "EU product-use dossier example",
           "external_product_use_source_kind": "regulatory_dossier",
@@ -293,6 +314,13 @@
       "exposed_surface_area_cm2": null,
       "demographic_tags": [],
       "region": "EU"
+    },
+    "physchemContext": {
+      "schema_version": "physchemContext.v1",
+      "vaporPressureMmhg": 8.0,
+      "molecularWeightGPerMol": 120.15,
+      "logKow": 2.1,
+      "waterSolubilityMgPerL": 950.0
     },
     "assumption_overrides": {
       "external_product_use_source_name": "EU product-use dossier example",

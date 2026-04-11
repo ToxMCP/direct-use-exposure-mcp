@@ -22,7 +22,7 @@
         "scenario_class": "inhalation",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.00237854,
+          "value": 0.00236682,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
@@ -59,12 +59,24 @@
         "route_metrics": {
           "chemical_mass_mg_per_event": 14.7,
           "released_mass_mg_per_event": 2.94,
-          "far_field_average_air_concentration_mg_per_m3": 0.11014308,
-          "near_field_active_spray_concentration_mg_per_m3": 216.28661366,
-          "average_air_concentration_mg_per_m3": 1.01087837,
-          "breathing_zone_time_weighted_average_mg_per_m3": 1.01087837,
+          "initial_air_concentration_mg_per_m3": 0.13363636,
+          "uncapped_initial_air_concentration_mg_per_m3": 0.13363636,
+          "far_field_average_air_concentration_mg_per_m3": 0.10516362,
+          "uncapped_far_field_average_air_concentration_mg_per_m3": 0.10516362,
+          "near_field_active_spray_concentration_mg_per_m3": 216.28163421,
+          "uncapped_near_field_active_spray_concentration_mg_per_m3": 216.28163421,
+          "average_air_concentration_mg_per_m3": 1.00589892,
+          "uncapped_average_air_concentration_mg_per_m3": 1.00589892,
+          "breathing_zone_time_weighted_average_mg_per_m3": 1.00589892,
           "interzonal_mixing_rate_m3_per_hour": 36.0,
-          "inhaled_mass_mg_per_day": 0.16174054,
+          "deposition_rate_per_hour": 0.5,
+          "total_loss_rate_per_hour": 2.5,
+          "room_air_decay_half_life_hours": 0.27725887,
+          "saturation_cap_mg_per_m3": null,
+          "saturation_cap_applied": false,
+          "vapor_pressure_mmhg": null,
+          "molecular_weight_g_per_mol": null,
+          "inhaled_mass_mg_per_day": 0.16094383,
           "tier1_product_profile_id": "personal_care_pump_spray_tier1",
           "tier1_profile_alignment_status": "aligned",
           "tier1_profile_divergence_count": 0
@@ -113,7 +125,7 @@
               "title": "Direct-Use Exposure MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -280,7 +292,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -616,6 +628,41 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "deposition_rate_per_hour",
+            "value": 0.5,
+            "unit": "1/h",
+            "source_kind": "default_registry",
+            "source": {
+              "source_id": "inhalation_deposition_sink_heuristics_2026",
+              "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
+              "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+              "version": "2026.04.11.v1",
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+            },
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+            "governance": {
+              "evidence_grade": "grade_2",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "released_mass_mg_per_event",
             "value": 2.94,
             "unit": "mg/event",
@@ -639,6 +686,41 @@
                 "model_uncertainty",
                 "scenario_uncertainty"
               ],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "total_loss_rate_per_hour",
+            "value": 2.5,
+            "unit": "1/h",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Total room-air loss rate = air exchange rate + deposition sink.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
                 "scenario_class": "inhalation",
@@ -826,7 +908,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "far_field_average_air_concentration_mg_per_m3",
-            "value": 0.11014307552900232,
+            "value": 0.10516362367680525,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -838,7 +920,7 @@
             },
             "confidence": "deterministic_derived",
             "default_applied": false,
-            "rationale": "Far-field room average derived from the Tier 0 room model over the full exposure window.",
+            "rationale": "Far-field room average derived from the Tier 1 room model over the full exposure window after bounded loss terms are applied.",
             "governance": {
               "evidence_grade": null,
               "evidence_basis": "derived",
@@ -863,8 +945,43 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_far_field_average_air_concentration_mg_per_m3",
+            "value": 0.10516362367680525,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped far-field room average before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "near_field_active_spray_concentration_mg_per_m3",
-            "value": 216.28661366376426,
+            "value": 216.28163421191206,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -901,8 +1018,43 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_near_field_active_spray_concentration_mg_per_m3",
+            "value": 216.28163421191206,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped active-spray breathing-zone concentration before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "breathing_zone_time_weighted_average_mg_per_m3",
-            "value": 1.0108783696466492,
+            "value": 1.0058989177944522,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -939,8 +1091,78 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_average_air_concentration_mg_per_m3",
+            "value": 1.0058989177944522,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped breathing-zone time-weighted average before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "room_air_decay_half_life_hours",
+            "value": 0.2772588722239781,
+            "unit": "h",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Room-air decay half-life implied by air exchange plus the bounded deposition sink.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_event",
-            "value": 0.1617405391434639,
+            "value": 0.16094382684711236,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -975,7 +1197,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_day",
-            "value": 0.1617405391434639,
+            "value": 0.16094382684711236,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -1013,7 +1235,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 0.0023785373403450573,
+            "value": 0.00236682098304577,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -1054,8 +1276,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+          "defaults_version": "2026.04.11.v19",
+          "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -1071,7 +1293,7 @@
           {
             "code": "particle_regime_screening",
             "severity": "warning",
-            "message": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics."
+            "message": "Particle-size effects use bounded screening persistence and deposition terms and do not model droplet evaporation or full aerosol dynamics."
           }
         ],
         "quality_flags": [
@@ -1089,6 +1311,11 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'aerosolized_fraction'."
+          },
+          {
+            "code": "default_applied",
+            "severity": "info",
+            "message": "Default value applied for 'deposition_rate_per_hour'."
           },
           {
             "code": "default_applied",
@@ -1126,7 +1353,8 @@
           "assumption_checks_passed": true,
           "required_caveats": [
             "Interpret the near-field compartment as a governed screening construct rather than a measured CFD domain.",
-            "The airflow directionality and particle regime terms remain screening classifications, not measured aerosol dynamics."
+            "The airflow directionality and particle regime terms remain screening classifications, not measured aerosol dynamics.",
+            "Bounded deposition and volatility caps improve physical realism but do not turn the model into a transient aerosol transport solver."
           ],
           "forbidden_interpretations": [
             "Do not interpret this result as deposited dose, absorbed dose, or a PBPK state.",
@@ -1189,7 +1417,7 @@
             "quantificationStatus": "qualitative_only",
             "biasDirection": "bidirectional",
             "impactLevel": "medium",
-            "summary": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics.",
+            "summary": "Particle-size effects use bounded screening persistence and deposition terms and do not model droplet evaporation or full aerosol dynamics.",
             "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
           },
           {
@@ -1232,9 +1460,9 @@
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00023785,
-            "percentDelta": 9.999832,
-            "elasticity": 0.999983,
+            "absoluteDelta": 0.00023668,
+            "percentDelta": 9.999915,
+            "elasticity": 0.999992,
             "direction": "positive"
           },
           {
@@ -1245,9 +1473,9 @@
             "unit": "mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00023785,
-            "percentDelta": 9.999832,
-            "elasticity": 0.999983,
+            "absoluteDelta": 0.00023668,
+            "percentDelta": 9.999915,
+            "elasticity": 0.999992,
             "direction": "positive"
           },
           {
@@ -1258,9 +1486,9 @@
             "unit": "m3/h",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00023785,
-            "percentDelta": 9.999832,
-            "elasticity": 0.999983,
+            "absoluteDelta": 0.00023668,
+            "percentDelta": 9.999915,
+            "elasticity": 0.999992,
             "direction": "positive"
           },
           {
@@ -1271,9 +1499,9 @@
             "unit": "g/mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00023785,
-            "percentDelta": 9.999832,
-            "elasticity": 0.999983,
+            "absoluteDelta": 0.00023668,
+            "percentDelta": 9.999915,
+            "elasticity": 0.999992,
             "direction": "positive"
           },
           {
@@ -1284,9 +1512,9 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00023785,
-            "percentDelta": 9.999832,
-            "elasticity": 0.999983,
+            "absoluteDelta": 0.00023668,
+            "percentDelta": 9.999915,
+            "elasticity": 0.999992,
             "direction": "positive"
           },
           {
@@ -1297,9 +1525,9 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00023785,
-            "percentDelta": 9.999832,
-            "elasticity": 0.999983,
+            "absoluteDelta": 0.00023668,
+            "percentDelta": 9.999915,
+            "elasticity": 0.999992,
             "direction": "positive"
           },
           {
@@ -1310,9 +1538,9 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.00021623,
-            "percentDelta": -9.090871,
-            "elasticity": -0.909087,
+            "absoluteDelta": -0.00021516,
+            "percentDelta": -9.090679,
+            "elasticity": -0.909068,
             "direction": "negative"
           },
           {
@@ -1324,8 +1552,8 @@
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
             "absoluteDelta": -0.00019267,
-            "percentDelta": -8.100347,
-            "elasticity": -0.810035,
+            "percentDelta": -8.140459,
+            "elasticity": -0.814046,
             "direction": "negative"
           }
         ],
@@ -1395,6 +1623,7 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_coarse_spray_settling_sensitivity",
             "inhalation_tier1_disinfectant_trigger_spray_external_2015",
             "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
@@ -1441,7 +1670,7 @@
         "scenario_class": "inhalation",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.0210887,
+          "value": 0.02095336,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
@@ -1478,12 +1707,24 @@
         "route_metrics": {
           "chemical_mass_mg_per_event": 44.1,
           "released_mass_mg_per_event": 8.82,
-          "far_field_average_air_concentration_mg_per_m3": 0.40860868,
-          "near_field_active_spray_concentration_mg_per_m3": 572.17331456,
-          "average_air_concentration_mg_per_m3": 3.58507926,
-          "breathing_zone_time_weighted_average_mg_per_m3": 3.58507926,
+          "initial_air_concentration_mg_per_m3": 0.49,
+          "uncapped_initial_air_concentration_mg_per_m3": 0.49,
+          "far_field_average_air_concentration_mg_per_m3": 0.38559995,
+          "uncapped_far_field_average_air_concentration_mg_per_m3": 0.38559995,
+          "near_field_active_spray_concentration_mg_per_m3": 572.15030584,
+          "uncapped_near_field_active_spray_concentration_mg_per_m3": 572.15030584,
+          "average_air_concentration_mg_per_m3": 3.56207054,
+          "uncapped_average_air_concentration_mg_per_m3": 3.56207054,
+          "breathing_zone_time_weighted_average_mg_per_m3": 3.56207054,
           "interzonal_mixing_rate_m3_per_hour": 29.75,
-          "inhaled_mass_mg_per_day": 1.43403171,
+          "deposition_rate_per_hour": 0.5,
+          "total_loss_rate_per_hour": 2.0,
+          "room_air_decay_half_life_hours": 0.34657359,
+          "saturation_cap_mg_per_m3": null,
+          "saturation_cap_applied": false,
+          "vapor_pressure_mmhg": null,
+          "molecular_weight_g_per_mol": null,
+          "inhaled_mass_mg_per_day": 1.42482822,
           "tier1_product_profile_id": "personal_care_pump_spray_tier1",
           "tier1_profile_alignment_status": "aligned",
           "tier1_profile_divergence_count": 0
@@ -1532,7 +1773,7 @@
               "title": "Direct-Use Exposure MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1699,7 +1940,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2035,6 +2276,41 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "deposition_rate_per_hour",
+            "value": 0.5,
+            "unit": "1/h",
+            "source_kind": "default_registry",
+            "source": {
+              "source_id": "inhalation_deposition_sink_heuristics_2026",
+              "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
+              "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+              "version": "2026.04.11.v1",
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+            },
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+            "governance": {
+              "evidence_grade": "grade_2",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "released_mass_mg_per_event",
             "value": 8.82,
             "unit": "mg/event",
@@ -2058,6 +2334,41 @@
                 "model_uncertainty",
                 "scenario_uncertainty"
               ],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "total_loss_rate_per_hour",
+            "value": 2.0,
+            "unit": "1/h",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Total room-air loss rate = air exchange rate + deposition sink.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
                 "scenario_class": "inhalation",
@@ -2245,7 +2556,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "far_field_average_air_concentration_mg_per_m3",
-            "value": 0.4086086757131296,
+            "value": 0.38559995348161924,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -2257,7 +2568,7 @@
             },
             "confidence": "deterministic_derived",
             "default_applied": false,
-            "rationale": "Far-field room average derived from the Tier 0 room model over the full exposure window.",
+            "rationale": "Far-field room average derived from the Tier 1 room model over the full exposure window after bounded loss terms are applied.",
             "governance": {
               "evidence_grade": null,
               "evidence_basis": "derived",
@@ -2282,8 +2593,43 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_far_field_average_air_concentration_mg_per_m3",
+            "value": 0.38559995348161924,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped far-field room average before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "near_field_active_spray_concentration_mg_per_m3",
-            "value": 572.173314558066,
+            "value": 572.1503058358344,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -2320,8 +2666,43 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_near_field_active_spray_concentration_mg_per_m3",
+            "value": 572.1503058358344,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped active-spray breathing-zone concentration before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "breathing_zone_time_weighted_average_mg_per_m3",
-            "value": 3.5850792639484235,
+            "value": 3.562070541716913,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -2358,8 +2739,78 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_average_air_concentration_mg_per_m3",
+            "value": 3.562070541716913,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped breathing-zone time-weighted average before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "room_air_decay_half_life_hours",
+            "value": 0.34657359027997264,
+            "unit": "h",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Room-air decay half-life implied by air exchange plus the bounded deposition sink.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_event",
-            "value": 0.7170158527896847,
+            "value": 0.7124141083433826,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -2394,7 +2845,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_day",
-            "value": 1.4340317055793694,
+            "value": 1.4248282166867652,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -2432,7 +2883,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 0.021088701552637784,
+            "value": 0.020953356127746545,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -2473,8 +2924,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+          "defaults_version": "2026.04.11.v19",
+          "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -2490,7 +2941,7 @@
           {
             "code": "particle_regime_screening",
             "severity": "warning",
-            "message": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics."
+            "message": "Particle-size effects use bounded screening persistence and deposition terms and do not model droplet evaporation or full aerosol dynamics."
           }
         ],
         "quality_flags": [
@@ -2508,6 +2959,11 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'aerosolized_fraction'."
+          },
+          {
+            "code": "default_applied",
+            "severity": "info",
+            "message": "Default value applied for 'deposition_rate_per_hour'."
           },
           {
             "code": "default_applied",
@@ -2545,7 +3001,8 @@
           "assumption_checks_passed": true,
           "required_caveats": [
             "Interpret the near-field compartment as a governed screening construct rather than a measured CFD domain.",
-            "The airflow directionality and particle regime terms remain screening classifications, not measured aerosol dynamics."
+            "The airflow directionality and particle regime terms remain screening classifications, not measured aerosol dynamics.",
+            "Bounded deposition and volatility caps improve physical realism but do not turn the model into a transient aerosol transport solver."
           ],
           "forbidden_interpretations": [
             "Do not interpret this result as deposited dose, absorbed dose, or a PBPK state.",
@@ -2608,7 +3065,7 @@
             "quantificationStatus": "qualitative_only",
             "biasDirection": "bidirectional",
             "impactLevel": "medium",
-            "summary": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics.",
+            "summary": "Particle-size effects use bounded screening persistence and deposition terms and do not model droplet evaporation or full aerosol dynamics.",
             "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
           },
           {
@@ -2651,9 +3108,9 @@
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00210887,
-            "percentDelta": 10.0,
-            "elasticity": 1.0,
+            "absoluteDelta": 0.00209533,
+            "percentDelta": 9.999971,
+            "elasticity": 0.999997,
             "direction": "positive"
           },
           {
@@ -2664,9 +3121,9 @@
             "unit": "mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00210887,
-            "percentDelta": 10.0,
-            "elasticity": 1.0,
+            "absoluteDelta": 0.00209533,
+            "percentDelta": 9.999971,
+            "elasticity": 0.999997,
             "direction": "positive"
           },
           {
@@ -2677,9 +3134,9 @@
             "unit": "m3/h",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00210887,
-            "percentDelta": 10.0,
-            "elasticity": 1.0,
+            "absoluteDelta": 0.00209533,
+            "percentDelta": 9.999971,
+            "elasticity": 0.999997,
             "direction": "positive"
           },
           {
@@ -2690,9 +3147,9 @@
             "unit": "g/mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00210887,
-            "percentDelta": 10.0,
-            "elasticity": 1.0,
+            "absoluteDelta": 0.00209533,
+            "percentDelta": 9.999971,
+            "elasticity": 0.999997,
             "direction": "positive"
           },
           {
@@ -2703,9 +3160,9 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00210887,
-            "percentDelta": 10.0,
-            "elasticity": 1.0,
+            "absoluteDelta": 0.00209533,
+            "percentDelta": 9.999971,
+            "elasticity": 0.999997,
             "direction": "positive"
           },
           {
@@ -2716,9 +3173,9 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.00210887,
-            "percentDelta": 10.0,
-            "elasticity": 1.0,
+            "absoluteDelta": 0.00209533,
+            "percentDelta": 9.999971,
+            "elasticity": 0.999997,
             "direction": "positive"
           },
           {
@@ -2729,9 +3186,9 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.00191715,
-            "percentDelta": -9.090888,
-            "elasticity": -0.909089,
+            "absoluteDelta": -0.00190485,
+            "percentDelta": -9.090905,
+            "elasticity": -0.90909,
             "direction": "negative"
           },
           {
@@ -2743,8 +3200,8 @@
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
             "absoluteDelta": -0.00169865,
-            "percentDelta": -8.054788,
-            "elasticity": -0.805479,
+            "percentDelta": -8.106814,
+            "elasticity": -0.810681,
             "direction": "negative"
           }
         ],
@@ -2814,6 +3271,7 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_coarse_spray_settling_sensitivity",
             "inhalation_tier1_disinfectant_trigger_spray_external_2015",
             "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
@@ -2860,7 +3318,7 @@
         "scenario_class": "inhalation",
         "external_dose": {
           "metric": "normalized_external_dose",
-          "value": 0.12177375,
+          "value": 0.12083206,
           "unit": "mg/kg-day"
         },
         "product_use_profile": {
@@ -2897,12 +3355,24 @@
         "route_metrics": {
           "chemical_mass_mg_per_event": 107.8,
           "released_mass_mg_per_event": 21.56,
-          "far_field_average_air_concentration_mg_per_m3": 1.16415816,
-          "near_field_active_spray_concentration_mg_per_m3": 1398.81121698,
-          "average_air_concentration_mg_per_m3": 10.22298169,
-          "breathing_zone_time_weighted_average_mg_per_m3": 10.22298169,
+          "initial_air_concentration_mg_per_m3": 1.3475,
+          "uncapped_initial_air_concentration_mg_per_m3": 1.3475,
+          "far_field_average_air_concentration_mg_per_m3": 1.08510237,
+          "uncapped_far_field_average_air_concentration_mg_per_m3": 1.08510237,
+          "near_field_active_spray_concentration_mg_per_m3": 1398.73216119,
+          "uncapped_near_field_active_spray_concentration_mg_per_m3": 1398.73216119,
+          "average_air_concentration_mg_per_m3": 10.1439259,
+          "uncapped_average_air_concentration_mg_per_m3": 10.1439259,
+          "breathing_zone_time_weighted_average_mg_per_m3": 10.1439259,
           "interzonal_mixing_rate_m3_per_hour": 23.8,
-          "inhaled_mass_mg_per_day": 8.28061517,
+          "deposition_rate_per_hour": 0.5,
+          "total_loss_rate_per_hour": 1.5,
+          "room_air_decay_half_life_hours": 0.46209812,
+          "saturation_cap_mg_per_m3": null,
+          "saturation_cap_applied": false,
+          "vapor_pressure_mmhg": null,
+          "molecular_weight_g_per_mol": null,
+          "inhaled_mass_mg_per_day": 8.21657998,
           "tier1_product_profile_id": "personal_care_pump_spray_tier1",
           "tier1_profile_alignment_status": "aligned",
           "tier1_profile_divergence_count": 0
@@ -2951,7 +3421,7 @@
               "title": "Direct-Use Exposure MCP heuristic density screening defaults",
               "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3118,7 +3588,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce"
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3454,6 +3924,41 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "deposition_rate_per_hour",
+            "value": 0.5,
+            "unit": "1/h",
+            "source_kind": "default_registry",
+            "source": {
+              "source_id": "inhalation_deposition_sink_heuristics_2026",
+              "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
+              "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+              "version": "2026.04.11.v1",
+              "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+            },
+            "confidence": "registry_default",
+            "default_applied": true,
+            "rationale": "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+            "governance": {
+              "evidence_grade": "grade_2",
+              "evidence_basis": "curated_default",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "in_domain",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "released_mass_mg_per_event",
             "value": 21.560000000000002,
             "unit": "mg/event",
@@ -3477,6 +3982,41 @@
                 "model_uncertainty",
                 "scenario_uncertainty"
               ],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "total_loss_rate_per_hour",
+            "value": 1.5,
+            "unit": "1/h",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Total room-air loss rate = air exchange rate + deposition sink.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
                 "scenario_class": "inhalation",
@@ -3664,7 +4204,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "far_field_average_air_concentration_mg_per_m3",
-            "value": 1.1641581587712841,
+            "value": 1.0851023681992455,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -3676,7 +4216,7 @@
             },
             "confidence": "deterministic_derived",
             "default_applied": false,
-            "rationale": "Far-field room average derived from the Tier 0 room model over the full exposure window.",
+            "rationale": "Far-field room average derived from the Tier 1 room model over the full exposure window after bounded loss terms are applied.",
             "governance": {
               "evidence_grade": null,
               "evidence_basis": "derived",
@@ -3701,8 +4241,43 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_far_field_average_air_concentration_mg_per_m3",
+            "value": 1.0851023681992455,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped far-field room average before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "near_field_active_spray_concentration_mg_per_m3",
-            "value": 1398.811216982301,
+            "value": 1398.732161191729,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -3739,8 +4314,43 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_near_field_active_spray_concentration_mg_per_m3",
+            "value": 1398.732161191729,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped active-spray breathing-zone concentration before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "breathing_zone_time_weighted_average_mg_per_m3",
-            "value": 10.222981688183049,
+            "value": 10.14392589761101,
             "unit": "mg/m3",
             "source_kind": "derived",
             "source": {
@@ -3777,8 +4387,78 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "uncapped_average_air_concentration_mg_per_m3",
+            "value": 10.14392589761101,
+            "unit": "mg/m3",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Uncapped breathing-zone time-weighted average before any volatility saturation cap is applied.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "room_air_decay_half_life_hours",
+            "value": 0.46209812037329684,
+            "unit": "h",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Room-air decay half-life implied by air exchange plus the bounded deposition sink.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "inhalation",
+                "scenario_class": "inhalation",
+                "product_category": "personal_care",
+                "physical_form": "spray",
+                "application_method": "pump_spray",
+                "retention_type": "surface_contact",
+                "population_group": "adult",
+                "demographic_tags": "",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_event",
-            "value": 2.7602050558094233,
+            "value": 2.738859992354973,
             "unit": "mg/event",
             "source_kind": "derived",
             "source": {
@@ -3813,7 +4493,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "inhaled_mass_mg_per_day",
-            "value": 8.28061516742827,
+            "value": 8.216579977064919,
             "unit": "mg/day",
             "source_kind": "derived",
             "source": {
@@ -3851,7 +4531,7 @@
           {
             "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
-            "value": 0.12177375246218043,
+            "value": 0.12083205848624881,
             "unit": "mg/kg-day",
             "source_kind": "derived",
             "source": {
@@ -3892,8 +4572,8 @@
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.1.0",
-          "defaults_version": "2026.04.07.v18",
-          "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+          "defaults_version": "2026.04.11.v19",
+          "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first v0.1 engine.",
@@ -3909,7 +4589,7 @@
           {
             "code": "particle_regime_screening",
             "severity": "warning",
-            "message": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics."
+            "message": "Particle-size effects use bounded screening persistence and deposition terms and do not model droplet evaporation or full aerosol dynamics."
           }
         ],
         "quality_flags": [
@@ -3927,6 +4607,11 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'aerosolized_fraction'."
+          },
+          {
+            "code": "default_applied",
+            "severity": "info",
+            "message": "Default value applied for 'deposition_rate_per_hour'."
           },
           {
             "code": "default_applied",
@@ -3964,7 +4649,8 @@
           "assumption_checks_passed": true,
           "required_caveats": [
             "Interpret the near-field compartment as a governed screening construct rather than a measured CFD domain.",
-            "The airflow directionality and particle regime terms remain screening classifications, not measured aerosol dynamics."
+            "The airflow directionality and particle regime terms remain screening classifications, not measured aerosol dynamics.",
+            "Bounded deposition and volatility caps improve physical realism but do not turn the model into a transient aerosol transport solver."
           ],
           "forbidden_interpretations": [
             "Do not interpret this result as deposited dose, absorbed dose, or a PBPK state.",
@@ -4027,7 +4713,7 @@
             "quantificationStatus": "qualitative_only",
             "biasDirection": "bidirectional",
             "impactLevel": "medium",
-            "summary": "Particle-size effects use a coarse screening persistence factor and do not model droplet evaporation, deposition, or full aerosol dynamics.",
+            "summary": "Particle-size effects use bounded screening persistence and deposition terms and do not model droplet evaporation or full aerosol dynamics.",
             "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
           },
           {
@@ -4070,8 +4756,8 @@
             "unit": "events/day",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01217738,
-            "percentDelta": 10.000004,
+            "absoluteDelta": 0.0120832,
+            "percentDelta": 9.999995,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4083,8 +4769,8 @@
             "unit": "mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01217738,
-            "percentDelta": 10.000004,
+            "absoluteDelta": 0.0120832,
+            "percentDelta": 9.999995,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4096,8 +4782,8 @@
             "unit": "m3/h",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01217738,
-            "percentDelta": 10.000004,
+            "absoluteDelta": 0.0120832,
+            "percentDelta": 9.999995,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4109,8 +4795,8 @@
             "unit": "g/mL",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01217738,
-            "percentDelta": 10.000004,
+            "absoluteDelta": 0.0120832,
+            "percentDelta": 9.999995,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4122,8 +4808,8 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01217738,
-            "percentDelta": 10.000004,
+            "absoluteDelta": 0.0120832,
+            "percentDelta": 9.999995,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4135,8 +4821,8 @@
             "unit": "fraction",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": 0.01217738,
-            "percentDelta": 10.000004,
+            "absoluteDelta": 0.0120832,
+            "percentDelta": 9.999995,
             "elasticity": 1.0,
             "direction": "positive"
           },
@@ -4148,8 +4834,8 @@
             "unit": "kg",
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
-            "absoluteDelta": -0.01107034,
-            "percentDelta": -9.090908,
+            "absoluteDelta": -0.01098473,
+            "percentDelta": -9.090907,
             "elasticity": -0.909091,
             "direction": "negative"
           },
@@ -4162,8 +4848,8 @@
             "perturbationFraction": 0.1,
             "responseMetric": "normalized_external_dose",
             "absoluteDelta": -0.00980969,
-            "percentDelta": -8.055669,
-            "elasticity": -0.805567,
+            "percentDelta": -8.11845,
+            "elasticity": -0.811845,
             "direction": "negative"
           }
         ],
@@ -4233,6 +4919,7 @@
           "validationStatus": "benchmark_regression",
           "routeMechanism": "inhalation_near_field_far_field",
           "benchmarkCaseIds": [
+            "inhalation_tier1_coarse_spray_settling_sensitivity",
             "inhalation_tier1_disinfectant_trigger_spray_external_2015",
             "inhalation_tier1_scenario_package_probability",
             "inhalation_tier1_trigger_spray_nf_ff"
@@ -4269,20 +4956,20 @@
   ],
   "minDose": {
     "metric": "normalized_external_dose",
-    "value": 0.00237854,
+    "value": 0.00236682,
     "unit": "mg/kg-day"
   },
   "medianDose": {
     "metric": "normalized_external_dose",
-    "value": 0.0210887,
+    "value": 0.02095336,
     "unit": "mg/kg-day"
   },
   "maxDose": {
     "metric": "normalized_external_dose",
-    "value": 0.12177375,
+    "value": 0.12083206,
     "unit": "mg/kg-day"
   },
-  "spanRatio": 51.19684765,
+  "spanRatio": 51.05249237,
   "driverAttribution": [
     {
       "parameterName": "air_exchange_rate_per_hour",
@@ -4298,8 +4985,8 @@
     {
       "parameterName": "breathing_zone_time_weighted_average_mg_per_m3",
       "unit": "mg/m3",
-      "minValue": 1.0108783696466492,
-      "maxValue": 10.222981688183049,
+      "minValue": 1.0058989177944522,
+      "maxValue": 10.14392589761101,
       "scenarioLabels": [
         "Lower plausible near-face use",
         "Upper plausible near-face use"
@@ -4342,8 +5029,8 @@
     {
       "parameterName": "far_field_average_air_concentration_mg_per_m3",
       "unit": "mg/m3",
-      "minValue": 0.11014307552900232,
-      "maxValue": 1.1641581587712841,
+      "minValue": 0.10516362367680525,
+      "maxValue": 1.0851023681992455,
       "scenarioLabels": [
         "Lower plausible near-face use",
         "Upper plausible near-face use"
@@ -4481,6 +5168,7 @@
     "validationStatus": "benchmark_regression",
     "routeMechanism": "inhalation_near_field_far_field",
     "benchmarkCaseIds": [
+      "inhalation_tier1_coarse_spray_settling_sensitivity",
       "inhalation_tier1_disinfectant_trigger_spray_external_2015",
       "inhalation_tier1_scenario_package_probability",
       "inhalation_tier1_trigger_spray_nf_ff"
@@ -4511,8 +5199,8 @@
     "algorithm_id": "uncertainty.envelope.v1",
     "plugin_id": "deterministic_envelope_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.07.v18",
-    "defaults_hash_sha256": "6833b781c42d9ecfee10ecf8c76325f4720e82f43d7ce23843c8d3cc721d3fce",
+    "defaults_version": "2026.04.11.v19",
+    "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

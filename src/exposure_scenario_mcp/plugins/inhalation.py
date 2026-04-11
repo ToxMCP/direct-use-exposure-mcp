@@ -12,6 +12,7 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     InhalationResidualAirReentryScenarioRequest,
     InhalationTier1ScenarioRequest,
+    PhyschemContext,
     Route,
     ScenarioClass,
     ScenarioDose,
@@ -42,6 +43,10 @@ TIER_1_PROFILE_NUMERIC_TOLERANCES = {
     "near_field_volume_m3": 0.35,
     "spray_duration_seconds": 0.4,
 }
+IDEAL_GAS_CONSTANT_J_PER_MOL_K = 8.314462618
+STANDARD_TEMPERATURE_K = 298.15
+STANDARD_PRESSURE_PA = 101325.0
+STANDARD_PRESSURE_MMHG = 760.0
 
 
 def tier_1_input_requirements() -> list[TierUpgradeInputRequirement]:
@@ -98,6 +103,139 @@ def _maybe_flag_missing_product_subtype(tracker: AssumptionTracker, profile) -> 
         ),
         severity=Severity.WARNING,
     )
+
+
+def _first_order_average_concentration(
+    initial_concentration_mg_per_m3: float,
+    loss_rate_per_hour: float,
+    duration_hours: float,
+) -> float:
+    if loss_rate_per_hour <= 0.0:
+        return initial_concentration_mg_per_m3
+    return initial_concentration_mg_per_m3 * (
+        (1.0 - math.exp(-loss_rate_per_hour * duration_hours))
+        / (loss_rate_per_hour * duration_hours)
+    )
+
+
+def _first_order_end_concentration(
+    initial_concentration_mg_per_m3: float,
+    loss_rate_per_hour: float,
+    duration_hours: float,
+) -> float:
+    if loss_rate_per_hour <= 0.0:
+        return initial_concentration_mg_per_m3
+    return initial_concentration_mg_per_m3 * math.exp(-loss_rate_per_hour * duration_hours)
+
+
+def _record_physchem_context(
+    tracker: AssumptionTracker,
+    physchem_context: PhyschemContext | None,
+) -> None:
+    if physchem_context is None:
+        return
+    if physchem_context.vapor_pressure_mmhg is not None:
+        tracker.add_user(
+            "vapor_pressure_mmhg",
+            physchem_context.vapor_pressure_mmhg,
+            "mmHg",
+            (
+                "Vapor pressure was supplied explicitly for bounded volatility-aware "
+                "inhalation screening."
+            ),
+        )
+    if physchem_context.molecular_weight_g_per_mol is not None:
+        tracker.add_user(
+            "molecular_weight_g_per_mol",
+            physchem_context.molecular_weight_g_per_mol,
+            "g/mol",
+            (
+                "Molecular weight was supplied explicitly for bounded volatility-aware "
+                "inhalation screening."
+            ),
+        )
+    if physchem_context.log_kow is not None:
+        tracker.add_user(
+            "log_kow",
+            physchem_context.log_kow,
+            "log10",
+            "logKow was supplied explicitly for chemistry-aware screening context.",
+        )
+    if physchem_context.water_solubility_mg_per_l is not None:
+        tracker.add_user(
+            "water_solubility_mg_per_l",
+            physchem_context.water_solubility_mg_per_l,
+            "mg/L",
+            "Water solubility was supplied explicitly for chemistry-aware screening context.",
+        )
+
+
+def _inhalation_saturation_cap_mg_per_m3(
+    *,
+    physchem_context: PhyschemContext | None,
+    profile,
+    registry: DefaultsRegistry,
+    tracker: AssumptionTracker,
+) -> float | None:
+    if physchem_context is None:
+        return None
+    policy, source = registry.inhalation_saturation_cap_policy()
+    if policy["skip_when_particle_material_context_present"] and (
+        profile.particle_material_context is not None
+    ):
+        return None
+    vapor_pressure = physchem_context.vapor_pressure_mmhg
+    molecular_weight = physchem_context.molecular_weight_g_per_mol
+    if vapor_pressure is None:
+        return None
+    if molecular_weight is None:
+        tracker.add_quality_flag(
+            "saturation_cap_molecular_weight_missing",
+            (
+                "physchemContext includes vaporPressureMmhg but not molecularWeightGPerMol, "
+                "so the volatility saturation cap could not be activated."
+            ),
+            severity=Severity.WARNING,
+        )
+        return None
+
+    reference_temperature_c = policy["reference_temperature_c"]
+    saturation_cap = (
+        (vapor_pressure / STANDARD_PRESSURE_MMHG)
+        * STANDARD_PRESSURE_PA
+        * molecular_weight
+        / (IDEAL_GAS_CONSTANT_J_PER_MOL_K * STANDARD_TEMPERATURE_K)
+        * 1000.0
+    )
+    tracker.add_default(
+        "saturation_cap_reference_temperature_c",
+        reference_temperature_c,
+        "C",
+        source,
+        "Volatility saturation cap uses the governed room-temperature screening policy.",
+    )
+    tracker.add_default(
+        "saturation_cap_mg_per_m3",
+        saturation_cap,
+        "mg/m3",
+        source,
+        (
+            "Thermodynamic saturation ceiling derived from vapor pressure, molecular "
+            "weight, and the governed room-temperature policy."
+        ),
+    )
+    return saturation_cap
+
+
+def _apply_saturation_cap(
+    *,
+    concentration_mg_per_m3: float,
+    saturation_cap_mg_per_m3: float | None,
+) -> tuple[float, bool]:
+    if saturation_cap_mg_per_m3 is None:
+        return concentration_mg_per_m3, False
+    capped = min(concentration_mg_per_m3, saturation_cap_mg_per_m3)
+    return capped, not math.isclose(capped, concentration_mg_per_m3, rel_tol=1e-9, abs_tol=1e-12)
 
 
 def _tier_1_profile_alignment(
@@ -317,6 +455,7 @@ def build_inhalation_tier_1_screening_scenario(
         unit="kg",
         rationale="Body weight was supplied explicitly for dose normalization.",
     )
+    _record_physchem_context(tracker, request.physchem_context)
 
     tracker.add_user(
         "source_distance_m",
@@ -383,14 +522,40 @@ def build_inhalation_tier_1_screening_scenario(
 
     released_mass_mg_event = chemical_mass_mg_event * aerosolized_fraction
     far_field_volume_m3 = room_volume_m3 - request.near_field_volume_m3
-    initial_room_concentration = released_mass_mg_event / room_volume_m3
-    k = max(air_exchange, 0.0)
-    if k == 0:
-        far_field_average_concentration = initial_room_concentration
-    else:
-        far_field_average_concentration = initial_room_concentration * (
-            (1.0 - math.exp(-k * exposure_duration_hours)) / (k * exposure_duration_hours)
-        )
+    initial_room_concentration_uncapped = released_mass_mg_event / room_volume_m3
+    deposition_rate, deposition_source = registry.inhalation_deposition_rate_per_hour(
+        particle_size_regime=request.particle_size_regime.value,
+        application_method=profile.application_method,
+        physical_form=profile.physical_form,
+        product_subtype=profile.product_subtype,
+    )
+    tracker.add_default(
+        "deposition_rate_per_hour",
+        deposition_rate,
+        "1/h",
+        deposition_source,
+        "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+    )
+    total_loss_rate = max(air_exchange, 0.0) + max(deposition_rate, 0.0)
+    saturation_cap_mg_per_m3 = _inhalation_saturation_cap_mg_per_m3(
+        physchem_context=request.physchem_context,
+        profile=profile,
+        registry=registry,
+        tracker=tracker,
+    )
+    initial_room_concentration, initial_cap_applied = _apply_saturation_cap(
+        concentration_mg_per_m3=initial_room_concentration_uncapped,
+        saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+    )
+    far_field_average_concentration_uncapped = _first_order_average_concentration(
+        initial_room_concentration_uncapped,
+        total_loss_rate,
+        exposure_duration_hours,
+    )
+    far_field_average_concentration, far_field_cap_applied = _apply_saturation_cap(
+        concentration_mg_per_m3=far_field_average_concentration_uncapped,
+        saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+    )
 
     near_field_exchange_turnover = airflow_profile.exchange_turnover_per_hour
     interzonal_mixing_rate = request.near_field_volume_m3 * (
@@ -405,7 +570,13 @@ def build_inhalation_tier_1_screening_scenario(
         * distance_factor
         * particle_persistence_factor
     )
-    near_field_active_concentration = far_field_average_concentration + near_field_increment
+    near_field_active_concentration_uncapped = (
+        far_field_average_concentration_uncapped + near_field_increment
+    )
+    near_field_active_concentration, near_field_cap_applied = _apply_saturation_cap(
+        concentration_mg_per_m3=near_field_active_concentration_uncapped,
+        saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+    )
     inhaled_mass_mg_per_event = (
         near_field_active_concentration * inhalation_rate * spray_duration_hours
     ) + (
@@ -417,13 +588,35 @@ def build_inhalation_tier_1_screening_scenario(
     breathing_zone_time_weighted_average = inhaled_mass_mg_per_event / (
         inhalation_rate * exposure_duration_hours
     )
+    breathing_zone_time_weighted_average_uncapped = (
+        (
+            near_field_active_concentration_uncapped * inhalation_rate * spray_duration_hours
+        )
+        + (
+            far_field_average_concentration_uncapped
+            * inhalation_rate
+            * max(exposure_duration_hours - spray_duration_hours, 0.0)
+        )
+    ) / (inhalation_rate * exposure_duration_hours)
     normalized_dose = inhaled_mass_mg_day / body_weight_kg
+    room_air_decay_half_life_hours = (
+        math.log(2.0) / total_loss_rate if total_loss_rate > 0.0 else None
+    )
+    saturation_cap_applied = (
+        initial_cap_applied or far_field_cap_applied or near_field_cap_applied
+    )
 
     tracker.add_derived(
         "released_mass_mg_per_event",
         released_mass_mg_event,
         "mg/event",
         "Released mass = chemical mass per event x aerosolized fraction.",
+    )
+    tracker.add_derived(
+        "total_loss_rate_per_hour",
+        total_loss_rate,
+        "1/h",
+        "Total room-air loss rate = air exchange rate + deposition sink.",
     )
     tracker.add_derived(
         "spray_duration_hours",
@@ -461,7 +654,16 @@ def build_inhalation_tier_1_screening_scenario(
         "far_field_average_air_concentration_mg_per_m3",
         far_field_average_concentration,
         "mg/m3",
-        "Far-field room average derived from the Tier 0 room model over the full exposure window.",
+        (
+            "Far-field room average derived from the Tier 1 room model over the full "
+            "exposure window after bounded loss terms are applied."
+        ),
+    )
+    tracker.add_derived(
+        "uncapped_far_field_average_air_concentration_mg_per_m3",
+        far_field_average_concentration_uncapped,
+        "mg/m3",
+        "Uncapped far-field room average before any volatility saturation cap is applied.",
     )
     tracker.add_derived(
         "near_field_active_spray_concentration_mg_per_m3",
@@ -473,11 +675,56 @@ def build_inhalation_tier_1_screening_scenario(
         ),
     )
     tracker.add_derived(
+        "uncapped_near_field_active_spray_concentration_mg_per_m3",
+        near_field_active_concentration_uncapped,
+        "mg/m3",
+        (
+            "Uncapped active-spray breathing-zone concentration before any volatility "
+            "saturation cap is applied."
+        ),
+    )
+    tracker.add_derived(
         "breathing_zone_time_weighted_average_mg_per_m3",
         breathing_zone_time_weighted_average,
         "mg/m3",
         "Time-weighted breathing-zone average over the full event duration.",
     )
+    tracker.add_derived(
+        "uncapped_average_air_concentration_mg_per_m3",
+        breathing_zone_time_weighted_average_uncapped,
+        "mg/m3",
+        (
+            "Uncapped breathing-zone time-weighted average before any volatility "
+            "saturation cap is applied."
+        ),
+    )
+    if room_air_decay_half_life_hours is not None:
+        tracker.add_derived(
+            "room_air_decay_half_life_hours",
+            room_air_decay_half_life_hours,
+            "h",
+            "Room-air decay half-life implied by air exchange plus the bounded deposition sink.",
+        )
+    if saturation_cap_mg_per_m3 is not None:
+        tracker.add_derived(
+            "saturation_cap_applied",
+            saturation_cap_applied,
+            None,
+            (
+                "Whether the volatility saturation cap constrained one or more modeled "
+                "Tier 1 room-air concentrations."
+            ),
+        )
+        if saturation_cap_applied:
+            tracker.add_quality_flag(
+                "saturation_cap_applied",
+                (
+                    "Tier 1 inhalation concentrations were capped at the bounded volatility "
+                    "saturation ceiling because the uncapped screening concentration exceeded "
+                    "the thermodynamic limit."
+                ),
+                severity=Severity.WARNING,
+            )
     tracker.add_derived(
         "inhaled_mass_mg_per_event",
         inhaled_mass_mg_per_event,
@@ -507,8 +754,8 @@ def build_inhalation_tier_1_screening_scenario(
     tracker.add_limitation(
         "particle_regime_screening",
         (
-            "Particle-size effects use a coarse screening persistence factor and do not model "
-            "droplet evaporation, deposition, or full aerosol dynamics."
+            "Particle-size effects use bounded screening persistence and deposition terms and "
+            "do not model droplet evaporation or full aerosol dynamics."
         ),
     )
     tracker.add_quality_flag(
@@ -567,19 +814,57 @@ def build_inhalation_tier_1_screening_scenario(
         route_metrics={
             "chemical_mass_mg_per_event": round(chemical_mass_mg_event, 8),
             "released_mass_mg_per_event": round(released_mass_mg_event, 8),
+            "initial_air_concentration_mg_per_m3": round(initial_room_concentration, 8),
+            "uncapped_initial_air_concentration_mg_per_m3": round(
+                initial_room_concentration_uncapped, 8
+            ),
             "far_field_average_air_concentration_mg_per_m3": round(
                 far_field_average_concentration, 8
+            ),
+            "uncapped_far_field_average_air_concentration_mg_per_m3": round(
+                far_field_average_concentration_uncapped, 8
             ),
             "near_field_active_spray_concentration_mg_per_m3": round(
                 near_field_active_concentration, 8
             ),
+            "uncapped_near_field_active_spray_concentration_mg_per_m3": round(
+                near_field_active_concentration_uncapped, 8
+            ),
             "average_air_concentration_mg_per_m3": round(
                 breathing_zone_time_weighted_average, 8
+            ),
+            "uncapped_average_air_concentration_mg_per_m3": round(
+                breathing_zone_time_weighted_average_uncapped, 8
             ),
             "breathing_zone_time_weighted_average_mg_per_m3": round(
                 breathing_zone_time_weighted_average, 8
             ),
             "interzonal_mixing_rate_m3_per_hour": round(interzonal_mixing_rate, 8),
+            "deposition_rate_per_hour": round(deposition_rate, 8),
+            "total_loss_rate_per_hour": round(total_loss_rate, 8),
+            "room_air_decay_half_life_hours": (
+                round(room_air_decay_half_life_hours, 8)
+                if room_air_decay_half_life_hours is not None
+                else None
+            ),
+            "saturation_cap_mg_per_m3": (
+                round(saturation_cap_mg_per_m3, 8)
+                if saturation_cap_mg_per_m3 is not None
+                else None
+            ),
+            "saturation_cap_applied": saturation_cap_applied,
+            "vapor_pressure_mmhg": (
+                round(request.physchem_context.vapor_pressure_mmhg, 8)
+                if request.physchem_context is not None
+                and request.physchem_context.vapor_pressure_mmhg is not None
+                else None
+            ),
+            "molecular_weight_g_per_mol": (
+                round(request.physchem_context.molecular_weight_g_per_mol, 8)
+                if request.physchem_context is not None
+                and request.physchem_context.molecular_weight_g_per_mol is not None
+                else None
+            ),
             "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
             "tier1_product_profile_id": matched_profile.profile_id if matched_profile else None,
             "tier1_profile_alignment_status": profile_alignment_status,
@@ -605,6 +890,8 @@ def build_inhalation_tier_1_screening_scenario(
                 "than a measured CFD domain.",
                 "The airflow directionality and particle regime terms remain screening "
                 "classifications, not measured aerosol dynamics.",
+                "Bounded deposition and volatility caps improve physical realism but do not "
+                "turn the model into a transient aerosol transport solver.",
             ],
             forbidden_interpretations=[
                 "Do not interpret this result as deposited dose, absorbed dose, or a PBPK state.",
@@ -835,17 +1122,28 @@ def build_inhalation_residual_air_reentry_scenario(
             "Post-application delay was supplied explicitly.",
         )
 
-    total_decay_rate = air_exchange + additional_decay_rate
-    if total_decay_rate == 0:
-        average_air_concentration = request.air_concentration_at_reentry_start_mg_per_m3
-    else:
-        average_air_concentration = request.air_concentration_at_reentry_start_mg_per_m3 * (
-            (1.0 - math.exp(-total_decay_rate * exposure_duration_hours))
-            / (total_decay_rate * exposure_duration_hours)
-        )
-    air_concentration_at_reentry_end = (
-        request.air_concentration_at_reentry_start_mg_per_m3
-        * math.exp(-total_decay_rate * exposure_duration_hours)
+    deposition_rate, deposition_source = registry.inhalation_deposition_rate_per_hour(
+        application_method=profile.application_method,
+        physical_form=profile.physical_form,
+        product_subtype=profile.product_subtype,
+    )
+    tracker.add_default(
+        "deposition_rate_per_hour",
+        deposition_rate,
+        "1/h",
+        deposition_source,
+        "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+    )
+    total_decay_rate = air_exchange + additional_decay_rate + max(deposition_rate, 0.0)
+    average_air_concentration = _first_order_average_concentration(
+        request.air_concentration_at_reentry_start_mg_per_m3,
+        total_decay_rate,
+        exposure_duration_hours,
+    )
+    air_concentration_at_reentry_end = _first_order_end_concentration(
+        request.air_concentration_at_reentry_start_mg_per_m3,
+        total_decay_rate,
+        exposure_duration_hours,
     )
     inhaled_mass_mg_per_day = (
         average_air_concentration
@@ -859,7 +1157,10 @@ def build_inhalation_residual_air_reentry_scenario(
         "total_decay_rate_per_hour",
         total_decay_rate,
         "1/h",
-        "Total decay rate = air exchange rate + additional residual-air decay rate.",
+        (
+            "Total decay rate = air exchange rate + additional residual-air decay rate "
+            "+ deposition sink."
+        ),
     )
     tracker.add_derived(
         "average_air_concentration_mg_per_m3",
@@ -896,7 +1197,8 @@ def build_inhalation_residual_air_reentry_scenario(
         "residual_air_reentry_screening",
         (
             "Residual-air reentry uses a caller-anchored starting air concentration and a "
-            "bounded first-order decay model rather than a treated-surface emission solver."
+            "bounded first-order decay model with air exchange and deposition rather than a "
+            "treated-surface emission solver."
         ),
         severity=Severity.WARNING,
     )
@@ -955,6 +1257,7 @@ def build_inhalation_residual_air_reentry_scenario(
                 air_concentration_at_reentry_end, 8
             ),
             "inhaled_mass_mg_per_day": round(inhaled_mass_mg_per_day, 8),
+            "deposition_rate_per_hour": round(deposition_rate, 8),
             "total_decay_rate_per_hour": round(total_decay_rate, 8),
             "post_application_delay_hours": round(post_application_delay, 8),
         },
@@ -1207,20 +1510,50 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             unit="kg",
             rationale="Body weight was supplied explicitly for dose normalization.",
         )
+        _record_physchem_context(tracker, request.physchem_context)
 
         released_mass_mg_event = chemical_mass_mg_event * aerosolized_fraction
-        initial_air_concentration = released_mass_mg_event / room_volume_m3
-        k = max(air_exchange, 0.0)
-        if k == 0:
-            average_air_concentration = initial_air_concentration
-        else:
-            average_air_concentration = initial_air_concentration * (
-                (1.0 - math.exp(-k * exposure_duration_hours)) / (k * exposure_duration_hours)
-            )
-        air_concentration_at_event_end = initial_air_concentration * math.exp(
-            -k * exposure_duration_hours
+        initial_air_concentration_uncapped = released_mass_mg_event / room_volume_m3
+        deposition_rate, deposition_source = registry.inhalation_deposition_rate_per_hour(
+            application_method=profile.application_method,
+            physical_form=profile.physical_form,
+            product_subtype=profile.product_subtype,
         )
-        room_air_decay_half_life_hours = math.log(2.0) / k if k > 0.0 else None
+        tracker.add_default(
+            "deposition_rate_per_hour",
+            deposition_rate,
+            "1/h",
+            deposition_source,
+            "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+        )
+        total_loss_rate = max(air_exchange, 0.0) + max(deposition_rate, 0.0)
+        saturation_cap_mg_per_m3 = _inhalation_saturation_cap_mg_per_m3(
+            physchem_context=request.physchem_context,
+            profile=profile,
+            registry=registry,
+            tracker=tracker,
+        )
+        initial_air_concentration, initial_cap_applied = _apply_saturation_cap(
+            concentration_mg_per_m3=initial_air_concentration_uncapped,
+            saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+        )
+        average_air_concentration_uncapped = _first_order_average_concentration(
+            initial_air_concentration_uncapped,
+            total_loss_rate,
+            exposure_duration_hours,
+        )
+        average_air_concentration, average_cap_applied = _apply_saturation_cap(
+            concentration_mg_per_m3=average_air_concentration_uncapped,
+            saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+        )
+        air_concentration_at_event_end = _first_order_end_concentration(
+            initial_air_concentration,
+            total_loss_rate,
+            exposure_duration_hours,
+        )
+        room_air_decay_half_life_hours = (
+            math.log(2.0) / total_loss_rate if total_loss_rate > 0.0 else None
+        )
         inhaled_mass_mg_day = (
             average_air_concentration
             * inhalation_rate
@@ -1228,6 +1561,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             * profile.use_events_per_day
         )
         normalized_dose = inhaled_mass_mg_day / body_weight_kg
+        saturation_cap_applied = initial_cap_applied or average_cap_applied
 
         tracker.add_derived(
             "released_mass_mg_per_event",
@@ -1236,12 +1570,27 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             "Released mass = chemical mass per event x aerosolized fraction.",
         )
         tracker.add_derived(
+            "total_loss_rate_per_hour",
+            total_loss_rate,
+            "1/h",
+            "Total room-air loss rate = air exchange rate + deposition sink.",
+        )
+        tracker.add_derived(
             "average_air_concentration_mg_per_m3",
             average_air_concentration,
             "mg/m3",
             (
                 "Average air concentration derived from a well-mixed room "
-                "model with first-order air exchange removal."
+                "model with bounded air exchange and deposition removal."
+            ),
+        )
+        tracker.add_derived(
+            "uncapped_average_air_concentration_mg_per_m3",
+            average_air_concentration_uncapped,
+            "mg/m3",
+            (
+                "Uncapped room-average air concentration before any volatility "
+                "saturation cap is applied."
             ),
         )
         tracker.add_derived(
@@ -1254,12 +1603,18 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             ),
         )
         tracker.add_derived(
+            "uncapped_initial_air_concentration_mg_per_m3",
+            initial_air_concentration_uncapped,
+            "mg/m3",
+            "Uncapped initial room concentration before any volatility saturation cap is applied.",
+        )
+        tracker.add_derived(
             "air_concentration_at_event_end_mg_per_m3",
             air_concentration_at_event_end,
             "mg/m3",
             (
-                "End-of-window room concentration after first-order air exchange removal in "
-                "the well-mixed single-zone model."
+                "End-of-window room concentration after first-order air exchange and "
+                "deposition removal in the well-mixed single-zone model."
             ),
         )
         if room_air_decay_half_life_hours is not None:
@@ -1268,10 +1623,30 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 room_air_decay_half_life_hours,
                 "h",
                 (
-                    "Room-air decay half-life implied by the first-order air exchange term in "
-                    "the well-mixed single-zone model."
+                    "Room-air decay half-life implied by air exchange plus the bounded "
+                    "deposition sink in the well-mixed single-zone model."
                 ),
             )
+        if saturation_cap_mg_per_m3 is not None:
+            tracker.add_derived(
+                "saturation_cap_applied",
+                saturation_cap_applied,
+                None,
+                (
+                    "Whether the volatility saturation cap constrained one or more "
+                    "modeled Tier 0 room-air concentrations."
+                ),
+            )
+            if saturation_cap_applied:
+                tracker.add_quality_flag(
+                    "saturation_cap_applied",
+                    (
+                        "Tier 0 inhalation concentrations were capped at the bounded volatility "
+                        "saturation ceiling because the uncapped screening concentration exceeded "
+                        "the thermodynamic limit."
+                    ),
+                    severity=Severity.WARNING,
+                )
         tracker.add_derived(
             "inhaled_mass_mg_per_day",
             inhaled_mass_mg_day,
@@ -1329,13 +1704,39 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 "chemical_mass_mg_per_event": round(chemical_mass_mg_event, 8),
                 "released_mass_mg_per_event": round(released_mass_mg_event, 8),
                 "initial_air_concentration_mg_per_m3": round(initial_air_concentration, 8),
+                "uncapped_initial_air_concentration_mg_per_m3": round(
+                    initial_air_concentration_uncapped, 8
+                ),
                 "average_air_concentration_mg_per_m3": round(average_air_concentration, 8),
+                "uncapped_average_air_concentration_mg_per_m3": round(
+                    average_air_concentration_uncapped, 8
+                ),
                 "air_concentration_at_event_end_mg_per_m3": round(
                     air_concentration_at_event_end, 8
                 ),
+                "deposition_rate_per_hour": round(deposition_rate, 8),
+                "total_loss_rate_per_hour": round(total_loss_rate, 8),
                 "room_air_decay_half_life_hours": (
                     round(room_air_decay_half_life_hours, 8)
                     if room_air_decay_half_life_hours is not None
+                    else None
+                ),
+                "saturation_cap_mg_per_m3": (
+                    round(saturation_cap_mg_per_m3, 8)
+                    if saturation_cap_mg_per_m3 is not None
+                    else None
+                ),
+                "saturation_cap_applied": saturation_cap_applied,
+                "vapor_pressure_mmhg": (
+                    round(request.physchem_context.vapor_pressure_mmhg, 8)
+                    if request.physchem_context is not None
+                    and request.physchem_context.vapor_pressure_mmhg is not None
+                    else None
+                ),
+                "molecular_weight_g_per_mol": (
+                    round(request.physchem_context.molecular_weight_g_per_mol, 8)
+                    if request.physchem_context is not None
+                    and request.physchem_context.molecular_weight_g_per_mol is not None
                     else None
                 ),
                 "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
@@ -1353,8 +1754,8 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 ),
                 required_caveats=[
                     "Interpret the reported air concentration as a room-average screening value.",
-                    "Air exchange is represented as a first-order removal term rather than a "
-                    "full airflow or aerosol-dynamics treatment.",
+                    "Air exchange and deposition are represented as bounded first-order loss "
+                    "terms rather than a full airflow or aerosol-dynamics treatment.",
                 ],
                 forbidden_interpretations=[
                     "Do not interpret this result as a breathing-zone peak concentration.",

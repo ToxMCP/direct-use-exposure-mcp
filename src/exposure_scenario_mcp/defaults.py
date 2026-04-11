@@ -328,6 +328,53 @@ class DefaultsRegistry:
         }
         return values, sources
 
+    def inhalation_deposition_rate_per_hour(
+        self,
+        *,
+        particle_size_regime: str | None = None,
+        application_method: str | None = None,
+        physical_form: str | None = None,
+        product_subtype: str | None = None,
+    ) -> tuple[float, AssumptionSourceReference]:
+        section = self.payload["inhalation_physical_caps"]["deposition_rate_per_hour"]
+        entry = section["global"]
+
+        if physical_form:
+            candidate = section.get("physical_form_overrides", {}).get(physical_form.lower())
+            if candidate:
+                entry = candidate
+        if application_method:
+            candidate = section.get("application_method_overrides", {}).get(
+                application_method.lower()
+            )
+            if candidate:
+                entry = candidate
+        if product_subtype:
+            candidate = section.get("product_subtype_overrides", {}).get(product_subtype.lower())
+            if candidate:
+                entry = candidate
+        if particle_size_regime:
+            candidate = section.get("particle_size_regime_overrides", {}).get(
+                particle_size_regime.lower()
+            )
+            if candidate:
+                entry = candidate
+
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def inhalation_saturation_cap_policy(self) -> tuple[dict[str, Any], AssumptionSourceReference]:
+        entry = self.payload["inhalation_physical_caps"]["volatility_saturation_cap_policy"]
+        return (
+            {
+                "reference_temperature_c": float(entry["reference_temperature_c"]),
+                "requires_fields": list(entry["requires_fields"]),
+                "skip_when_particle_material_context_present": bool(
+                    entry.get("skip_when_particle_material_context_present", True)
+                ),
+            },
+            self._source(entry["source_id"]),
+        )
+
     def worker_dermal_body_zone_surface_area_cm2(
         self, body_zone_profile: str
     ) -> tuple[float, AssumptionSourceReference]:
@@ -503,6 +550,26 @@ class DefaultsRegistry:
             self._source(entry["source_id"]),
         )
 
+    def worker_dermal_max_retained_surface_loading_mg_per_cm2(
+        self,
+        *,
+        physical_form: str | None = None,
+        contact_profile: str | None = None,
+    ) -> tuple[float, AssumptionSourceReference]:
+        section = self.payload["worker_dermal_execution_defaults"][
+            "max_retained_surface_loading_mg_per_cm2"
+        ]
+        entry = section["global"]
+        if physical_form:
+            candidate = section.get("physical_form_overrides", {}).get(physical_form.lower())
+            if candidate:
+                entry = candidate
+        if contact_profile:
+            candidate = section.get("contact_profile_overrides", {}).get(contact_profile.lower())
+            if candidate:
+                entry = candidate
+        return float(entry["value"]), self._source(entry["source_id"])
+
     def worker_inhalation_control_profile_factor(
         self, control_profile: str
     ) -> tuple[float, AssumptionSourceReference]:
@@ -634,6 +701,23 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  anchors for worker dermal absorbed-dose execution when callers do not supply an",
             "  explicit exposed surface area. These are not intended to replace task-specific",
             "  patch or wipe measurements.",
+            "",
+            "### Inhalation Physical Caps 2026",
+            "",
+            "- `inhalation_deposition_sink_heuristics_2026` adds a bounded first-order",
+            "  deposition sink to room-air inhalation screening. These defaults are simple",
+            "  settling heuristics keyed to spray family or particle-size regime, not a full",
+            "  aerosol transport solver.",
+            "- `inhalation_volatility_saturation_cap_policy_2026` publishes the shared",
+            "  thermodynamic saturation-cap policy used when both vapor pressure and molecular",
+            "  weight are available. The cap prevents impossible supersaturated room-air",
+            "  concentrations in volatility-aware screening runs.",
+            "",
+            "### Worker Dermal Surface-Cap Heuristics 2026",
+            "",
+            "- `worker_dermal_surface_loading_cap_heuristics_2026` bounds retained skin-surface",
+            "  loading before PPE and absorption are applied. Excess mass is treated as runoff",
+            "  or non-retained loading rather than silently accumulating at the skin boundary.",
             "",
             "### Worker Dermal PPE Penetration Heuristics 2026",
             "",

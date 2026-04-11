@@ -17,6 +17,7 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
 - Adult dermal leave-on face cream screening aligned to SCCS Notes of Guidance
 - Adult inhalation trigger spray screening
 - Adult inhalation trigger spray screening linked to a narrow aerosol room-decay half-life anchor
+- Adult inhalation volatility stress case proving thermodynamic saturation capping of impossible room-air concentrations
 - Adult air-space insecticide aerosol screening linked to a narrow indoor-air validation band
 - Adult air-space insecticide aerosol screening linked to a sparse 0.75-hour to 6-hour
   indoor-air decay series
@@ -27,6 +28,7 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
 - Adult indoor-surface insecticide residual-air reentry screening linked to a sparse
   diazinon 24-hour to 48-hour office room-air time-series benchmark
 - Adult inhalation Tier 1 trigger spray near-field/far-field screening
+- Adult inhalation Tier 1 coarse-spray settling sensitivity case locking bounded deposition loss into the deterministic regression corpus
 - Adult inhalation Tier 1 disinfectant trigger spray screening linked to a narrow
   externally anchored inhaled-dose benchmark
 - Child direct-oral liquid screening
@@ -40,11 +42,13 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
 - Worker inhalation surrogate execution for a controlled janitorial disinfectant trigger spray
 - Worker inhalation surrogate execution for a study-like handheld BAC trigger spray linked to a narrow occupational concentration benchmark band
 - Worker dermal absorbed-dose execution for a study-like handheld BAC trigger spray linked to a narrow occupational dermal loading benchmark band
+- Worker dermal extreme-loading execution case proving retained surface-loading limits and runoff reporting
 
 ## Tolerances
 
 - Numeric regression checks use `pytest.approx(..., rel=1e-6)`.
 - Benchmark cases are deterministic and should remain stable unless the algorithm ID or defaults version changes intentionally.
+- Physical-cap regression cases are intended to lock bounded screening behavior, not to claim full aerosol dynamics or dermal permeation kinetics.
 
 ## Provenance Expectation
 

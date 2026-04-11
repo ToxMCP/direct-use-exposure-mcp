@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.07.v18",
+  "defaults_version": "2026.04.11.v19",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -27,7 +27,9 @@
           "schema_version": "populationProfile.v1",
           "population_group": "adult",
           "region": "EU",
-          "demographic_tags": ["consumer"]
+          "demographic_tags": [
+            "consumer"
+          ]
         },
         "assumption_overrides": {}
       },
@@ -37,7 +39,8 @@
         "route_metrics": {
           "external_mass_mg_per_day": 90.0,
           "surface_loading_mg_per_cm2_day": 0.01578947
-        }
+        },
+        "assumptions": {}
       }
     },
     {
@@ -70,17 +73,20 @@
           "body_weight_kg": 63.79453,
           "exposed_surface_area_cm2": 565.0,
           "region": "EU",
-          "demographic_tags": ["consumer"]
+          "demographic_tags": [
+            "consumer"
+          ]
         },
         "assumption_overrides": {}
       },
       "expected": {
-        "external_dose_value": 0.48280001,
+        "external_dose_value": 0.48280002,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "external_mass_mg_per_day": 30.80000008,
           "surface_loading_mg_per_cm2_day": 0.05451327
-        }
+        },
+        "assumptions": {}
       }
     },
     {
@@ -117,12 +123,13 @@
         "assumption_overrides": {}
       },
       "expected": {
-        "external_dose_value": 0.02007912,
+        "external_dose_value": 0.01813117,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
-          "average_air_concentration_mg_per_m3": 3.03417868,
-          "inhaled_mass_mg_per_day": 1.36538041
-        }
+          "average_air_concentration_mg_per_m3": 2.73982158,
+          "inhaled_mass_mg_per_day": 1.23291971
+        },
+        "assumptions": {}
       }
     },
     {
@@ -159,11 +166,11 @@
         "assumption_overrides": {}
       },
       "expected": {
-        "external_dose_value": 0.00899138,
+        "external_dose_value": 0.00865983,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
-          "average_air_concentration_mg_per_m3": 0.16983716,
-          "inhaled_mass_mg_per_day": 0.61141379
+          "average_air_concentration_mg_per_m3": 0.16357451,
+          "inhaled_mass_mg_per_day": 0.58886823
         },
         "assumptions": {
           "density_g_per_ml": 0.8,
@@ -211,13 +218,13 @@
         "assumption_overrides": {}
       },
       "expected": {
-        "external_dose_value": 0.00246896,
+        "external_dose_value": 0.00244466,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "initial_air_concentration_mg_per_m3": 0.3489191,
-          "average_air_concentration_mg_per_m3": 0.24872492,
-          "air_concentration_at_event_end_mg_per_m3": 0.16983716,
-          "inhaled_mass_mg_per_day": 0.16788932
+          "average_air_concentration_mg_per_m3": 0.24627692,
+          "air_concentration_at_event_end_mg_per_m3": 0.16605849,
+          "inhaled_mass_mg_per_day": 0.16623692
         },
         "assumptions": {
           "density_g_per_ml": 0.8,
@@ -265,13 +272,13 @@
         "assumption_overrides": {}
       },
       "expected": {
-        "external_dose_value": 0.00479531,
+        "external_dose_value": 0.00465242,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "initial_air_concentration_mg_per_m3": 0.3489191,
-          "average_air_concentration_mg_per_m3": 0.06038535,
-          "air_concentration_at_event_end_mg_per_m3": 0.00109948,
-          "inhaled_mass_mg_per_day": 0.32608089
+          "average_air_concentration_mg_per_m3": 0.05858598,
+          "air_concentration_at_event_end_mg_per_m3": 0.00091837,
+          "inhaled_mass_mg_per_day": 0.31636431
         },
         "assumptions": {
           "density_g_per_ml": 0.8,
@@ -314,7 +321,9 @@
           "body_weight_kg": 80,
           "inhalation_rate_m3_per_hour": 0.83,
           "region": "EU",
-          "demographic_tags": ["residential_reentry"]
+          "demographic_tags": [
+            "residential_reentry"
+          ]
         },
         "assumption_overrides": {},
         "air_concentration_at_reentry_start_mg_per_m3": 0.08,
@@ -322,19 +331,19 @@
         "post_application_delay_hours": 4.0
       },
       "expected": {
-        "external_dose_value": 0.00137806,
+        "external_dose_value": 0.00136887,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "air_concentration_at_reentry_start_mg_per_m3": 0.08,
-          "average_air_concentration_mg_per_m3": 0.03320635,
-          "air_concentration_at_reentry_end_mg_per_m3": 0.00960253,
-          "inhaled_mass_mg_per_day": 0.11024509
+          "average_air_concentration_mg_per_m3": 0.03298487,
+          "air_concentration_at_reentry_end_mg_per_m3": 0.00941239,
+          "inhaled_mass_mg_per_day": 0.10950975
         },
         "assumptions": {
           "air_concentration_at_reentry_start_mg_per_m3": 0.08,
           "additional_decay_rate_per_hour": 0.03,
           "post_application_delay_hours": 4.0,
-          "total_decay_rate_per_hour": 0.53
+          "total_decay_rate_per_hour": 0.535
         }
       }
     },
@@ -370,7 +379,10 @@
           "body_weight_kg": 80,
           "inhalation_rate_m3_per_hour": 0.83,
           "region": "EU",
-          "demographic_tags": ["residential_reentry", "time_series_anchor"]
+          "demographic_tags": [
+            "residential_reentry",
+            "time_series_anchor"
+          ]
         },
         "assumption_overrides": {},
         "air_concentration_at_reentry_start_mg_per_m3": 0.08,
@@ -378,19 +390,19 @@
         "post_application_delay_hours": 4.0
       },
       "expected": {
-        "external_dose_value": 0.01057778,
+        "external_dose_value": 0.0101472,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "air_concentration_at_reentry_start_mg_per_m3": 0.08,
-          "average_air_concentration_mg_per_m3": 0.05097728,
-          "air_concentration_at_reentry_end_mg_per_m3": 0.03,
-          "inhaled_mass_mg_per_day": 0.84622278
+          "average_air_concentration_mg_per_m3": 0.04890215,
+          "air_concentration_at_reentry_end_mg_per_m3": 0.02714512,
+          "inhaled_mass_mg_per_day": 0.81177576
         },
         "assumptions": {
           "air_concentration_at_reentry_start_mg_per_m3": 0.08,
           "additional_decay_rate_per_hour": 0.02904146,
           "post_application_delay_hours": 4.0,
-          "total_decay_rate_per_hour": 0.04904146
+          "total_decay_rate_per_hour": 0.05404146
         }
       }
     },
@@ -426,7 +438,10 @@
           "body_weight_kg": 80,
           "inhalation_rate_m3_per_hour": 0.83,
           "region": "EU",
-          "demographic_tags": ["occupancy_reentry", "office_air"]
+          "demographic_tags": [
+            "occupancy_reentry",
+            "office_air"
+          ]
         },
         "assumption_overrides": {},
         "air_concentration_at_reentry_start_mg_per_m3": 0.125,
@@ -434,19 +449,19 @@
         "post_application_delay_hours": 24.0
       },
       "expected": {
-        "external_dose_value": 0.02089457,
+        "external_dose_value": 0.01985673,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "air_concentration_at_reentry_start_mg_per_m3": 0.125,
-          "average_air_concentration_mg_per_m3": 0.08391395,
-          "air_concentration_at_reentry_end_mg_per_m3": 0.053,
-          "inhaled_mass_mg_per_day": 1.67156584
+          "average_air_concentration_mg_per_m3": 0.07974589,
+          "air_concentration_at_reentry_end_mg_per_m3": 0.04700678,
+          "inhaled_mass_mg_per_day": 1.58853804
         },
         "assumptions": {
           "air_concentration_at_reentry_start_mg_per_m3": 0.125,
           "additional_decay_rate_per_hour": 0.02575091,
           "post_application_delay_hours": 24.0,
-          "total_decay_rate_per_hour": 0.03575091
+          "total_decay_rate_per_hour": 0.04075091
         }
       }
     },
@@ -491,13 +506,13 @@
         "particle_size_regime": "coarse_spray"
       },
       "expected": {
-        "external_dose_value": 0.06262114,
+        "external_dose_value": 0.05899338,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
-          "far_field_average_air_concentration_mg_per_m3": 3.03417868,
-          "near_field_active_spray_concentration_mg_per_m3": 1449.46275011,
-          "average_air_concentration_mg_per_m3": 9.46275011,
-          "inhaled_mass_mg_per_day": 4.25823755
+          "far_field_average_air_concentration_mg_per_m3": 2.48598349,
+          "near_field_active_spray_concentration_mg_per_m3": 1448.91455492,
+          "average_air_concentration_mg_per_m3": 8.91455492,
+          "inhaled_mass_mg_per_day": 4.01154971
         },
         "assumptions": {
           "source_distance_m": 0.35,
@@ -547,13 +562,13 @@
         "particle_size_regime": "coarse_spray"
       },
       "expected": {
-        "external_dose_value": 0.00107494,
+        "external_dose_value": 0.00107475,
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
-          "far_field_average_air_concentration_mg_per_m3": 0.09917128,
-          "near_field_active_spray_concentration_mg_per_m3": 4.51475569,
-          "average_air_concentration_mg_per_m3": 4.51475569,
-          "inhaled_mass_mg_per_day": 0.07524593
+          "far_field_average_air_concentration_mg_per_m3": 0.0983517,
+          "near_field_active_spray_concentration_mg_per_m3": 4.51393611,
+          "average_air_concentration_mg_per_m3": 4.51393523,
+          "inhaled_mass_mg_per_day": 0.07523227
         },
         "assumptions": {
           "source_distance_m": 0.35,
@@ -721,7 +736,9 @@
             "schema_version": "populationProfile.v1",
             "population_group": "adult",
             "region": "EU",
-            "demographic_tags": ["consumer"]
+            "demographic_tags": [
+              "consumer"
+            ]
           },
           "assumption_overrides": {}
         },
@@ -756,16 +773,18 @@
         }
       ],
       "expected": {
-        "normalized_total_external_dose_value": 1.14507912,
+        "normalized_total_external_dose_value": 1.14313117,
         "route_totals": {
           "dermal": 1.125,
-          "inhalation": 0.02007912
+          "inhalation": 0.01813117
         },
         "dominant_contributor_fractions": {
-          "dermal": 0.982465,
-          "inhalation": 0.017535
+          "dermal": 0.984139,
+          "inhalation": 0.015861
         },
-        "limitation_codes": ["cross_route_aggregate"]
+        "limitation_codes": [
+          "cross_route_aggregate"
+        ]
       }
     },
     {
@@ -864,7 +883,9 @@
           "schema_version": "populationProfile.v1",
           "population_group": "adult",
           "region": "EU",
-          "demographic_tags": ["consumer"]
+          "demographic_tags": [
+            "consumer"
+          ]
         },
         "assumption_overrides": {}
       },
@@ -907,7 +928,9 @@
           "schema_version": "populationProfile.v1",
           "population_group": "adult",
           "region": "EU",
-          "demographic_tags": ["consumer"]
+          "demographic_tags": [
+            "consumer"
+          ]
         },
         "assumption_overrides": {}
       },
@@ -947,8 +970,8 @@
         "scenario_class": "inhalation",
         "package_profile_id": "adult_personal_care_pump_spray_tier1_near_field_context_package",
         "archetype_library_set_id": "adult_personal_care_pump_spray_tier1",
-        "minimum_dose_value": 0.00237854,
-        "maximum_dose_value": 0.12177375,
+        "minimum_dose_value": 0.00236682,
+        "maximum_dose_value": 0.12083206,
         "support_point_template_ids": [
           "adult_personal_care_pump_spray_tier1_low",
           "adult_personal_care_pump_spray_tier1_typical",
@@ -997,7 +1020,10 @@
             "body_weight_kg": 75.0,
             "inhalation_rate_m3_per_hour": 1.1,
             "exposed_surface_area_cm2": null,
-            "demographic_tags": ["worker", "occupational"],
+            "demographic_tags": [
+              "worker",
+              "occupational"
+            ],
             "region": "EU"
           },
           "assumption_overrides": {},
@@ -1013,11 +1039,16 @@
         "workplaceSetting": "janitorial closet",
         "taskDurationHours": 0.5,
         "ventilationContext": "general_ventilation",
-        "localControls": ["general ventilation", "task segregation"],
+        "localControls": [
+          "general ventilation",
+          "task segregation"
+        ],
         "respiratoryProtection": "none",
         "emissionDescriptor": "short trigger-spray cleaning mist near the breathing zone",
         "contextOfUse": "worker-tier2-bridge",
-        "notes": ["Illustrative worker inhalation bridge package for a future ART-style adapter."]
+        "notes": [
+          "Illustrative worker inhalation bridge package for a future ART-style adapter."
+        ]
       },
       "execution_overrides": {
         "controlFactor": 0.7,
@@ -1025,12 +1056,12 @@
       },
       "context_of_use": "worker-art-execution",
       "expected": {
-        "baseline_dose_value": 0.09455426,
-        "external_dose_value": 0.03309399,
+        "baseline_dose_value": 0.09024701,
+        "external_dose_value": 0.03158645,
         "route_metrics": {
-          "baselineAverageAirConcentrationMgPerM3": 6.44688144,
-          "controlAdjustedAverageAirConcentrationMgPerM3": 4.51281701,
-          "adjustedInhaledMassMgPerDay": 2.48204935
+          "baselineAverageAirConcentrationMgPerM3": 6.15320544,
+          "controlAdjustedAverageAirConcentrationMgPerM3": 4.30724381,
+          "adjustedInhaledMassMgPerDay": 2.36898409
         }
       }
     },
@@ -1073,7 +1104,10 @@
             "body_weight_kg": 75.0,
             "inhalation_rate_m3_per_hour": 1.1,
             "exposed_surface_area_cm2": null,
-            "demographic_tags": ["worker", "occupational"],
+            "demographic_tags": [
+              "worker",
+              "occupational"
+            ],
             "region": "EU"
           },
           "assumption_overrides": {},
@@ -1089,7 +1123,9 @@
         "workplaceSetting": "workbench area",
         "taskDurationHours": 2.0,
         "ventilationContext": "general_ventilation",
-        "localControls": ["general ventilation"],
+        "localControls": [
+          "general ventilation"
+        ],
         "respiratoryProtection": "none",
         "emissionDescriptor": "handheld BAC trigger spray for small-surface disinfection",
         "contextOfUse": "worker-tier2-bridge",
@@ -1103,12 +1139,12 @@
       },
       "context_of_use": "worker-art-execution",
       "expected": {
-        "baseline_dose_value": 0.00090614,
-        "external_dose_value": 0.00090614,
+        "baseline_dose_value": 0.00066834,
+        "external_dose_value": 0.00066834,
         "route_metrics": {
-          "baselineAverageAirConcentrationMgPerM3": 0.03089112,
-          "controlAdjustedAverageAirConcentrationMgPerM3": 0.03089112,
-          "adjustedInhaledMassMgPerDay": 0.06796046
+          "baselineAverageAirConcentrationMgPerM3": 0.02278436,
+          "controlAdjustedAverageAirConcentrationMgPerM3": 0.02278436,
+          "adjustedInhaledMassMgPerDay": 0.0501256
         }
       }
     },
@@ -1151,7 +1187,10 @@
             "body_weight_kg": 75.0,
             "inhalation_rate_m3_per_hour": null,
             "exposed_surface_area_cm2": 840.0,
-            "demographic_tags": ["worker", "occupational"],
+            "demographic_tags": [
+              "worker",
+              "occupational"
+            ],
             "region": "EU"
           },
           "assumption_overrides": {}
@@ -1161,9 +1200,14 @@
         "workplaceSetting": "custodial closet",
         "contactDurationHours": 0.75,
         "contactPattern": "surface_transfer",
-        "exposedBodyAreas": ["hands"],
+        "exposedBodyAreas": [
+          "hands"
+        ],
         "ppeState": "work_gloves",
-        "controlMeasures": ["task segregation", "prompt hand washing"],
+        "controlMeasures": [
+          "task segregation",
+          "prompt hand washing"
+        ],
         "surfaceLoadingContext": "wet cleaning cloth contact with surface residue transfer",
         "skinCondition": "unknown",
         "contextOfUse": "worker-dermal-bridge",
@@ -1224,7 +1268,10 @@
             "body_weight_kg": 75.0,
             "inhalation_rate_m3_per_hour": null,
             "exposed_surface_area_cm2": 840.0,
-            "demographic_tags": ["worker", "occupational"],
+            "demographic_tags": [
+              "worker",
+              "occupational"
+            ],
             "region": "EU"
           },
           "assumption_overrides": {}
@@ -1234,9 +1281,13 @@
         "workplaceSetting": "workbench area",
         "contactDurationHours": 1.0,
         "contactPattern": "surface_transfer",
-        "exposedBodyAreas": ["hands"],
+        "exposedBodyAreas": [
+          "hands"
+        ],
         "ppeState": "work_gloves",
-        "controlMeasures": ["general ventilation"],
+        "controlMeasures": [
+          "general ventilation"
+        ],
         "surfaceLoadingContext": "spray-and-wipe surface transfer to gloved hands",
         "skinCondition": "unknown",
         "contextOfUse": "worker-dermal-bridge",
@@ -1253,6 +1304,202 @@
           "externalSkinMassMgPerDay": 12.8,
           "protectedExternalSkinMassMgPerDay": 5.12,
           "absorbedMassMgPerDay": 0.24576
+        }
+      }
+    },
+    {
+      "id": "inhalation_saturation_cap_stress_case",
+      "kind": "scenario",
+      "description": "Volatility-bounded inhalation stress case proving thermodynamic saturation capping of impossible room-air concentrations.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID999",
+        "chemical_name": "Benchmark Saturation Cap Chemical",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Aerosol Stress Test",
+          "product_category": "personal_care",
+          "product_subtype": null,
+          "physical_form": "spray",
+          "application_method": "aerosol_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 1.0,
+          "use_amount_per_event": 1000.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1.0,
+          "room_volume_m3": 1.0,
+          "air_exchange_rate_per_hour": 0.5,
+          "exposure_duration_hours": 1.0
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 70.0,
+          "inhalation_rate_m3_per_hour": 1.0,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [],
+          "region": "global"
+        },
+        "physchemContext": {
+          "schema_version": "physchemContext.v1",
+          "vaporPressureMmhg": 10.0,
+          "molecularWeightGPerMol": 100.0,
+          "logKow": null,
+          "waterSolubilityMgPerL": null
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 768.3091076,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "average_air_concentration_mg_per_m3": 53781.63753201,
+          "uncapped_average_air_concentration_mg_per_m3": 684623.42781828,
+          "saturation_cap_mg_per_m3": 53781.63753201,
+          "deposition_rate_per_hour": 0.03,
+          "total_loss_rate_per_hour": 0.53
+        },
+        "assumptions": {
+          "vapor_pressure_mmhg": 10.0,
+          "molecular_weight_g_per_mol": 100.0
+        }
+      }
+    },
+    {
+      "id": "inhalation_tier1_coarse_spray_settling_sensitivity",
+      "kind": "scenario",
+      "description": "Tier 1 coarse-spray inhalation benchmark locking the bounded deposition sink and total loss rate into the regression corpus.",
+      "request": {
+        "schema_version": "inhalationTier1ScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Trigger Spray Cleaner",
+          "product_category": "household_cleaner",
+          "product_subtype": null,
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1.0,
+          "room_volume_m3": 25.0,
+          "air_exchange_rate_per_hour": 2.0,
+          "exposure_duration_hours": 0.5
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68.0,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [],
+          "region": "EU"
+        },
+        "source_distance_m": 0.35,
+        "spray_duration_seconds": 8.0,
+        "near_field_volume_m3": 2.0,
+        "airflow_directionality": "cross_draft",
+        "particle_size_regime": "coarse_spray",
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.05899338,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "average_air_concentration_mg_per_m3": 8.91455492,
+          "deposition_rate_per_hour": 1.0,
+          "total_loss_rate_per_hour": 3.0,
+          "room_air_decay_half_life_hours": 0.23104906
+        },
+        "assumptions": {
+          "near_field_exchange_turnover_per_hour": 32.0,
+          "particle_persistence_factor": 0.85
+        }
+      }
+    },
+    {
+      "id": "worker_dermal_extreme_loading_surface_cap_execution",
+      "kind": "worker_dermal_execution",
+      "description": "Worker dermal extreme-loading case proving the finite retained surface-loading cap and runoff reporting.",
+      "bridge_request": {
+        "schema_version": "exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
+        "baseRequest": {
+          "schema_version": "exposureScenarioRequest.v1",
+          "chemical_id": "DTXSID123",
+          "chemical_name": "Example Worker Chemical",
+          "route": "dermal",
+          "scenario_class": "screening",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": null,
+            "product_subtype": null,
+            "product_category": "household_cleaner",
+            "physical_form": "liquid",
+            "application_method": "hand_application",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.02,
+            "use_amount_per_event": 500.0,
+            "use_amount_unit": "g",
+            "use_events_per_day": 1.0,
+            "density_g_per_ml": null,
+            "transfer_efficiency": null,
+            "retention_factor": null,
+            "ingestion_fraction": null,
+            "aerosolized_fraction": null,
+            "room_volume_m3": null,
+            "air_exchange_rate_per_hour": null,
+            "exposure_duration_hours": 0.75
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 75.0,
+            "inhalation_rate_m3_per_hour": null,
+            "exposed_surface_area_cm2": 840.0,
+            "demographic_tags": [
+              "worker",
+              "occupational"
+            ],
+            "region": "EU"
+          },
+          "assumption_overrides": {}
+        },
+        "targetModelFamily": "dermal_absorption_ppe",
+        "taskDescription": "Worker direct liquid handling with heavy splash loading",
+        "workplaceSetting": "mix room",
+        "contactDurationHours": 1.0,
+        "contactPattern": "direct_handling",
+        "exposedBodyAreas": [
+          "hands"
+        ],
+        "ppeState": "none",
+        "controlMeasures": [
+          "prompt hand washing"
+        ],
+        "surfaceLoadingContext": "high liquid contact on hands",
+        "skinCondition": "unknown",
+        "contextOfUse": "worker-dermal-bridge",
+        "notes": [
+          "Illustrative worker dermal bridge package for a finite-loading stress test."
+        ]
+      },
+      "execution_overrides": {},
+      "context_of_use": "worker-dermal-execution",
+      "expected": {
+        "external_dose_value": 22.4,
+        "absorbed_dose_value": 2.24,
+        "route_metrics": {
+          "externalSkinMassMgPerDay": 2000.0,
+          "retainedExternalSkinMassMgPerDay": 1680.0,
+          "runoffMassMgPerDay": 320.0,
+          "runoffFraction": 0.16,
+          "maxRetainedLoadingMgPerCm2Day": 2.0
         }
       }
     }

@@ -36,6 +36,7 @@ BENCHMARK_CASE_DOMAINS = {
     "oral_direct_oral_screening": "oral_direct_intake",
     "oral_medicinal_liquid_delivered_dose_screening": "oral_direct_intake",
     "inhalation_trigger_spray_screening": "inhalation_well_mixed_spray",
+    "inhalation_saturation_cap_stress_case": "inhalation_well_mixed_spray",
     "inhalation_air_space_insecticide_aerosol_screening": "inhalation_well_mixed_spray",
     "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001": (
         "inhalation_well_mixed_spray"
@@ -53,6 +54,7 @@ BENCHMARK_CASE_DOMAINS = {
         "inhalation_residual_air_reentry"
     ),
     "inhalation_tier1_trigger_spray_nf_ff": "inhalation_near_field_far_field",
+    "inhalation_tier1_coarse_spray_settling_sensitivity": "inhalation_near_field_far_field",
     "inhalation_tier1_disinfectant_trigger_spray_external_2015": (
         "inhalation_near_field_far_field"
     ),
@@ -69,6 +71,9 @@ BENCHMARK_CASE_DOMAINS = {
     ),
     "worker_dermal_wet_wipe_gloved_hands_execution": "worker_dermal_absorbed_dose_screening",
     "worker_dermal_handheld_biocidal_trigger_spray_execution": (
+        "worker_dermal_absorbed_dose_screening"
+    ),
+    "worker_dermal_extreme_loading_surface_cap_execution": (
         "worker_dermal_absorbed_dose_screening"
     ),
 }

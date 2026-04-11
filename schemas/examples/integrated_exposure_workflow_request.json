@@ -37,6 +37,13 @@
       "demographic_tags": [],
       "region": "EU"
     },
+    "physchemContext": {
+      "schema_version": "physchemContext.v1",
+      "vaporPressureMmhg": 8.0,
+      "molecularWeightGPerMol": 120.15,
+      "logKow": 2.1,
+      "waterSolubilityMgPerL": 950.0
+    },
     "assumption_overrides": {},
     "requestedTier": "tier_0"
   },
