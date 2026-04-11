@@ -375,6 +375,47 @@ class DefaultsRegistry:
             self._source(entry["source_id"]),
         )
 
+    def native_residual_air_reentry_surface_residue_fraction(
+        self, product_subtype: str | None = None
+    ) -> tuple[float, AssumptionSourceReference]:
+        section = self.payload["inhalation_physical_caps"]["native_residual_air_reentry"][
+            "surface_residue_fraction"
+        ]
+        entry = section["global"]
+        if product_subtype:
+            candidate = section.get("product_subtype_overrides", {}).get(product_subtype.lower())
+            if candidate:
+                entry = candidate
+        return float(entry["value"]), self._source(entry["source_id"])
+
+    def native_residual_air_reentry_surface_emission_rate_per_hour(
+        self,
+        *,
+        vapor_pressure_mmhg: float | None = None,
+        product_subtype: str | None = None,
+    ) -> tuple[float, AssumptionSourceReference]:
+        section = self.payload["inhalation_physical_caps"]["native_residual_air_reentry"][
+            "surface_emission_rate_per_hour"
+        ]
+
+        if vapor_pressure_mmhg is not None:
+            best_match: dict[str, Any] | None = None
+            for candidate in section.get("vapor_pressure_bands_mmhg", []):
+                if vapor_pressure_mmhg >= float(candidate["minimum"]):
+                    if best_match is None or float(candidate["minimum"]) > float(
+                        best_match["minimum"]
+                    ):
+                        best_match = candidate
+            if best_match is not None:
+                return float(best_match["value"]), self._source(best_match["source_id"])
+
+        entry = section["global"]
+        if product_subtype:
+            candidate = section.get("product_subtype_fallbacks", {}).get(product_subtype.lower())
+            if candidate:
+                entry = candidate
+        return float(entry["value"]), self._source(entry["source_id"])
+
     def worker_dermal_body_zone_surface_area_cm2(
         self, body_zone_profile: str
     ) -> tuple[float, AssumptionSourceReference]:
@@ -712,6 +753,10 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  thermodynamic saturation-cap policy used when both vapor pressure and molecular",
             "  weight are available. The cap prevents impossible supersaturated room-air",
             "  concentrations in volatility-aware screening runs.",
+            "- `native_residual_air_reentry_emission_heuristics_2026` adds a bounded treated-",
+            "  surface residue fraction and first-order surface-emission rate for the native",
+            "  residual-air reentry mode. These defaults are deliberately simple indoor",
+            "  screening heuristics, not SVOC partitioning or chamber-emission physics.",
             "",
             "### Worker Dermal Surface-Cap Heuristics 2026",
             "",

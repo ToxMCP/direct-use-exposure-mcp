@@ -276,6 +276,11 @@ class ParticleShapeFamily(StrEnum):
     UNKNOWN = "unknown"
 
 
+class ResidualAirReentryMode(StrEnum):
+    ANCHORED_REENTRY = "anchored_reentry"
+    NATIVE_TREATED_SURFACE_REENTRY = "native_treated_surface_reentry"
+
+
 class ValidationCheckStatus(StrEnum):
     PASS = "pass"
     WARNING = "warning"
@@ -1588,14 +1593,53 @@ class InhalationScenarioRequest(ExposureScenarioRequest):
 
 
 class InhalationResidualAirReentryScenarioRequest(InhalationScenarioRequest):
-    air_concentration_at_reentry_start_mg_per_m3: float = Field(
-        ...,
+    reentry_mode: ResidualAirReentryMode = Field(
+        default=ResidualAirReentryMode.ANCHORED_REENTRY,
+        alias="reentryMode",
+        description=(
+            "Residual-air reentry mode. `anchored_reentry` preserves the existing caller-"
+            "anchored concentration workflow. `native_treated_surface_reentry` derives the "
+            "reentry air profile from treated-surface chemical mass and a bounded first-order "
+            "surface-emission term."
+        ),
+    )
+    air_concentration_at_reentry_start_mg_per_m3: float | None = Field(
+        default=None,
         alias="airConcentrationAtReentryStartMgPerM3",
         description=(
             "Room-air concentration at the start of the reentry exposure window, typically "
             "anchored to measured, monitored, or externally estimated post-application air."
         ),
         gt=0.0,
+    )
+    treated_surface_chemical_mass_mg: float | None = Field(
+        default=None,
+        alias="treatedSurfaceChemicalMassMg",
+        description=(
+            "Optional treated-surface chemical mass available for post-application emission "
+            "in native treated-surface reentry mode."
+        ),
+        gt=0.0,
+    )
+    treated_surface_residue_fraction: float | None = Field(
+        default=None,
+        alias="treatedSurfaceResidueFraction",
+        description=(
+            "Optional fraction of per-event chemical mass assumed to remain on the treated "
+            "surface after application when native treated-surface reentry derives the "
+            "emission source from the product-use profile."
+        ),
+        gt=0.0,
+        le=1.0,
+    )
+    surface_emission_rate_per_hour: float | None = Field(
+        default=None,
+        alias="surfaceEmissionRatePerHour",
+        description=(
+            "Optional first-order treated-surface emission rate used only for native "
+            "treated-surface reentry mode."
+        ),
+        ge=0.0,
     )
     additional_decay_rate_per_hour: float | None = Field(
         default=None,
@@ -1623,6 +1667,13 @@ class InhalationResidualAirReentryScenarioRequest(InhalationScenarioRequest):
             raise ValueError("InhalationScenarioRequest requires route='inhalation'.")
         if self.requested_tier not in {TierLevel.TIER_0, TierLevel.TIER_1}:
             raise ValueError("InhalationScenarioRequest supports requestedTier tier_0 or tier_1.")
+        if (
+            self.reentry_mode == ResidualAirReentryMode.ANCHORED_REENTRY
+            and self.air_concentration_at_reentry_start_mg_per_m3 is None
+        ):
+            raise ValueError(
+                "Anchored residual-air reentry requires airConcentrationAtReentryStartMgPerM3."
+            )
         return self
 
 

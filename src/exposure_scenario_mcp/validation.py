@@ -53,6 +53,9 @@ BENCHMARK_CASE_DOMAINS = {
     "inhalation_residual_air_reentry_diazinon_time_series_1990": (
         "inhalation_residual_air_reentry"
     ),
+    "inhalation_residual_air_reentry_native_treated_surface_screening": (
+        "inhalation_residual_air_reentry"
+    ),
     "inhalation_tier1_trigger_spray_nf_ff": "inhalation_near_field_far_field",
     "inhalation_tier1_coarse_spray_settling_sensitivity": "inhalation_near_field_far_field",
     "inhalation_tier1_disinfectant_trigger_spray_external_2015": (
@@ -108,8 +111,9 @@ BENCHMARK_DOMAIN_NOTES = {
         (
             "Current residual-air reentry coverage is narrow: it anchors the dedicated "
             "chlorpyrifos post-application reentry-start concentration, a sparse 4-hour to "
-            "24-hour room-air decay series, and decay arithmetic, not full treated-surface "
-            "emission dynamics across indoor pesticide families."
+            "24-hour room-air decay series, one bounded native treated-surface same-room "
+            "screening branch, and decay arithmetic, not full treated-surface emission "
+            "dynamics across indoor pesticide families."
         )
     ],
     "aggregate_cross_route_screening": [

@@ -13,6 +13,7 @@ from exposure_scenario_mcp.models import (
     InhalationResidualAirReentryScenarioRequest,
     InhalationTier1ScenarioRequest,
     PhyschemContext,
+    ResidualAirReentryMode,
     Route,
     ScenarioClass,
     ScenarioDose,
@@ -236,6 +237,106 @@ def _apply_saturation_cap(
         return concentration_mg_per_m3, False
     capped = min(concentration_mg_per_m3, saturation_cap_mg_per_m3)
     return capped, not math.isclose(capped, concentration_mg_per_m3, rel_tol=1e-9, abs_tol=1e-12)
+
+
+def _surface_emission_air_concentration(
+    *,
+    initial_surface_mass_mg: float,
+    surface_emission_rate_per_hour: float,
+    total_loss_rate_per_hour: float,
+    room_volume_m3: float,
+    elapsed_hours: float,
+) -> float:
+    if (
+        initial_surface_mass_mg <= 0.0
+        or surface_emission_rate_per_hour <= 0.0
+        or room_volume_m3 <= 0.0
+        or elapsed_hours <= 0.0
+    ):
+        return 0.0
+
+    source_strength = surface_emission_rate_per_hour * initial_surface_mass_mg / room_volume_m3
+    if math.isclose(
+        surface_emission_rate_per_hour,
+        total_loss_rate_per_hour,
+        rel_tol=1e-9,
+        abs_tol=1e-12,
+    ):
+        return source_strength * elapsed_hours * math.exp(
+            -surface_emission_rate_per_hour * elapsed_hours
+        )
+
+    return source_strength / (total_loss_rate_per_hour - surface_emission_rate_per_hour) * (
+        math.exp(-surface_emission_rate_per_hour * elapsed_hours)
+        - math.exp(-total_loss_rate_per_hour * elapsed_hours)
+    )
+
+
+def _surface_emission_average_concentration(
+    *,
+    initial_surface_mass_mg: float,
+    surface_emission_rate_per_hour: float,
+    total_loss_rate_per_hour: float,
+    room_volume_m3: float,
+    start_hours: float,
+    duration_hours: float,
+) -> float:
+    if duration_hours <= 0.0:
+        return _surface_emission_air_concentration(
+            initial_surface_mass_mg=initial_surface_mass_mg,
+            surface_emission_rate_per_hour=surface_emission_rate_per_hour,
+            total_loss_rate_per_hour=total_loss_rate_per_hour,
+            room_volume_m3=room_volume_m3,
+            elapsed_hours=start_hours,
+        )
+    if (
+        initial_surface_mass_mg <= 0.0
+        or surface_emission_rate_per_hour <= 0.0
+        or room_volume_m3 <= 0.0
+    ):
+        return 0.0
+
+    end_hours = start_hours + duration_hours
+    source_strength = surface_emission_rate_per_hour * initial_surface_mass_mg / room_volume_m3
+
+    if math.isclose(total_loss_rate_per_hour, 0.0, abs_tol=1e-12):
+        integral = initial_surface_mass_mg / room_volume_m3 * (
+            duration_hours
+            + (
+                math.exp(-surface_emission_rate_per_hour * end_hours)
+                - math.exp(-surface_emission_rate_per_hour * start_hours)
+            )
+            / surface_emission_rate_per_hour
+        )
+        return integral / duration_hours
+
+    if math.isclose(
+        surface_emission_rate_per_hour,
+        total_loss_rate_per_hour,
+        rel_tol=1e-9,
+        abs_tol=1e-12,
+    ):
+        def _primitive(time_hours: float) -> float:
+            return -source_strength * (
+                time_hours / surface_emission_rate_per_hour
+                + 1.0 / (surface_emission_rate_per_hour**2)
+            ) * math.exp(-surface_emission_rate_per_hour * time_hours)
+
+        return (_primitive(end_hours) - _primitive(start_hours)) / duration_hours
+
+    integral = source_strength / (total_loss_rate_per_hour - surface_emission_rate_per_hour) * (
+        (
+            math.exp(-surface_emission_rate_per_hour * start_hours)
+            - math.exp(-surface_emission_rate_per_hour * end_hours)
+        )
+        / surface_emission_rate_per_hour
+        - (
+            math.exp(-total_loss_rate_per_hour * start_hours)
+            - math.exp(-total_loss_rate_per_hour * end_hours)
+        )
+        / total_loss_rate_per_hour
+    )
+    return integral / duration_hours
 
 
 def _tier_1_profile_alignment(
@@ -955,6 +1056,7 @@ def build_inhalation_residual_air_reentry_scenario(
     )
     profile = request.product_use_profile
     population = request.population_profile
+    physchem_context = request.physchem_context
 
     if profile.application_method != RESIDUAL_AIR_REENTRY_APPLICATION_METHOD:
         raise ExposureScenarioError(
@@ -969,6 +1071,8 @@ def build_inhalation_residual_air_reentry_scenario(
             ),
             details={"applicationMethod": profile.application_method},
         )
+
+    _record_physchem_context(tracker, physchem_context)
 
     room_defaults, room_sources = registry.room_defaults(
         population.region,
@@ -1050,19 +1154,16 @@ def build_inhalation_residual_air_reentry_scenario(
     )
 
     tracker.add_user(
+        "reentry_mode",
+        request.reentry_mode.value,
+        "mode",
+        "Residual-air reentry mode was supplied explicitly or defaulted by schema.",
+    )
+    tracker.add_user(
         "use_events_per_day",
         profile.use_events_per_day,
         "events/day",
         "Reentry event frequency was supplied explicitly.",
-    )
-    tracker.add_user(
-        "air_concentration_at_reentry_start_mg_per_m3",
-        request.air_concentration_at_reentry_start_mg_per_m3,
-        "mg/m3",
-        (
-            "Residual-air reentry starts from a concentration anchored at the start of the "
-            "reentry window."
-        ),
     )
 
     if request.additional_decay_rate_per_hour is None:
@@ -1135,16 +1236,461 @@ def build_inhalation_residual_air_reentry_scenario(
         "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
     )
     total_decay_rate = air_exchange + additional_decay_rate + max(deposition_rate, 0.0)
-    average_air_concentration = _first_order_average_concentration(
-        request.air_concentration_at_reentry_start_mg_per_m3,
-        total_decay_rate,
-        exposure_duration_hours,
+    saturation_cap_mg_per_m3 = _inhalation_saturation_cap_mg_per_m3(
+        physchem_context=physchem_context,
+        profile=profile,
+        registry=registry,
+        tracker=tracker,
     )
-    air_concentration_at_reentry_end = _first_order_end_concentration(
-        request.air_concentration_at_reentry_start_mg_per_m3,
-        total_decay_rate,
-        exposure_duration_hours,
-    )
+
+    saturation_cap_applied = False
+    route_metrics: dict[str, float | str | bool] = {
+        "reentry_mode": request.reentry_mode.value,
+        "deposition_rate_per_hour": round(deposition_rate, 8),
+        "total_decay_rate_per_hour": round(total_decay_rate, 8),
+        "post_application_delay_hours": round(post_application_delay, 8),
+        "saturation_cap_applied": False,
+    }
+    if saturation_cap_mg_per_m3 is not None:
+        route_metrics["saturation_cap_mg_per_m3"] = round(saturation_cap_mg_per_m3, 8)
+
+    interpretation_notes = []
+    tier_caveats = []
+    tier_forbidden = [
+        "Do not interpret the result as absorbed dose, internal dose, or a final risk conclusion."
+    ]
+    tier_rationale = ""
+
+    if request.reentry_mode == ResidualAirReentryMode.ANCHORED_REENTRY:
+        reentry_start_concentration = request.air_concentration_at_reentry_start_mg_per_m3
+        tracker.add_user(
+            "air_concentration_at_reentry_start_mg_per_m3",
+            reentry_start_concentration,
+            "mg/m3",
+            (
+                "Residual-air reentry starts from a concentration anchored at the start of "
+                "the reentry window."
+            ),
+        )
+
+        uncapped_average_air_concentration = _first_order_average_concentration(
+            reentry_start_concentration,
+            total_decay_rate,
+            exposure_duration_hours,
+        )
+        uncapped_air_concentration_at_reentry_end = _first_order_end_concentration(
+            reentry_start_concentration,
+            total_decay_rate,
+            exposure_duration_hours,
+        )
+        average_air_concentration, average_capped = _apply_saturation_cap(
+            concentration_mg_per_m3=uncapped_average_air_concentration,
+            saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+        )
+        air_concentration_at_reentry_start, start_capped = _apply_saturation_cap(
+            concentration_mg_per_m3=reentry_start_concentration,
+            saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+        )
+        air_concentration_at_reentry_end, end_capped = _apply_saturation_cap(
+            concentration_mg_per_m3=uncapped_air_concentration_at_reentry_end,
+            saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+        )
+        saturation_cap_applied = average_capped or start_capped or end_capped
+
+        tracker.add_derived(
+            "average_air_concentration_mg_per_m3",
+            average_air_concentration,
+            "mg/m3",
+            (
+                "Average reentry air concentration derived from a first-order decay model "
+                "starting at the supplied reentry-start concentration."
+            ),
+        )
+        tracker.add_derived(
+            "air_concentration_at_reentry_end_mg_per_m3",
+            air_concentration_at_reentry_end,
+            "mg/m3",
+            "End-of-window reentry air concentration after first-order decay.",
+        )
+        tracker.add_quality_flag(
+            "residual_air_reentry_screening",
+            (
+                "Residual-air reentry uses a caller-anchored starting air concentration and "
+                "a bounded first-order decay model with air exchange and deposition rather "
+                "than a treated-surface emission solver."
+            ),
+            severity=Severity.WARNING,
+        )
+        tracker.add_limitation(
+            "treated_surface_emission_not_modeled",
+            (
+                "Residual-air reentry does not model treated-surface volatilization or "
+                "application-phase emission; it starts from the supplied concentration at "
+                "reentry start."
+            ),
+        )
+        tracker.add_limitation(
+            "reentry_air_anchor_required",
+            (
+                "Interpret the result only in the context of the supplied or externally "
+                "estimated reentry-start air concentration."
+            ),
+        )
+        interpretation_notes.extend(
+            [
+                (
+                    "Deterministic residual-air reentry scenario starting from a supplied "
+                    "room-air concentration."
+                ),
+                (
+                    "The bounded decay model is intended for post-application room-air "
+                    "screening, not for reconstructing the original application plume."
+                ),
+            ]
+        )
+        tier_rationale = (
+            "Inhalation output uses a bounded residual-air reentry calculation that "
+            "starts from a supplied concentration and applies first-order decay."
+        )
+        tier_caveats.extend(
+            [
+                (
+                    "Interpret the reported air concentration as a residual-air reentry "
+                    "value, not an application plume."
+                ),
+                (
+                    "The result depends on the supplied reentry-start concentration and any "
+                    "decay term."
+                ),
+                "Treated-surface volatilization is not solved mechanistically.",
+            ]
+        )
+        tier_forbidden.extend(
+            [
+                (
+                    "Do not interpret this result as an application-phase breathing-zone "
+                    "peak concentration."
+                ),
+                (
+                    "Do not treat the result as a treated-surface emission model or a "
+                    "substitute for chamber decay data."
+                ),
+            ]
+        )
+        route_metrics.update(
+            {
+                "air_concentration_at_reentry_start_mg_per_m3": round(
+                    air_concentration_at_reentry_start, 8
+                ),
+                "uncapped_air_concentration_at_reentry_start_mg_per_m3": round(
+                    reentry_start_concentration, 8
+                ),
+                "average_air_concentration_mg_per_m3": round(average_air_concentration, 8),
+                "uncapped_average_air_concentration_mg_per_m3": round(
+                    uncapped_average_air_concentration, 8
+                ),
+                "air_concentration_at_reentry_end_mg_per_m3": round(
+                    air_concentration_at_reentry_end, 8
+                ),
+                "uncapped_air_concentration_at_reentry_end_mg_per_m3": round(
+                    uncapped_air_concentration_at_reentry_end, 8
+                ),
+            }
+        )
+    else:
+        if request.air_concentration_at_reentry_start_mg_per_m3 is not None:
+            tracker.add_quality_flag(
+                "native_reentry_air_anchor_ignored",
+                (
+                    "airConcentrationAtReentryStartMgPerM3 was supplied, but native treated-"
+                    "surface reentry derives the reentry air profile from the treated-surface "
+                    "source term instead of the caller-provided anchor."
+                ),
+                severity=Severity.WARNING,
+            )
+
+        product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
+        chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
+        tracker.add_user(
+            "concentration_fraction",
+            profile.concentration_fraction,
+            "fraction",
+            "Chemical fraction in the product was supplied explicitly.",
+        )
+        tracker.add_derived(
+            "chemical_mass_mg_per_event",
+            chemical_mass_mg_event,
+            "mg/event",
+            "Product mass per event multiplied by concentration fraction.",
+        )
+
+        if request.treated_surface_chemical_mass_mg is not None:
+            treated_surface_chemical_mass_initial = request.treated_surface_chemical_mass_mg
+            tracker.add_user(
+                "treated_surface_chemical_mass_mg_initial",
+                treated_surface_chemical_mass_initial,
+                "mg",
+                "Native treated-surface reentry uses the supplied treated-surface chemical mass.",
+            )
+        else:
+            if request.treated_surface_residue_fraction is not None:
+                treated_surface_residue_fraction = request.treated_surface_residue_fraction
+                tracker.add_user(
+                    "treated_surface_residue_fraction",
+                    treated_surface_residue_fraction,
+                    "fraction",
+                    "Treated-surface residue fraction was supplied explicitly.",
+                )
+            elif profile.aerosolized_fraction is not None:
+                treated_surface_residue_fraction = max(0.0, 1.0 - profile.aerosolized_fraction)
+                tracker.add_derived(
+                    "treated_surface_residue_fraction",
+                    treated_surface_residue_fraction,
+                    "fraction",
+                    "Native treated-surface residue fraction derived as 1 - aerosolized_fraction.",
+                )
+            else:
+                treated_surface_residue_fraction, residue_source = (
+                    registry.native_residual_air_reentry_surface_residue_fraction(
+                        profile.product_subtype
+                    )
+                )
+                tracker.add_default(
+                    "treated_surface_residue_fraction",
+                    treated_surface_residue_fraction,
+                    "fraction",
+                    residue_source,
+                    (
+                        "Treated-surface residue fraction defaulted from the bounded native "
+                        "residual-air reentry heuristics."
+                    ),
+                )
+            treated_surface_chemical_mass_initial = (
+                chemical_mass_mg_event * treated_surface_residue_fraction
+            )
+            tracker.add_derived(
+                "treated_surface_chemical_mass_mg_initial",
+                treated_surface_chemical_mass_initial,
+                "mg",
+                "Initial treated-surface source mass derived from per-event chemical mass.",
+            )
+
+        if request.surface_emission_rate_per_hour is not None:
+            surface_emission_rate = request.surface_emission_rate_per_hour
+            tracker.add_user(
+                "surface_emission_rate_per_hour",
+                surface_emission_rate,
+                "1/h",
+                "Treated-surface emission rate was supplied explicitly.",
+            )
+        else:
+            vapor_pressure_mmhg = (
+                physchem_context.vapor_pressure_mmhg if physchem_context is not None else None
+            )
+            surface_emission_rate, surface_emission_source = (
+                registry.native_residual_air_reentry_surface_emission_rate_per_hour(
+                    vapor_pressure_mmhg=vapor_pressure_mmhg,
+                    product_subtype=profile.product_subtype,
+                )
+            )
+            tracker.add_default(
+                "surface_emission_rate_per_hour",
+                surface_emission_rate,
+                "1/h",
+                surface_emission_source,
+                (
+                    "Treated-surface emission rate defaulted from the bounded native residual-"
+                    "air reentry heuristics."
+                ),
+            )
+            if vapor_pressure_mmhg is None:
+                tracker.add_quality_flag(
+                    "native_reentry_emission_rate_physchem_missing",
+                    (
+                        "Native treated-surface reentry used a generic surface-emission rate "
+                        "default because physchemContext.vaporPressureMmhg was not supplied."
+                    ),
+                    severity=Severity.WARNING,
+                )
+
+        treated_surface_chemical_mass_at_reentry_start = (
+            treated_surface_chemical_mass_initial
+            * math.exp(-surface_emission_rate * post_application_delay)
+        )
+        air_concentration_at_reentry_start_uncapped = _surface_emission_air_concentration(
+            initial_surface_mass_mg=treated_surface_chemical_mass_initial,
+            surface_emission_rate_per_hour=surface_emission_rate,
+            total_loss_rate_per_hour=total_decay_rate,
+            room_volume_m3=room_volume_m3,
+            elapsed_hours=post_application_delay,
+        )
+        average_air_concentration_uncapped = _surface_emission_average_concentration(
+            initial_surface_mass_mg=treated_surface_chemical_mass_initial,
+            surface_emission_rate_per_hour=surface_emission_rate,
+            total_loss_rate_per_hour=total_decay_rate,
+            room_volume_m3=room_volume_m3,
+            start_hours=post_application_delay,
+            duration_hours=exposure_duration_hours,
+        )
+        air_concentration_at_reentry_end_uncapped = _surface_emission_air_concentration(
+            initial_surface_mass_mg=treated_surface_chemical_mass_initial,
+            surface_emission_rate_per_hour=surface_emission_rate,
+            total_loss_rate_per_hour=total_decay_rate,
+            room_volume_m3=room_volume_m3,
+            elapsed_hours=post_application_delay + exposure_duration_hours,
+        )
+
+        air_concentration_at_reentry_start, start_capped = _apply_saturation_cap(
+            concentration_mg_per_m3=air_concentration_at_reentry_start_uncapped,
+            saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+        )
+        average_air_concentration, average_capped = _apply_saturation_cap(
+            concentration_mg_per_m3=average_air_concentration_uncapped,
+            saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+        )
+        air_concentration_at_reentry_end, end_capped = _apply_saturation_cap(
+            concentration_mg_per_m3=air_concentration_at_reentry_end_uncapped,
+            saturation_cap_mg_per_m3=saturation_cap_mg_per_m3,
+        )
+        saturation_cap_applied = start_capped or average_capped or end_capped
+
+        tracker.add_derived(
+            "treated_surface_chemical_mass_mg_at_reentry_start",
+            treated_surface_chemical_mass_at_reentry_start,
+            "mg",
+            "Residual source mass remaining on the treated surface at the start of reentry.",
+        )
+        tracker.add_derived(
+            "air_concentration_at_reentry_start_mg_per_m3",
+            air_concentration_at_reentry_start,
+            "mg/m3",
+            (
+                "Reentry-start room-air concentration derived from the native treated-surface "
+                "emission source term."
+            ),
+        )
+        tracker.add_derived(
+            "average_air_concentration_mg_per_m3",
+            average_air_concentration,
+            "mg/m3",
+            "Average reentry air concentration derived from the native treated-surface source.",
+        )
+        tracker.add_derived(
+            "air_concentration_at_reentry_end_mg_per_m3",
+            air_concentration_at_reentry_end,
+            "mg/m3",
+            "End-of-window reentry air concentration after bounded treated-surface emission.",
+        )
+        tracker.add_derived(
+            "surface_emission_half_life_hours",
+            math.log(2.0) / surface_emission_rate if surface_emission_rate > 0.0 else 0.0,
+            "h",
+            "Surface-emission half-life implied by the bounded native first-order source term.",
+        )
+        tracker.add_quality_flag(
+            "native_treated_surface_reentry_screening",
+            (
+                "Native treated-surface residual-air reentry uses a bounded first-order "
+                "surface-emission source term plus room-loss terms. It is intended for "
+                "microenvironment screening, not as a full SVOC partitioning model."
+            ),
+            severity=Severity.WARNING,
+        )
+        tracker.add_limitation(
+            "native_treated_surface_emission_bounded",
+            (
+                "Native treated-surface residual-air reentry does not solve sorption, "
+                "furnishing uptake, multilayer residue behavior, or heterogeneous indoor "
+                "surfaces. It uses a bounded first-order source term."
+            ),
+        )
+        interpretation_notes.extend(
+            [
+                (
+                    "Deterministic residual-air reentry scenario derived from treated-surface "
+                    "chemical mass and a bounded first-order surface-emission source term."
+                ),
+                (
+                    "The bounded native mode is intended for same-room post-application "
+                    "screening when no external reentry-start concentration anchor is available."
+                ),
+            ]
+        )
+        tier_rationale = (
+            "Inhalation output uses a bounded treated-surface residual-air source term with "
+            "room-loss terms to derive the reentry air profile."
+        )
+        tier_caveats.extend(
+            [
+                (
+                    "Interpret the reported air concentration as a same-room residual-air "
+                    "screening value derived from treated-surface mass."
+                ),
+                (
+                    "The result depends on the resolved treated-surface source mass, emission "
+                    "rate, room volume, and loss terms."
+                ),
+                (
+                    "Indoor sorption and heterogeneous surface partitioning are not solved "
+                    "mechanistically."
+                ),
+            ]
+        )
+        tier_forbidden.extend(
+            [
+                (
+                    "Do not treat the result as a chamber-validated treated-surface emission "
+                    "model across arbitrary indoor materials."
+                ),
+                (
+                    "Do not treat the result as a substitute for measured post-application room-"
+                    "air monitoring when those data exist."
+                ),
+            ]
+        )
+        route_metrics.update(
+            {
+                "treated_surface_chemical_mass_mg_initial": round(
+                    treated_surface_chemical_mass_initial, 8
+                ),
+                "treated_surface_chemical_mass_mg_at_reentry_start": round(
+                    treated_surface_chemical_mass_at_reentry_start, 8
+                ),
+                "surface_emission_rate_per_hour": round(surface_emission_rate, 8),
+                "surface_emission_half_life_hours": round(
+                    math.log(2.0) / surface_emission_rate if surface_emission_rate > 0.0 else 0.0,
+                    8,
+                ),
+                "air_concentration_at_reentry_start_mg_per_m3": round(
+                    air_concentration_at_reentry_start, 8
+                ),
+                "uncapped_air_concentration_at_reentry_start_mg_per_m3": round(
+                    air_concentration_at_reentry_start_uncapped, 8
+                ),
+                "average_air_concentration_mg_per_m3": round(average_air_concentration, 8),
+                "uncapped_average_air_concentration_mg_per_m3": round(
+                    average_air_concentration_uncapped, 8
+                ),
+                "air_concentration_at_reentry_end_mg_per_m3": round(
+                    air_concentration_at_reentry_end, 8
+                ),
+                "uncapped_air_concentration_at_reentry_end_mg_per_m3": round(
+                    air_concentration_at_reentry_end_uncapped, 8
+                ),
+            }
+        )
+
+    route_metrics["saturation_cap_applied"] = saturation_cap_applied
+    if saturation_cap_applied:
+        tracker.add_quality_flag(
+            "saturation_cap_applied",
+            (
+                "Residual-air reentry concentration outputs were capped at the bounded "
+                "thermodynamic saturation ceiling."
+            ),
+            severity=Severity.WARNING,
+        )
+
     inhaled_mass_mg_per_day = (
         average_air_concentration
         * inhalation_rate
@@ -1192,31 +1738,6 @@ def build_inhalation_residual_air_reentry_scenario(
         "mg/kg-day",
         "Normalized external dose = inhaled mass per day / body weight.",
     )
-
-    tracker.add_quality_flag(
-        "residual_air_reentry_screening",
-        (
-            "Residual-air reentry uses a caller-anchored starting air concentration and a "
-            "bounded first-order decay model with air exchange and deposition rather than a "
-            "treated-surface emission solver."
-        ),
-        severity=Severity.WARNING,
-    )
-    tracker.add_limitation(
-        "treated_surface_emission_not_modeled",
-        (
-            "Residual-air reentry does not model treated-surface volatilization or "
-            "application-phase emission; it starts from the supplied concentration at "
-            "reentry start."
-        ),
-    )
-    tracker.add_limitation(
-        "reentry_air_anchor_required",
-        (
-            "Interpret the result only in the context of the supplied or externally "
-            "estimated reentry-start air concentration."
-        ),
-    )
     if profile.product_subtype != "indoor_surface_insecticide":
         tracker.add_quality_flag(
             "residual_air_reentry_product_subtype_unusual",
@@ -1227,6 +1748,12 @@ def build_inhalation_residual_air_reentry_scenario(
             ),
             severity=Severity.WARNING,
         )
+
+    room_air_decay_half_life_hours = (
+        math.log(2.0) / total_decay_rate if total_decay_rate > 0.0 else float("inf")
+    )
+    route_metrics["inhaled_mass_mg_per_day"] = round(inhaled_mass_mg_per_day, 8)
+    route_metrics["room_air_decay_half_life_hours"] = round(room_air_decay_half_life_hours, 8)
 
     return ExposureScenario(
         scenario_id=f"inh-reentry-{uuid4().hex[:12]}",
@@ -1248,19 +1775,7 @@ def build_inhalation_residual_air_reentry_scenario(
                 "inhalation_rate_m3_per_hour": inhalation_rate,
             }
         ),
-        route_metrics={
-            "air_concentration_at_reentry_start_mg_per_m3": round(
-                request.air_concentration_at_reentry_start_mg_per_m3, 8
-            ),
-            "average_air_concentration_mg_per_m3": round(average_air_concentration, 8),
-            "air_concentration_at_reentry_end_mg_per_m3": round(
-                air_concentration_at_reentry_end, 8
-            ),
-            "inhaled_mass_mg_per_day": round(inhaled_mass_mg_per_day, 8),
-            "deposition_rate_per_hour": round(deposition_rate, 8),
-            "total_decay_rate_per_hour": round(total_decay_rate, 8),
-            "post_application_delay_hours": round(post_application_delay, 8),
-        },
+        route_metrics=route_metrics,
         assumptions=tracker.assumptions,
         provenance=tracker.provenance(
             plugin_id="inhalation_residual_air_reentry_plugin",
@@ -1272,46 +1787,11 @@ def build_inhalation_residual_air_reentry_scenario(
         fit_for_purpose=tracker.fit_for_purpose("inhalation_residual_air_reentry_screening"),
         tier_semantics=tracker.tier_semantics(
             tier_claimed=TierLevel.TIER_0,
-            tier_rationale=(
-                "Inhalation output uses a bounded residual-air reentry calculation that "
-                "starts from a supplied concentration and applies first-order decay."
-            ),
-            required_caveats=[
-                (
-                    "Interpret the reported air concentration as a residual-air reentry "
-                    "value, not an application plume."
-                ),
-                (
-                    "The result depends on the supplied reentry-start concentration and any "
-                    "decay term."
-                ),
-                "Treated-surface volatilization is not solved mechanistically.",
-            ],
-            forbidden_interpretations=[
-                (
-                    "Do not interpret this result as an application-phase breathing-zone "
-                    "peak concentration."
-                ),
-                (
-                    "Do not treat the result as a treated-surface emission model or a "
-                    "substitute for chamber decay data."
-                ),
-                (
-                    "Do not interpret the result as absorbed dose, internal dose, or a "
-                    "final risk conclusion."
-                ),
-            ],
+            tier_rationale=tier_rationale,
+            required_caveats=tier_caveats,
+            forbidden_interpretations=tier_forbidden,
         ),
-        interpretation_notes=[
-            (
-                "Deterministic residual-air reentry scenario starting from a supplied "
-                "room-air concentration."
-            ),
-            (
-                "The bounded decay model is intended for post-application room-air "
-                "screening, not for reconstructing the original application plume."
-            ),
-        ],
+        interpretation_notes=interpretation_notes,
         tierUpgradeAdvisories=[],
     )
 

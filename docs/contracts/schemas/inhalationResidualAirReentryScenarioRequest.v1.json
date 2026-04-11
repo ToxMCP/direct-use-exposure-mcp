@@ -674,6 +674,14 @@
       "title": "ProductUseProfile",
       "type": "object"
     },
+    "ResidualAirReentryMode": {
+      "enum": [
+        "anchored_reentry",
+        "native_treated_surface_reentry"
+      ],
+      "title": "ResidualAirReentryMode",
+      "type": "string"
+    },
     "Route": {
       "enum": [
         "dermal",
@@ -789,11 +797,67 @@
       "default": "tier_0",
       "description": "Requested inhalation modeling tier. Tier 1 is reserved as a future contract hook and is not implemented in v0.1.0."
     },
+    "reentryMode": {
+      "$ref": "#/$defs/ResidualAirReentryMode",
+      "default": "anchored_reentry",
+      "description": "Residual-air reentry mode. `anchored_reentry` preserves the existing caller-anchored concentration workflow. `native_treated_surface_reentry` derives the reentry air profile from treated-surface chemical mass and a bounded first-order surface-emission term."
+    },
     "airConcentrationAtReentryStartMgPerM3": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
       "description": "Room-air concentration at the start of the reentry exposure window, typically anchored to measured, monitored, or externally estimated post-application air.",
-      "exclusiveMinimum": 0.0,
-      "title": "Airconcentrationatreentrystartmgperm3",
-      "type": "number"
+      "title": "Airconcentrationatreentrystartmgperm3"
+    },
+    "treatedSurfaceChemicalMassMg": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional treated-surface chemical mass available for post-application emission in native treated-surface reentry mode.",
+      "title": "Treatedsurfacechemicalmassmg"
+    },
+    "treatedSurfaceResidueFraction": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional fraction of per-event chemical mass assumed to remain on the treated surface after application when native treated-surface reentry derives the emission source from the product-use profile.",
+      "title": "Treatedsurfaceresiduefraction"
+    },
+    "surfaceEmissionRatePerHour": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional first-order treated-surface emission rate used only for native treated-surface reentry mode.",
+      "title": "Surfaceemissionrateperhour"
     },
     "additionalDecayRatePerHour": {
       "anyOf": [
@@ -828,8 +892,7 @@
     "chemical_id",
     "route",
     "product_use_profile",
-    "population_profile",
-    "airConcentrationAtReentryStartMgPerM3"
+    "population_profile"
   ],
   "title": "InhalationResidualAirReentryScenarioRequest",
   "type": "object"

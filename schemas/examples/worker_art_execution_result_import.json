@@ -502,8 +502,8 @@
     "algorithm_id": "worker.inhalation_art_external_import.v1",
     "plugin_id": "worker_inhalation_art_external_result_import",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.11.v19",
-    "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
+    "defaults_version": "2026.04.11.v20",
+    "defaults_hash_sha256": "89d3a52ee4541ba28329678c83c984c708f052ff3ffb48d5c96e4d589e3dad8b",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Imports a normalized external ART-side execution result back into the governed worker inhalation execution schema.",

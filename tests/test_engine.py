@@ -29,6 +29,7 @@ from exposure_scenario_mcp.models import (
     PhyschemContext,
     PopulationProfile,
     ProductUseProfile,
+    ResidualAirReentryMode,
     Route,
     ScenarioClass,
     TierLevel,
@@ -893,6 +894,67 @@ def test_residual_air_reentry_executes_sparse_time_series_check_at_24_hours() ->
         rel=1e-6,
     )
     assert scenario.external_dose.value == pytest.approx(0.0101472, rel=1e-6)
+
+
+def test_native_residual_air_reentry_derives_surface_emission_profile() -> None:
+    engine = build_engine()
+    request = InhalationResidualAirReentryScenarioRequest(
+        chemical_id="DTXSID9020412",
+        chemical_name="Chlorpyrifos",
+        route=Route.INHALATION,
+        reentryMode=ResidualAirReentryMode.NATIVE_TREATED_SURFACE_REENTRY,
+        physchemContext=PhyschemContext(
+            vaporPressureMmhg=0.02,
+            molecularWeightGPerMol=350.59,
+            logKow=4.7,
+            waterSolubilityMgPerL=1.4,
+        ),
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="residual_air_reentry",
+            retention_type="surface_contact",
+            concentration_fraction=0.005,
+            use_amount_per_event=20,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=30,
+            air_exchange_rate_per_hour=0.5,
+            exposure_duration_hours=4.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=80,
+            inhalation_rate_m3_per_hour=0.83,
+            region="EU",
+        ),
+        additionalDecayRatePerHour=0.03,
+        postApplicationDelayHours=4.0,
+    )
+
+    scenario = enrich_scenario_uncertainty(
+        engine,
+        build_inhalation_residual_air_reentry_scenario(request, DefaultsRegistry.load()),
+    )
+
+    assert scenario.route_metrics["reentry_mode"] == "native_treated_surface_reentry"
+    assert scenario.route_metrics["treated_surface_chemical_mass_mg_initial"] > 0.0
+    assert (
+        scenario.route_metrics["treated_surface_chemical_mass_mg_at_reentry_start"]
+        < scenario.route_metrics["treated_surface_chemical_mass_mg_initial"]
+    )
+    assert scenario.route_metrics["surface_emission_rate_per_hour"] > 0.0
+    assert scenario.route_metrics["air_concentration_at_reentry_start_mg_per_m3"] > 0.0
+    assert scenario.route_metrics["average_air_concentration_mg_per_m3"] > 0.0
+    assert scenario.external_dose.value > 0.0
+    assert any(
+        item.code == "native_treated_surface_emission_bounded" for item in scenario.limitations
+    )
+    assert not any(
+        item.code == "treated_surface_emission_not_modeled" for item in scenario.limitations
+    )
+    assert not any(item.code == "reentry_air_anchor_required" for item in scenario.limitations)
 
 
 def test_residual_air_reentry_executes_diazinon_time_series_checks() -> None:

@@ -1388,28 +1388,42 @@ def inhalation_residual_air_reentry_guide() -> str:
   `exposure_build_inhalation_residual_air_reentry_scenario`
 - Request schema: `inhalationResidualAirReentryScenarioRequest.v1`
 - Response schema: `exposureScenario.v1`
-- The mode is designed for post-application room-air screening when the relevant anchor is a
-  concentration at reentry start rather than an application plume.
+- The tool now supports two explicit modes:
+  - `anchored_reentry`: starts from a supplied room-air concentration at reentry start
+  - `native_treated_surface_reentry`: derives the reentry air profile from treated-surface
+    chemical mass, a bounded first-order surface-emission term, and room-loss terms
 
 ## Required Inputs
 
 - `product_use_profile.application_method=residual_air_reentry`
-- `airConcentrationAtReentryStartMgPerM3`
+- For `anchored_reentry`: `airConcentrationAtReentryStartMgPerM3`
+- For `native_treated_surface_reentry`: either
+  `treatedSurfaceChemicalMassMg` or enough product-use data to derive treated-surface source
+  mass from `use_amount_per_event` and `concentration_fraction`
 - `product_use_profile.exposure_duration_hours` or a justified default room duration
 - `population_profile.inhalation_rate_m3_per_hour` and `body_weight_kg`, explicit or defaulted
 
 ## Optional Inputs
 
+- `reentryMode`
 - `additionalDecayRatePerHour`
 - `postApplicationDelayHours`
+- `surfaceEmissionRatePerHour`
+- `treatedSurfaceResidueFraction`
+- `physchemContext` to refine native treated-surface emission-rate resolution and saturation
+  capping
 - Room-volume and air-exchange overrides when the monitored or assessed room differs from the
   shared defaults
 
 ## Calculation Semantics
 
-- Starts from the supplied concentration at reentry start
-- Applies first-order decay during the reentry window using:
-  `total_decay_rate = air_exchange_rate + additional_decay_rate`
+- `anchored_reentry` starts from the supplied concentration at reentry start and applies:
+  `total_decay_rate = air_exchange_rate + additional_decay_rate + deposition_rate`
+- `native_treated_surface_reentry` derives the reentry air profile from:
+  treated-surface chemical mass, a bounded first-order surface-emission rate, room volume,
+  air exchange, additional decay, and deposition
+- When `physchemContext.vaporPressureMmhg` and `molecularWeightGPerMol` are available, bounded
+  saturation capping is applied to prevent impossible supersaturated room-air values
 - Reports:
   `average_air_concentration_mg_per_m3`
 - Reports:
@@ -1423,14 +1437,16 @@ def inhalation_residual_air_reentry_guide() -> str:
 
 - Post-application room-air screening for treated indoor environments
 - Literature-anchored reentry scenarios such as chlorpyrifos or diazinon indoor air studies
+- Same-room treated-surface screening when no measured reentry-start concentration is available
 - PBPK-ready external-dose handoff when the exposure window begins after application
 
 ## Guardrails
 
 - This is not an application-phase spray-cloud model
-- This is not a treated-surface emission solver
-- The result is only as credible as the supplied reentry-start concentration anchor and decay
-  assumption
+- `anchored_reentry` is only as credible as the supplied reentry-start concentration anchor and
+  decay assumption
+- `native_treated_surface_reentry` is a bounded first-order surface-emission screening model,
+  not a chamber-validated SVOC partitioning or heterogeneous indoor-surface solver
 - A narrow executable chlorpyrifos reentry-start concentration band plus a sparse 4-hour to
   24-hour room-air time-series pack now exist for this domain, but treated-surface emission
   and decay dynamics remain only partially anchored

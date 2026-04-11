@@ -2,7 +2,7 @@
   "schema_version": "contractManifest.v1",
   "server_name": "exposure_scenario_mcp",
   "server_version": "0.1.0",
-  "defaults_version": "2026.04.11.v19",
+  "defaults_version": "2026.04.11.v20",
   "tools": [
     {
       "name": "exposure_build_screening_exposure_scenario",
@@ -632,6 +632,8 @@
     "inhalation_scenario": "schemas/examples/inhalation_scenario.json",
     "inhalation_residual_reentry_request": "schemas/examples/inhalation_residual_reentry_request.json",
     "inhalation_residual_reentry_scenario": "schemas/examples/inhalation_residual_reentry_scenario.json",
+    "inhalation_residual_reentry_native_request": "schemas/examples/inhalation_residual_reentry_native_request.json",
+    "inhalation_residual_reentry_native_scenario": "schemas/examples/inhalation_residual_reentry_native_scenario.json",
     "inhalation_tier1_request": "schemas/examples/inhalation_tier1_request.json",
     "inhalation_tier1_scenario": "schemas/examples/inhalation_tier1_scenario.json",
     "exposure_envelope_summary": "schemas/examples/exposure_envelope_summary.json",

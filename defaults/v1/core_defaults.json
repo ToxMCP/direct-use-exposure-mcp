@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.11.v19",
+  "defaults_version": "2026.04.11.v20",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -191,6 +191,12 @@
       "source_id": "worker_dermal_surface_loading_cap_heuristics_2026",
       "title": "Direct-Use Exposure MCP heuristic worker dermal retained surface-loading caps",
       "locator": "docs://defaults-evidence-map#worker-dermal-surface-cap-heuristics-2026",
+      "version": "2026.04.11.v1"
+    },
+    {
+      "source_id": "native_residual_air_reentry_emission_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded treated-surface residual-air emission heuristics",
+      "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
       "version": "2026.04.11.v1"
     },
     {
@@ -1083,6 +1089,57 @@
       "requires_fields": ["vapor_pressure_mmhg", "molecular_weight_g_per_mol"],
       "skip_when_particle_material_context_present": true,
       "source_id": "inhalation_volatility_saturation_cap_policy_2026"
+    },
+    "native_residual_air_reentry": {
+      "surface_residue_fraction": {
+        "global": {
+          "value": 0.8,
+          "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+        },
+        "product_subtype_overrides": {
+          "indoor_surface_insecticide": {
+            "value": 0.9,
+            "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+          },
+          "surface_trigger_spray_disinfectant": {
+            "value": 0.75,
+            "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+          }
+        }
+      },
+      "surface_emission_rate_per_hour": {
+        "global": {
+          "value": 0.08,
+          "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+        },
+        "product_subtype_fallbacks": {
+          "indoor_surface_insecticide": {
+            "value": 0.04,
+            "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+          },
+          "surface_trigger_spray_disinfectant": {
+            "value": 0.1,
+            "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+          }
+        },
+        "vapor_pressure_bands_mmhg": [
+          {
+            "minimum": 1.0,
+            "value": 0.35,
+            "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+          },
+          {
+            "minimum": 0.1,
+            "value": 0.12,
+            "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+          },
+          {
+            "minimum": 0.01,
+            "value": 0.04,
+            "source_id": "native_residual_air_reentry_emission_heuristics_2026"
+          }
+        ]
+      }
     }
   }
 }

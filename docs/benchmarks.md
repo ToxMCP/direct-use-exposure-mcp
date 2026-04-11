@@ -25,6 +25,8 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
   chlorpyrifos post-application start-concentration benchmark band
 - Adult indoor-surface insecticide residual-air reentry screening linked to a sparse
   chlorpyrifos 4-hour to 24-hour room-air time-series benchmark
+- Adult indoor-surface insecticide residual-air reentry native treated-surface screening
+  locking the bounded same-room surface-emission branch into the deterministic regression corpus
 - Adult indoor-surface insecticide residual-air reentry screening linked to a sparse
   diazinon 24-hour to 48-hour office room-air time-series benchmark
 - Adult inhalation Tier 1 trigger spray near-field/far-field screening

@@ -42,13 +42,19 @@
     "region": "EU"
   },
   "route_metrics": {
-    "air_concentration_at_reentry_start_mg_per_m3": 0.08,
-    "average_air_concentration_mg_per_m3": 0.03298487,
-    "air_concentration_at_reentry_end_mg_per_m3": 0.00941239,
-    "inhaled_mass_mg_per_day": 0.10950975,
+    "reentry_mode": "anchored_reentry",
     "deposition_rate_per_hour": 0.005,
     "total_decay_rate_per_hour": 0.535,
-    "post_application_delay_hours": 4.0
+    "post_application_delay_hours": 4.0,
+    "saturation_cap_applied": false,
+    "air_concentration_at_reentry_start_mg_per_m3": 0.08,
+    "uncapped_air_concentration_at_reentry_start_mg_per_m3": 0.08,
+    "average_air_concentration_mg_per_m3": 0.03298487,
+    "uncapped_average_air_concentration_mg_per_m3": 0.03298487,
+    "air_concentration_at_reentry_end_mg_per_m3": 0.00941239,
+    "uncapped_air_concentration_at_reentry_end_mg_per_m3": 0.00941239,
+    "inhaled_mass_mg_per_day": 0.10950975,
+    "room_air_decay_half_life_hours": 1.29560221
   },
   "assumptions": [
     {
@@ -212,6 +218,42 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "reentry_mode",
+      "value": "anchored_reentry",
+      "unit": "mode",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Residual-air reentry mode was supplied explicitly or defaulted by schema.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "use_events_per_day",
       "value": 1.0,
       "unit": "events/day",
@@ -239,39 +281,6 @@
           "product_subtype": "indoor_surface_insecticide",
           "application_method": "residual_air_reentry",
           "population_group": "adult"
-        }
-      }
-    },
-    {
-      "schema_version": "exposureAssumptionRecord.v1",
-      "name": "air_concentration_at_reentry_start_mg_per_m3",
-      "value": 0.08,
-      "unit": "mg/m3",
-      "source_kind": "user_input",
-      "source": {
-        "source_id": "exposure_scenario_mcp",
-        "title": "Direct-Use Exposure MCP runtime",
-        "locator": "docs://algorithm-notes",
-        "version": "0.1.0",
-        "hash_sha256": null
-      },
-      "confidence": "explicit_user_input",
-      "default_applied": false,
-      "rationale": "Residual-air reentry starts from a concentration anchored at the start of the reentry window.",
-      "governance": {
-        "evidence_grade": null,
-        "evidence_basis": "explicit_input",
-        "default_visibility": "silent_traceable",
-        "applicability_status": "user_asserted",
-        "uncertainty_types": [
-          "parameter_uncertainty",
-          "scenario_uncertainty"
-        ],
-        "applicability_domain": {
-          "product_category": "pesticide",
-          "product_subtype": "indoor_surface_insecticide",
-          "application_method": "residual_air_reentry",
-          "region": "EU"
         }
       }
     },
@@ -351,7 +360,7 @@
         "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0"
+        "hash_sha256": "89d3a52ee4541ba28329678c83c984c708f052ff3ffb48d5c96e4d589e3dad8b"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -362,6 +371,117 @@
         "default_visibility": "silent_traceable",
         "applicability_status": "in_domain",
         "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "air_concentration_at_reentry_start_mg_per_m3",
+      "value": 0.08,
+      "unit": "mg/m3",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_user_input",
+      "default_applied": false,
+      "rationale": "Residual-air reentry starts from a concentration anchored at the start of the reentry window.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "parameter_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "application_method": "residual_air_reentry",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "average_air_concentration_mg_per_m3",
+      "value": 0.03298486568142881,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Average reentry air concentration derived from a first-order decay model starting at the supplied reentry-start concentration.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "air_concentration_at_reentry_end_mg_per_m3",
+      "value": 0.009412387441742335,
+      "unit": "mg/m3",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "End-of-window reentry air concentration after first-order decay.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "scenario_uncertainty"
+        ],
         "applicability_domain": {
           "route": "inhalation",
           "scenario_class": "inhalation",
@@ -571,8 +691,8 @@
     "algorithm_id": "inhalation.residual_air_reentry.v1",
     "plugin_id": "inhalation_residual_air_reentry_plugin",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.11.v19",
-    "defaults_hash_sha256": "2dae35dd46d178091828d3dff91c55c74fdbf8006918452c308eb0639e69aad0",
+    "defaults_version": "2026.04.11.v20",
+    "defaults_hash_sha256": "89d3a52ee4541ba28329678c83c984c708f052ff3ffb48d5c96e4d589e3dad8b",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
@@ -627,9 +747,9 @@
       "Treated-surface volatilization is not solved mechanistically."
     ],
     "forbidden_interpretations": [
+      "Do not interpret the result as absorbed dose, internal dose, or a final risk conclusion.",
       "Do not interpret this result as an application-phase breathing-zone peak concentration.",
-      "Do not treat the result as a treated-surface emission model or a substitute for chamber decay data.",
-      "Do not interpret the result as absorbed dose, internal dose, or a final risk conclusion."
+      "Do not treat the result as a treated-surface emission model or a substitute for chamber decay data."
     ]
   },
   "uncertaintyTier": "tier_a",
@@ -846,7 +966,8 @@
     "benchmarkCaseIds": [
       "inhalation_residual_air_reentry_chlorpyrifos_screening",
       "inhalation_residual_air_reentry_chlorpyrifos_time_series_1990",
-      "inhalation_residual_air_reentry_diazinon_time_series_1990"
+      "inhalation_residual_air_reentry_diazinon_time_series_1990",
+      "inhalation_residual_air_reentry_native_treated_surface_screening"
     ],
     "externalDatasetIds": [
       "diazinon_indoor_air_monitoring_home_use_2008",

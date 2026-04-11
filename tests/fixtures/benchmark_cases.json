@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.11.v19",
+  "defaults_version": "2026.04.11.v20",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -403,6 +403,72 @@
           "additional_decay_rate_per_hour": 0.02904146,
           "post_application_delay_hours": 4.0,
           "total_decay_rate_per_hour": 0.05404146
+        }
+      }
+    },
+    {
+      "id": "inhalation_residual_air_reentry_native_treated_surface_screening",
+      "kind": "scenario",
+      "description": "Adult indoor-surface insecticide residual-air reentry case derived from bounded native treated-surface emission rather than a caller-anchored air concentration.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID9020412",
+        "chemical_name": "Chlorpyrifos",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "physchem_context": {
+          "schema_version": "physchemContext.v1",
+          "vapor_pressure_mmhg": 0.02,
+          "molecular_weight_g_per_mol": 350.59,
+          "log_kow": 4.7,
+          "water_solubility_mg_per_l": 1.4
+        },
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Native Dursban Reentry",
+          "product_category": "pesticide",
+          "product_subtype": "indoor_surface_insecticide",
+          "physical_form": "spray",
+          "application_method": "residual_air_reentry",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.005,
+          "use_amount_per_event": 20,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 30,
+          "air_exchange_rate_per_hour": 0.5,
+          "exposure_duration_hours": 4.0
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 80,
+          "inhalation_rate_m3_per_hour": 0.83,
+          "region": "EU",
+          "demographic_tags": [
+            "residential_reentry",
+            "native_treated_surface_mode"
+          ]
+        },
+        "assumption_overrides": {},
+        "reentry_mode": "native_treated_surface_reentry",
+        "additional_decay_rate_per_hour": 0.03,
+        "post_application_delay_hours": 4.0
+      },
+      "expected": {
+        "external_dose_value": 0.00743435,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "air_concentration_at_reentry_start_mg_per_m3": 0.17805793,
+          "average_air_concentration_mg_per_m3": 0.17914105,
+          "air_concentration_at_reentry_end_mg_per_m3": 0.17268033,
+          "inhaled_mass_mg_per_day": 0.59474829
+        },
+        "assumptions": {
+          "treated_surface_chemical_mass_mg_initial": 90.0,
+          "surface_emission_rate_per_hour": 0.04,
+          "treated_surface_chemical_mass_mg_at_reentry_start": 76.69294101,
+          "total_decay_rate_per_hour": 0.535
         }
       }
     },

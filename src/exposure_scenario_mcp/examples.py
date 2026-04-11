@@ -73,6 +73,7 @@ from exposure_scenario_mcp.models import (
     ProductUseProfile,
     ProvenanceBundle,
     QualityFlag,
+    ResidualAirReentryMode,
     Route,
     RouteDoseEstimate,
     ScenarioClass,
@@ -139,6 +140,7 @@ EXAMPLE_IDS = {
     "screening_dermal_refined_scenario": "exp-example-dermal-refined-001",
     "inhalation_scenario": "inh-example-room-001",
     "inhalation_residual_reentry_scenario": "inh-example-reentry-001",
+    "inhalation_residual_reentry_native_scenario": "inh-example-reentry-native-001",
     "inhalation_tier1_scenario": "inh-tier1-example-001",
     "aggregate_summary": "agg-example-couse-001",
     "envelope_summary": "env-example-dermal-001",
@@ -620,6 +622,52 @@ def build_examples() -> dict[str, dict]:
             ),
         ),
         EXAMPLE_IDS["inhalation_residual_reentry_scenario"],
+    )
+    inhalation_residual_reentry_native_request = InhalationResidualAirReentryScenarioRequest(
+        chemical_id="DTXSID8020230",
+        chemical_name="Example Insecticide B",
+        route=Route.INHALATION,
+        reentryMode=ResidualAirReentryMode.NATIVE_TREATED_SURFACE_REENTRY,
+        physchemContext=PhyschemContext(
+            vaporPressureMmhg=0.02,
+            molecularWeightGPerMol=304.1,
+            logKow=4.9,
+            waterSolubilityMgPerL=40.0,
+        ),
+        product_use_profile=ProductUseProfile(
+            product_name="Example Indoor Surface Insecticide",
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="residual_air_reentry",
+            retention_type="surface_contact",
+            concentration_fraction=0.005,
+            use_amount_per_event=20,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=30,
+            air_exchange_rate_per_hour=0.5,
+            exposure_duration_hours=4.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=80,
+            inhalation_rate_m3_per_hour=0.83,
+            region="EU",
+        ),
+        additionalDecayRatePerHour=0.03,
+        postApplicationDelayHours=4.0,
+    )
+    inhalation_residual_reentry_native_scenario = _freeze_scenario(
+        enrich_scenario_uncertainty(
+            engine,
+            build_inhalation_residual_air_reentry_scenario(
+                inhalation_residual_reentry_native_request,
+                defaults_registry,
+                generated_at=EXAMPLE_GENERATED_AT,
+            ),
+        ),
+        EXAMPLE_IDS["inhalation_residual_reentry_native_scenario"],
     )
     inhalation_tier1_request = InhalationTier1ScenarioRequest(
         chemical_id="DTXSID7020182",
@@ -1454,6 +1502,12 @@ def build_examples() -> dict[str, dict]:
         ),
         "inhalation_residual_reentry_scenario": (
             inhalation_residual_reentry_scenario.model_dump(mode="json", by_alias=True)
+        ),
+        "inhalation_residual_reentry_native_request": (
+            inhalation_residual_reentry_native_request.model_dump(mode="json", by_alias=True)
+        ),
+        "inhalation_residual_reentry_native_scenario": (
+            inhalation_residual_reentry_native_scenario.model_dump(mode="json", by_alias=True)
         ),
         "inhalation_tier1_request": inhalation_tier1_request.model_dump(
             mode="json", by_alias=True

@@ -35,11 +35,17 @@
     "demographic_tags": [],
     "region": "EU"
   },
-  "physchemContext": null,
+  "physchemContext": {
+    "schema_version": "physchemContext.v1",
+    "vaporPressureMmhg": 0.02,
+    "molecularWeightGPerMol": 304.1,
+    "logKow": 4.9,
+    "waterSolubilityMgPerL": 40.0
+  },
   "assumption_overrides": {},
   "requestedTier": "tier_0",
-  "reentryMode": "anchored_reentry",
-  "airConcentrationAtReentryStartMgPerM3": 0.08,
+  "reentryMode": "native_treated_surface_reentry",
+  "airConcentrationAtReentryStartMgPerM3": null,
   "treatedSurfaceChemicalMassMg": null,
   "treatedSurfaceResidueFraction": null,
   "surfaceEmissionRatePerHour": null,

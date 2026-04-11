@@ -419,7 +419,7 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     validate(instance=report, schema=schema)
     assert report["policyVersion"] == "2026.03.25.v4"
     assert report["domainCount"] == 11
-    assert report["benchmarkCaseCount"] == 26
+    assert report["benchmarkCaseCount"] == 27
     assert report["externalDatasetCount"] == 14
     assert report["referenceBandCount"] == 10
     assert report["timeSeriesPackCount"] == 3
