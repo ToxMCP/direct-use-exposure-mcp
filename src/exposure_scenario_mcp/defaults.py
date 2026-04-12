@@ -788,6 +788,40 @@ class DefaultsRegistry:
                     entry = candidate_entry
         return label, float(entry["value"]), self._source(entry["source_id"])
 
+    def worker_inhalation_capture_distance_alignment_factor(
+        self,
+        source_distance_m: float | None,
+        control_profile: str,
+    ) -> tuple[str, float, AssumptionSourceReference]:
+        values = self.payload["worker_inhalation_execution_defaults"][
+            "capture_distance_alignment_factor"
+        ]
+        generic_entry = values["generic"]
+        normalized_profile = control_profile.lower()
+        if source_distance_m is None or not any(
+            item in normalized_profile for item in ("local_exhaust", "enclosed_process")
+        ):
+            return "generic", float(generic_entry["value"]), self._source(
+                generic_entry["source_id"]
+            )
+
+        for candidate_label, candidate_entry in values.items():
+            if candidate_label == "generic":
+                continue
+            min_distance = candidate_entry.get("min_distance_m")
+            max_distance = candidate_entry.get("max_distance_m")
+            if min_distance is not None and source_distance_m < float(min_distance):
+                continue
+            if max_distance is not None and source_distance_m > float(max_distance):
+                continue
+            return candidate_label, float(candidate_entry["value"]), self._source(
+                candidate_entry["source_id"]
+            )
+
+        return "generic", float(generic_entry["value"]), self._source(
+            generic_entry["source_id"]
+        )
+
     def worker_inhalation_respiratory_protection_factor(
         self, respiratory_protection: str
     ) -> tuple[float, AssumptionSourceReference]:
@@ -895,7 +929,9 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  density. This prevents pressurized aerosol cans from being treated as fully",
             "  condensed liquid volume in screening mode while preserving subtype-specific",
             "  branches such as `air_space_insecticide` where the emitted active mass is",
-            "  already handled as a whole-room aerosol release boundary.",
+            "  already handled as a whole-room aerosol release boundary. The current pack now",
+            "  distinguishes broader propellant-rich personal-care aerosols from less extreme",
+            "  cleaner and disinfectant aerosol families instead of using one global factor.",
             "",
             "### Heuristic Retention Defaults",
             "",
@@ -1052,6 +1088,13 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  enclosed-process worker control factors with a bounded capture-zone alignment",
             "  factor. This remains a screening heuristic and does not replace measured hood",
             "  capture efficiency or industrial-hygiene verification.",
+            "",
+            "### Worker Inhalation Capture-Distance Heuristics 2026",
+            "",
+            "- `worker_inhalation_capture_distance_heuristics_2026` adds a bounded",
+            "  source-distance refinement for local exhaust and enclosed-capture worker tasks.",
+            "  It is intended to stop obviously offset or remote sources from receiving the",
+            "  same effective control benefit as a capture zone positioned close to the source.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",
@@ -1308,6 +1351,20 @@ def build_defaults_curation_report(
             value=global_aerosol_volume_factor["value"],
             source_id=global_aerosol_volume_factor["source_id"],
             applicability={"application_method": "aerosol_spray"},
+        )
+    for product_category, entry in (
+        aerosol_volume_factor.get("product_category_overrides", {}).items()
+    ):
+        _append_entry(
+            entries,
+            active_registry,
+            parameter_name="pressurized_aerosol_volume_interpretation_factor",
+            value=entry["value"],
+            source_id=entry["source_id"],
+            applicability={
+                "application_method": "aerosol_spray",
+                "product_category": product_category,
+            },
         )
     for product_subtype, entry in (
         aerosol_volume_factor.get("product_subtype_overrides", {}).items()

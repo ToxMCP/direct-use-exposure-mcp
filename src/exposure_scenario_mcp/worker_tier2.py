@@ -3877,11 +3877,16 @@ def execute_worker_inhalation_tier2_task(
     if baseline_external_dose is not None:
         baseline_external_dose *= task_intensity_factor
 
+    source_distance_m = (
+        None if base_request is None else getattr(base_request, "source_distance_m", None)
+    )
     control_factor = None if overrides is None else overrides.control_factor
     control_context_label = "generic"
     control_context_factor = 1.0
     capture_zone_label = "generic"
     capture_zone_alignment_factor = 1.0
+    capture_distance_label = "generic"
+    capture_distance_alignment_factor = 1.0
     if control_factor is None:
         control_factor, control_source = registry.worker_inhalation_control_profile_factor(
             envelope.control_profile
@@ -3949,6 +3954,29 @@ def execute_worker_inhalation_tier2_task(
                 applicability_domain=applicability_domain,
             )
         )
+        (
+            capture_distance_label,
+            capture_distance_alignment_factor,
+            capture_distance_source,
+        ) = registry.worker_inhalation_capture_distance_alignment_factor(
+            source_distance_m,
+            envelope.control_profile,
+        )
+        assumptions.append(
+            _assumption_record(
+                name="worker_capture_distance_alignment_factor",
+                value=capture_distance_alignment_factor,
+                unit="fraction",
+                source_kind=SourceKind.DEFAULT_REGISTRY,
+                source=capture_distance_source,
+                rationale=(
+                    "Worker capture-distance alignment factor defaulted from the declared "
+                    "source distance and the bounded capture-distance heuristics for local "
+                    "exhaust or enclosed-capture tasks."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
         if control_context_label != "generic":
             limitations.append(
                 LimitationNote(
@@ -3973,6 +4001,18 @@ def execute_worker_inhalation_tier2_task(
                     ),
                 )
             )
+        if capture_distance_label != "generic":
+            limitations.append(
+                LimitationNote(
+                    code="worker_capture_distance_screening",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Worker source distance refined the control factor with a bounded "
+                        "capture-distance heuristic rather than a measured capture-velocity "
+                        "or hood-performance profile."
+                    ),
+                )
+            )
     else:
         assumptions.append(
             _assumption_record(
@@ -3987,7 +4027,10 @@ def execute_worker_inhalation_tier2_task(
         )
 
     effective_control_factor = min(
-        control_factor * control_context_factor * capture_zone_alignment_factor,
+        control_factor
+        * control_context_factor
+        * capture_zone_alignment_factor
+        * capture_distance_alignment_factor,
         1.0,
     )
     assumptions.append(
@@ -4000,7 +4043,7 @@ def execute_worker_inhalation_tier2_task(
             rationale=(
                 "Effective worker control factor was derived from the base control-profile "
                 "factor, the bounded control-context refinement, and the bounded "
-                "capture-zone alignment refinement."
+                "capture-zone and capture-distance alignment refinements."
             ),
             applicability_domain=applicability_domain,
         )
@@ -4069,11 +4112,17 @@ def execute_worker_inhalation_tier2_task(
     route_metrics["baseControlProfileFactor"] = round(control_factor, 8)
     route_metrics["controlContextFactor"] = round(control_context_factor, 8)
     route_metrics["captureZoneAlignmentFactor"] = round(capture_zone_alignment_factor, 8)
+    route_metrics["captureDistanceAlignmentFactor"] = round(
+        capture_distance_alignment_factor,
+        8,
+    )
     route_metrics["effectiveWorkerControlFactor"] = round(effective_control_factor, 8)
     if control_context_label != "generic":
         route_metrics["controlContextProfile"] = control_context_label
     if capture_zone_label != "generic":
         route_metrics["captureZoneProfile"] = capture_zone_label
+    if capture_distance_label != "generic":
+        route_metrics["captureDistanceProfile"] = capture_distance_label
     if pressurized_aerosol_volume_factor != 1.0:
         route_metrics["pressurizedAerosolVolumeInterpretationFactor"] = round(
             pressurized_aerosol_volume_factor,

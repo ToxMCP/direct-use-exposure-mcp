@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v25",
+  "defaults_version": "2026.04.12.v26",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -264,6 +264,12 @@
       "title": "Direct-Use Exposure MCP bounded worker inhalation capture-zone alignment heuristics",
       "locator": "docs://defaults-evidence-map#worker-inhalation-capture-zone-heuristics-2026",
       "version": "2026.04.12.v1"
+    },
+    {
+      "source_id": "worker_inhalation_capture_distance_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded worker inhalation source-distance capture heuristics",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-capture-distance-heuristics-2026",
+      "version": "2026.04.12.v1"
     }
   ],
   "conversion_defaults": {
@@ -297,6 +303,20 @@
       "global": {
         "value": 0.35,
         "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+      },
+      "product_category_overrides": {
+        "personal_care": {
+          "value": 0.6,
+          "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        },
+        "household_cleaner": {
+          "value": 0.45,
+          "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        },
+        "disinfectant": {
+          "value": 0.45,
+          "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        }
       },
       "product_subtype_overrides": {
         "air_space_insecticide": {
@@ -1301,6 +1321,28 @@
           "sealed"
         ],
         "source_id": "worker_inhalation_capture_zone_heuristics_2026"
+      }
+    },
+    "capture_distance_alignment_factor": {
+      "generic": {
+        "value": 1.0,
+        "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+      },
+      "close_to_capture_zone": {
+        "value": 0.9,
+        "max_distance_m": 0.25,
+        "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+      },
+      "offset_from_capture_zone": {
+        "value": 1.1,
+        "min_distance_m": 0.75,
+        "max_distance_m": 1.5,
+        "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+      },
+      "far_from_capture_zone": {
+        "value": 1.2,
+        "min_distance_m": 1.5,
+        "source_id": "worker_inhalation_capture_distance_heuristics_2026"
       }
     },
     "respiratory_protection_factor": {

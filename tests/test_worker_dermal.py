@@ -386,7 +386,7 @@ def test_worker_dermal_execution_applies_pressurized_aerosol_volume_interpretati
     )
 
     assumption_map = {item.name: item for item in result.assumptions}
-    assert assumption_map["pressurized_aerosol_volume_interpretation_factor"].value == 0.35
+    assert assumption_map["pressurized_aerosol_volume_interpretation_factor"].value == 0.45
     assert assumption_map["pressurized_aerosol_volume_interpretation_factor"].source.source_id == (
         "pressurized_aerosol_volume_interpretation_heuristics_2026"
     )

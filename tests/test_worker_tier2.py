@@ -821,6 +821,9 @@ def test_worker_art_execution_applies_control_context_factor_for_capture_hood() 
     assert capture_result.route_metrics["captureZoneAlignmentFactor"] == pytest.approx(
         0.9, rel=1e-6
     )
+    assert capture_result.route_metrics["captureDistanceAlignmentFactor"] == pytest.approx(
+        1.0, rel=1e-6
+    )
     assert capture_result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
         0.306, rel=1e-6
     )
@@ -840,6 +843,47 @@ def test_worker_art_execution_applies_control_context_factor_for_capture_hood() 
     assert any(
         item.code == "worker_capture_zone_screening"
         for item in capture_result.limitations
+    )
+
+
+def test_worker_art_execution_applies_capture_distance_factor_for_far_source() -> None:
+    far_capture_bridge = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request().model_copy(update={"source_distance_m": 1.6}),
+            task_description="Worker trigger-spray disinfection task",
+            workplace_setting="janitorial closet with capture hood",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.LOCAL_EXHAUST,
+            local_controls=["local exhaust ventilation", "capture hood"],
+            respiratory_protection="none",
+            emission_descriptor="short trigger-spray cleaning mist near the breathing zone",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    far_result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=far_capture_bridge.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert far_result.route_metrics["baseControlProfileFactor"] == pytest.approx(0.4, rel=1e-6)
+    assert far_result.route_metrics["controlContextFactor"] == pytest.approx(0.85, rel=1e-6)
+    assert far_result.route_metrics["captureZoneAlignmentFactor"] == pytest.approx(
+        0.9, rel=1e-6
+    )
+    assert far_result.route_metrics["captureDistanceAlignmentFactor"] == pytest.approx(
+        1.2, rel=1e-6
+    )
+    assert far_result.route_metrics["captureDistanceProfile"] == "far_from_capture_zone"
+    assert far_result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
+        0.3672, rel=1e-6
+    )
+    assert any(
+        item.code == "worker_capture_distance_screening"
+        for item in far_result.limitations
     )
 
 

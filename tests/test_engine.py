@@ -436,7 +436,7 @@ def test_inhalation_saturation_cap_clamps_impossible_room_concentration() -> Non
         53781.63753201, rel=1e-6
     )
     assert scenario.route_metrics["uncapped_average_air_concentration_mg_per_m3"] == pytest.approx(
-        239618.1997364, rel=1e-6
+        410774.05669097, rel=1e-6
     )
     assert any(flag.code == "saturation_cap_applied" for flag in scenario.quality_flags)
     assert any(
@@ -1644,7 +1644,7 @@ def test_generic_volumetric_aerosol_spray_applies_pressurized_interpretation_fac
         chemical_id="DTXSID123",
         route=Route.INHALATION,
         product_use_profile=ProductUseProfile(
-            product_category="disinfectant",
+            product_category="general_consumer",
             physical_form="spray",
             application_method="aerosol_spray",
             retention_type="surface_contact",
