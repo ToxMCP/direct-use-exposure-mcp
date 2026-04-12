@@ -29,6 +29,8 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
   locking the bounded same-room surface-emission branch into the deterministic regression corpus
 - Adult indoor-surface insecticide residual-air reentry screening linked to a sparse
   diazinon 24-hour to 48-hour office room-air time-series benchmark
+- Adult indoor-surface insecticide residual-air reentry screening linked to a narrow
+  diazinon consumer home-use indoor-air anchor through the native treated-surface branch
 - Adult inhalation Tier 1 trigger spray near-field/far-field screening
 - Adult inhalation Tier 1 coarse-spray settling sensitivity case locking bounded deposition loss into the deterministic regression corpus
 - Adult inhalation Tier 1 disinfectant trigger spray screening linked to a narrow

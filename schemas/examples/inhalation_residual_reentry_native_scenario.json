@@ -509,7 +509,7 @@
         "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -545,7 +545,7 @@
         "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -581,7 +581,7 @@
         "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -650,7 +650,7 @@
         "title": "Direct-Use Exposure MCP heuristic density screening defaults",
         "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -790,7 +790,7 @@
         "title": "Direct-Use Exposure MCP bounded treated-surface residual-air emission heuristics",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -862,7 +862,7 @@
         "title": "Direct-Use Exposure MCP bounded treated-surface residual-air emission heuristics",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -1265,8 +1265,8 @@
     "algorithm_id": "inhalation.residual_air_reentry.v1",
     "plugin_id": "inhalation_residual_air_reentry_plugin",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.12.v22",
-    "defaults_hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d",
+    "defaults_version": "2026.04.12.v23",
+    "defaults_hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
@@ -1365,6 +1365,41 @@
       "impactLevel": "high",
       "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
       "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
+    },
+    {
+      "entryId": "mechanistic-constraint-deposition-sink",
+      "title": "Bounded aerosol deposition sink constrains inhalation persistence",
+      "uncertaintyTypes": [
+        "model_uncertainty",
+        "parameter_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "air_exchange_rate_per_hour",
+        "exposure_duration_hours"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "bidirectional",
+      "impactLevel": "high",
+      "summary": "Inhalation persistence is reduced with a bounded first-order deposition sink rather than a full aerosol deposition and evaporation solver.",
+      "recommendation": "Treat deposition-sensitive spray outputs as physically bounded screening estimates and prefer benchmarked particle families."
+    },
+    {
+      "entryId": "mechanistic-constraint-native-treated-surface-source",
+      "title": "Native treated-surface reentry uses a bounded first-order source term",
+      "uncertaintyTypes": [
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "treated_surface_chemical_mass_mg_initial",
+        "surface_emission_rate_per_hour",
+        "post_application_delay_hours"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "bidirectional",
+      "impactLevel": "high",
+      "summary": "Residual-air reentry was derived from a bounded native treated-surface source term rather than a full indoor partitioning or furnishing uptake model.",
+      "recommendation": "Use the native treated-surface branch for same-room screening and prefer measured reentry air or richer emission data when available."
     },
     {
       "entryId": "assumption-density_g_per_ml",
@@ -1565,6 +1600,7 @@
     "benchmarkCaseIds": [
       "inhalation_residual_air_reentry_chlorpyrifos_screening",
       "inhalation_residual_air_reentry_chlorpyrifos_time_series_1990",
+      "inhalation_residual_air_reentry_diazinon_home_use_native_screening",
       "inhalation_residual_air_reentry_diazinon_time_series_1990",
       "inhalation_residual_air_reentry_native_treated_surface_screening"
     ],

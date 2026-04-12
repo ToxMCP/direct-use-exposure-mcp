@@ -423,7 +423,7 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     assert report["domainCount"] == 11
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
     assert report["externalDatasetCount"] == 14
-    assert report["referenceBandCount"] == 10
+    assert report["referenceBandCount"] == 11
     assert report["timeSeriesPackCount"] == 3
     assert report["goldsetCaseCount"] == 14
     assert report["goldsetCoverageCounts"] == {
@@ -476,13 +476,14 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
     )
 
     validate(instance=report, schema=schema)
-    assert report["referenceVersion"] == "2026.04.08.v9"
-    assert report["bandCount"] == 10
+    assert report["referenceVersion"] == "2026.04.12.v10"
+    assert report["bandCount"] == 11
     assert {item["checkId"] for item in report["bands"]} == {
         "air_space_insecticide_aerosol_concentration_2001",
         "chlorpyrifos_residual_air_reentry_start_concentration_1990",
         "cleaning_trigger_spray_airborne_fraction_2019",
         "consumer_disinfectant_trigger_spray_inhaled_dose_2015",
+        "diazinon_home_use_residual_air_concentration_2008",
         "hand_cream_application_loading_2012",
         "medicinal_liquid_direct_oral_delivered_mass_2025",
         "trigger_spray_aerosol_decay_half_life_2023",
@@ -695,7 +696,7 @@ def test_verification_summary_report_matches_schema_and_surface() -> None:
     assert report["publicSurface"]["resourceCount"] == len(manifest["resources"])
     assert report["validationDomainCount"] == 11
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
-    assert report["referenceBandCount"] == 10
+    assert report["referenceBandCount"] == 11
     assert report["timeSeriesPackCount"] == 3
     assert report["goldsetCaseCount"] >= 1
     check_ids = {item["checkId"] for item in report["checks"]}

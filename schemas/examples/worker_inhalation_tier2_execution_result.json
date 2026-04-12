@@ -194,6 +194,9 @@
     "controlProfile": "general_ventilation_control_profile",
     "baseInhalationRateM3PerHour": 1.1,
     "effectiveInhalationRateM3PerHour": 1.1,
+    "baseControlProfileFactor": 0.7,
+    "controlContextFactor": 1.0,
+    "effectiveWorkerControlFactor": 0.7,
     "baselineAverageAirConcentrationMgPerM3": 6.15320544,
     "controlAdjustedAverageAirConcentrationMgPerM3": 4.30724381,
     "intakeEquivalentAirConcentrationMgPerM3": 2.1536219,
@@ -246,7 +249,7 @@
         "title": "Direct-Use Exposure MCP heuristic density screening defaults",
         "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -413,7 +416,7 @@
         "title": "RIVM Disinfectant Products Fact Sheet trigger-spray airborne-fraction default for surface sprays",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005003.pdf",
         "version": "RIVM report 320005003 / 2006",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -758,7 +761,7 @@
         "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -793,7 +796,7 @@
         "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.12.v1",
-        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -1532,6 +1535,41 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "effective_worker_control_factor",
+      "value": 0.7,
+      "unit": "fraction",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "worker_art_execution_surrogate_v1",
+        "title": "Direct-Use Exposure MCP worker ART-side execution surrogate",
+        "locator": "docs://worker-art-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "derived",
+      "default_applied": false,
+      "rationale": "Effective worker control factor was derived from the base control-profile factor and the bounded control-context refinement.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [
+          "model_uncertainty",
+          "parameter_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "disinfectant",
+          "product_subtype": null,
+          "application_method": "trigger_spray",
+          "physical_form": "spray",
+          "activity_class": "trigger_spray_surface_application",
+          "control_profile": "general_ventilation_control_profile"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "respiratory_protection_factor",
       "value": 0.5,
       "unit": "fraction",
@@ -1579,7 +1617,7 @@
       },
       "confidence": "derived",
       "default_applied": false,
-      "rationale": "Adjusted inhaled mass per day was derived from the baseline inhaled mass, worker control factor, and respiratory-protection factor.",
+      "rationale": "Adjusted inhaled mass per day was derived from the baseline inhaled mass, effective worker control factor, and respiratory-protection factor.",
       "governance": {
         "evidence_grade": null,
         "evidence_basis": "derived",
@@ -1769,8 +1807,8 @@
     "algorithm_id": "worker.inhalation_art_execution_surrogate.v1",
     "plugin_id": "worker_inhalation_art_execution_surrogate",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.12.v22",
-    "defaults_hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d",
+    "defaults_version": "2026.04.12.v23",
+    "defaults_hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Execution reuses the existing inhalation screening kernels and then applies bounded worker control and respiratory-protection modifiers.",

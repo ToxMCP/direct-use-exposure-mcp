@@ -53,6 +53,9 @@ BENCHMARK_CASE_DOMAINS = {
     "inhalation_residual_air_reentry_diazinon_time_series_1990": (
         "inhalation_residual_air_reentry"
     ),
+    "inhalation_residual_air_reentry_diazinon_home_use_native_screening": (
+        "inhalation_residual_air_reentry"
+    ),
     "inhalation_residual_air_reentry_native_treated_surface_screening": (
         "inhalation_residual_air_reentry"
     ),
@@ -112,10 +115,11 @@ BENCHMARK_DOMAIN_NOTES = {
     "inhalation_residual_air_reentry": [
         (
             "Current residual-air reentry coverage is narrow: it anchors the dedicated "
-            "chlorpyrifos post-application reentry-start concentration, a sparse 4-hour to "
-            "24-hour room-air decay series, one bounded native treated-surface same-room "
-            "screening branch, and decay arithmetic, not full treated-surface emission "
-            "dynamics across indoor pesticide families."
+            "chlorpyrifos post-application reentry-start concentration, a diazinon home-use "
+            "native residual-air anchor, sparse chlorpyrifos and diazinon room-air decay "
+            "series, one bounded native treated-surface same-room screening branch, and "
+            "decay arithmetic, not full treated-surface emission dynamics across indoor "
+            "pesticide families."
         )
     ],
     "aggregate_cross_route_screening": [
@@ -1041,6 +1045,22 @@ def _selector_matches_scenario(
         return _normalized_text(scenario.chemical_id) == _normalized_text(str(expected_value))
     if key == "chemical_name":
         return _normalized_text(scenario.chemical_name) == _normalized_text(str(expected_value))
+    if key == "region":
+        return _normalized_text(scenario.population_profile.region) == _normalized_text(
+            str(expected_value)
+        )
+    if key == "population_group":
+        return _normalized_text(scenario.population_profile.population_group) == _normalized_text(
+            str(expected_value)
+        )
+    if key == "demographic_tag":
+        return _normalized_text(str(expected_value)) in {
+            _normalized_text(item) for item in scenario.population_profile.demographic_tags
+        }
+    if key == "reentry_mode":
+        return _normalized_text(
+            str(scenario.route_metrics.get("reentry_mode"))
+        ) == _normalized_text(str(expected_value))
     return True
 
 
@@ -1429,10 +1449,36 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         and profile.application_method == "residual_air_reentry"
         and profile.product_category in {"pesticide", "pest_control"}
     ):
-        reference_band = reference_registry.band_for_check(
-            "chlorpyrifos_residual_air_reentry_start_concentration_1990"
-        )
-        if _selectors_match_scenario(scenario, reference_band.applicable_selectors):
+        for check_id, title, dataset_id, note in (
+            (
+                "chlorpyrifos_residual_air_reentry_start_concentration_1990",
+                (
+                    "Residual-air reentry start concentration vs chlorpyrifos residential "
+                    "broadcast study"
+                ),
+                "chlorpyrifos_broadcast_residential_air_1990",
+                (
+                    "Observed reentry-start room-air concentration is compared against the "
+                    "reported 61-94 ug/m3 chlorpyrifos band from the residential broadcast "
+                    "study, converted to mg/m3. This is a narrow anchor for the dedicated "
+                    "residual-air reentry path, not a full treated-surface emission validation."
+                ),
+            ),
+            (
+                "diazinon_home_use_residual_air_concentration_2008",
+                "Residual-air reentry start concentration vs diazinon home-use indoor-air anchor",
+                "diazinon_indoor_air_monitoring_home_use_2008",
+                (
+                    "Observed reentry-start room-air concentration is compared against a "
+                    "narrow 13 ug/m3 home-use diazinon indoor-air anchor derived from the "
+                    "NPIC technical fact sheet. This is a bounded consumer home-use screening "
+                    "anchor, not a chamber-resolved trigger-spray benchmark."
+                ),
+            ),
+        ):
+            reference_band = reference_registry.band_for_check(check_id)
+            if not _selectors_match_scenario(scenario, reference_band.applicable_selectors):
+                continue
             observed = float(
                 scenario.route_metrics.get("air_concentration_at_reentry_start_mg_per_m3", 0.0)
             )
@@ -1445,25 +1491,16 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
             )
             checks.append(
                 ExecutedValidationCheck(
-                    checkId="chlorpyrifos_residual_air_reentry_start_concentration_1990",
-                    title=(
-                        "Residual-air reentry start concentration vs chlorpyrifos residential "
-                        "broadcast study"
-                    ),
-                    referenceDatasetId="chlorpyrifos_broadcast_residential_air_1990",
+                    checkId=check_id,
+                    title=title,
+                    referenceDatasetId=dataset_id,
                     status=status,
                     comparedMetric="air_concentration_at_reentry_start_mg_per_m3",
                     observedValue=round(observed, 8),
                     referenceLower=reference_band.reference_lower,
                     referenceUpper=reference_band.reference_upper,
                     unit=reference_band.unit,
-                    note=(
-                        "Observed reentry-start room-air concentration is compared against the "
-                        "reported 61-94 ug/m3 chlorpyrifos band from the residential broadcast "
-                        "study, converted to mg/m3. This is a narrow anchor for the dedicated "
-                        "residual-air reentry path, not a full treated-surface emission "
-                        "validation."
-                    ),
+                    note=note,
                 )
             )
 

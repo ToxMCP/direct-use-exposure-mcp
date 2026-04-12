@@ -407,6 +407,10 @@ def test_inhalation_saturation_cap_clamps_impossible_room_concentration() -> Non
         684623.42781828, rel=1e-6
     )
     assert any(flag.code == "saturation_cap_applied" for flag in scenario.quality_flags)
+    assert any(
+        item.entry_id == "mechanistic-constraint-saturation-cap-active"
+        for item in scenario.uncertainty_register
+    )
 
 
 def test_tier0_deposition_lowers_trigger_spray_against_zero_deposition_baseline() -> None:
@@ -1027,6 +1031,69 @@ def test_residual_air_reentry_executes_diazinon_time_series_checks() -> None:
         rel=1e-6,
     )
     assert scenario.external_dose.value == pytest.approx(0.01985673, rel=1e-6)
+
+
+def test_residual_air_reentry_executes_diazinon_home_use_native_anchor_check() -> None:
+    engine = build_engine()
+    request = InhalationResidualAirReentryScenarioRequest(
+        chemical_id="DTXSID9020407",
+        chemical_name="Diazinon",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="pesticide",
+            product_subtype="indoor_surface_insecticide",
+            physical_form="spray",
+            application_method="residual_air_reentry",
+            retention_type="surface_contact",
+            concentration_fraction=0.01,
+            use_amount_per_event=20,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=30,
+            air_exchange_rate_per_hour=0.5,
+            exposure_duration_hours=4.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            inhalation_rate_m3_per_hour=0.83,
+            region="EU",
+            demographic_tags=[
+                "residential_reentry",
+                "home_use_monitoring",
+                "native_treated_surface_mode",
+            ],
+        ),
+        reentry_mode=ResidualAirReentryMode.NATIVE_TREATED_SURFACE_REENTRY,
+        treated_surface_chemical_mass_mg=12.35,
+        surface_emission_rate_per_hour=0.04,
+        additional_decay_rate_per_hour=0.02,
+        post_application_delay_hours=24.0,
+    )
+
+    scenario = enrich_scenario_uncertainty(
+        engine,
+        build_inhalation_residual_air_reentry_scenario(
+            request,
+            DefaultsRegistry.load(),
+        ),
+    )
+
+    check_ids = {item.check_id for item in scenario.validation_summary.executed_validation_checks}
+    assert "diazinon_home_use_residual_air_concentration_2008" in check_ids
+    assert any(
+        item.check_id == "diazinon_home_use_residual_air_concentration_2008"
+        and item.status.value == "pass"
+        for item in scenario.validation_summary.executed_validation_checks
+    )
+    assert any(
+        item.entry_id == "mechanistic-constraint-native-treated-surface-source"
+        for item in scenario.uncertainty_register
+    )
+    assert scenario.route_metrics["air_concentration_at_reentry_start_mg_per_m3"] == pytest.approx(
+        0.01299982,
+        rel=1e-6,
+    )
 
 
 def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
@@ -2492,3 +2559,7 @@ def test_tier1_scenario_package_probability_builds_tier_c_summary() -> None:
         for item in summary.support_points
     )
     assert summary.minimum_dose.value < summary.maximum_dose.value
+    assert any(
+        item.entry_id == "scenario-package-mechanistic-constraint-deposition-sink"
+        for item in summary.uncertainty_register
+    )

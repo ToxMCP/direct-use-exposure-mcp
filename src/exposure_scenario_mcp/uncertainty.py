@@ -569,6 +569,142 @@ def _impact_from_sensitivity(
     return "low"
 
 
+def _mechanistic_constraint_entries(
+    scenario: ExposureScenario,
+    sensitivity_ranking: list[SensitivityRankingEntry],
+) -> list[UncertaintyRegisterEntry]:
+    entries: list[UncertaintyRegisterEntry] = []
+    route_metrics = scenario.route_metrics
+    assumption_names = {item.name for item in scenario.assumptions}
+
+    def _related(*names: str) -> list[str]:
+        return [name for name in names if name in assumption_names]
+
+    deposition_rate = route_metrics.get("deposition_rate_per_hour")
+    if scenario.route == Route.INHALATION and isinstance(deposition_rate, int | float):
+        if float(deposition_rate) > 0.0:
+            entries.append(
+                UncertaintyRegisterEntry(
+                    entry_id="mechanistic-constraint-deposition-sink",
+                    title="Bounded aerosol deposition sink constrains inhalation persistence",
+                    uncertainty_types=[
+                        UncertaintyType.MODEL_UNCERTAINTY,
+                        UncertaintyType.PARAMETER_UNCERTAINTY,
+                    ],
+                    related_assumptions=_related(
+                        "particle_size_regime",
+                        "air_exchange_rate_per_hour",
+                        "exposure_duration_hours",
+                    ),
+                    quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                    bias_direction=BiasDirection.BIDIRECTIONAL,
+                    impact_level=_impact_from_sensitivity(
+                        "air_exchange_rate_per_hour", sensitivity_ranking
+                    ),
+                    summary=(
+                        "Inhalation persistence is reduced with a bounded first-order "
+                        "deposition sink rather than a full aerosol deposition and "
+                        "evaporation solver."
+                    ),
+                    recommendation=(
+                        "Treat deposition-sensitive spray outputs as physically bounded "
+                        "screening estimates and prefer benchmarked particle families."
+                    ),
+                )
+            )
+
+    if bool(route_metrics.get("saturation_cap_applied")):
+        entries.append(
+            UncertaintyRegisterEntry(
+                entry_id="mechanistic-constraint-saturation-cap-active",
+                title="Volatility saturation cap actively constrained inhalation concentration",
+                uncertainty_types=[
+                    UncertaintyType.MODEL_UNCERTAINTY,
+                    UncertaintyType.PARAMETER_UNCERTAINTY,
+                ],
+                related_assumptions=_related(
+                    "vapor_pressure_mmhg",
+                    "molecular_weight_g_per_mol",
+                    "room_volume_m3",
+                ),
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level="high",
+                summary=(
+                    "The modeled air concentration exceeded the bounded thermodynamic ceiling "
+                    "and was clamped to a room-temperature saturation cap."
+                ),
+                recommendation=(
+                    "Review volatility inputs and treat the result as a cap-bounded screening "
+                    "estimate rather than a free unconstrained spray concentration."
+                ),
+            )
+        )
+
+    reentry_mode = str(route_metrics.get("reentry_mode") or "").strip().lower()
+    if reentry_mode == "native_treated_surface_reentry":
+        entries.append(
+            UncertaintyRegisterEntry(
+                entry_id="mechanistic-constraint-native-treated-surface-source",
+                title="Native treated-surface reentry uses a bounded first-order source term",
+                uncertainty_types=[
+                    UncertaintyType.MODEL_UNCERTAINTY,
+                    UncertaintyType.SCENARIO_UNCERTAINTY,
+                ],
+                related_assumptions=_related(
+                    "treated_surface_chemical_mass_mg_initial",
+                    "surface_emission_rate_per_hour",
+                    "post_application_delay_hours",
+                ),
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level="high",
+                summary=(
+                    "Residual-air reentry was derived from a bounded native treated-surface "
+                    "source term rather than a full indoor partitioning or furnishing uptake "
+                    "model."
+                ),
+                recommendation=(
+                    "Use the native treated-surface branch for same-room screening and prefer "
+                    "measured reentry air or richer emission data when available."
+                ),
+            )
+        )
+
+    swallowed_mass = route_metrics.get("swallowed_extrathoracic_mass_mg_per_day")
+    if scenario.route == Route.INHALATION and isinstance(swallowed_mass, int | float):
+        if float(swallowed_mass) > 0.0:
+            entries.append(
+                UncertaintyRegisterEntry(
+                    entry_id="mechanistic-constraint-extrathoracic-handoff",
+                    title=(
+                        "Coarse-spray extrathoracic swallowing is represented as a bounded "
+                        "handoff"
+                    ),
+                    uncertainty_types=[
+                        UncertaintyType.MODEL_UNCERTAINTY,
+                        UncertaintyType.PARAMETER_UNCERTAINTY,
+                    ],
+                    related_assumptions=_related("particle_size_regime"),
+                    quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                    bias_direction=BiasDirection.BIDIRECTIONAL,
+                    impact_level=_impact_from_sensitivity(
+                        "inhalation_rate_m3_per_hour", sensitivity_ranking
+                    ),
+                    summary=(
+                        "A portion of spray mass is routed to extrathoracic swallowing with a "
+                        "bounded regime-dependent screening fraction."
+                    ),
+                    recommendation=(
+                        "Keep inhalation and incidental-oral interpretation linked for coarse "
+                        "sprays and avoid treating the handoff as a deposition dosimetry model."
+                    ),
+                )
+            )
+
+    return entries
+
+
 def build_uncertainty_register(
     scenario: ExposureScenario,
     sensitivity_ranking: list[SensitivityRankingEntry],
@@ -594,6 +730,7 @@ def build_uncertainty_register(
             ),
         )
     ]
+    entries.extend(_mechanistic_constraint_entries(scenario, sensitivity_ranking))
     for assumption in scenario.assumptions:
         governance = assumption.governance
         if governance.evidence_basis.value not in {"heuristic_default", "curated_default"}:

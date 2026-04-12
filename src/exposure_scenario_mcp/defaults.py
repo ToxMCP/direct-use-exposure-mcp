@@ -676,6 +676,27 @@ class DefaultsRegistry:
         entry = values[key]
         return float(entry["value"]), self._source(entry["source_id"])
 
+    def worker_inhalation_control_context_factor(
+        self, context_terms: list[str]
+    ) -> tuple[str, float, AssumptionSourceReference]:
+        values = self.payload["worker_inhalation_execution_defaults"]["control_context_factor"]
+        normalized_terms = " ".join(
+            item.strip().lower().replace("-", "_").replace(" ", "_")
+            for item in context_terms
+            if item and item.strip()
+        )
+        label = "generic"
+        entry = values[label]
+        for candidate_label, candidate_entry in values.items():
+            tokens = tuple(str(item).lower() for item in candidate_entry.get("tokens", []))
+            if not tokens:
+                continue
+            if any(token in normalized_terms for token in tokens):
+                if float(candidate_entry["value"]) < float(entry["value"]):
+                    label = candidate_label
+                    entry = candidate_entry
+        return label, float(entry["value"]), self._source(entry["source_id"])
+
     def worker_inhalation_respiratory_protection_factor(
         self, respiratory_protection: str
     ) -> tuple[float, AssumptionSourceReference]:
@@ -891,6 +912,14 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  control-profile modifiers for the executable worker inhalation surrogate layer.",
             "  These factors are intended for transparent screening refinement, not as",
             "  substitutes for ART determinants or measured control efficiency.",
+            "",
+            "### Worker Inhalation Control-Context Heuristics 2026",
+            "",
+            "- `worker_inhalation_control_context_heuristics_2026` provides bounded",
+            "  refinements for explicit capture hoods, spray booths, portable extractors,",
+            "  and segregation/distance controls layered on top of the broader",
+            "  `controlProfile` factor. These modifiers remain screening heuristics and",
+            "  should not be treated as measured LEV capture efficiency.",
             "",
             "### Worker Inhalation Respiratory-Protection Heuristics 2026",
             "",

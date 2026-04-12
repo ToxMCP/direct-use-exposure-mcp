@@ -765,6 +765,74 @@ def test_worker_art_execution_applies_task_intensity_factor_to_inhalation_rate()
     assert any(item.code == "worker_task_intensity_screening" for item in high_result.limitations)
 
 
+def test_worker_art_execution_applies_control_context_factor_for_capture_hood() -> None:
+    base_bridge = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request(),
+            task_description="Worker trigger-spray disinfection task",
+            workplace_setting="janitorial closet",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.LOCAL_EXHAUST,
+            local_controls=["local exhaust ventilation"],
+            respiratory_protection="none",
+            emission_descriptor="short trigger-spray cleaning mist near the breathing zone",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+    capture_hood_bridge = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request(),
+            task_description="Worker trigger-spray disinfection task",
+            workplace_setting="janitorial closet with capture hood",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.LOCAL_EXHAUST,
+            local_controls=["local exhaust ventilation", "capture hood"],
+            respiratory_protection="none",
+            emission_descriptor="short trigger-spray cleaning mist near the breathing zone",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    base_result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=base_bridge.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+    capture_result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=capture_hood_bridge.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert base_result.baseline_dose is not None
+    assert capture_result.baseline_dose is not None
+    assert base_result.external_dose is not None
+    assert capture_result.external_dose is not None
+    assert capture_result.route_metrics["baseControlProfileFactor"] == pytest.approx(
+        0.4, rel=1e-6
+    )
+    assert capture_result.route_metrics["controlContextFactor"] == pytest.approx(
+        0.85, rel=1e-6
+    )
+    assert capture_result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
+        0.34, rel=1e-6
+    )
+    assert capture_result.route_metrics["workerControlFactor"] == pytest.approx(0.34, rel=1e-6)
+    assert capture_result.route_metrics["controlContextProfile"] == "capture_hood_or_slot_hood"
+    assert capture_result.external_dose.value == pytest.approx(
+        base_result.external_dose.value * 0.85,
+        rel=1e-6,
+    )
+    assert any(
+        item.code == "worker_control_context_screening"
+        for item in capture_result.limitations
+    )
+
+
 def test_worker_art_execution_runs_handheld_biocidal_external_anchor_check() -> None:
     study_like_request = _base_request().model_copy(
         update={

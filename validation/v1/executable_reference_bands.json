@@ -1,5 +1,5 @@
 {
-  "reference_version": "2026.04.08.v9",
+  "reference_version": "2026.04.12.v10",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
@@ -120,6 +120,26 @@
         "product_subtype": "indoor_surface_insecticide"
       },
       "note": "Post-application chlorpyrifos residual-air benchmark band derived from the reported 61-94 ug/m3 infant-breathing-zone concentrations at 3-7 hours after residential broadcast treatment in Fenske et al. (1990), converted to mg/m3."
+    },
+    {
+      "reference_band_id": "diazinon_home_use_residual_air_concentration_2008_band",
+      "check_id": "diazinon_home_use_residual_air_concentration_2008",
+      "reference_dataset_id": "diazinon_indoor_air_monitoring_home_use_2008",
+      "domain": "inhalation_residual_air_reentry",
+      "compared_metric": "air_concentration_at_reentry_start_mg_per_m3",
+      "reference_lower": 0.0117,
+      "reference_upper": 0.0143,
+      "unit": "mg/m3",
+      "applicable_selectors": {
+        "application_method": "residual_air_reentry",
+        "chemical_id": "DTXSID9020407",
+        "chemical_name": "Diazinon",
+        "product_category": "pesticide",
+        "product_subtype": "indoor_surface_insecticide",
+        "demographic_tag": "residential_reentry",
+        "reentry_mode": "native_treated_surface_reentry"
+      },
+      "note": "Consumer home-use diazinon residual-air anchor centered on the reported indoor air concentration up to 13 ug/m3 in the NPIC Diazinon technical fact sheet, widened to a +/-10% screening band for bounded native treated-surface reentry comparisons."
     },
     {
       "reference_band_id": "worker_biocidal_handheld_trigger_spray_concentration_2023_band",

@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v22",
+  "defaults_version": "2026.04.12.v23",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -222,6 +222,12 @@
       "title": "Direct-Use Exposure MCP heuristic worker inhalation control-profile factors",
       "locator": "docs://defaults-evidence-map#worker-inhalation-control-factor-heuristics-2026",
       "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_inhalation_control_context_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded worker inhalation control-context refinements",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-control-context-heuristics-2026",
+      "version": "2026.04.12.v1"
     },
     {
       "source_id": "worker_inhalation_rpe_factor_heuristics_2026",
@@ -1164,6 +1170,64 @@
       "outdoor_dilution_control_profile_with_rpe": {
         "value": 0.15,
         "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      }
+    },
+    "control_context_factor": {
+      "generic": {
+        "value": 1.0,
+        "tokens": [],
+        "source_id": "worker_inhalation_control_context_heuristics_2026"
+      },
+      "task_segregation_or_distance": {
+        "value": 0.95,
+        "tokens": [
+          "task_segregation",
+          "segregated",
+          "segregation",
+          "barrier",
+          "distance",
+          "remote_operator",
+          "windward"
+        ],
+        "source_id": "worker_inhalation_control_context_heuristics_2026"
+      },
+      "portable_capture_or_extractor": {
+        "value": 0.9,
+        "tokens": [
+          "portable_extractor",
+          "portable_lev",
+          "extractor",
+          "on_tool_extraction",
+          "vacuum_extraction"
+        ],
+        "source_id": "worker_inhalation_control_context_heuristics_2026"
+      },
+      "capture_hood_or_slot_hood": {
+        "value": 0.85,
+        "tokens": [
+          "capture_hood",
+          "slot_hood",
+          "hood",
+          "capture_arm",
+          "downdraft",
+          "downdraft_table",
+          "backdraft"
+        ],
+        "source_id": "worker_inhalation_control_context_heuristics_2026"
+      },
+      "spray_booth_or_partial_enclosure": {
+        "value": 0.75,
+        "tokens": [
+          "spray_booth",
+          "booth",
+          "enclosure",
+          "enclosed_hood",
+          "closed_lid",
+          "sealed",
+          "glovebox",
+          "downflow_booth"
+        ],
+        "source_id": "worker_inhalation_control_context_heuristics_2026"
       }
     },
     "respiratory_protection_factor": {

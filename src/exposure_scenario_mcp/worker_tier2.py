@@ -3828,6 +3828,8 @@ def execute_worker_inhalation_tier2_task(
         baseline_external_dose *= task_intensity_factor
 
     control_factor = None if overrides is None else overrides.control_factor
+    control_context_label = "generic"
+    control_context_factor = 1.0
     if control_factor is None:
         control_factor, control_source = registry.worker_inhalation_control_profile_factor(
             envelope.control_profile
@@ -3845,6 +3847,41 @@ def execute_worker_inhalation_tier2_task(
                 applicability_domain=applicability_domain,
             )
         )
+        control_context_label, control_context_factor, control_context_source = (
+            registry.worker_inhalation_control_context_factor(
+                [
+                    task_context.workplace_setting or "",
+                    *task_context.local_controls,
+                    task_context.emission_descriptor or "",
+                ]
+            )
+        )
+        assumptions.append(
+            _assumption_record(
+                name="worker_control_context_factor",
+                value=control_context_factor,
+                unit="fraction",
+                source_kind=SourceKind.DEFAULT_REGISTRY,
+                source=control_context_source,
+                rationale=(
+                    "Worker control-context factor defaulted from explicit local controls and "
+                    "workplace descriptors using the bounded control-context heuristics."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
+        if control_context_label != "generic":
+            limitations.append(
+                LimitationNote(
+                    code="worker_control_context_screening",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Explicit worker control context refined the control factor with a "
+                        "bounded LEV/control-context heuristic rather than measured capture or "
+                        "dilution efficiency."
+                    ),
+                )
+            )
     else:
         assumptions.append(
             _assumption_record(
@@ -3857,6 +3894,22 @@ def execute_worker_inhalation_tier2_task(
                 applicability_domain=applicability_domain,
             )
         )
+
+    effective_control_factor = min(control_factor * control_context_factor, 1.0)
+    assumptions.append(
+        _assumption_record(
+            name="effective_worker_control_factor",
+            value=effective_control_factor,
+            unit="fraction",
+            source_kind=SourceKind.DERIVED,
+            source=_execution_algorithm_source(),
+            rationale=(
+                "Effective worker control factor was derived from the base control-profile "
+                "factor and the bounded control-context refinement."
+            ),
+            applicability_domain=applicability_domain,
+        )
+    )
 
     respiratory_protection_factor = (
         None if overrides is None else overrides.respiratory_protection_factor
@@ -3918,9 +3971,16 @@ def execute_worker_inhalation_tier2_task(
     if task_intensity_label is not None:
         route_metrics["taskIntensity"] = task_intensity_label
         route_metrics["taskIntensityFactor"] = round(task_intensity_factor, 8)
+    route_metrics["baseControlProfileFactor"] = round(control_factor, 8)
+    route_metrics["controlContextFactor"] = round(control_context_factor, 8)
+    route_metrics["effectiveWorkerControlFactor"] = round(effective_control_factor, 8)
+    if control_context_label != "generic":
+        route_metrics["controlContextProfile"] = control_context_label
 
     if baseline_average_air_concentration is not None:
-        adjusted_average_air_concentration = baseline_average_air_concentration * control_factor
+        adjusted_average_air_concentration = (
+            baseline_average_air_concentration * effective_control_factor
+        )
         intake_equivalent_air_concentration = (
             adjusted_average_air_concentration * respiratory_protection_factor
         )
@@ -3938,7 +3998,9 @@ def execute_worker_inhalation_tier2_task(
         )
     if baseline_inhaled_mass_mg_day is not None:
         adjusted_inhaled_mass_mg_day = (
-            baseline_inhaled_mass_mg_day * control_factor * respiratory_protection_factor
+            baseline_inhaled_mass_mg_day
+            * effective_control_factor
+            * respiratory_protection_factor
         )
         route_metrics["baselineInhaledMassMgPerDay"] = round(baseline_inhaled_mass_mg_day, 8)
         route_metrics["adjustedInhaledMassMgPerDay"] = round(adjusted_inhaled_mass_mg_day, 8)
@@ -3951,12 +4013,12 @@ def execute_worker_inhalation_tier2_task(
                 source=_execution_algorithm_source(),
                 rationale=(
                     "Adjusted inhaled mass per day was derived from the baseline inhaled mass, "
-                    "worker control factor, and respiratory-protection factor."
+                    "effective worker control factor, and respiratory-protection factor."
                 ),
                 applicability_domain=applicability_domain,
             )
         )
-    route_metrics["workerControlFactor"] = round(control_factor, 8)
+    route_metrics["workerControlFactor"] = round(effective_control_factor, 8)
     route_metrics["respiratoryProtectionFactor"] = round(respiratory_protection_factor, 8)
 
     if body_weight is not None and baseline_external_dose is not None:

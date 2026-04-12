@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.12.v15",
+  "goldset_version": "2026.04.12.v16",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -296,15 +296,16 @@
       "title": "EU Diazinon indoor surface insecticide workflow",
       "coverage_status": "integration_showcase",
       "benchmark_case_ids": [
+        "inhalation_residual_air_reentry_diazinon_home_use_native_screening",
         "inhalation_residual_air_reentry_diazinon_time_series_1990",
         "inhalation_residual_air_reentry_native_treated_surface_screening"
       ],
       "recognizable_examples": ["residential bug spray", "indoor insecticide trigger spray"],
       "challenge_tags": ["regional_evidence_reconciliation", "product_subtype_selection", "integrated_workflow", "pesticide_support"],
       "why_it_matters": "Diazinon is a recognizable pesticide example that forces the MCP to reconcile chemical identity, regional product-use evidence, and subtype-specific exposure logic.",
-      "showcase_story": "Shows the end-to-end value of keeping CompTox and ConsExpo separate but interoperable: identity from EPA, EU use semantics from RIVM, then an auditable exposure scenario and PBPK-ready handoff, now linked to the MCP's dedicated residual-air and native treated-surface reentry benchmark family instead of remaining a fully unmapped pesticide workflow.",
+      "showcase_story": "Shows the end-to-end value of keeping CompTox and ConsExpo separate but interoperable: identity from EPA, EU use semantics from RIVM, then an auditable exposure scenario and PBPK-ready handoff, now linked to both a consumer diazinon home-use residual-air anchor and the broader residual-air/native treated-surface benchmark family.",
       "evidence_gaps": [
-        "The linked benchmark cases are analogue anchors for residual-air and native treated-surface reentry, not an exact chamber benchmark for the immediate consumer diazinon trigger-spray cloud.",
+        "The linked benchmark cases now include a native consumer home-use diazinon residual-air anchor, but they still do not provide a tightly instrumented chamber benchmark for the immediate consumer trigger-spray cloud.",
         "Published indoor-surface insecticide monitoring studies for diazinon and chlorpyrifos still reflect broadcast treatment, treated-surface volatilization, and delayed reentry more strongly than a tightly instrumented residential trigger-spray event."
       ],
       "external_sources": [

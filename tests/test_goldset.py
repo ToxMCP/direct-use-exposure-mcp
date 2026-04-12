@@ -8,7 +8,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     benchmark_ids = {case["id"] for case in load_benchmark_manifest()["cases"]}
 
     assert goldset["schema_version"] == "benchmarkGoldsetManifest.v1"
-    assert goldset["goldset_version"] == "2026.04.12.v15"
+    assert goldset["goldset_version"] == "2026.04.12.v16"
     assert len(goldset["cases"]) >= 6
 
     coverage_statuses = {case["coverage_status"] for case in goldset["cases"]}
@@ -60,6 +60,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
         if case["id"] == "eu_diazinon_indoor_surface_insecticide"
     )
     assert set(diazinon_workflow_case["benchmark_case_ids"]) == {
+        "inhalation_residual_air_reentry_diazinon_home_use_native_screening",
         "inhalation_residual_air_reentry_diazinon_time_series_1990",
         "inhalation_residual_air_reentry_native_treated_surface_screening",
     }

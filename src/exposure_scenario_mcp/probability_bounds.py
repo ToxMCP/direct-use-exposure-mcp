@@ -56,6 +56,55 @@ def _normalize(value):
     return value
 
 
+def _mechanistic_summary_entries(
+    scenarios,
+    *,
+    summary_prefix: str,
+) -> list[UncertaintyRegisterEntry]:
+    aggregated: dict[str, dict[str, object]] = {}
+    for scenario in scenarios:
+        for entry in scenario.uncertainty_register:
+            if not entry.entry_id.startswith("mechanistic-constraint-"):
+                continue
+            bucket = aggregated.setdefault(
+                entry.entry_id,
+                {
+                    "entry": entry,
+                    "count": 0,
+                    "related_assumptions": set(),
+                },
+            )
+            bucket["count"] = int(bucket["count"]) + 1
+            related = bucket["related_assumptions"]
+            assert isinstance(related, set)
+            related.update(entry.related_assumptions)
+
+    entries: list[UncertaintyRegisterEntry] = []
+    total = len(scenarios)
+    for entry_id, payload in aggregated.items():
+        base_entry = payload["entry"]
+        assert isinstance(base_entry, UncertaintyRegisterEntry)
+        related = sorted(str(item) for item in payload["related_assumptions"])
+        count = int(payload["count"])
+        entries.append(
+            UncertaintyRegisterEntry(
+                entry_id=f"{summary_prefix}-{entry_id}",
+                title=base_entry.title,
+                uncertainty_types=base_entry.uncertainty_types,
+                related_assumptions=related,
+                quantification_status=UncertaintyQuantificationStatus.PROBABILITY_BOUNDS,
+                bias_direction=base_entry.bias_direction,
+                impact_level=base_entry.impact_level,
+                summary=(
+                    f"{base_entry.summary} Active in {count} of {total} deterministic "
+                    "support-point scenarios."
+                ),
+                recommendation=base_entry.recommendation,
+            )
+        )
+    return entries
+
+
 def _validate_profile_against_request(
     params: BuildProbabilityBoundsFromProfileInput,
     profile: ProbabilityBoundsDriverProfile,
@@ -212,6 +261,12 @@ def build_probability_bounds_from_profile(
                 ),
             )
         )
+    uncertainty_register.extend(
+        _mechanistic_summary_entries(
+            [scenario for _, scenario in points],
+            summary_prefix="profile",
+        )
+    )
     dependency_metadata = [
         *base_scenario.dependency_metadata,
         _single_driver_dependency_descriptor(profile),
@@ -431,6 +486,12 @@ def build_probability_bounds_from_scenario_package(
                 ),
             )
         )
+    uncertainty_register.extend(
+        _mechanistic_summary_entries(
+            [scenario for _, scenario in scenarios],
+            summary_prefix="scenario-package",
+        )
+    )
     representative_validation = scenarios[0][1].validation_summary
     validation_summary = representative_validation.model_copy(
         update={
