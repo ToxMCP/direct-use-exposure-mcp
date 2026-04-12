@@ -431,9 +431,7 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
         "challenge_case": 1,
         "integration_showcase": 1,
     }
-    assert set(report["unmappedGoldsetCaseIds"]) == {
-        "eu_diazinon_indoor_surface_insecticide",
-    }
+    assert report["unmappedGoldsetCaseIds"] == []
 
     domain_summaries = {
         item["domain"]: item for item in report["domainSummaries"]
