@@ -8,6 +8,7 @@
     "schema_version": "productUseProfile.v1",
     "product_name": "Example Trigger Spray",
     "product_subtype": "indoor_surface_insecticide",
+    "aerosolCarrierFamily": null,
     "product_category": "pesticide",
     "physical_form": "spray",
     "application_method": "trigger_spray",

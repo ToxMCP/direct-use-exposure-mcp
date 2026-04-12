@@ -8,9 +8,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "de20f43c8741ad9af85dae416c8c499bd227be8b7461a91f9a354b8fc83275cd",
+    "contentHash": "0a9c22d06dcd0c6ace2687f4f98f1dd78a65c6cfa5dac27d8ffd2c007ec3f514",
     "dataClassification": "internal",
-    "evidenceId": "evidence-f027ef44c0020747",
+    "evidenceId": "evidence-e7a7456595413821",
     "qualityFlag": "default_applied",
     "rawPointer": null,
     "redactionStatus": null,
@@ -31,8 +31,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "de20f43c8741ad9af85dae416c8c499bd227be8b7461a91f9a354b8fc83275cd",
-    "evidenceId": "evidence-f027ef44c0020747",
+    "contentHash": "0a9c22d06dcd0c6ace2687f4f98f1dd78a65c6cfa5dac27d8ffd2c007ec3f514",
+    "evidenceId": "evidence-e7a7456595413821",
     "qualityFlag": "default_applied",
     "rawPointer": null,
     "redactionStatus": null,
@@ -59,7 +59,7 @@
         "claimId": "claim-3f925e273e5fdfb0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-f027ef44c0020747"
+          "evidence-e7a7456595413821"
         ],
         "text": "The dermal screening scenario estimates 1.125 mg/kg-day external dose."
       },
@@ -68,7 +68,7 @@
         "claimId": "claim-7705a199bf3cd2d5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-f027ef44c0020747"
+          "evidence-e7a7456595413821"
         ],
         "text": "The scenario represents adult use of personal_care with 3 event(s) per day."
       },
@@ -77,13 +77,13 @@
         "claimId": "claim-78430fd5a8303de5",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-f027ef44c0020747"
+          "evidence-e7a7456595413821"
         ],
         "text": "The scenario is labeled deterministic_screening for external-dose screening use."
       }
     ],
     "evidenceIds": [
-      "evidence-f027ef44c0020747"
+      "evidence-e7a7456595413821"
     ],
     "sectionKey": "exposure-scenario",
     "title": "Exposure Scenario"

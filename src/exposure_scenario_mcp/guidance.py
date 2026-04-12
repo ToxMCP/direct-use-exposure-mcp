@@ -775,7 +775,9 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 - Applies bounded first-order deposition sinks to room-air loss terms
 - Can apply a bounded task-intensity factor to the inhalation rate when the worker task
   explicitly declares light, moderate, or high effort
-- Applies worker control and respiratory-protection factors after the baseline kernel
+- Applies worker control and respiratory-protection factors after the baseline kernel,
+  including optional `levFamily` and `hoodFaceVelocityMPerS` refinements when callers
+  can supply them
 - Returns both the preserved baseline dose and the control-adjusted worker inhalation dose
 - Preserves determinant-template alignment, quality flags, limitations, and provenance
 
@@ -784,6 +786,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 - The executable path currently supports `targetModelFamily=art`
 - The execution kernel is intentionally bounded and transparent, not a real ART solver
 - Control and respiratory-protection effects are represented by heuristic adjustment factors
+- Explicit `levFamily` and `hoodFaceVelocityMPerS` inputs refine those control factors, but
+  still remain bounded screening semantics rather than measured LEV performance modeling
 - Task intensity is represented by a bounded inhalation-rate factor, not measured minute
   ventilation
 - Volatility and aerosol removal are represented by bounded screening caps and

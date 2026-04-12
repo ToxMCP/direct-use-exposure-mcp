@@ -204,6 +204,21 @@ class DefaultsRegistry:
             self._source(matched_entry["source_id"]),
         )
 
+    def pressurized_aerosol_carrier_family_adjustment_factor(
+        self,
+        aerosol_carrier_family: str | None = None,
+    ) -> tuple[str, float, AssumptionSourceReference] | None:
+        if aerosol_carrier_family is None:
+            return None
+        values = self.payload["conversion_defaults"][
+            "pressurized_aerosol_volume_interpretation_factor"
+        ].get("carrier_family_adjustment_factor", {})
+        key = aerosol_carrier_family.lower()
+        entry = values.get(key)
+        if entry is None:
+            return None
+        return key, float(entry["value"]), self._source(entry["source_id"])
+
     def population_defaults(
         self, population_group: str
     ) -> tuple[dict[str, float], AssumptionSourceReference]:
@@ -920,7 +935,9 @@ class DefaultsRegistry:
         context_terms: list[str],
         control_profile: str,
         control_context_profile: str | None = None,
-    ) -> tuple[str, str, float, AssumptionSourceReference]:
+        lev_family: str | None = None,
+        hood_face_velocity_m_per_s: float | None = None,
+    ) -> tuple[str, str, str, float, AssumptionSourceReference]:
         values = self.payload["worker_inhalation_execution_defaults"][
             "capture_velocity_factor"
         ]
@@ -929,47 +946,84 @@ class DefaultsRegistry:
         if not any(
             item in normalized_profile for item in ("local_exhaust", "enclosed_process")
         ):
-            return "generic", "generic", float(generic_entry["value"]), self._source(
+            return "generic", "generic", "generic", float(generic_entry["value"]), self._source(
                 generic_entry["source_id"]
             )
-        if control_context_profile is None:
-            return "generic", "generic", float(generic_entry["value"]), self._source(
+        if control_context_profile is None and lev_family is None:
+            return "generic", "generic", "generic", float(generic_entry["value"]), self._source(
                 generic_entry["source_id"]
             )
 
-        active_profile_label = control_context_profile.lower()
+        active_profile_label = (
+            control_context_profile.lower() if control_context_profile is not None else "generic"
+        )
+        explicit_family_entry = None
+        if lev_family is not None:
+            explicit_family_entry = values.get("explicit_lev_family_overrides", {}).get(
+                lev_family.lower()
+            )
+            if explicit_family_entry is not None:
+                active_profile_label = str(explicit_family_entry["profile"])
+
         profile_values = values.get("profile_overrides", {}).get(active_profile_label)
         if not profile_values:
-            return "generic", active_profile_label, float(generic_entry["value"]), self._source(
-                generic_entry["source_id"]
+            base_label = "generic"
+            base_factor = float(generic_entry["value"])
+            base_source = self._source(generic_entry["source_id"])
+        elif explicit_family_entry is not None:
+            base_label = str(explicit_family_entry["label"])
+            base_factor = float(explicit_family_entry["value"])
+            base_source = self._source(explicit_family_entry["source_id"])
+        else:
+            normalized_terms = " ".join(
+                item.strip().lower().replace("-", "_").replace(" ", "_")
+                for item in context_terms
+                if item and item.strip()
             )
+            base_label = "generic"
+            selected_entry = profile_values.get("generic", generic_entry)
+            selected_strength = 0.0
+            for candidate_label, candidate_entry in profile_values.items():
+                if candidate_label == "generic":
+                    continue
+                tokens = tuple(str(item).lower() for item in candidate_entry.get("tokens", []))
+                if not tokens:
+                    continue
+                if any(token in normalized_terms for token in tokens):
+                    candidate_strength = abs(float(candidate_entry["value"]) - 1.0)
+                    if candidate_strength >= selected_strength:
+                        base_label = candidate_label
+                        selected_entry = candidate_entry
+                        selected_strength = candidate_strength
+            base_factor = float(selected_entry["value"])
+            base_source = self._source(selected_entry["source_id"])
 
-        normalized_terms = " ".join(
-            item.strip().lower().replace("-", "_").replace(" ", "_")
-            for item in context_terms
-            if item and item.strip()
-        )
-        selected_label = "generic"
-        selected_entry = profile_values.get("generic", generic_entry)
-        selected_strength = 0.0
-        for candidate_label, candidate_entry in profile_values.items():
-            if candidate_label == "generic":
-                continue
-            tokens = tuple(str(item).lower() for item in candidate_entry.get("tokens", []))
-            if not tokens:
-                continue
-            if any(token in normalized_terms for token in tokens):
-                candidate_strength = abs(float(candidate_entry["value"]) - 1.0)
-                if candidate_strength >= selected_strength:
-                    selected_label = candidate_label
-                    selected_entry = candidate_entry
-                    selected_strength = candidate_strength
+        velocity_label = "generic"
+        final_factor = base_factor
+        velocity_source = base_source
+        if hood_face_velocity_m_per_s is not None:
+            velocity_values = values.get("hood_face_velocity_adjustment", {})
+            velocity_entry = velocity_values.get(active_profile_label) or velocity_values.get(
+                "generic"
+            )
+            if velocity_entry is not None:
+                high_threshold = float(velocity_entry["high_threshold_m_per_s"])
+                low_threshold = float(velocity_entry["low_threshold_m_per_s"])
+                if hood_face_velocity_m_per_s >= high_threshold:
+                    velocity_label = "high_face_velocity"
+                    final_factor *= float(velocity_entry["high_factor"])
+                    velocity_source = self._source(velocity_entry["source_id"])
+                elif hood_face_velocity_m_per_s <= low_threshold:
+                    velocity_label = "low_face_velocity"
+                    final_factor *= float(velocity_entry["low_factor"])
+                    velocity_source = self._source(velocity_entry["source_id"])
 
         return (
-            selected_label,
+            base_label,
             active_profile_label,
-            float(selected_entry["value"]),
-            self._source(selected_entry["source_id"]),
+            velocity_label,
+            final_factor,
+            velocity_source,
         )
 
     def worker_inhalation_respiratory_protection_factor(
@@ -1094,6 +1148,14 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  and light-carrier aerosol families from inheriting the same condensed-liquid",
             "  semantics as less volatile sprays, without claiming a full formulation or",
             "  can-propellant composition model.",
+            "",
+            "### Pressurized Aerosol Carrier-Family Heuristics 2026",
+            "",
+            "- `pressurized_aerosol_carrier_family_heuristics_2026` adds an explicit",
+            "  carrier-family refinement when callers know the aerosol formulation family,",
+            "  for example hydrocarbon_propellant_solvent or water_ethanol_propellant.",
+            "  This remains a bounded screening interpretation layer rather than a full",
+            "  formulation mass-balance or propellant-composition solver.",
             "",
             "### Heuristic Retention Defaults",
             "",
@@ -1268,7 +1330,9 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  context and capture-distance factors. It uses explicit LEV-family descriptors",
             "  such as slot hoods, canopy hoods, downdraft booths, and open-face booths to",
             "  distinguish more effective versus weaker local capture semantics without",
-            "  claiming measured hood-face velocity or capture-velocity profiles.",
+            "  claiming measured hood-face velocity or capture-velocity profiles. When",
+            "  callers declare `levFamily` and `hoodFaceVelocityMPerS`, those explicit",
+            "  values are used instead of relying only on inferred free-text control tokens.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",

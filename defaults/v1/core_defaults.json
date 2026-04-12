@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v29",
+  "defaults_version": "2026.04.12.v30",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -266,6 +266,12 @@
       "version": "2026.04.12.v1"
     },
     {
+      "source_id": "pressurized_aerosol_carrier_family_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded pressurized-aerosol carrier-family heuristics",
+      "locator": "docs://defaults-evidence-map#pressurized-aerosol-carrier-family-heuristics-2026",
+      "version": "2026.04.12.v1"
+    },
+    {
       "source_id": "worker_inhalation_capture_zone_heuristics_2026",
       "title": "Direct-Use Exposure MCP bounded worker inhalation capture-zone alignment heuristics",
       "locator": "docs://defaults-evidence-map#worker-inhalation-capture-zone-heuristics-2026",
@@ -506,6 +512,24 @@
               "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
             }
           }
+        }
+      },
+      "carrier_family_adjustment_factor": {
+        "hydrocarbon_propellant_solvent": {
+          "value": 0.82,
+          "source_id": "pressurized_aerosol_carrier_family_heuristics_2026"
+        },
+        "water_ethanol_propellant": {
+          "value": 0.9,
+          "source_id": "pressurized_aerosol_carrier_family_heuristics_2026"
+        },
+        "compressed_gas_water_based": {
+          "value": 0.96,
+          "source_id": "pressurized_aerosol_carrier_family_heuristics_2026"
+        },
+        "oil_wax_propellant": {
+          "value": 1.0,
+          "source_id": "pressurized_aerosol_carrier_family_heuristics_2026"
         }
       }
     }
@@ -1619,6 +1643,68 @@
       "generic": {
         "value": 1.0,
         "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+      },
+      "explicit_lev_family_overrides": {
+        "slot_hood": {
+          "profile": "capture_hood_or_slot_hood",
+          "label": "slot_hood_or_high_face_velocity",
+          "value": 0.92,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        },
+        "canopy_hood": {
+          "profile": "capture_hood_or_slot_hood",
+          "label": "canopy_or_low_face_velocity",
+          "value": 1.08,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        },
+        "capture_nozzle": {
+          "profile": "portable_capture_or_extractor",
+          "label": "aligned_capture_nozzle",
+          "value": 0.95,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        },
+        "downdraft_booth": {
+          "profile": "spray_booth_or_partial_enclosure",
+          "label": "downdraft_or_high_face_velocity_booth",
+          "value": 0.95,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        },
+        "open_face_booth": {
+          "profile": "spray_booth_or_partial_enclosure",
+          "label": "open_face_booth",
+          "value": 1.03,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        }
+      },
+      "hood_face_velocity_adjustment": {
+        "generic": {
+          "high_threshold_m_per_s": 0.75,
+          "high_factor": 0.97,
+          "low_threshold_m_per_s": 0.4,
+          "low_factor": 1.05,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        },
+        "portable_capture_or_extractor": {
+          "high_threshold_m_per_s": 0.5,
+          "high_factor": 0.97,
+          "low_threshold_m_per_s": 0.2,
+          "low_factor": 1.05,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        },
+        "capture_hood_or_slot_hood": {
+          "high_threshold_m_per_s": 0.75,
+          "high_factor": 0.96,
+          "low_threshold_m_per_s": 0.4,
+          "low_factor": 1.06,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        },
+        "spray_booth_or_partial_enclosure": {
+          "high_threshold_m_per_s": 0.5,
+          "high_factor": 0.98,
+          "low_threshold_m_per_s": 0.25,
+          "low_factor": 1.03,
+          "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        }
       },
       "profile_overrides": {
         "portable_capture_or_extractor": {

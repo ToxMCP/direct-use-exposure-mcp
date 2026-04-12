@@ -463,6 +463,142 @@ def test_worker_dermal_execution_applies_physchem_aerosol_adjustment() -> None:
     )
 
 
+def test_worker_dermal_execution_applies_low_molecular_weight_aerosol_adjustment() -> None:
+    aerosol_request = _base_request().model_copy(
+        update={
+            "physchem_context": PhyschemContext(
+                vaporPressureMmhg=30.0,
+                molecularWeightGPerMol=140.0,
+            ),
+            "product_use_profile": _base_request().product_use_profile.model_copy(
+                update={
+                    "product_category": "personal_care",
+                    "product_subtype": "deodorant_spray",
+                    "physical_form": "spray",
+                    "application_method": "aerosol_spray",
+                    "use_amount_per_event": 10.0,
+                    "use_amount_unit": ProductAmountUnit.ML,
+                    "use_events_per_day": 1.0,
+                    "concentration_fraction": 0.01,
+                }
+            ),
+        }
+    )
+    bridge_package = build_worker_dermal_absorbed_dose_bridge(
+        ExportWorkerDermalAbsorbedDoseBridgeRequest(
+            base_request=aerosol_request,
+            task_description="Worker personal-care aerosol task with incidental hand contact",
+            workplace_setting="product testing room",
+            contact_duration_hours=0.5,
+            contact_pattern=WorkerDermalContactPattern.DIRECT_HANDLING,
+            exposed_body_areas=["hands"],
+            ppe_state=WorkerDermalPpeState.WORK_GLOVES,
+            control_measures=["general ventilation"],
+            surface_loading_context=(
+                "short personal-care aerosol spray with incidental hand contamination"
+            ),
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_dermal_absorbed_dose_task(
+        ExecuteWorkerDermalAbsorbedDoseRequest(
+            adapter_request=bridge_package.tool_call.arguments,
+            context_of_use="worker-dermal-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assumption_map = {item.name: item for item in result.assumptions}
+    assert assumption_map["pressurized_aerosol_physchem_adjustment_factor"].value == pytest.approx(
+        0.88,
+        rel=1e-6,
+    )
+    assert assumption_map[
+        "pressurized_aerosol_volume_interpretation_factor"
+    ].value == pytest.approx(0.44, rel=1e-6)
+    assert result.route_metrics["pressurizedAerosolVolumeInterpretationFactor"] == pytest.approx(
+        0.44,
+        rel=1e-6,
+    )
+    assert result.route_metrics["pressurizedAerosolPhyschemAdjustmentFactor"] == pytest.approx(
+        0.88,
+        rel=1e-6,
+    )
+    assert result.route_metrics["pressurizedAerosolPhyschemProfile"] == (
+        "volatile_deodorant_aerosol"
+    )
+
+
+def test_worker_dermal_execution_applies_explicit_carrier_family_adjustment() -> None:
+    aerosol_request = _base_request().model_copy(
+        update={
+            "product_use_profile": _base_request().product_use_profile.model_copy(
+                update={
+                    "product_category": "personal_care",
+                    "product_subtype": "deodorant_spray",
+                    "aerosol_carrier_family": "hydrocarbon_propellant_solvent",
+                    "physical_form": "spray",
+                    "application_method": "aerosol_spray",
+                    "use_amount_per_event": 10.0,
+                    "use_amount_unit": ProductAmountUnit.ML,
+                    "use_events_per_day": 1.0,
+                    "concentration_fraction": 0.01,
+                }
+            ),
+        }
+    )
+    bridge_package = build_worker_dermal_absorbed_dose_bridge(
+        ExportWorkerDermalAbsorbedDoseBridgeRequest(
+            base_request=aerosol_request,
+            task_description="Worker personal-care aerosol task with incidental hand contact",
+            workplace_setting="product testing room",
+            contact_duration_hours=0.5,
+            contact_pattern=WorkerDermalContactPattern.DIRECT_HANDLING,
+            exposed_body_areas=["hands"],
+            ppe_state=WorkerDermalPpeState.WORK_GLOVES,
+            control_measures=["general ventilation"],
+            surface_loading_context=(
+                "short personal-care aerosol spray with incidental hand contamination"
+            ),
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_dermal_absorbed_dose_task(
+        ExecuteWorkerDermalAbsorbedDoseRequest(
+            adapter_request=bridge_package.tool_call.arguments,
+            context_of_use="worker-dermal-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assumption_map = {item.name: item for item in result.assumptions}
+    assert assumption_map[
+        "pressurized_aerosol_carrier_family_adjustment_factor"
+    ].value == pytest.approx(0.82, rel=1e-6)
+    assert assumption_map[
+        "pressurized_aerosol_carrier_family_adjustment_factor"
+    ].source.source_id == "pressurized_aerosol_carrier_family_heuristics_2026"
+    assert assumption_map[
+        "pressurized_aerosol_volume_interpretation_factor"
+    ].value == pytest.approx(0.41, rel=1e-6)
+    assert result.route_metrics["pressurizedAerosolVolumeInterpretationFactor"] == pytest.approx(
+        0.41,
+        rel=1e-6,
+    )
+    assert result.route_metrics[
+        "pressurizedAerosolCarrierFamilyAdjustmentFactor"
+    ] == pytest.approx(0.82, rel=1e-6)
+    assert result.route_metrics["pressurizedAerosolCarrierFamily"] == (
+        "hydrocarbon_propellant_solvent"
+    )
+    assert any(
+        flag.code == "worker_dermal_pressurized_aerosol_carrier_family_adjustment_defaulted"
+        for flag in result.quality_flags
+    )
+
+
 def test_worker_dermal_execution_runs_handheld_biocidal_external_anchor_check() -> None:
     study_like_request = _base_request().model_copy(
         update={

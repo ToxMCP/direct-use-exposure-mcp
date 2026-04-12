@@ -22,6 +22,8 @@
         "general ventilation",
         "task segregation"
       ],
+      "levFamily": null,
+      "hoodFaceVelocityMPerS": null,
       "respiratory_protection": "none",
       "emission_descriptor": "short trigger-spray cleaning mist near the breathing zone",
       "notes": [
@@ -62,6 +64,7 @@
           "schema_version": "productUseProfile.v1",
           "product_name": "Example Workplace Disinfectant Spray",
           "product_subtype": null,
+          "aerosolCarrierFamily": null,
           "product_category": "disinfectant",
           "physical_form": "spray",
           "application_method": "trigger_spray",

@@ -1857,6 +1857,55 @@ def test_personal_care_deodorant_aerosol_uses_low_mw_propellant_adjustment() -> 
     )
 
 
+def test_personal_care_deodorant_aerosol_uses_explicit_carrier_family_adjustment() -> None:
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            product_subtype="deodorant_spray",
+            aerosol_carrier_family="hydrocarbon_propellant_solvent",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.001,
+            use_amount_per_event=10.0,
+            use_amount_unit="mL",
+            use_events_per_day=1.0,
+            room_volume_m3=20.0,
+            air_exchange_rate_per_hour=1.0,
+            exposure_duration_hours=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            inhalation_rate_m3_per_hour=1.0,
+        ),
+    )
+
+    baseline_engine = build_engine(_registry_with_full_pressurized_aerosol_volume_interpretation())
+    constrained_engine = build_engine()
+
+    baseline = baseline_engine.build(request)
+    constrained = constrained_engine.build(request)
+    assumptions = {item.name: item for item in constrained.assumptions}
+
+    assert assumptions[
+        "pressurized_aerosol_carrier_family_adjustment_factor"
+    ].value == pytest.approx(0.82, rel=1e-6)
+    assert assumptions[
+        "pressurized_aerosol_carrier_family_adjustment_factor"
+    ].source.source_id == "pressurized_aerosol_carrier_family_heuristics_2026"
+    assert assumptions["pressurized_aerosol_volume_interpretation_factor"].value == pytest.approx(
+        0.41, rel=1e-6
+    )
+    assert constrained.external_dose.value < baseline.external_dose.value
+    assert any(
+        item.code == "pressurized_aerosol_carrier_family_adjustment_defaulted"
+        for item in constrained.quality_flags
+    )
+
+
 def test_inhalation_tier_1_matches_pesticide_subtype_profile() -> None:
     request = InhalationTier1ScenarioRequest(
         chemical_id="DTXSID123",

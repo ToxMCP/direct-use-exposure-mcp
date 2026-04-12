@@ -186,6 +186,11 @@ LIMITATION_UNCERTAINTY_MAP = {
         BiasDirection.BIDIRECTIONAL,
         "medium",
     ),
+    "worker_capture_velocity_screening": (
+        [UncertaintyType.MODEL_UNCERTAINTY, UncertaintyType.PARAMETER_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "medium",
+    ),
 }
 
 

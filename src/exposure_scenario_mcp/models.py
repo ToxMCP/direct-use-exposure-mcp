@@ -1054,6 +1054,14 @@ class ProductUseProfile(StrictModel):
             "or surface_trigger_spray_disinfectant."
         ),
     )
+    aerosol_carrier_family: str | None = Field(
+        default=None,
+        alias="aerosolCarrierFamily",
+        description=(
+            "Optional explicit aerosol carrier family such as hydrocarbon_propellant_solvent "
+            "or water_ethanol_propellant when formulation-level spray semantics are known."
+        ),
+    )
     product_category: str = Field(..., description="Product category or PUC-like category.")
     physical_form: str = Field(
         ..., description="Physical form such as cream, liquid, spray, or gel."
@@ -1111,6 +1119,7 @@ class ProductUseProfile(StrictModel):
     @field_validator(
         "product_name",
         "product_subtype",
+        "aerosol_carrier_family",
         "product_category",
         "physical_form",
         "application_method",

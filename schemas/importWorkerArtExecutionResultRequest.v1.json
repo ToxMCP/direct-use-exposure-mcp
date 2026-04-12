@@ -504,6 +504,33 @@
           "title": "Local Controls",
           "type": "array"
         },
+        "levFamily": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional explicit LEV or hood family such as slot_hood, canopy_hood, downdraft_booth, or capture_nozzle.",
+          "title": "Levfamily"
+        },
+        "hoodFaceVelocityMPerS": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional measured or declared hood-face/capture velocity in m/s used for bounded worker capture refinements.",
+          "title": "Hoodfacevelocitympers"
+        },
         "respiratory_protection": {
           "anyOf": [
             {

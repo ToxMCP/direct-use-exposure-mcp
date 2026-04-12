@@ -23,6 +23,7 @@
     "schema_version": "productUseProfile.v1",
     "product_name": "Example Workplace Disinfectant Spray",
     "product_subtype": null,
+    "aerosolCarrierFamily": null,
     "product_category": "disinfectant",
     "physical_form": "spray",
     "application_method": "trigger_spray",
@@ -64,6 +65,8 @@
       "general ventilation",
       "task segregation"
     ],
+    "levFamily": null,
+    "hoodFaceVelocityMPerS": null,
     "respiratory_protection": "none",
     "emission_descriptor": "short trigger-spray cleaning mist near the breathing zone",
     "notes": [
@@ -503,8 +506,8 @@
     "algorithm_id": "worker.inhalation_art_external_import.v1",
     "plugin_id": "worker_inhalation_art_external_result_import",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.12.v29",
-    "defaults_hash_sha256": "b253f30e3f98af1de5ad69fe4213e3a7ce4fef6b3a4276c549acfc9b9380b1b3",
+    "defaults_version": "2026.04.12.v30",
+    "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Imports a normalized external ART-side execution result back into the governed worker inhalation execution schema.",

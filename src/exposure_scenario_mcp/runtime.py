@@ -173,6 +173,24 @@ def resolve_product_mass_g(
                 ),
             )
             aerosol_volume_factor *= aerosol_physchem_factor
+        carrier_adjustment = registry.pressurized_aerosol_carrier_family_adjustment_factor(
+            profile.aerosol_carrier_family
+        )
+        aerosol_carrier_factor = 1.0
+        if carrier_adjustment is not None:
+            _, aerosol_carrier_factor, carrier_source = carrier_adjustment
+            tracker.add_default(
+                "pressurized_aerosol_carrier_family_adjustment_factor",
+                aerosol_carrier_factor,
+                "fraction",
+                carrier_source,
+                (
+                    "Aerosol volume interpretation was further adjusted with a bounded "
+                    "carrier-family heuristic because explicit aerosol carrier family "
+                    "context was supplied."
+                ),
+            )
+            aerosol_volume_factor *= aerosol_carrier_factor
         tracker.add_default(
             "pressurized_aerosol_volume_interpretation_factor",
             aerosol_volume_factor,
@@ -189,8 +207,18 @@ def resolve_product_mass_g(
                 "pressurized_aerosol_physchem_adjustment_defaulted",
                 (
                     "Volumetric aerosol-spray mass was further reduced with a bounded "
-                    "vapor-pressure aerosol adjustment because default density and "
-                    "pressurized product semantics were used together."
+                    "aerosol volatility and light-carrier adjustment because default "
+                    "density and pressurized product semantics were used together."
+                ),
+                severity=Severity.WARNING,
+            )
+        if aerosol_carrier_factor < 1.0:
+            tracker.add_quality_flag(
+                "pressurized_aerosol_carrier_family_adjustment_defaulted",
+                (
+                    "Volumetric aerosol-spray mass was further reduced with a bounded "
+                    "aerosol carrier-family adjustment because explicit carrier composition "
+                    "context was supplied."
                 ),
                 severity=Severity.WARNING,
             )

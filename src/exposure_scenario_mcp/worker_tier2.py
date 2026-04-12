@@ -138,6 +138,23 @@ class WorkerInhalationTier2TaskContext(StrictModel):
         default_factory=list,
         description="Engineering or administrative controls explicitly present during the task.",
     )
+    lev_family: str | None = Field(
+        default=None,
+        alias="levFamily",
+        description=(
+            "Optional explicit LEV or hood family such as slot_hood, canopy_hood, "
+            "downdraft_booth, or capture_nozzle."
+        ),
+    )
+    hood_face_velocity_m_per_s: float | None = Field(
+        default=None,
+        alias="hoodFaceVelocityMPerS",
+        description=(
+            "Optional measured or declared hood-face/capture velocity in m/s used for "
+            "bounded worker capture refinements."
+        ),
+        ge=0.0,
+    )
     respiratory_protection: str | None = Field(
         default=None,
         description="Respiratory protection state if explicitly known.",
@@ -199,6 +216,23 @@ class ExportWorkerInhalationTier2BridgeRequest(StrictModel):
         default_factory=list,
         alias="localControls",
         description="Engineering or administrative controls present during the task.",
+    )
+    lev_family: str | None = Field(
+        default=None,
+        alias="levFamily",
+        description=(
+            "Optional explicit LEV or hood family such as slot_hood, canopy_hood, "
+            "downdraft_booth, or capture_nozzle."
+        ),
+    )
+    hood_face_velocity_m_per_s: float | None = Field(
+        default=None,
+        alias="hoodFaceVelocityMPerS",
+        description=(
+            "Optional measured or declared hood-face/capture velocity in m/s used for "
+            "bounded worker capture refinements."
+        ),
+        ge=0.0,
     )
     respiratory_protection: str | None = Field(
         default=None,
@@ -2637,6 +2671,8 @@ def build_worker_inhalation_tier2_bridge(
         task_intensity=params.task_intensity,
         ventilation_context=params.ventilation_context,
         local_controls=params.local_controls,
+        lev_family=params.lev_family,
+        hood_face_velocity_m_per_s=params.hood_face_velocity_m_per_s,
         respiratory_protection=params.respiratory_protection,
         emission_descriptor=params.emission_descriptor,
         notes=params.notes,
@@ -3277,6 +3313,8 @@ def execute_worker_inhalation_tier2_task(
     pressurized_aerosol_volume_factor = 1.0
     pressurized_aerosol_physchem_factor = 1.0
     pressurized_aerosol_physchem_label = "generic"
+    pressurized_aerosol_carrier_factor = 1.0
+    pressurized_aerosol_carrier_label = "generic"
 
     if base_request is None:
         limitations.append(
@@ -3442,6 +3480,8 @@ def execute_worker_inhalation_tier2_task(
             pressurized_aerosol_volume_factor = 1.0
             pressurized_aerosol_physchem_factor = 1.0
             pressurized_aerosol_physchem_label = "generic"
+            pressurized_aerosol_carrier_factor = 1.0
+            pressurized_aerosol_carrier_label = "generic"
             if use_amount_unit == ProductAmountUnit.G:
                 product_mass_g_event = use_amount_per_event
                 if product_mass_g_event is not None:
@@ -3568,6 +3608,48 @@ def execute_worker_inhalation_tier2_task(
                                     ),
                                 )
                             )
+                    aerosol_carrier_adjustment = (
+                        registry.pressurized_aerosol_carrier_family_adjustment_factor(
+                            base_request.product_use_profile.aerosol_carrier_family
+                        )
+                    )
+                    if aerosol_carrier_adjustment is not None:
+                        (
+                            pressurized_aerosol_carrier_label,
+                            pressurized_aerosol_carrier_factor,
+                            aerosol_carrier_source,
+                        ) = aerosol_carrier_adjustment
+                        assumptions.append(
+                            _assumption_record(
+                                name="pressurized_aerosol_carrier_family_adjustment_factor",
+                                value=pressurized_aerosol_carrier_factor,
+                                unit="fraction",
+                                source_kind=SourceKind.DEFAULT_REGISTRY,
+                                source=aerosol_carrier_source,
+                                rationale=(
+                                    "Worker aerosol mass semantics were further adjusted with "
+                                    "a bounded carrier-family heuristic because explicit "
+                                    "aerosol carrier context was supplied."
+                                ),
+                                applicability_domain=applicability_domain,
+                            )
+                        )
+                        if pressurized_aerosol_carrier_factor < 1.0:
+                            quality_flags.append(
+                                QualityFlag(
+                                    code=(
+                                        "worker_inhalation_pressurized_aerosol_carrier_"
+                                        "family_adjustment_defaulted"
+                                    ),
+                                    severity=Severity.WARNING,
+                                    message=(
+                                        "Worker inhalation execution further reduced "
+                                        "volumetric aerosol mass with a bounded aerosol "
+                                        "carrier-family adjustment."
+                                    ),
+                                )
+                            )
+                    pressurized_aerosol_volume_factor *= pressurized_aerosol_carrier_factor
                     pressurized_aerosol_volume_factor *= pressurized_aerosol_physchem_factor
                     assumptions.append(
                         _assumption_record(
@@ -3946,8 +4028,13 @@ def execute_worker_inhalation_tier2_task(
     capture_distance_label = "generic"
     capture_distance_context_label = "generic"
     capture_distance_alignment_factor = 1.0
+    explicit_lev_family_label = (
+        _normalized_text(task_context.lev_family) if task_context.lev_family is not None else None
+    )
+    hood_face_velocity_m_per_s = task_context.hood_face_velocity_m_per_s
     capture_velocity_label = "generic"
     capture_velocity_context_label = "generic"
+    capture_velocity_velocity_label = "generic"
     capture_velocity_factor = 1.0
     if control_factor is None:
         control_context_terms = [
@@ -4040,12 +4127,15 @@ def execute_worker_inhalation_tier2_task(
         (
             capture_velocity_label,
             capture_velocity_context_label,
+            capture_velocity_velocity_label,
             capture_velocity_factor,
             capture_velocity_source,
         ) = registry.worker_inhalation_capture_velocity_factor(
             control_context_terms,
             envelope.control_profile,
             control_context_label,
+            explicit_lev_family_label,
+            hood_face_velocity_m_per_s,
         )
         assumptions.append(
             _assumption_record(
@@ -4106,6 +4196,17 @@ def execute_worker_inhalation_tier2_task(
                         "Worker hood-face or capture-velocity semantics refined the control "
                         "factor with a bounded LEV-family heuristic rather than measured hood-"
                         "face velocity or capture-efficiency data."
+                    ),
+                )
+            )
+        if explicit_lev_family_label is not None:
+            limitations.append(
+                LimitationNote(
+                    code="worker_lev_family_screening",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Explicit LEV family refined the control factor with a bounded "
+                        "family-class heuristic rather than a measured LEV performance model."
                     ),
                 )
             )
@@ -4227,6 +4328,12 @@ def execute_worker_inhalation_tier2_task(
         route_metrics["captureVelocityProfile"] = capture_velocity_label
     if capture_velocity_context_label != "generic":
         route_metrics["captureVelocityContextProfile"] = capture_velocity_context_label
+    if capture_velocity_velocity_label != "generic":
+        route_metrics["captureVelocityVelocityBand"] = capture_velocity_velocity_label
+    if explicit_lev_family_label is not None:
+        route_metrics["levFamily"] = explicit_lev_family_label
+    if hood_face_velocity_m_per_s is not None:
+        route_metrics["hoodFaceVelocityMPerS"] = round(hood_face_velocity_m_per_s, 8)
     if pressurized_aerosol_volume_factor != 1.0:
         route_metrics["pressurizedAerosolVolumeInterpretationFactor"] = round(
             pressurized_aerosol_volume_factor,
@@ -4240,6 +4347,12 @@ def execute_worker_inhalation_tier2_task(
         route_metrics["pressurizedAerosolPhyschemProfile"] = (
             pressurized_aerosol_physchem_label
         )
+    if pressurized_aerosol_carrier_factor != 1.0:
+        route_metrics["pressurizedAerosolCarrierFamilyAdjustmentFactor"] = round(
+            pressurized_aerosol_carrier_factor,
+            8,
+        )
+        route_metrics["pressurizedAerosolCarrierFamily"] = pressurized_aerosol_carrier_label
     assumption_lookup = {item.name: item for item in assumptions}
     aerosol_assumption = assumption_lookup.get(
         "pressurized_aerosol_volume_interpretation_factor"
@@ -4309,6 +4422,46 @@ def execute_worker_inhalation_tier2_task(
             aerosol_physchem_label, aerosol_physchem_factor, _ = aerosol_physchem_adjustment
             if aerosol_physchem_factor < 1.0:
                 route_metrics["pressurizedAerosolPhyschemProfile"] = aerosol_physchem_label
+    aerosol_carrier_assumption = assumption_lookup.get(
+        "pressurized_aerosol_carrier_family_adjustment_factor"
+    )
+    if (
+        "pressurizedAerosolCarrierFamilyAdjustmentFactor" not in route_metrics
+        and aerosol_carrier_assumption is not None
+        and float(aerosol_carrier_assumption.value) < 1.0
+    ):
+        route_metrics["pressurizedAerosolCarrierFamilyAdjustmentFactor"] = round(
+            float(aerosol_carrier_assumption.value),
+            8,
+        )
+    if (
+        "pressurizedAerosolCarrierFamily" not in route_metrics
+        and base_request is not None
+        and base_request.product_use_profile.aerosol_carrier_family is not None
+        and aerosol_carrier_assumption is not None
+        and float(aerosol_carrier_assumption.value) < 1.0
+    ):
+        route_metrics["pressurizedAerosolCarrierFamily"] = (
+            base_request.product_use_profile.aerosol_carrier_family
+        )
+    if (
+        aerosol_carrier_assumption is not None
+        and float(aerosol_carrier_assumption.value) < 1.0
+        and not any(
+            flag.code == "worker_inhalation_pressurized_aerosol_carrier_family_adjustment_defaulted"
+            for flag in quality_flags
+        )
+    ):
+        quality_flags.append(
+            QualityFlag(
+                code="worker_inhalation_pressurized_aerosol_carrier_family_adjustment_defaulted",
+                severity=Severity.WARNING,
+                message=(
+                    "Worker inhalation execution further reduced volumetric aerosol mass "
+                    "with a bounded aerosol carrier-family adjustment."
+                ),
+            )
+        )
 
     if baseline_average_air_concentration is not None:
         adjusted_average_air_concentration = (
