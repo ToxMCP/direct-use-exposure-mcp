@@ -2190,6 +2190,9 @@ def execute_worker_dermal_absorbed_dose_task(
                         None
                         if chemical_context is None
                         else _float_or_none(chemical_context.vapor_pressure_mmhg),
+                        None
+                        if chemical_context is None
+                        else _float_or_none(chemical_context.molecular_weight_g_per_mol),
                     )
                 )
                 if aerosol_physchem_adjustment is not None:
@@ -2207,8 +2210,9 @@ def execute_worker_dermal_absorbed_dose_task(
                             source=aerosol_physchem_source,
                             rationale=(
                                 "Worker dermal aerosol mass semantics were further adjusted "
-                                "with a bounded vapor-pressure heuristic because default "
-                                "density and supplied physchem context were both active."
+                                "with a bounded volatility and low-molecular-weight "
+                                "heuristic because default density and supplied physchem "
+                                "context were both active."
                             ),
                             applicability_domain=applicability_domain,
                         )
@@ -2223,8 +2227,8 @@ def execute_worker_dermal_absorbed_dose_task(
                                 severity=Severity.WARNING,
                                 message=(
                                     "Worker dermal execution further reduced volumetric "
-                                    "aerosol mass with a bounded vapor-pressure aerosol "
-                                    "adjustment."
+                                    "aerosol mass with a bounded aerosol volatility and "
+                                    "carrier adjustment."
                                 ),
                             )
                         )

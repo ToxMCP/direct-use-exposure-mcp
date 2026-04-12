@@ -153,6 +153,7 @@ class DefaultsRegistry:
         product_category: str | None = None,
         product_subtype: str | None = None,
         vapor_pressure_mmhg: float | None = None,
+        molecular_weight_g_per_mol: float | None = None,
     ) -> tuple[str, float, AssumptionSourceReference] | None:
         if vapor_pressure_mmhg is None:
             return None
@@ -173,15 +174,26 @@ class DefaultsRegistry:
 
         matched_label = None
         matched_entry = None
-        matched_threshold = float("-inf")
+        matched_score = None
         for label, entry in candidate_rules.items():
             threshold = float(entry.get("min_vapor_pressure_mmhg", 0.0))
             if vapor_pressure_mmhg < threshold:
                 continue
-            if threshold >= matched_threshold:
+            max_molecular_weight = entry.get("max_molecular_weight_g_per_mol")
+            if max_molecular_weight is not None:
+                if molecular_weight_g_per_mol is None:
+                    continue
+                if molecular_weight_g_per_mol > float(max_molecular_weight):
+                    continue
+            score = (
+                threshold,
+                1 if max_molecular_weight is not None else 0,
+                -(float(max_molecular_weight) if max_molecular_weight is not None else 0.0),
+            )
+            if matched_score is None or score > matched_score:
                 matched_label = label
                 matched_entry = entry
-                matched_threshold = threshold
+                matched_score = score
 
         if matched_entry is None or matched_label is None:
             return None
@@ -903,6 +915,63 @@ class DefaultsRegistry:
             self._source(resolved_entry["source_id"]),
         )
 
+    def worker_inhalation_capture_velocity_factor(
+        self,
+        context_terms: list[str],
+        control_profile: str,
+        control_context_profile: str | None = None,
+    ) -> tuple[str, str, float, AssumptionSourceReference]:
+        values = self.payload["worker_inhalation_execution_defaults"][
+            "capture_velocity_factor"
+        ]
+        generic_entry = values["generic"]
+        normalized_profile = control_profile.lower()
+        if not any(
+            item in normalized_profile for item in ("local_exhaust", "enclosed_process")
+        ):
+            return "generic", "generic", float(generic_entry["value"]), self._source(
+                generic_entry["source_id"]
+            )
+        if control_context_profile is None:
+            return "generic", "generic", float(generic_entry["value"]), self._source(
+                generic_entry["source_id"]
+            )
+
+        active_profile_label = control_context_profile.lower()
+        profile_values = values.get("profile_overrides", {}).get(active_profile_label)
+        if not profile_values:
+            return "generic", active_profile_label, float(generic_entry["value"]), self._source(
+                generic_entry["source_id"]
+            )
+
+        normalized_terms = " ".join(
+            item.strip().lower().replace("-", "_").replace(" ", "_")
+            for item in context_terms
+            if item and item.strip()
+        )
+        selected_label = "generic"
+        selected_entry = profile_values.get("generic", generic_entry)
+        selected_strength = 0.0
+        for candidate_label, candidate_entry in profile_values.items():
+            if candidate_label == "generic":
+                continue
+            tokens = tuple(str(item).lower() for item in candidate_entry.get("tokens", []))
+            if not tokens:
+                continue
+            if any(token in normalized_terms for token in tokens):
+                candidate_strength = abs(float(candidate_entry["value"]) - 1.0)
+                if candidate_strength >= selected_strength:
+                    selected_label = candidate_label
+                    selected_entry = candidate_entry
+                    selected_strength = candidate_strength
+
+        return (
+            selected_label,
+            active_profile_label,
+            float(selected_entry["value"]),
+            self._source(selected_entry["source_id"]),
+        )
+
     def worker_inhalation_respiratory_protection_factor(
         self, respiratory_protection: str
     ) -> tuple[float, AssumptionSourceReference]:
@@ -1019,11 +1088,12 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "### Pressurized Aerosol Physchem Adjustment Heuristics 2026",
             "",
             "- `pressurized_aerosol_physchem_adjustment_heuristics_2026` adds a bounded",
-            "  vapor-pressure adjustment on top of the family- and subtype-aware aerosol",
-            "  volume interpretation factor when callers supply physchem context. This is",
-            "  intended to keep very volatile aerosol families from inheriting the same",
-            "  condensed-liquid semantics as less volatile sprays, without claiming a full",
-            "  formulation or can-propellant composition model.",
+            "  vapor-pressure and low-molecular-weight adjustment on top of the family- and",
+            "  subtype-aware aerosol volume interpretation factor when callers supply",
+            "  physchem context. This is intended to keep very volatile, propellant-rich,",
+            "  and light-carrier aerosol families from inheriting the same condensed-liquid",
+            "  semantics as less volatile sprays, without claiming a full formulation or",
+            "  can-propellant composition model.",
             "",
             "### Heuristic Retention Defaults",
             "",
@@ -1190,6 +1260,15 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  source, and it now distinguishes looser hood capture from more enclosed booth",
             "  or enclosure contexts with bounded source-distance decay profiles rather than",
             "  one flat distance penalty.",
+            "",
+            "### Worker Inhalation Capture-Velocity Heuristics 2026",
+            "",
+            "- `worker_inhalation_capture_velocity_heuristics_2026` adds a bounded",
+            "  hood-face and capture-velocity refinement on top of the broader control-",
+            "  context and capture-distance factors. It uses explicit LEV-family descriptors",
+            "  such as slot hoods, canopy hoods, downdraft booths, and open-face booths to",
+            "  distinguish more effective versus weaker local capture semantics without",
+            "  claiming measured hood-face velocity or capture-velocity profiles.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",

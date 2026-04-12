@@ -956,6 +956,105 @@ def test_worker_art_execution_applies_smaller_far_distance_penalty_for_spray_boo
     )
 
 
+def test_worker_art_execution_applies_slot_hood_capture_velocity_factor() -> None:
+    slot_hood_bridge = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request(),
+            task_description="Worker trigger-spray disinfection task",
+            workplace_setting="janitorial closet with slot hood",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.LOCAL_EXHAUST,
+            local_controls=[
+                "local exhaust ventilation",
+                "slot hood",
+                "high face velocity",
+            ],
+            respiratory_protection="none",
+            emission_descriptor="short trigger-spray cleaning mist near the breathing zone",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=slot_hood_bridge.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert result.route_metrics["captureVelocityFactor"] == pytest.approx(0.92, rel=1e-6)
+    assert result.route_metrics["captureVelocityProfile"] == (
+        "slot_hood_or_high_face_velocity"
+    )
+    assert result.route_metrics["captureVelocityContextProfile"] == (
+        "capture_hood_or_slot_hood"
+    )
+    assert result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
+        0.26012448,
+        rel=1e-6,
+    )
+    assert any(
+        item.code == "worker_capture_velocity_screening"
+        for item in result.limitations
+    )
+
+
+def test_worker_art_execution_applies_downdraft_booth_capture_velocity_factor() -> None:
+    booth_bridge = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "product_use_profile": _base_request().product_use_profile.model_copy(
+                        update={
+                            "product_category": "paint_coating",
+                            "application_method": "aerosol_spray",
+                        }
+                    ),
+                    "chemical_name": "Example Worker Coating",
+                    "source_distance_m": 1.6,
+                }
+            ),
+            task_description="Worker paint booth aerosol coating task",
+            workplace_setting="finishing downdraft booth",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.LOCAL_EXHAUST,
+            local_controls=[
+                "local exhaust ventilation",
+                "spray booth",
+                "downdraft booth",
+            ],
+            respiratory_protection="none",
+            emission_descriptor="pressurized coating aerosol near the painted surface",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=booth_bridge.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert result.route_metrics["captureVelocityFactor"] == pytest.approx(0.95, rel=1e-6)
+    assert result.route_metrics["captureVelocityProfile"] == (
+        "downdraft_or_high_face_velocity_booth"
+    )
+    assert result.route_metrics["captureVelocityContextProfile"] == (
+        "spray_booth_or_partial_enclosure"
+    )
+    assert result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
+        0.2543625,
+        rel=1e-6,
+    )
+    assert any(
+        item.code == "worker_capture_velocity_screening"
+        for item in result.limitations
+    )
+
+
 def test_worker_art_execution_applies_physchem_aerosol_adjustment() -> None:
     bridge_package = build_worker_inhalation_tier2_bridge(
         ExportWorkerInhalationTier2BridgeRequest(
@@ -1009,6 +1108,58 @@ def test_worker_art_execution_applies_physchem_aerosol_adjustment() -> None:
     assert any(
         flag.code == "worker_inhalation_pressurized_aerosol_physchem_adjustment_defaulted"
         for flag in result.quality_flags
+    )
+
+
+def test_worker_art_execution_applies_low_molecular_weight_aerosol_adjustment() -> None:
+    bridge_package = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "chemical_name": "Example Worker Coating",
+                    "physchem_context": PhyschemContext(
+                        vaporPressureMmhg=80.0,
+                        molecularWeightGPerMol=120.0,
+                    ),
+                    "product_use_profile": _base_request().product_use_profile.model_copy(
+                        update={
+                            "product_category": "paint_coating",
+                            "application_method": "aerosol_spray",
+                        }
+                    ),
+                }
+            ),
+            task_description="Worker paint booth aerosol coating task",
+            workplace_setting="finishing booth",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.GENERAL_VENTILATION,
+            local_controls=["general ventilation"],
+            respiratory_protection="none",
+            emission_descriptor="pressurized coating aerosol near the painted surface",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=bridge_package.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assumption_map = {item.name: item for item in result.assumptions}
+    assert assumption_map["pressurized_aerosol_physchem_adjustment_factor"].value == pytest.approx(
+        0.84, rel=1e-6
+    )
+    assert result.route_metrics["pressurizedAerosolVolumeInterpretationFactor"] == pytest.approx(
+        0.294, rel=1e-6
+    )
+    assert result.route_metrics["pressurizedAerosolPhyschemAdjustmentFactor"] == pytest.approx(
+        0.84, rel=1e-6
+    )
+    assert result.route_metrics["pressurizedAerosolPhyschemProfile"] == (
+        "highly_volatile_low_mw_paint_coating_aerosol"
     )
 
 

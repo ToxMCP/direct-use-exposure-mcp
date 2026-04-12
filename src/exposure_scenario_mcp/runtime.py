@@ -151,6 +151,11 @@ def resolve_product_mass_g(
                 if physchem_context is None
                 else physchem_context.vapor_pressure_mmhg
             ),
+            molecular_weight_g_per_mol=(
+                None
+                if physchem_context is None
+                else physchem_context.molecular_weight_g_per_mol
+            ),
         )
         aerosol_physchem_factor = 1.0
         if physchem_adjustment is not None:
@@ -162,8 +167,9 @@ def resolve_product_mass_g(
                 physchem_source,
                 (
                     "Aerosol volume interpretation was further adjusted with a bounded "
-                    "vapor-pressure heuristic because pressurized aerosol mass semantics "
-                    "were resolved from default density plus supplied physchem context."
+                    "volatility and low-molecular-weight heuristic because pressurized "
+                    "aerosol mass semantics were resolved from default density plus "
+                    "supplied physchem context."
                 ),
             )
             aerosol_volume_factor *= aerosol_physchem_factor

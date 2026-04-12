@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v28",
+  "defaults_version": "2026.04.12.v29",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -276,6 +276,12 @@
       "title": "Direct-Use Exposure MCP bounded worker inhalation source-distance capture heuristics",
       "locator": "docs://defaults-evidence-map#worker-inhalation-capture-distance-heuristics-2026",
       "version": "2026.04.12.v1"
+    },
+    {
+      "source_id": "worker_inhalation_capture_velocity_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded worker inhalation capture-velocity heuristics",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-capture-velocity-heuristics-2026",
+      "version": "2026.04.12.v1"
     }
   ],
   "conversion_defaults": {
@@ -357,6 +363,12 @@
             "min_vapor_pressure_mmhg": 80.0,
             "value": 0.9,
             "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+          },
+          "generic_highly_volatile_low_mw_aerosol": {
+            "min_vapor_pressure_mmhg": 80.0,
+            "max_molecular_weight_g_per_mol": 180.0,
+            "value": 0.86,
+            "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
           }
         },
         "product_category_overrides": {
@@ -369,6 +381,12 @@
             "highly_volatile_personal_care_aerosol": {
               "min_vapor_pressure_mmhg": 50.0,
               "value": 0.85,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_low_mw_personal_care_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "max_molecular_weight_g_per_mol": 180.0,
+              "value": 0.8,
               "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
             }
           },
@@ -406,6 +424,12 @@
               "min_vapor_pressure_mmhg": 50.0,
               "value": 0.88,
               "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_low_mw_paint_coating_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "max_molecular_weight_g_per_mol": 180.0,
+              "value": 0.84,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
             }
           }
         },
@@ -420,6 +444,12 @@
               "min_vapor_pressure_mmhg": 50.0,
               "value": 0.82,
               "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_low_mw_deodorant_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "max_molecular_weight_g_per_mol": 160.0,
+              "value": 0.76,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
             }
           },
           "body_spray": {
@@ -431,6 +461,12 @@
             "highly_volatile_body_spray_aerosol": {
               "min_vapor_pressure_mmhg": 50.0,
               "value": 0.82,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_low_mw_body_spray_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "max_molecular_weight_g_per_mol": 160.0,
+              "value": 0.76,
               "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
             }
           },
@@ -444,6 +480,12 @@
               "min_vapor_pressure_mmhg": 50.0,
               "value": 0.88,
               "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_low_mw_hair_spray_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "max_molecular_weight_g_per_mol": 180.0,
+              "value": 0.84,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
             }
           },
           "spray_sunscreen": {
@@ -455,6 +497,12 @@
             "highly_volatile_spray_sunscreen_aerosol": {
               "min_vapor_pressure_mmhg": 50.0,
               "value": 0.9,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_low_mw_spray_sunscreen_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "max_molecular_weight_g_per_mol": 180.0,
+              "value": 0.86,
               "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
             }
           }
@@ -1564,6 +1612,93 @@
           "distance_decay_per_m": 0.07,
           "max_factor": 1.05,
           "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+        }
+      }
+    },
+    "capture_velocity_factor": {
+      "generic": {
+        "value": 1.0,
+        "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+      },
+      "profile_overrides": {
+        "portable_capture_or_extractor": {
+          "generic": {
+            "value": 1.0,
+            "tokens": [],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          },
+          "aligned_capture_nozzle": {
+            "value": 0.95,
+            "tokens": [
+              "capture_nozzle",
+              "snorkel",
+              "elephant_trunk",
+              "articulated_extract",
+              "on_tool_extraction"
+            ],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          },
+          "weak_capture_velocity": {
+            "value": 1.05,
+            "tokens": [
+              "weak_suction",
+              "low_capture_velocity",
+              "poor_capture"
+            ],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          }
+        },
+        "capture_hood_or_slot_hood": {
+          "generic": {
+            "value": 1.0,
+            "tokens": [],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          },
+          "slot_hood_or_high_face_velocity": {
+            "value": 0.92,
+            "tokens": [
+              "slot_hood",
+              "high_face_velocity",
+              "high_capture_velocity",
+              "slotted_capture"
+            ],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          },
+          "canopy_or_low_face_velocity": {
+            "value": 1.08,
+            "tokens": [
+              "canopy_hood",
+              "low_face_velocity",
+              "weak_capture",
+              "poor_capture"
+            ],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          }
+        },
+        "spray_booth_or_partial_enclosure": {
+          "generic": {
+            "value": 1.0,
+            "tokens": [],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          },
+          "downdraft_or_high_face_velocity_booth": {
+            "value": 0.95,
+            "tokens": [
+              "downdraft",
+              "downflow_booth",
+              "crossdraft_booth"
+            ],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          },
+          "open_face_booth": {
+            "value": 1.03,
+            "tokens": [
+              "open_face_booth",
+              "open_front_booth",
+              "partial_enclosure"
+            ],
+            "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+          }
         }
       }
     },

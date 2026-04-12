@@ -3524,6 +3524,11 @@ def execute_worker_inhalation_tier2_task(
                             else _float_or_none(
                                 base_request.physchem_context.vapor_pressure_mmhg
                             ),
+                            None
+                            if base_request is None or base_request.physchem_context is None
+                            else _float_or_none(
+                                base_request.physchem_context.molecular_weight_g_per_mol
+                            ),
                         )
                     )
                     if aerosol_physchem_adjustment is not None:
@@ -3541,8 +3546,9 @@ def execute_worker_inhalation_tier2_task(
                                 source=aerosol_physchem_source,
                                 rationale=(
                                     "Worker aerosol mass semantics were further adjusted with "
-                                    "a bounded vapor-pressure heuristic because default "
-                                    "density and supplied physchem context were both active."
+                                    "a bounded volatility and low-molecular-weight heuristic "
+                                    "because default density and supplied physchem context "
+                                    "were both active."
                                 ),
                                 applicability_domain=applicability_domain,
                             )
@@ -3557,8 +3563,8 @@ def execute_worker_inhalation_tier2_task(
                                     severity=Severity.WARNING,
                                     message=(
                                         "Worker inhalation execution further reduced "
-                                        "volumetric aerosol mass with a bounded vapor-"
-                                        "pressure aerosol adjustment."
+                                        "volumetric aerosol mass with a bounded aerosol "
+                                        "volatility and carrier adjustment."
                                     ),
                                 )
                             )
@@ -3940,7 +3946,15 @@ def execute_worker_inhalation_tier2_task(
     capture_distance_label = "generic"
     capture_distance_context_label = "generic"
     capture_distance_alignment_factor = 1.0
+    capture_velocity_label = "generic"
+    capture_velocity_context_label = "generic"
+    capture_velocity_factor = 1.0
     if control_factor is None:
+        control_context_terms = [
+            task_context.workplace_setting or "",
+            *task_context.local_controls,
+            task_context.emission_descriptor or "",
+        ]
         control_factor, control_source = registry.worker_inhalation_control_profile_factor(
             envelope.control_profile
         )
@@ -3958,13 +3972,7 @@ def execute_worker_inhalation_tier2_task(
             )
         )
         control_context_label, control_context_factor, control_context_source = (
-            registry.worker_inhalation_control_context_factor(
-                [
-                    task_context.workplace_setting or "",
-                    *task_context.local_controls,
-                    task_context.emission_descriptor or "",
-                ]
-            )
+            registry.worker_inhalation_control_context_factor(control_context_terms)
         )
         assumptions.append(
             _assumption_record(
@@ -3985,11 +3993,7 @@ def execute_worker_inhalation_tier2_task(
             capture_zone_alignment_factor,
             capture_zone_source,
         ) = registry.worker_inhalation_capture_zone_alignment_factor(
-            [
-                task_context.workplace_setting or "",
-                *task_context.local_controls,
-                task_context.emission_descriptor or "",
-            ],
+            control_context_terms,
             envelope.control_profile,
         )
         assumptions.append(
@@ -4033,6 +4037,30 @@ def execute_worker_inhalation_tier2_task(
                 applicability_domain=applicability_domain,
             )
         )
+        (
+            capture_velocity_label,
+            capture_velocity_context_label,
+            capture_velocity_factor,
+            capture_velocity_source,
+        ) = registry.worker_inhalation_capture_velocity_factor(
+            control_context_terms,
+            envelope.control_profile,
+            control_context_label,
+        )
+        assumptions.append(
+            _assumption_record(
+                name="worker_capture_velocity_factor",
+                value=capture_velocity_factor,
+                unit="fraction",
+                source_kind=SourceKind.DEFAULT_REGISTRY,
+                source=capture_velocity_source,
+                rationale=(
+                    "Worker capture-velocity factor defaulted from explicit hood, booth, "
+                    "and capture descriptors using the bounded LEV-family heuristics."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
         if control_context_label != "generic":
             limitations.append(
                 LimitationNote(
@@ -4069,6 +4097,18 @@ def execute_worker_inhalation_tier2_task(
                     ),
                 )
             )
+        if capture_velocity_label != "generic":
+            limitations.append(
+                LimitationNote(
+                    code="worker_capture_velocity_screening",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Worker hood-face or capture-velocity semantics refined the control "
+                        "factor with a bounded LEV-family heuristic rather than measured hood-"
+                        "face velocity or capture-efficiency data."
+                    ),
+                )
+            )
     else:
         assumptions.append(
             _assumption_record(
@@ -4086,7 +4126,8 @@ def execute_worker_inhalation_tier2_task(
         control_factor
         * control_context_factor
         * capture_zone_alignment_factor
-        * capture_distance_alignment_factor,
+        * capture_distance_alignment_factor
+        * capture_velocity_factor,
         1.0,
     )
     assumptions.append(
@@ -4099,7 +4140,7 @@ def execute_worker_inhalation_tier2_task(
             rationale=(
                 "Effective worker control factor was derived from the base control-profile "
                 "factor, the bounded control-context refinement, and the bounded "
-                "capture-zone and capture-distance alignment refinements."
+                "capture-zone, capture-distance, and capture-velocity alignment refinements."
             ),
             applicability_domain=applicability_domain,
         )
@@ -4172,6 +4213,7 @@ def execute_worker_inhalation_tier2_task(
         capture_distance_alignment_factor,
         8,
     )
+    route_metrics["captureVelocityFactor"] = round(capture_velocity_factor, 8)
     route_metrics["effectiveWorkerControlFactor"] = round(effective_control_factor, 8)
     if control_context_label != "generic":
         route_metrics["controlContextProfile"] = control_context_label
@@ -4181,6 +4223,10 @@ def execute_worker_inhalation_tier2_task(
         route_metrics["captureDistanceProfile"] = capture_distance_label
     if capture_distance_context_label != "generic":
         route_metrics["captureDistanceContextProfile"] = capture_distance_context_label
+    if capture_velocity_label != "generic":
+        route_metrics["captureVelocityProfile"] = capture_velocity_label
+    if capture_velocity_context_label != "generic":
+        route_metrics["captureVelocityContextProfile"] = capture_velocity_context_label
     if pressurized_aerosol_volume_factor != 1.0:
         route_metrics["pressurizedAerosolVolumeInterpretationFactor"] = round(
             pressurized_aerosol_volume_factor,
@@ -4257,6 +4303,7 @@ def execute_worker_inhalation_tier2_task(
             base_request.product_use_profile.product_category,
             base_request.product_use_profile.product_subtype,
             _float_or_none(base_request.physchem_context.vapor_pressure_mmhg),
+            _float_or_none(base_request.physchem_context.molecular_weight_g_per_mol),
         )
         if aerosol_physchem_adjustment is not None:
             aerosol_physchem_label, aerosol_physchem_factor, _ = aerosol_physchem_adjustment

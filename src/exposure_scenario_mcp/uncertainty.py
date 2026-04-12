@@ -692,7 +692,7 @@ def _mechanistic_constraint_entries(
                 entry_id="mechanistic-constraint-pressurized-aerosol-physchem-adjustment",
                 title=(
                     "Pressurized aerosol volume was further adjusted with bounded "
-                    "volatility semantics"
+                    "volatility and carrier semantics"
                 ),
                 uncertainty_types=[
                     UncertaintyType.MODEL_UNCERTAINTY,
@@ -708,8 +708,8 @@ def _mechanistic_constraint_entries(
                 impact_level=_impact_from_sensitivity("use_amount_per_event", sensitivity_ranking),
                 summary=(
                     "Default-density pressurized aerosol mass semantics were further "
-                    "adjusted with a bounded vapor-pressure heuristic instead of a full "
-                    "formulation or can-propellant composition model."
+                    "adjusted with a bounded volatility and low-molecular-weight heuristic "
+                    "instead of a full formulation or can-propellant composition model."
                 ),
                 recommendation=(
                     "Prefer product-specific aerosol mass-per-event semantics or explicit "
