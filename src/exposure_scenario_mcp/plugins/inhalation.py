@@ -239,6 +239,42 @@ def _apply_saturation_cap(
     return capped, not math.isclose(capped, concentration_mg_per_m3, rel_tol=1e-9, abs_tol=1e-12)
 
 
+def _extrathoracic_swallow_fraction(
+    *,
+    profile,
+    registry: DefaultsRegistry,
+    tracker: AssumptionTracker,
+    particle_size_regime: str | None = None,
+) -> float:
+    if profile.application_method not in TIER_1_SPRAY_METHODS:
+        return 0.0
+    swallow_fraction, swallow_source = registry.inhalation_extrathoracic_swallow_fraction(
+        particle_size_regime=particle_size_regime,
+        application_method=profile.application_method,
+        product_subtype=profile.product_subtype,
+    )
+    tracker.add_default(
+        "extrathoracic_swallow_fraction",
+        swallow_fraction,
+        "fraction",
+        swallow_source,
+        (
+            "Extrathoracic swallowed fraction defaulted from the bounded spray "
+            "physiology handoff pack."
+        ),
+    )
+    if swallow_fraction > 0.0:
+        tracker.add_limitation(
+            "extrathoracic_oral_handoff_screening",
+            (
+                "Spray inhalation includes a bounded extrathoracic swallowed-fraction "
+                "estimate. This is not a full regional deposition model or an automatic "
+                "oral handoff into a separate ingestion scenario."
+            ),
+        )
+    return swallow_fraction
+
+
 def _surface_emission_air_concentration(
     *,
     initial_surface_mass_mg: float,
@@ -686,6 +722,16 @@ def build_inhalation_tier_1_screening_scenario(
         * max(exposure_duration_hours - spray_duration_hours, 0.0)
     )
     inhaled_mass_mg_day = inhaled_mass_mg_per_event * profile.use_events_per_day
+    extrathoracic_swallow_fraction = _extrathoracic_swallow_fraction(
+        profile=profile,
+        registry=registry,
+        tracker=tracker,
+        particle_size_regime=request.particle_size_regime.value,
+    )
+    swallowed_extrathoracic_mass_mg_day = inhaled_mass_mg_day * extrathoracic_swallow_fraction
+    lower_respiratory_inhaled_mass_mg_day = (
+        inhaled_mass_mg_day - swallowed_extrathoracic_mass_mg_day
+    )
     breathing_zone_time_weighted_average = inhaled_mass_mg_per_event / (
         inhalation_rate * exposure_duration_hours
     )
@@ -839,6 +885,24 @@ def build_inhalation_tier_1_screening_scenario(
         "Daily inhaled mass equals inhaled mass per event multiplied by events/day.",
     )
     tracker.add_derived(
+        "swallowed_extrathoracic_mass_mg_per_day",
+        swallowed_extrathoracic_mass_mg_day,
+        "mg/day",
+        (
+            "Extrathoracic swallowed mass per day derived from the bounded swallowed "
+            "fraction applied to the screening inhaled mass."
+        ),
+    )
+    tracker.add_derived(
+        "lower_respiratory_inhaled_mass_mg_per_day",
+        lower_respiratory_inhaled_mass_mg_day,
+        "mg/day",
+        (
+            "Lower-respiratory inhaled mass per day after subtracting the bounded "
+            "extrathoracic swallowed share from the screening inhaled mass."
+        ),
+    )
+    tracker.add_derived(
         "normalized_external_dose_mg_per_kg_day",
         normalized_dose,
         "mg/kg-day",
@@ -967,6 +1031,15 @@ def build_inhalation_tier_1_screening_scenario(
                 else None
             ),
             "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
+            "extrathoracic_swallow_fraction": round(extrathoracic_swallow_fraction, 8),
+            "swallowed_extrathoracic_mass_mg_per_day": round(
+                swallowed_extrathoracic_mass_mg_day,
+                8,
+            ),
+            "lower_respiratory_inhaled_mass_mg_per_day": round(
+                lower_respiratory_inhaled_mass_mg_day,
+                8,
+            ),
             "tier1_product_profile_id": matched_profile.profile_id if matched_profile else None,
             "tier1_profile_alignment_status": profile_alignment_status,
             "tier1_profile_divergence_count": len(profile_divergences),
@@ -2040,6 +2113,17 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             * exposure_duration_hours
             * profile.use_events_per_day
         )
+        extrathoracic_swallow_fraction = _extrathoracic_swallow_fraction(
+            profile=profile,
+            registry=registry,
+            tracker=tracker,
+        )
+        swallowed_extrathoracic_mass_mg_day = (
+            inhaled_mass_mg_day * extrathoracic_swallow_fraction
+        )
+        lower_respiratory_inhaled_mass_mg_day = (
+            inhaled_mass_mg_day - swallowed_extrathoracic_mass_mg_day
+        )
         normalized_dose = inhaled_mass_mg_day / body_weight_kg
         saturation_cap_applied = initial_cap_applied or average_cap_applied
 
@@ -2134,6 +2218,24 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             "Inhaled mass = average concentration x inhalation rate x event duration x events/day.",
         )
         tracker.add_derived(
+            "swallowed_extrathoracic_mass_mg_per_day",
+            swallowed_extrathoracic_mass_mg_day,
+            "mg/day",
+            (
+                "Extrathoracic swallowed mass per day derived from the bounded swallowed "
+                "fraction applied to the screening inhaled mass."
+            ),
+        )
+        tracker.add_derived(
+            "lower_respiratory_inhaled_mass_mg_per_day",
+            lower_respiratory_inhaled_mass_mg_day,
+            "mg/day",
+            (
+                "Lower-respiratory inhaled mass per day after subtracting the bounded "
+                "extrathoracic swallowed share from the screening inhaled mass."
+            ),
+        )
+        tracker.add_derived(
             "normalized_external_dose_mg_per_kg_day",
             normalized_dose,
             "mg/kg-day",
@@ -2220,6 +2322,15 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                     else None
                 ),
                 "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
+                "extrathoracic_swallow_fraction": round(extrathoracic_swallow_fraction, 8),
+                "swallowed_extrathoracic_mass_mg_per_day": round(
+                    swallowed_extrathoracic_mass_mg_day,
+                    8,
+                ),
+                "lower_respiratory_inhaled_mass_mg_per_day": round(
+                    lower_respiratory_inhaled_mass_mg_day,
+                    8,
+                ),
             },
             assumptions=tracker.assumptions,
             provenance=tracker.provenance(self.plugin_id, self.algorithm_id),

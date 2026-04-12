@@ -94,6 +94,12 @@ class WorkerVentilationContext(StrEnum):
     OUTDOOR = "outdoor"
 
 
+class WorkerTaskIntensity(StrEnum):
+    LIGHT = "light"
+    MODERATE = "moderate"
+    HIGH = "high"
+
+
 class WorkerArtArtifactAdapterId(StrEnum):
     AUTO_DETECT = "auto_detect"
     RESULT_SUMMARY_JSON_V1 = "art_worker_result_summary_json_v1"
@@ -116,6 +122,13 @@ class WorkerInhalationTier2TaskContext(StrictModel):
         default=None,
         description="Task duration relevant to the future Tier 2 worker model.",
         gt=0.0,
+    )
+    task_intensity: WorkerTaskIntensity | None = Field(
+        default=None,
+        description=(
+            "Optional task-intensity class used to apply a bounded inhalation-rate "
+            "adjustment in worker execution."
+        ),
     )
     ventilation_context: WorkerVentilationContext = Field(
         default=WorkerVentilationContext.UNKNOWN,
@@ -168,6 +181,14 @@ class ExportWorkerInhalationTier2BridgeRequest(StrictModel):
         alias="taskDurationHours",
         description="Task duration for the Tier 2 bridge when different from event duration.",
         gt=0.0,
+    )
+    task_intensity: WorkerTaskIntensity | None = Field(
+        default=None,
+        alias="taskIntensity",
+        description=(
+            "Optional task-intensity class used to apply a bounded inhalation-rate "
+            "adjustment in worker execution."
+        ),
     )
     ventilation_context: WorkerVentilationContext = Field(
         default=WorkerVentilationContext.UNKNOWN,
@@ -1652,6 +1673,12 @@ def _normalized_rpe_state(value: str | None) -> str:
     return normalized or "none"
 
 
+def _worker_task_intensity_label(task_context: WorkerInhalationTier2TaskContext) -> str | None:
+    if task_context.task_intensity is None:
+        return None
+    return task_context.task_intensity.value
+
+
 def _art_activity_class(
     params: WorkerInhalationTier2AdapterRequest,
 ) -> str:
@@ -2607,6 +2634,7 @@ def build_worker_inhalation_tier2_bridge(
         task_description=params.task_description,
         workplace_setting=params.workplace_setting,
         task_duration_hours=task_duration_hours,
+        task_intensity=params.task_intensity,
         ventilation_context=params.ventilation_context,
         local_controls=params.local_controls,
         respiratory_protection=params.respiratory_protection,
@@ -3745,6 +3773,60 @@ def execute_worker_inhalation_tier2_task(
         product_profile = baseline_scenario.product_use_profile
         population_profile = baseline_scenario.population_profile
 
+    task_intensity_label = _worker_task_intensity_label(task_context)
+    task_intensity_factor = 1.0
+    if task_intensity_label is not None:
+        task_intensity_factor, task_intensity_source = (
+            registry.worker_inhalation_task_intensity_factor(task_intensity_label)
+        )
+        assumptions.append(
+            _assumption_record(
+                name="worker_task_intensity_factor",
+                value=task_intensity_factor,
+                unit="factor",
+                source_kind=SourceKind.DEFAULT_REGISTRY,
+                source=task_intensity_source,
+                rationale=(
+                    "Worker task-intensity factor defaulted from the bounded worker "
+                    "inhalation physiology heuristics."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
+        limitations.append(
+            LimitationNote(
+                code="worker_task_intensity_screening",
+                severity=Severity.WARNING,
+                message=(
+                    "Worker task intensity adjusts inhalation rate with a bounded screening "
+                    "factor rather than a measured task-specific ventilation rate."
+                ),
+            )
+        )
+        if inhalation_rate is not None:
+            assumptions.append(
+                _assumption_record(
+                    name="effective_inhalation_rate_m3_per_hour",
+                    value=round(inhalation_rate * task_intensity_factor, 8),
+                    unit="m3/h",
+                    source_kind=SourceKind.DERIVED,
+                    source=_execution_algorithm_source(),
+                    rationale=(
+                        "Effective inhalation rate was derived from the preserved "
+                        "population inhalation rate and the worker task-intensity factor."
+                    ),
+                    applicability_domain=applicability_domain,
+                )
+            )
+
+    effective_inhalation_rate = (
+        inhalation_rate * task_intensity_factor if inhalation_rate is not None else None
+    )
+    if baseline_inhaled_mass_mg_day is not None:
+        baseline_inhaled_mass_mg_day *= task_intensity_factor
+    if baseline_external_dose is not None:
+        baseline_external_dose *= task_intensity_factor
+
     control_factor = None if overrides is None else overrides.control_factor
     if control_factor is None:
         control_factor, control_source = registry.worker_inhalation_control_profile_factor(
@@ -3827,6 +3909,15 @@ def execute_worker_inhalation_tier2_task(
         "emissionProfile": envelope.emission_profile,
         "controlProfile": envelope.control_profile,
     }
+    if inhalation_rate is not None:
+        route_metrics["baseInhalationRateM3PerHour"] = round(inhalation_rate, 8)
+        route_metrics["effectiveInhalationRateM3PerHour"] = round(
+            effective_inhalation_rate or inhalation_rate,
+            8,
+        )
+    if task_intensity_label is not None:
+        route_metrics["taskIntensity"] = task_intensity_label
+        route_metrics["taskIntensityFactor"] = round(task_intensity_factor, 8)
 
     if baseline_average_air_concentration is not None:
         adjusted_average_air_concentration = baseline_average_air_concentration * control_factor
@@ -4409,6 +4500,16 @@ def import_worker_inhalation_art_execution_result(
             )
         )
 
+    task_intensity_label = _worker_task_intensity_label(task_context)
+    task_intensity_factor = 1.0
+    if task_intensity_label is not None:
+        task_intensity_factor, task_intensity_source = (
+            registry.worker_inhalation_task_intensity_factor(task_intensity_label)
+        )
+    effective_inhalation_rate = (
+        inhalation_rate * task_intensity_factor if inhalation_rate is not None else None
+    )
+
     imported_concentration = (
         external_result.breathing_zone_concentration_mg_per_m3 or payload_concentration
     )
@@ -4588,12 +4689,15 @@ def import_worker_inhalation_art_execution_result(
         )
     elif (
         imported_concentration is not None
-        and inhalation_rate is not None
+        and effective_inhalation_rate is not None
         and task_duration_hours is not None
         and body_weight is not None
     ):
         imported_inhaled_mass = (
-            imported_concentration * inhalation_rate * task_duration_hours * use_events_per_day
+            imported_concentration
+            * effective_inhalation_rate
+            * task_duration_hours
+            * use_events_per_day
         )
         imported_dose_value = imported_inhaled_mass / body_weight
         derivation_method = "breathing_zone_concentration_mass_balance"
@@ -4626,6 +4730,55 @@ def import_worker_inhalation_art_execution_result(
             )
         )
         route_metrics["importedInhaledMassMgPerDay"] = round(imported_inhaled_mass, 8)
+        if inhalation_rate is not None:
+            route_metrics["baseInhalationRateM3PerHour"] = round(inhalation_rate, 8)
+            route_metrics["effectiveInhalationRateM3PerHour"] = round(
+                effective_inhalation_rate or inhalation_rate,
+                8,
+            )
+        if task_intensity_label is not None:
+            route_metrics["taskIntensity"] = task_intensity_label
+            route_metrics["taskIntensityFactor"] = round(task_intensity_factor, 8)
+            assumptions.append(
+                _assumption_record(
+                    name="worker_task_intensity_factor",
+                    value=task_intensity_factor,
+                    unit="factor",
+                    source_kind=SourceKind.DEFAULT_REGISTRY,
+                    source=task_intensity_source,
+                    rationale=(
+                        "Worker task-intensity factor defaulted from the bounded worker "
+                        "inhalation physiology heuristics."
+                    ),
+                    applicability_domain=applicability_domain,
+                )
+            )
+            if inhalation_rate is not None:
+                assumptions.append(
+                    _assumption_record(
+                        name="effective_inhalation_rate_m3_per_hour",
+                        value=round(inhalation_rate * task_intensity_factor, 8),
+                        unit="m3/h",
+                        source_kind=SourceKind.DERIVED,
+                        source=_execution_algorithm_source(),
+                        rationale=(
+                            "Effective inhalation rate was derived from the preserved "
+                            "population inhalation rate and the worker task-intensity factor."
+                        ),
+                        applicability_domain=applicability_domain,
+                    )
+                )
+            limitations.append(
+                LimitationNote(
+                    code="worker_task_intensity_screening",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Worker task intensity adjusts inhalation rate with a bounded "
+                        "screening factor rather than a measured task-specific ventilation "
+                        "rate."
+                    ),
+                )
+            )
         limitations.append(
             LimitationNote(
                 code="worker_art_external_result_dose_derived_from_concentration",

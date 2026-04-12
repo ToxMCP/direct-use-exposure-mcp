@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.11.v21",
+  "defaults_version": "2026.04.12.v22",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -146,6 +146,12 @@
       "version": "2026.04.11.v1"
     },
     {
+      "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
+      "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+      "version": "2026.04.12.v1"
+    },
+    {
       "source_id": "inhalation_volatility_saturation_cap_policy_2026",
       "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
       "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
@@ -228,6 +234,12 @@
       "title": "Direct-Use Exposure MCP heuristic worker inhalation vapor-release fractions",
       "locator": "docs://defaults-evidence-map#worker-inhalation-vapor-release-heuristics-2026",
       "version": "2026.04.07.v1"
+    },
+    {
+      "source_id": "worker_inhalation_task_intensity_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded worker inhalation task-intensity scaling factors",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-task-intensity-heuristics-2026",
+      "version": "2026.04.12.v1"
     }
   ],
   "conversion_defaults": {
@@ -1189,6 +1201,20 @@
         "value": 0.03,
         "source_id": "worker_inhalation_vapor_release_fraction_heuristics_2026"
       }
+    },
+    "task_intensity_factor": {
+      "light": {
+        "value": 0.85,
+        "source_id": "worker_inhalation_task_intensity_heuristics_2026"
+      },
+      "moderate": {
+        "value": 1.0,
+        "source_id": "worker_inhalation_task_intensity_heuristics_2026"
+      },
+      "high": {
+        "value": 1.35,
+        "source_id": "worker_inhalation_task_intensity_heuristics_2026"
+      }
     }
   },
   "room_defaults": {
@@ -1267,6 +1293,46 @@
         "coarse_spray": {
           "value": 1.0,
           "source_id": "inhalation_deposition_sink_heuristics_2026"
+        }
+      }
+    },
+    "extrathoracic_swallow_fraction": {
+      "global": {
+        "value": 0.0,
+        "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026"
+      },
+      "application_method_overrides": {
+        "trigger_spray": {
+          "value": 0.25,
+          "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026"
+        },
+        "pump_spray": {
+          "value": 0.2,
+          "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026"
+        },
+        "aerosol_spray": {
+          "value": 0.05,
+          "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026"
+        }
+      },
+      "product_subtype_overrides": {
+        "air_space_insecticide": {
+          "value": 0.03,
+          "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026"
+        }
+      },
+      "particle_size_regime_overrides": {
+        "fine_aerosol": {
+          "value": 0.05,
+          "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026"
+        },
+        "mixed_spray": {
+          "value": 0.2,
+          "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026"
+        },
+        "coarse_spray": {
+          "value": 0.4,
+          "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026"
         }
       }
     },

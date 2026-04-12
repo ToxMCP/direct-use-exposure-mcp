@@ -947,6 +947,15 @@
       "title": "TierLevel",
       "type": "string"
     },
+    "WorkerTaskIntensity": {
+      "enum": [
+        "light",
+        "moderate",
+        "high"
+      ],
+      "title": "WorkerTaskIntensity",
+      "type": "string"
+    },
     "WorkerTier2ModelFamily": {
       "enum": [
         "art",
@@ -1025,6 +1034,18 @@
       "default": null,
       "description": "Task duration for the Tier 2 bridge when different from event duration.",
       "title": "Taskdurationhours"
+    },
+    "taskIntensity": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/WorkerTaskIntensity"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional task-intensity class used to apply a bounded inhalation-rate adjustment in worker execution."
     },
     "ventilationContext": {
       "$ref": "#/$defs/WorkerVentilationContext",

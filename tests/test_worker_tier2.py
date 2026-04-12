@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
     AirflowDirectionality,
@@ -21,6 +23,7 @@ from exposure_scenario_mcp.worker_tier2 import (
     WorkerArtExternalExecutionResult,
     WorkerInhalationTier2AdapterRequest,
     WorkerInhalationTier2ExecutionOverrides,
+    WorkerTaskIntensity,
     WorkerTier2ModelFamily,
     WorkerVentilationContext,
     build_worker_inhalation_tier2_bridge,
@@ -693,6 +696,73 @@ def test_worker_art_execution_returns_control_adjusted_tier1_screening_result() 
         assumption.name == "normalized_worker_inhaled_dose_mg_per_kg_day"
         for assumption in result.assumptions
     )
+
+
+def test_worker_art_execution_applies_task_intensity_factor_to_inhalation_rate() -> None:
+    base_bridge = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request(),
+            task_description="Worker trigger-spray disinfection task",
+            workplace_setting="janitorial closet",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.LOCAL_EXHAUST,
+            local_controls=["local exhaust ventilation"],
+            respiratory_protection="half_mask_respirator",
+            emission_descriptor="short trigger-spray cleaning mist near the breathing zone",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+    high_intensity_bridge = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request(),
+            task_description="Worker trigger-spray disinfection task",
+            workplace_setting="janitorial closet",
+            task_duration_hours=0.5,
+            task_intensity=WorkerTaskIntensity.HIGH,
+            ventilation_context=WorkerVentilationContext.LOCAL_EXHAUST,
+            local_controls=["local exhaust ventilation"],
+            respiratory_protection="half_mask_respirator",
+            emission_descriptor="short trigger-spray cleaning mist near the breathing zone",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    base_result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=base_bridge.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+    high_result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=high_intensity_bridge.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert high_result.baseline_dose is not None
+    assert base_result.baseline_dose is not None
+    assert high_result.external_dose is not None
+    assert base_result.external_dose is not None
+    assert high_result.route_metrics["taskIntensity"] == "high"
+    assert high_result.route_metrics["taskIntensityFactor"] == pytest.approx(1.35, rel=1e-6)
+    assert high_result.route_metrics["baseInhalationRateM3PerHour"] == pytest.approx(
+        1.1, rel=1e-6
+    )
+    assert high_result.route_metrics["effectiveInhalationRateM3PerHour"] == pytest.approx(
+        1.485, rel=1e-6
+    )
+    assert high_result.baseline_dose.value == pytest.approx(
+        base_result.baseline_dose.value * 1.35,
+        rel=1e-6,
+    )
+    assert high_result.external_dose.value == pytest.approx(
+        base_result.external_dose.value * 1.35,
+        rel=1e-6,
+    )
+    assert any(item.code == "worker_task_intensity_screening" for item in high_result.limitations)
 
 
 def test_worker_art_execution_runs_handheld_biocidal_external_anchor_check() -> None:

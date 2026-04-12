@@ -362,6 +362,35 @@ class DefaultsRegistry:
 
         return float(entry["value"]), self._source(entry["source_id"])
 
+    def inhalation_extrathoracic_swallow_fraction(
+        self,
+        *,
+        particle_size_regime: str | None = None,
+        application_method: str | None = None,
+        product_subtype: str | None = None,
+    ) -> tuple[float, AssumptionSourceReference]:
+        section = self.payload["inhalation_physical_caps"]["extrathoracic_swallow_fraction"]
+        entry = section["global"]
+
+        if application_method:
+            candidate = section.get("application_method_overrides", {}).get(
+                application_method.lower()
+            )
+            if candidate:
+                entry = candidate
+        if product_subtype:
+            candidate = section.get("product_subtype_overrides", {}).get(product_subtype.lower())
+            if candidate:
+                entry = candidate
+        if particle_size_regime:
+            candidate = section.get("particle_size_regime_overrides", {}).get(
+                particle_size_regime.lower()
+            )
+            if candidate:
+                entry = candidate
+
+        return float(entry["value"]), self._source(entry["source_id"])
+
     def inhalation_saturation_cap_policy(self) -> tuple[dict[str, Any], AssumptionSourceReference]:
         entry = self.payload["inhalation_physical_caps"]["volatility_saturation_cap_policy"]
         return (
@@ -680,6 +709,20 @@ class DefaultsRegistry:
         entry = values[key]
         return float(entry["value"]), self._source(entry["source_id"])
 
+    def worker_inhalation_task_intensity_factor(
+        self, task_intensity: str
+    ) -> tuple[float, AssumptionSourceReference]:
+        key = task_intensity.lower()
+        values = self.payload["worker_inhalation_execution_defaults"]["task_intensity_factor"]
+        ensure(
+            key in values,
+            "worker_inhalation_task_intensity_unsupported",
+            f"Worker inhalation task intensity '{task_intensity}' is not supported.",
+            suggestion=f"Use one of: {', '.join(sorted(values))}.",
+        )
+        entry = values[key]
+        return float(entry["value"]), self._source(entry["source_id"])
+
 
 def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
     active_registry = registry or DefaultsRegistry.load()
@@ -771,6 +814,10 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  deposition sink to room-air inhalation screening. These defaults are simple",
             "  settling heuristics keyed to spray family or particle-size regime, not a full",
             "  aerosol transport solver.",
+            "- `inhalation_extrathoracic_oral_handoff_heuristics_2026` adds bounded",
+            "  extrathoracic swallowed-fraction splits for spray inhalation families so coarse",
+            "  and mixed sprays can expose an oral handoff estimate without claiming a full",
+            "  regional-deposition model.",
             "- `inhalation_volatility_saturation_cap_policy_2026` publishes the shared",
             "  thermodynamic saturation-cap policy used when both vapor pressure and molecular",
             "  weight are available. The cap prevents impossible supersaturated room-air",
@@ -856,6 +903,13 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "- `worker_inhalation_vapor_release_fraction_heuristics_2026` provides bounded",
             "  non-spray release fractions for worker inhalation execution when the current",
             "  task is vapor-generating and no direct spray airborne-fraction default applies.",
+            "",
+            "### Worker Inhalation Task-Intensity Heuristics 2026",
+            "",
+            "- `worker_inhalation_task_intensity_heuristics_2026` provides bounded",
+            "  inhalation-rate scaling factors for light, moderate, and high worker task",
+            "  intensity classes. These are screening physiology modifiers, not measured",
+            "  minute-ventilation or metabolic-rate models.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",

@@ -176,6 +176,16 @@ LIMITATION_UNCERTAINTY_MAP = {
         BiasDirection.BIDIRECTIONAL,
         "high",
     ),
+    "extrathoracic_oral_handoff_screening": (
+        [UncertaintyType.MODEL_UNCERTAINTY, UncertaintyType.PARAMETER_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "medium",
+    ),
+    "worker_task_intensity_screening": (
+        [UncertaintyType.SCENARIO_UNCERTAINTY, UncertaintyType.PARAMETER_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "medium",
+    ),
 }
 
 

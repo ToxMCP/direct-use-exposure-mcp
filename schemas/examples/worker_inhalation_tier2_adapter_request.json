@@ -14,6 +14,7 @@
     "task_description": "Worker trigger-spray disinfection task needing Tier 2 refinement",
     "workplace_setting": "janitorial closet",
     "task_duration_hours": 0.5,
+    "task_intensity": null,
     "ventilation_context": "general_ventilation",
     "local_controls": [
       "general ventilation",

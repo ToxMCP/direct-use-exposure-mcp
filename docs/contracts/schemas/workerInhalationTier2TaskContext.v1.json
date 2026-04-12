@@ -1,5 +1,14 @@
 {
   "$defs": {
+    "WorkerTaskIntensity": {
+      "enum": [
+        "light",
+        "moderate",
+        "high"
+      ],
+      "title": "WorkerTaskIntensity",
+      "type": "string"
+    },
     "WorkerVentilationContext": {
       "enum": [
         "unknown",
@@ -52,6 +61,18 @@
       "default": null,
       "description": "Task duration relevant to the future Tier 2 worker model.",
       "title": "Task Duration Hours"
+    },
+    "task_intensity": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/WorkerTaskIntensity"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional task-intensity class used to apply a bounded inhalation-rate adjustment in worker execution."
     },
     "ventilation_context": {
       "$ref": "#/$defs/WorkerVentilationContext",

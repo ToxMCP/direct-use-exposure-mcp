@@ -20,6 +20,7 @@
       "task_description": "Worker trigger-spray disinfection task needing Tier 2 refinement",
       "workplace_setting": "janitorial closet",
       "task_duration_hours": 0.5,
+      "task_intensity": null,
       "ventilation_context": "general_ventilation",
       "local_controls": [
         "general ventilation",
@@ -462,6 +463,7 @@
           "task_description": "Worker trigger-spray disinfection task needing Tier 2 refinement",
           "workplace_setting": "janitorial closet",
           "task_duration_hours": 0.5,
+          "task_intensity": null,
           "ventilation_context": "general_ventilation",
           "local_controls": [
             "general ventilation",
@@ -671,8 +673,8 @@
     "algorithm_id": "worker.inhalation_art_external_exchange.v1",
     "plugin_id": "worker_inhalation_art_external_exchange",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.11.v21",
-    "defaults_hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a",
+    "defaults_version": "2026.04.12.v22",
+    "defaults_hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Exports a normalized ART-side execution payload and result-import template.",

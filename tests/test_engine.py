@@ -327,6 +327,15 @@ def test_inhalation_screening_defaults_and_dose() -> None:
     assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
         1.66143347, rel=1e-6
     )
+    assert scenario.route_metrics["extrathoracic_swallow_fraction"] == pytest.approx(
+        0.25, rel=1e-6
+    )
+    assert scenario.route_metrics["swallowed_extrathoracic_mass_mg_per_day"] == pytest.approx(
+        0.41535837, rel=1e-6
+    )
+    assert scenario.route_metrics["lower_respiratory_inhaled_mass_mg_per_day"] == pytest.approx(
+        1.2460751, rel=1e-6
+    )
     assert scenario.route_metrics["deposition_rate_per_hour"] == pytest.approx(0.5, rel=1e-6)
     assert scenario.route_metrics["total_loss_rate_per_hour"] == pytest.approx(1.1, rel=1e-6)
     assert scenario.route_metrics["room_air_decay_half_life_hours"] == pytest.approx(
@@ -335,6 +344,7 @@ def test_inhalation_screening_defaults_and_dose() -> None:
     assert scenario.route_metrics["saturation_cap_mg_per_m3"] is None
     assert scenario.route_metrics["saturation_cap_applied"] is False
     assert any(item.code == "breathing_zone_not_modeled" for item in scenario.limitations)
+    assert any(item.code == "extrathoracic_oral_handoff_screening" for item in scenario.limitations)
     assert any(item.code == "tier_0_spray_screening" for item in scenario.quality_flags)
     assert scenario.tier_upgrade_advisories[0].target_tier == TierLevel.TIER_1
     assert scenario.tier_upgrade_advisories[0].status.value == "recommended_not_implemented"
@@ -470,6 +480,11 @@ def test_tier1_deposition_is_stronger_for_coarse_than_fine_aerosol() -> None:
 
     assert coarse.route_metrics["deposition_rate_per_hour"] == pytest.approx(1.0, rel=1e-6)
     assert fine.route_metrics["deposition_rate_per_hour"] == pytest.approx(0.1, rel=1e-6)
+    assert coarse.route_metrics["extrathoracic_swallow_fraction"] == pytest.approx(0.4, rel=1e-6)
+    assert fine.route_metrics["extrathoracic_swallow_fraction"] == pytest.approx(0.05, rel=1e-6)
+    assert coarse.route_metrics["swallowed_extrathoracic_mass_mg_per_day"] > fine.route_metrics[
+        "swallowed_extrathoracic_mass_mg_per_day"
+    ]
     assert coarse.route_metrics["average_air_concentration_mg_per_m3"] < fine.route_metrics[
         "average_air_concentration_mg_per_m3"
     ]

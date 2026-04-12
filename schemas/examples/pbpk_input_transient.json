@@ -50,6 +50,7 @@
     "deposition_rate_per_hour",
     "saturation_cap_reference_temperature_c",
     "saturation_cap_mg_per_m3",
+    "extrathoracic_swallow_fraction",
     "released_mass_mg_per_event",
     "total_loss_rate_per_hour",
     "average_air_concentration_mg_per_m3",
@@ -60,6 +61,8 @@
     "room_air_decay_half_life_hours",
     "saturation_cap_applied",
     "inhaled_mass_mg_per_day",
+    "swallowed_extrathoracic_mass_mg_per_day",
+    "lower_respiratory_inhaled_mass_mg_per_day",
     "normalized_external_dose_mg_per_kg_day"
   ],
   "provenance": {
@@ -67,8 +70,8 @@
     "algorithm_id": "pbpk.export.v1",
     "plugin_id": "pbpk_export_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.11.v21",
-    "defaults_hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a",
+    "defaults_version": "2026.04.12.v22",
+    "defaults_hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

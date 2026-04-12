@@ -773,6 +773,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 - Falls back to a labeled room-average vapor-release surrogate for vapor-generating tasks
 - Applies bounded volatility saturation caps when vapor pressure and molecular weight are supplied
 - Applies bounded first-order deposition sinks to room-air loss terms
+- Can apply a bounded task-intensity factor to the inhalation rate when the worker task
+  explicitly declares light, moderate, or high effort
 - Applies worker control and respiratory-protection factors after the baseline kernel
 - Returns both the preserved baseline dose and the control-adjusted worker inhalation dose
 - Preserves determinant-template alignment, quality flags, limitations, and provenance
@@ -782,6 +784,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 - The executable path currently supports `targetModelFamily=art`
 - The execution kernel is intentionally bounded and transparent, not a real ART solver
 - Control and respiratory-protection effects are represented by heuristic adjustment factors
+- Task intensity is represented by a bounded inhalation-rate factor, not measured minute
+  ventilation
 - Volatility and aerosol removal are represented by bounded screening caps and
   first-order loss terms
 - Vapor-generating tasks use a room-average surrogate rather than determinant-specific ART vapor
@@ -810,8 +814,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
   `worker_import_inhalation_art_execution_result` when you have access to a real external
   ART-side execution path and want to bring the result back into the governed MCP contract
 - Review the assumptions ledger for `worker_control_factor`,
-  `respiratory_protection_factor`, and any vapor-release surrogate assumptions before downstream
-  use
+  `respiratory_protection_factor`, `worker_task_intensity_factor`, and any
+  vapor-release surrogate assumptions before downstream use
 """
 
 

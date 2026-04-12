@@ -62,6 +62,9 @@
     "vapor_pressure_mmhg": 8.0,
     "molecular_weight_g_per_mol": 120.15,
     "inhaled_mass_mg_per_day": 4.01154971,
+    "extrathoracic_swallow_fraction": 0.4,
+    "swallowed_extrathoracic_mass_mg_per_day": 1.60461988,
+    "lower_respiratory_inhaled_mass_mg_per_day": 2.40692983,
     "tier1_product_profile_id": "household_cleaner_trigger_spray_tier1",
     "tier1_profile_alignment_status": "aligned",
     "tier1_profile_divergence_count": 0
@@ -110,7 +113,7 @@
         "title": "Direct-Use Exposure MCP heuristic density screening defaults",
         "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
+        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -277,7 +280,7 @@
         "title": "Characterization of airborne particles from cleaning sprays and their corresponding respiratory deposition fractions",
         "locator": "https://pubmed.ncbi.nlm.nih.gov/31361572/",
         "version": "J Aerosol Sci. 2019",
-        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
+        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -341,7 +344,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
+        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -373,7 +376,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
+        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -762,7 +765,7 @@
         "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
+        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -797,7 +800,7 @@
         "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
+        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -832,11 +835,46 @@
         "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a"
+        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
       },
       "confidence": "registry_default",
       "default_applied": true,
       "rationale": "Thermodynamic saturation ceiling derived from vapor pressure, molecular weight, and the governed room-temperature policy.",
+      "governance": {
+        "evidence_grade": "grade_2",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "extrathoracic_swallow_fraction",
+      "value": 0.4,
+      "unit": "fraction",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026",
+        "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
+        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+        "version": "2026.04.12.v1",
+        "hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Extrathoracic swallowed fraction defaulted from the bounded spray physiology handoff pack.",
       "governance": {
         "evidence_grade": "grade_2",
         "evidence_basis": "curated_default",
@@ -1464,6 +1502,76 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "swallowed_extrathoracic_mass_mg_per_day",
+      "value": 1.6046198848973618,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Extrathoracic swallowed mass per day derived from the bounded swallowed fraction applied to the screening inhaled mass.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "lower_respiratory_inhaled_mass_mg_per_day",
+      "value": 2.406929827346042,
+      "unit": "mg/day",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Lower-respiratory inhaled mass per day after subtracting the bounded extrathoracic swallowed share from the screening inhaled mass.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "normalized_external_dose_mg_per_kg_day",
       "value": 0.058993378121226535,
       "unit": "mg/kg-day",
@@ -1506,8 +1614,8 @@
     "algorithm_id": "inhalation.near_field_far_field.v1",
     "plugin_id": "inhalation_tier_1_nf_ff_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.11.v21",
-    "defaults_hash_sha256": "f4b80ed5e66d85d015b3ada349a68e0961d34e4b655e24831ed91c4cb2a9b89a",
+    "defaults_version": "2026.04.12.v22",
+    "defaults_hash_sha256": "ee376423b20fd9e218920f4fc7cae37294911c9fc7f4f595fb6db816c560027d",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
@@ -1515,6 +1623,11 @@
     ]
   },
   "limitations": [
+    {
+      "code": "extrathoracic_oral_handoff_screening",
+      "severity": "warning",
+      "message": "Spray inhalation includes a bounded extrathoracic swallowed-fraction estimate. This is not a full regional deposition model or an automatic oral handoff into a separate ingestion scenario."
+    },
     {
       "code": "near_field_exchange_screening",
       "severity": "warning",
@@ -1566,6 +1679,11 @@
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'saturation_cap_mg_per_m3'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'extrathoracic_swallow_fraction'."
     },
     {
       "code": "default_applied",
@@ -1641,6 +1759,20 @@
       "impactLevel": "high",
       "summary": "`density_g_per_ml` resolved as `heuristic_default` with `screening_extrapolation` status.",
       "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+    },
+    {
+      "entryId": "limitation-extrathoracic_oral_handoff_screening",
+      "title": "Limitation `extrathoracic_oral_handoff_screening` remains unquantified",
+      "uncertaintyTypes": [
+        "model_uncertainty",
+        "parameter_uncertainty"
+      ],
+      "relatedAssumptions": [],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "bidirectional",
+      "impactLevel": "medium",
+      "summary": "Spray inhalation includes a bounded extrathoracic swallowed-fraction estimate. This is not a full regional deposition model or an automatic oral handoff into a separate ingestion scenario.",
+      "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
     },
     {
       "entryId": "limitation-near_field_exchange_screening",
