@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v23",
+  "defaults_version": "2026.04.12.v24",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -156,6 +156,12 @@
       "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
       "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
       "version": "2026.04.11.v1"
+    },
+    {
+      "source_id": "tier1_local_entrainment_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
+      "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+      "version": "2026.04.12.v1"
     },
     {
       "source_id": "worker_dermal_body_zone_area_heuristics_2026",
@@ -1405,6 +1411,32 @@
       "requires_fields": ["vapor_pressure_mmhg", "molecular_weight_g_per_mol"],
       "skip_when_particle_material_context_present": true,
       "source_id": "inhalation_volatility_saturation_cap_policy_2026"
+    },
+    "tier1_local_entrainment_rates": {
+      "thermal_plume_rate_m3_per_hour": {
+        "value": 36.0,
+        "source_id": "tier1_local_entrainment_heuristics_2026"
+      },
+      "spray_jet_rate_m3_per_hour": {
+        "global": {
+          "value": 8.0,
+          "source_id": "tier1_local_entrainment_heuristics_2026"
+        },
+        "application_method_overrides": {
+          "trigger_spray": {
+            "value": 8.0,
+            "source_id": "tier1_local_entrainment_heuristics_2026"
+          },
+          "pump_spray": {
+            "value": 10.0,
+            "source_id": "tier1_local_entrainment_heuristics_2026"
+          },
+          "aerosol_spray": {
+            "value": 14.0,
+            "source_id": "tier1_local_entrainment_heuristics_2026"
+          }
+        }
+      }
     },
     "native_residual_air_reentry": {
       "surface_residue_fraction": {

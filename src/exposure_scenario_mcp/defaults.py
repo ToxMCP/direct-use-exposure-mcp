@@ -404,6 +404,35 @@ class DefaultsRegistry:
             self._source(entry["source_id"]),
         )
 
+    def tier1_local_entrainment_rates(
+        self,
+        *,
+        application_method: str,
+    ) -> tuple[dict[str, float], dict[str, AssumptionSourceReference]]:
+        section = self.payload["inhalation_physical_caps"]["tier1_local_entrainment_rates"]
+        thermal_entry = section["thermal_plume_rate_m3_per_hour"]
+        jet_entry = section["spray_jet_rate_m3_per_hour"]["global"]
+        candidate = (
+            section["spray_jet_rate_m3_per_hour"]
+            .get("application_method_overrides", {})
+            .get(application_method.lower())
+        )
+        if candidate:
+            jet_entry = candidate
+        thermal_rate = float(thermal_entry["value"])
+        spray_jet_rate = float(jet_entry["value"])
+        return (
+            {
+                "thermal_plume_rate_m3_per_hour": thermal_rate,
+                "spray_jet_rate_m3_per_hour": spray_jet_rate,
+                "local_entrainment_rate_m3_per_hour": thermal_rate + spray_jet_rate,
+            },
+            {
+                "thermal_plume_rate_m3_per_hour": self._source(thermal_entry["source_id"]),
+                "spray_jet_rate_m3_per_hour": self._source(jet_entry["source_id"]),
+            },
+        )
+
     def native_residual_air_reentry_surface_residue_fraction(
         self, product_subtype: str | None = None
     ) -> tuple[float, AssumptionSourceReference]:
@@ -843,6 +872,12 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  thermodynamic saturation-cap policy used when both vapor pressure and molecular",
             "  weight are available. The cap prevents impossible supersaturated room-air",
             "  concentrations in volatility-aware screening runs.",
+            "- `tier1_local_entrainment_heuristics_2026` adds a bounded interzonal-mixing floor",
+            "  for Tier 1 NF/FF spray scenarios by combining a generic thermal-plume entrainment",
+            "  term with an application-method spray-jet entrainment term. These values keep",
+            "  very small near-field compartments from collapsing into unrealistically weak",
+            "  mixing, but they are still screening heuristics rather than measured jet or",
+            "  plume-resolved airflow.",
             "- `native_residual_air_reentry_emission_heuristics_2026` adds a bounded treated-",
             "  surface residue fraction and first-order surface-emission rate for the native",
             "  residual-air reentry mode. These defaults are deliberately simple indoor",

@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v23",
+  "defaults_version": "2026.04.12.v24",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -650,6 +650,64 @@
       }
     },
     {
+      "id": "inhalation_tier1_local_entrainment_floor_screening",
+      "kind": "scenario",
+      "description": "Tier 1 NF/FF trigger-spray case where a bounded local entrainment floor overrides unrealistically weak static interzonal mixing.",
+      "request": {
+        "schema_version": "inhalationTier1ScenarioRequest.v1",
+        "chemical_id": "DTXSID123",
+        "chemical_name": "Benchmark Tier1 Floor Binder",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Tier1 Local Entrainment Floor",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1.0,
+          "room_volume_m3": 25.0,
+          "air_exchange_rate_per_hour": 0.5,
+          "exposure_duration_hours": 0.5
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68.0,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {},
+        "source_distance_m": 0.35,
+        "spray_duration_seconds": 8.0,
+        "near_field_volume_m3": 0.5,
+        "airflow_directionality": "quiescent",
+        "particle_size_regime": "coarse_spray"
+      },
+      "expected": {
+        "external_dose_value": 0.08809358,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "far_field_average_air_concentration_mg_per_m3": 3.37685406,
+          "near_field_active_spray_concentration_mg_per_m3": 2238.76646445,
+          "average_air_concentration_mg_per_m3": 13.311919,
+          "inhaled_mass_mg_per_day": 5.99036355
+        },
+        "assumptions": {
+          "source_distance_m": 0.35,
+          "near_field_volume_m3": 0.5,
+          "static_interzonal_mixing_rate_m3_per_hour": 10.25,
+          "local_entrainment_rate_m3_per_hour": 44.0,
+          "interzonal_mixing_rate_m3_per_hour": 44.0
+        }
+      }
+    },
+    {
       "id": "inhalation_tier1_disinfectant_trigger_spray_external_2015",
       "kind": "scenario",
       "description": "Study-like consumer disinfectant trigger-spray Tier 1 NF/FF case aligned to the 2015 consumer spray inhalation supplementary dataset.",
@@ -1252,8 +1310,8 @@
         "scenario_class": "inhalation",
         "package_profile_id": "adult_personal_care_pump_spray_tier1_near_field_context_package",
         "archetype_library_set_id": "adult_personal_care_pump_spray_tier1",
-        "minimum_dose_value": 0.00236682,
-        "maximum_dose_value": 0.12083206,
+        "minimum_dose_value": 0.00190609,
+        "maximum_dose_value": 0.06875541,
         "support_point_template_ids": [
           "adult_personal_care_pump_spray_tier1_low",
           "adult_personal_care_pump_spray_tier1_typical",

@@ -695,9 +695,17 @@ def build_inhalation_tier_1_screening_scenario(
     )
 
     near_field_exchange_turnover = airflow_profile.exchange_turnover_per_hour
-    interzonal_mixing_rate = request.near_field_volume_m3 * (
+    static_interzonal_mixing_rate = request.near_field_volume_m3 * (
         near_field_exchange_turnover + max(air_exchange, 0.0)
     )
+    local_entrainment_rates, local_entrainment_sources = registry.tier1_local_entrainment_rates(
+        application_method=profile.application_method
+    )
+    thermal_plume_rate = local_entrainment_rates["thermal_plume_rate_m3_per_hour"]
+    spray_jet_rate = local_entrainment_rates["spray_jet_rate_m3_per_hour"]
+    local_entrainment_rate = local_entrainment_rates["local_entrainment_rate_m3_per_hour"]
+    interzonal_mixing_floor_applied = static_interzonal_mixing_rate < local_entrainment_rate
+    interzonal_mixing_rate = max(static_interzonal_mixing_rate, local_entrainment_rate)
     distance_factor = max(0.75, min(3.0, 0.75 / request.source_distance_m))
     particle_persistence_factor = particle_profile.persistence_factor
     emission_rate_mg_per_hour = released_mass_mg_event / spray_duration_hours
@@ -785,6 +793,23 @@ def build_inhalation_tier_1_screening_scenario(
         "Tier 1 screening turnover resolved from the packaged airflow-directionality profile.",
     )
     tracker.add_default(
+        "thermal_plume_rate_m3_per_hour",
+        thermal_plume_rate,
+        "m3/h",
+        local_entrainment_sources["thermal_plume_rate_m3_per_hour"],
+        "Tier 1 local entrainment floor includes a bounded thermal-plume entrainment term.",
+    )
+    tracker.add_default(
+        "spray_jet_rate_m3_per_hour",
+        spray_jet_rate,
+        "m3/h",
+        local_entrainment_sources["spray_jet_rate_m3_per_hour"],
+        (
+            "Tier 1 local entrainment floor includes a bounded spray-jet entrainment term "
+            "resolved from application method."
+        ),
+    )
+    tracker.add_default(
         "particle_persistence_factor",
         particle_persistence_factor,
         None,
@@ -792,10 +817,37 @@ def build_inhalation_tier_1_screening_scenario(
         "Tier 1 persistence factor resolved from the packaged particle-regime profile.",
     )
     tracker.add_derived(
+        "static_interzonal_mixing_rate_m3_per_hour",
+        static_interzonal_mixing_rate,
+        "m3/h",
+        (
+            "Static interzonal mixing rate = near-field volume x "
+            "(screening exchange turnover + room ventilation)."
+        ),
+    )
+    tracker.add_derived(
+        "local_entrainment_rate_m3_per_hour",
+        local_entrainment_rate,
+        "m3/h",
+        (
+            "Bounded local entrainment floor = thermal-plume entrainment + application-method "
+            "spray-jet entrainment."
+        ),
+    )
+    tracker.add_derived(
         "interzonal_mixing_rate_m3_per_hour",
         interzonal_mixing_rate,
         "m3/h",
-        "Near-field volume multiplied by the Tier 1 screening exchange turnover plus ventilation.",
+        (
+            "Interzonal mixing rate equals the greater of the static Tier 1 exchange estimate "
+            "and the bounded local entrainment floor."
+        ),
+    )
+    tracker.add_derived(
+        "interzonal_mixing_floor_applied",
+        interzonal_mixing_floor_applied,
+        None,
+        "Whether the bounded local entrainment floor exceeded the static Tier 1 interzonal rate.",
     )
     tracker.add_derived(
         "far_field_average_air_concentration_mg_per_m3",
@@ -916,6 +968,16 @@ def build_inhalation_tier_1_screening_scenario(
             "airflow_directionality rather than measured interzonal airflow."
         ),
     )
+    if interzonal_mixing_floor_applied:
+        tracker.add_limitation(
+            "tier1_local_entrainment_floor_screening",
+            (
+                "Tier 1 NF/FF applied a bounded local entrainment floor from thermal-plume "
+                "and spray-jet heuristics because the static interzonal rate was weaker. "
+                "This is a screening lower bound on local mixing, not a measured plume or "
+                "jet-resolved airflow profile."
+            ),
+        )
     tracker.add_limitation(
         "particle_regime_screening",
         (
@@ -1004,7 +1066,14 @@ def build_inhalation_tier_1_screening_scenario(
             "breathing_zone_time_weighted_average_mg_per_m3": round(
                 breathing_zone_time_weighted_average, 8
             ),
+            "static_interzonal_mixing_rate_m3_per_hour": round(
+                static_interzonal_mixing_rate, 8
+            ),
+            "thermal_plume_rate_m3_per_hour": round(thermal_plume_rate, 8),
+            "spray_jet_rate_m3_per_hour": round(spray_jet_rate, 8),
+            "local_entrainment_rate_m3_per_hour": round(local_entrainment_rate, 8),
             "interzonal_mixing_rate_m3_per_hour": round(interzonal_mixing_rate, 8),
+            "interzonal_mixing_floor_applied": interzonal_mixing_floor_applied,
             "deposition_rate_per_hour": round(deposition_rate, 8),
             "total_loss_rate_per_hour": round(total_loss_rate, 8),
             "room_air_decay_half_life_hours": (
@@ -1064,6 +1133,8 @@ def build_inhalation_tier_1_screening_scenario(
                 "than a measured CFD domain.",
                 "The airflow directionality and particle regime terms remain screening "
                 "classifications, not measured aerosol dynamics.",
+                "Very weak static interzonal mixing can be bounded upward by a local "
+                "entrainment floor from thermal-plume and spray-jet heuristics.",
                 "Bounded deposition and volatility caps improve physical realism but do not "
                 "turn the model into a transient aerosol transport solver.",
             ],

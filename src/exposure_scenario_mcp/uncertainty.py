@@ -702,6 +702,39 @@ def _mechanistic_constraint_entries(
                 )
             )
 
+    if bool(route_metrics.get("interzonal_mixing_floor_applied")):
+        entries.append(
+            UncertaintyRegisterEntry(
+                entry_id="mechanistic-constraint-tier1-local-entrainment-floor",
+                title="Tier 1 NF/FF interzonal mixing was bounded by a local entrainment floor",
+                uncertainty_types=[
+                    UncertaintyType.MODEL_UNCERTAINTY,
+                    UncertaintyType.PARAMETER_UNCERTAINTY,
+                ],
+                related_assumptions=_related(
+                    "near_field_volume_m3",
+                    "source_distance_m",
+                    "thermal_plume_rate_m3_per_hour",
+                    "spray_jet_rate_m3_per_hour",
+                ),
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level=_impact_from_sensitivity(
+                    "near_field_volume_m3", sensitivity_ranking
+                ),
+                summary=(
+                    "The Tier 1 near-field/far-field solver bounded weak static interzonal "
+                    "mixing upward with a local entrainment floor from thermal-plume and "
+                    "spray-jet heuristics."
+                ),
+                recommendation=(
+                    "Treat floor-bound Tier 1 outputs as physically bounded screening results "
+                    "and prefer measured local airflow or validated task-family anchors when "
+                    "available."
+                ),
+            )
+        )
+
     return entries
 
 

@@ -98,6 +98,23 @@ def _registry_with_zero_deposition() -> DefaultsRegistry:
     )
 
 
+def _registry_with_zero_tier1_local_entrainment() -> DefaultsRegistry:
+    base = DefaultsRegistry.load()
+    payload = deepcopy(base.payload)
+    section = payload["inhalation_physical_caps"]["tier1_local_entrainment_rates"]
+    section["thermal_plume_rate_m3_per_hour"]["value"] = 0.0
+    jet_section = section["spray_jet_rate_m3_per_hour"]
+    jet_section["global"]["value"] = 0.0
+    for entry in jet_section.get("application_method_overrides", {}).values():
+        entry["value"] = 0.0
+    return DefaultsRegistry(
+        path=base.path,
+        location=base.location,
+        payload=payload,
+        sha256=base.sha256,
+    )
+
+
 def test_dermal_screening_defaults_and_dose() -> None:
     engine = build_engine()
     request = ExposureScenarioRequest(
@@ -1184,6 +1201,74 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
         for item in enriched.dependency_metadata
     )
     assert any(item.parameter_name == "source_distance_m" for item in enriched.sensitivity_ranking)
+
+
+def test_inhalation_tier_1_applies_local_entrainment_floor_when_static_mixing_is_weak() -> None:
+    request = InhalationTier1ScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="household_cleaner",
+            physical_form="spray",
+            application_method="trigger_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.05,
+            use_amount_per_event=12,
+            use_amount_unit="mL",
+            use_events_per_day=1,
+            room_volume_m3=25,
+            exposure_duration_hours=0.5,
+            air_exchange_rate_per_hour=0.5,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=68,
+            inhalation_rate_m3_per_hour=0.9,
+            region="EU",
+        ),
+        source_distance_m=0.35,
+        spray_duration_seconds=8.0,
+        near_field_volume_m3=0.5,
+        airflow_directionality=AirflowDirectionality.QUIESCENT,
+        particle_size_regime=ParticleSizeRegime.COARSE_SPRAY,
+    )
+
+    baseline = build_inhalation_tier_1_screening_scenario(
+        request,
+        _registry_with_zero_tier1_local_entrainment(),
+    )
+    bounded = build_inhalation_tier_1_screening_scenario(request, DefaultsRegistry.load())
+    enriched = enrich_scenario_uncertainty(build_engine(), bounded)
+
+    assert bounded.route_metrics["static_interzonal_mixing_rate_m3_per_hour"] == pytest.approx(
+        10.25, rel=1e-6
+    )
+    assert bounded.route_metrics["thermal_plume_rate_m3_per_hour"] == pytest.approx(
+        36.0, rel=1e-6
+    )
+    assert bounded.route_metrics["spray_jet_rate_m3_per_hour"] == pytest.approx(
+        8.0, rel=1e-6
+    )
+    assert bounded.route_metrics["local_entrainment_rate_m3_per_hour"] == pytest.approx(
+        44.0, rel=1e-6
+    )
+    assert bounded.route_metrics["interzonal_mixing_rate_m3_per_hour"] == pytest.approx(
+        44.0, rel=1e-6
+    )
+    assert bounded.route_metrics["interzonal_mixing_floor_applied"] is True
+    assert (
+        bounded.route_metrics["near_field_active_spray_concentration_mg_per_m3"]
+        < baseline.route_metrics["near_field_active_spray_concentration_mg_per_m3"]
+    )
+    assert bounded.external_dose.value < baseline.external_dose.value
+    assert any(
+        item.code == "tier1_local_entrainment_floor_screening"
+        for item in bounded.limitations
+    )
+    assert any(
+        item.entry_id == "mechanistic-constraint-tier1-local-entrainment-floor"
+        for item in enriched.uncertainty_register
+    )
 
 
 def test_inhalation_tier_1_matches_personal_care_pump_profile() -> None:

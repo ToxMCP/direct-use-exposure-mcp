@@ -60,6 +60,7 @@ BENCHMARK_CASE_DOMAINS = {
         "inhalation_residual_air_reentry"
     ),
     "inhalation_tier1_trigger_spray_nf_ff": "inhalation_near_field_far_field",
+    "inhalation_tier1_local_entrainment_floor_screening": "inhalation_near_field_far_field",
     "inhalation_tier1_coarse_spray_settling_sensitivity": "inhalation_near_field_far_field",
     "inhalation_tier1_disinfectant_trigger_spray_external_2015": (
         "inhalation_near_field_far_field"
@@ -108,8 +109,9 @@ BENCHMARK_DOMAIN_NOTES = {
     "inhalation_near_field_far_field": [
         (
             "Current benchmark coverage includes a canonical Tier 1 NF/FF scenario, a "
-            "narrow externally anchored consumer disinfectant trigger-spray dose case, "
-            "and a Tier C package built from governed Tier 1 support points."
+            "bounded local-entrainment-floor scenario, a narrow externally anchored consumer "
+            "disinfectant trigger-spray dose case, and a Tier C package built from governed "
+            "Tier 1 support points."
         )
     ],
     "inhalation_residual_air_reentry": [

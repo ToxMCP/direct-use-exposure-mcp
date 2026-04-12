@@ -32,6 +32,7 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
 - Adult indoor-surface insecticide residual-air reentry screening linked to a narrow
   diazinon consumer home-use indoor-air anchor through the native treated-surface branch
 - Adult inhalation Tier 1 trigger spray near-field/far-field screening
+- Adult inhalation Tier 1 trigger spray case where a bounded local entrainment floor prevents unrealistically weak interzonal mixing in a very small near-field compartment
 - Adult inhalation Tier 1 coarse-spray settling sensitivity case locking bounded deposition loss into the deterministic regression corpus
 - Adult inhalation Tier 1 disinfectant trigger spray screening linked to a narrow
   externally anchored inhaled-dose benchmark

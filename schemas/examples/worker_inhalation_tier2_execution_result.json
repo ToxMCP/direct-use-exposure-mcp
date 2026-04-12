@@ -249,7 +249,7 @@
         "title": "Direct-Use Exposure MCP heuristic density screening defaults",
         "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
+        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -416,7 +416,7 @@
         "title": "RIVM Disinfectant Products Fact Sheet trigger-spray airborne-fraction default for surface sprays",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/320005003.pdf",
         "version": "RIVM report 320005003 / 2006",
-        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
+        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -761,7 +761,7 @@
         "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
+        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -796,7 +796,7 @@
         "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.12.v1",
-        "hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885"
+        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -997,6 +997,76 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "thermal_plume_rate_m3_per_hour",
+      "value": 36.0,
+      "unit": "m3/h",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "tier1_local_entrainment_heuristics_2026",
+        "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
+        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+        "version": "2026.04.12.v1",
+        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Tier 1 local entrainment floor includes a bounded thermal-plume entrainment term.",
+      "governance": {
+        "evidence_grade": "grade_2",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "spray_jet_rate_m3_per_hour",
+      "value": 8.0,
+      "unit": "m3/h",
+      "source_kind": "default_registry",
+      "source": {
+        "source_id": "tier1_local_entrainment_heuristics_2026",
+        "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
+        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+        "version": "2026.04.12.v1",
+        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+      },
+      "confidence": "registry_default",
+      "default_applied": true,
+      "rationale": "Tier 1 local entrainment floor includes a bounded spray-jet entrainment term resolved from application method.",
+      "governance": {
+        "evidence_grade": "grade_2",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "particle_persistence_factor",
       "value": 0.85,
       "unit": null,
@@ -1028,6 +1098,76 @@
     },
     {
       "schema_version": "exposureAssumptionRecord.v1",
+      "name": "static_interzonal_mixing_rate_m3_per_hour",
+      "value": 68.0,
+      "unit": "m3/h",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Static interzonal mixing rate = near-field volume x (screening exchange turnover + room ventilation).",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "local_entrainment_rate_m3_per_hour",
+      "value": 44.0,
+      "unit": "m3/h",
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Bounded local entrainment floor = thermal-plume entrainment + application-method spray-jet entrainment.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
       "name": "interzonal_mixing_rate_m3_per_hour",
       "value": 68.0,
       "unit": "m3/h",
@@ -1041,7 +1181,7 @@
       },
       "confidence": "deterministic_derived",
       "default_applied": false,
-      "rationale": "Near-field volume multiplied by the Tier 1 screening exchange turnover plus ventilation.",
+      "rationale": "Interzonal mixing rate equals the greater of the static Tier 1 exchange estimate and the bounded local entrainment floor.",
       "governance": {
         "evidence_grade": null,
         "evidence_basis": "derived",
@@ -1051,6 +1191,41 @@
           "model_uncertainty",
           "scenario_uncertainty"
         ],
+        "applicability_domain": {
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_category": "disinfectant",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "population_group": "adult",
+          "demographic_tags": "worker,occupational",
+          "region": "EU"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "interzonal_mixing_floor_applied",
+      "value": false,
+      "unit": null,
+      "source_kind": "derived",
+      "source": {
+        "source_id": "exposure_scenario_mcp",
+        "title": "Direct-Use Exposure MCP runtime",
+        "locator": "docs://algorithm-notes",
+        "version": "0.1.0",
+        "hash_sha256": null
+      },
+      "confidence": "deterministic_derived",
+      "default_applied": false,
+      "rationale": "Whether the bounded local entrainment floor exceeded the static Tier 1 interzonal rate.",
+      "governance": {
+        "evidence_grade": null,
+        "evidence_basis": "derived",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "derived",
+        "uncertainty_types": [],
         "applicability_domain": {
           "route": "inhalation",
           "scenario_class": "inhalation",
@@ -1727,6 +1902,16 @@
     {
       "code": "default_applied",
       "severity": "info",
+      "message": "Default value applied for 'thermal_plume_rate_m3_per_hour'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
+      "message": "Default value applied for 'spray_jet_rate_m3_per_hour'."
+    },
+    {
+      "code": "default_applied",
+      "severity": "info",
       "message": "Default value applied for 'particle_persistence_factor'."
     },
     {
@@ -1807,8 +1992,8 @@
     "algorithm_id": "worker.inhalation_art_execution_surrogate.v1",
     "plugin_id": "worker_inhalation_art_execution_surrogate",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.12.v23",
-    "defaults_hash_sha256": "88badd8c52aca6807360ba4f58d868fe5bfd6e34e3b0f25f851567da527e0885",
+    "defaults_version": "2026.04.12.v24",
+    "defaults_hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Execution reuses the existing inhalation screening kernels and then applies bounded worker control and respiratory-protection modifiers.",
@@ -1858,7 +2043,9 @@
       "deposition_rate_per_hour",
       "extrathoracic_swallow_fraction",
       "near_field_exchange_turnover_per_hour",
-      "particle_persistence_factor"
+      "particle_persistence_factor",
+      "spray_jet_rate_m3_per_hour",
+      "thermal_plume_rate_m3_per_hour"
     ],
     "validationGapIds": [
       "worker_inhalation_external_validation_partial_only",
