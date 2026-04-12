@@ -2072,6 +2072,8 @@ def execute_worker_dermal_absorbed_dose_task(
     pressurized_aerosol_physchem_label = "generic"
     pressurized_aerosol_carrier_factor = 1.0
     pressurized_aerosol_carrier_label = "generic"
+    pressurized_aerosol_formulation_factor = 1.0
+    pressurized_aerosol_formulation_label = "generic"
     if explicit_external_mass is not None:
         external_mass_mg_day = float(explicit_external_mass)
         assumptions.append(
@@ -2278,6 +2280,55 @@ def execute_worker_dermal_absorbed_dose_task(
                                 ),
                             )
                         )
+                aerosol_formulation_adjustment = (
+                    registry.pressurized_aerosol_formulation_profile_adjustment_factor(
+                        product_category=product_category or None,
+                        product_subtype=product_subtype,
+                        aerosol_formulation_profile=(
+                            None
+                            if base_request is None
+                            else base_request.product_use_profile.aerosol_formulation_profile
+                        ),
+                    )
+                )
+                if aerosol_formulation_adjustment is not None:
+                    (
+                        pressurized_aerosol_formulation_label,
+                        pressurized_aerosol_formulation_factor,
+                        aerosol_formulation_source,
+                    ) = aerosol_formulation_adjustment
+                    assumptions.append(
+                        _assumption_record(
+                            name="pressurized_aerosol_formulation_profile_adjustment_factor",
+                            value=pressurized_aerosol_formulation_factor,
+                            unit="fraction",
+                            source_kind=SourceKind.DEFAULT_REGISTRY,
+                            source=aerosol_formulation_source,
+                            rationale=(
+                                "Worker dermal aerosol mass semantics were further adjusted "
+                                "with a bounded formulation-profile heuristic because default "
+                                "density and explicit aerosol formulation context were both "
+                                "active."
+                            ),
+                            applicability_domain=applicability_domain,
+                        )
+                    )
+                    if pressurized_aerosol_formulation_factor < 1.0:
+                        quality_flags.append(
+                            QualityFlag(
+                                code=(
+                                    "worker_dermal_pressurized_aerosol_formulation_"
+                                    "profile_adjustment_defaulted"
+                                ),
+                                severity=Severity.WARNING,
+                                message=(
+                                    "Worker dermal execution further reduced volumetric "
+                                    "aerosol mass with a bounded aerosol formulation-profile "
+                                    "adjustment."
+                                ),
+                            )
+                        )
+                pressurized_aerosol_volume_factor *= pressurized_aerosol_formulation_factor
                 pressurized_aerosol_volume_factor *= pressurized_aerosol_carrier_factor
                 pressurized_aerosol_volume_factor *= pressurized_aerosol_physchem_factor
                 assumptions.append(
@@ -3312,6 +3363,14 @@ def execute_worker_dermal_absorbed_dose_task(
             )
             route_metrics["pressurizedAerosolCarrierFamily"] = (
                 pressurized_aerosol_carrier_label
+            )
+        if pressurized_aerosol_formulation_factor != 1.0:
+            route_metrics["pressurizedAerosolFormulationProfileAdjustmentFactor"] = round(
+                pressurized_aerosol_formulation_factor,
+                8,
+            )
+            route_metrics["pressurizedAerosolFormulationProfile"] = (
+                pressurized_aerosol_formulation_label
             )
         if ppe_penetration_override is None:
             route_metrics["basePpePenetrationFactor"] = round(

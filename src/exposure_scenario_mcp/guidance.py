@@ -777,7 +777,7 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
   explicitly declares light, moderate, or high effort
 - Applies worker control and respiratory-protection factors after the baseline kernel,
   including optional `levFamily` and `hoodFaceVelocityMPerS` refinements when callers
-  can supply them
+  can supply them, with bounded measured-profile bands for supported LEV families
 - Returns both the preserved baseline dose and the control-adjusted worker inhalation dose
 - Preserves determinant-template alignment, quality flags, limitations, and provenance
 
@@ -787,7 +787,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 - The execution kernel is intentionally bounded and transparent, not a real ART solver
 - Control and respiratory-protection effects are represented by heuristic adjustment factors
 - Explicit `levFamily` and `hoodFaceVelocityMPerS` inputs refine those control factors, but
-  still remain bounded screening semantics rather than measured LEV performance modeling
+  still remain bounded screening semantics rather than measured LEV performance modeling,
+  even when supported LEV-family measured-profile bands are applied
 - Task intensity is represented by a bounded inhalation-rate factor, not measured minute
   ventilation
 - Volatility and aerosol removal are represented by bounded screening caps and

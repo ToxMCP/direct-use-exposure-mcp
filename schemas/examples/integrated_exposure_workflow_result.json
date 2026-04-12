@@ -12,6 +12,7 @@
       "product_name": "Example Trigger Spray",
       "product_subtype": null,
       "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
       "product_category": "household_cleaner",
       "physical_form": "spray",
       "application_method": "trigger_spray",
@@ -60,6 +61,7 @@
       "product_name": "Example Trigger Spray",
       "product_subtype": "indoor_surface_insecticide",
       "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
       "product_category": "pesticide",
       "physical_form": "spray",
       "application_method": "trigger_spray",
@@ -312,6 +314,7 @@
             "product_name": "Example Trigger Spray",
             "product_subtype": null,
             "aerosolCarrierFamily": null,
+            "aerosolFormulationProfile": null,
             "product_category": "household_cleaner",
             "physical_form": "spray",
             "application_method": "trigger_spray",
@@ -395,6 +398,7 @@
             "product_name": "Example Trigger Spray",
             "product_subtype": "indoor_surface_insecticide",
             "aerosolCarrierFamily": null,
+            "aerosolFormulationProfile": null,
             "product_category": "pest_control",
             "physical_form": "spray",
             "application_method": "trigger_spray",
@@ -481,6 +485,7 @@
             "product_name": "Example Trigger Spray",
             "product_subtype": "indoor_surface_insecticide",
             "aerosolCarrierFamily": null,
+            "aerosolFormulationProfile": null,
             "product_category": "pesticide",
             "physical_form": "spray",
             "application_method": "trigger_spray",
@@ -543,6 +548,7 @@
         "product_name": "Example Trigger Spray",
         "product_subtype": "indoor_surface_insecticide",
         "aerosolCarrierFamily": null,
+        "aerosolFormulationProfile": null,
         "product_category": "pesticide",
         "physical_form": "spray",
         "application_method": "trigger_spray",
@@ -619,6 +625,7 @@
       "product_name": "Example Trigger Spray",
       "product_subtype": "indoor_surface_insecticide",
       "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
       "product_category": "pesticide",
       "physical_form": "spray",
       "application_method": "trigger_spray",
@@ -883,7 +890,7 @@
           "title": "Direct-Use Exposure MCP heuristic pest-control trigger-spray airborne-fraction bridge informed by RIVM ConsExpo spray families",
           "locator": "docs://defaults-evidence-map#heuristic-pest-control-trigger-spray-airborne-fraction-bridge",
           "version": "2026.04.07.v1",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -949,7 +956,7 @@
           "title": "ECHA consumer inhalation room-default benchmark",
           "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
           "version": "public ECHA dossier entry accessed 2026-03-24",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -982,7 +989,7 @@
           "title": "ECHA consumer inhalation room-default benchmark",
           "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
           "version": "public ECHA dossier entry accessed 2026-03-24",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1219,7 +1226,7 @@
           "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
           "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
           "version": "2026.04.11.v1",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1255,7 +1262,7 @@
           "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
           "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
           "version": "2026.04.11.v1",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1291,7 +1298,7 @@
           "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
           "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
           "version": "2026.04.11.v1",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1327,7 +1334,7 @@
           "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
           "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
           "version": "2026.04.12.v1",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1838,8 +1845,8 @@
       "algorithm_id": "inhalation.room_well_mixed.v1",
       "plugin_id": "inhalation_screening_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.04.12.v30",
-      "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+      "defaults_version": "2026.04.13.v31",
+      "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -2384,8 +2391,8 @@
       "algorithm_id": "pbpk.export.v1",
       "plugin_id": "pbpk_export_service",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.04.12.v30",
-      "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+      "defaults_version": "2026.04.13.v31",
+      "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -2467,6 +2474,7 @@
             "product_name": "Example Trigger Spray",
             "product_subtype": "indoor_surface_insecticide",
             "aerosolCarrierFamily": null,
+            "aerosolFormulationProfile": null,
             "product_category": "pesticide",
             "physical_form": "spray",
             "application_method": "trigger_spray",
@@ -2731,7 +2739,7 @@
                 "title": "Direct-Use Exposure MCP heuristic pest-control trigger-spray airborne-fraction bridge informed by RIVM ConsExpo spray families",
                 "locator": "docs://defaults-evidence-map#heuristic-pest-control-trigger-spray-airborne-fraction-bridge",
                 "version": "2026.04.07.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -2797,7 +2805,7 @@
                 "title": "ECHA consumer inhalation room-default benchmark",
                 "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
                 "version": "public ECHA dossier entry accessed 2026-03-24",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -2830,7 +2838,7 @@
                 "title": "ECHA consumer inhalation room-default benchmark",
                 "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
                 "version": "public ECHA dossier entry accessed 2026-03-24",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -3067,7 +3075,7 @@
                 "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
                 "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
                 "version": "2026.04.11.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -3103,7 +3111,7 @@
                 "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
                 "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
                 "version": "2026.04.11.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -3139,7 +3147,7 @@
                 "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
                 "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
                 "version": "2026.04.11.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -3175,7 +3183,7 @@
                 "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
                 "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
                 "version": "2026.04.12.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -3686,8 +3694,8 @@
             "algorithm_id": "inhalation.room_well_mixed.v1",
             "plugin_id": "inhalation_screening_plugin",
             "plugin_version": "0.1.0",
-            "defaults_version": "2026.04.12.v30",
-            "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+            "defaults_version": "2026.04.13.v31",
+            "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
             "generated_at": "2026-03-24T00:00:00+00:00",
             "notes": [
               "Deterministic-first v0.1 engine.",
@@ -4192,8 +4200,8 @@
             "algorithm_id": "pbpk.export.v1",
             "plugin_id": "pbpk_export_service",
             "plugin_version": "0.1.0",
-            "defaults_version": "2026.04.12.v30",
-            "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+            "defaults_version": "2026.04.13.v31",
+            "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
             "generated_at": "2026-03-24T00:00:00+00:00",
             "notes": [
               "Deterministic-first v0.1 engine.",
@@ -4535,6 +4543,7 @@
             "product_name": "Example Trigger Spray",
             "product_subtype": "indoor_surface_insecticide",
             "aerosolCarrierFamily": null,
+            "aerosolFormulationProfile": null,
             "product_category": "pesticide",
             "physical_form": "spray",
             "application_method": "trigger_spray",
@@ -4799,7 +4808,7 @@
                 "title": "Direct-Use Exposure MCP heuristic pest-control trigger-spray airborne-fraction bridge informed by RIVM ConsExpo spray families",
                 "locator": "docs://defaults-evidence-map#heuristic-pest-control-trigger-spray-airborne-fraction-bridge",
                 "version": "2026.04.07.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -4865,7 +4874,7 @@
                 "title": "ECHA consumer inhalation room-default benchmark",
                 "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
                 "version": "public ECHA dossier entry accessed 2026-03-24",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -4898,7 +4907,7 @@
                 "title": "ECHA consumer inhalation room-default benchmark",
                 "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
                 "version": "public ECHA dossier entry accessed 2026-03-24",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -5135,7 +5144,7 @@
                 "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
                 "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
                 "version": "2026.04.11.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -5171,7 +5180,7 @@
                 "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
                 "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
                 "version": "2026.04.11.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -5207,7 +5216,7 @@
                 "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
                 "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
                 "version": "2026.04.11.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -5243,7 +5252,7 @@
                 "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
                 "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
                 "version": "2026.04.12.v1",
-                "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+                "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
               },
               "confidence": "registry_default",
               "default_applied": true,
@@ -5754,8 +5763,8 @@
             "algorithm_id": "inhalation.room_well_mixed.v1",
             "plugin_id": "inhalation_screening_plugin",
             "plugin_version": "0.1.0",
-            "defaults_version": "2026.04.12.v30",
-            "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+            "defaults_version": "2026.04.13.v31",
+            "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
             "generated_at": "2026-03-24T00:00:00+00:00",
             "notes": [
               "Deterministic-first v0.1 engine.",
@@ -6260,8 +6269,8 @@
             "algorithm_id": "pbpk.export.v1",
             "plugin_id": "pbpk_export_service",
             "plugin_version": "0.1.0",
-            "defaults_version": "2026.04.12.v30",
-            "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+            "defaults_version": "2026.04.13.v31",
+            "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
             "generated_at": "2026-03-24T00:00:00+00:00",
             "notes": [
               "Deterministic-first v0.1 engine.",
@@ -6365,8 +6374,8 @@
     "algorithm_id": "workflow.integrated_exposure_pbpk.v1",
     "plugin_id": "integrated_exposure_workflow_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.12.v30",
-    "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+    "defaults_version": "2026.04.13.v31",
+    "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Workflow result preserves evidence reconciliation, scenario construction, and optional PBPK handoff generation as one auditable response.",

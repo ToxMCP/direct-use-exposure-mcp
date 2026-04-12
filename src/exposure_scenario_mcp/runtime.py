@@ -191,6 +191,28 @@ def resolve_product_mass_g(
                 ),
             )
             aerosol_volume_factor *= aerosol_carrier_factor
+        formulation_adjustment = (
+            registry.pressurized_aerosol_formulation_profile_adjustment_factor(
+                product_category=profile.product_category,
+                product_subtype=profile.product_subtype,
+                aerosol_formulation_profile=profile.aerosol_formulation_profile,
+            )
+        )
+        aerosol_formulation_factor = 1.0
+        if formulation_adjustment is not None:
+            _, aerosol_formulation_factor, formulation_source = formulation_adjustment
+            tracker.add_default(
+                "pressurized_aerosol_formulation_profile_adjustment_factor",
+                aerosol_formulation_factor,
+                "fraction",
+                formulation_source,
+                (
+                    "Aerosol volume interpretation was further adjusted with a bounded "
+                    "formulation-profile heuristic because explicit formulation context "
+                    "was supplied."
+                ),
+            )
+            aerosol_volume_factor *= aerosol_formulation_factor
         tracker.add_default(
             "pressurized_aerosol_volume_interpretation_factor",
             aerosol_volume_factor,
@@ -218,6 +240,16 @@ def resolve_product_mass_g(
                 (
                     "Volumetric aerosol-spray mass was further reduced with a bounded "
                     "aerosol carrier-family adjustment because explicit carrier composition "
+                    "context was supplied."
+                ),
+                severity=Severity.WARNING,
+            )
+        if aerosol_formulation_factor < 1.0:
+            tracker.add_quality_flag(
+                "pressurized_aerosol_formulation_profile_adjustment_defaulted",
+                (
+                    "Volumetric aerosol-spray mass was further reduced with a bounded "
+                    "aerosol formulation-profile adjustment because explicit formulation "
                     "context was supplied."
                 ),
                 severity=Severity.WARNING,

@@ -871,6 +871,19 @@
           "description": "Optional explicit aerosol carrier family such as hydrocarbon_propellant_solvent or water_ethanol_propellant when formulation-level spray semantics are known.",
           "title": "Aerosolcarrierfamily"
         },
+        "aerosolFormulationProfile": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional explicit aerosol formulation profile such as anhydrous_ethanol_propellant, water_quat_propellant, or high_solids_polymer_propellant when formulation-specific spray semantics are known.",
+          "title": "Aerosolformulationprofile"
+        },
         "product_category": {
           "description": "Product category or PUC-like category.",
           "title": "Product Category",

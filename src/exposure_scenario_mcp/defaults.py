@@ -219,6 +219,47 @@ class DefaultsRegistry:
             return None
         return key, float(entry["value"]), self._source(entry["source_id"])
 
+    def pressurized_aerosol_formulation_profile_adjustment_factor(
+        self,
+        product_category: str | None = None,
+        product_subtype: str | None = None,
+        aerosol_formulation_profile: str | None = None,
+    ) -> tuple[str, float, AssumptionSourceReference] | None:
+        if aerosol_formulation_profile is None:
+            return None
+        values = self.payload["conversion_defaults"][
+            "pressurized_aerosol_volume_interpretation_factor"
+        ].get("formulation_profile_adjustment_factor", {})
+        profile_key = aerosol_formulation_profile.lower()
+        if product_subtype is not None:
+            subtype_entry = (
+                values.get("product_subtype_overrides", {})
+                .get(product_subtype.lower(), {})
+                .get(profile_key)
+            )
+            if subtype_entry is not None:
+                return (
+                    profile_key,
+                    float(subtype_entry["value"]),
+                    self._source(subtype_entry["source_id"]),
+                )
+        if product_category is not None:
+            category_entry = (
+                values.get("product_category_overrides", {})
+                .get(product_category.lower(), {})
+                .get(profile_key)
+            )
+            if category_entry is not None:
+                return (
+                    profile_key,
+                    float(category_entry["value"]),
+                    self._source(category_entry["source_id"]),
+                )
+        global_entry = values.get("global", {}).get(profile_key)
+        if global_entry is None:
+            return None
+        return profile_key, float(global_entry["value"]), self._source(global_entry["source_id"])
+
     def population_defaults(
         self, population_group: str
     ) -> tuple[dict[str, float], AssumptionSourceReference]:
@@ -937,7 +978,7 @@ class DefaultsRegistry:
         control_context_profile: str | None = None,
         lev_family: str | None = None,
         hood_face_velocity_m_per_s: float | None = None,
-    ) -> tuple[str, str, str, float, AssumptionSourceReference]:
+    ) -> tuple[str, str, str, str, float, AssumptionSourceReference]:
         values = self.payload["worker_inhalation_execution_defaults"][
             "capture_velocity_factor"
         ]
@@ -946,12 +987,22 @@ class DefaultsRegistry:
         if not any(
             item in normalized_profile for item in ("local_exhaust", "enclosed_process")
         ):
-            return "generic", "generic", "generic", float(generic_entry["value"]), self._source(
-                generic_entry["source_id"]
+            return (
+                "generic",
+                "generic",
+                "generic",
+                "generic",
+                float(generic_entry["value"]),
+                self._source(generic_entry["source_id"]),
             )
         if control_context_profile is None and lev_family is None:
-            return "generic", "generic", "generic", float(generic_entry["value"]), self._source(
-                generic_entry["source_id"]
+            return (
+                "generic",
+                "generic",
+                "generic",
+                "generic",
+                float(generic_entry["value"]),
+                self._source(generic_entry["source_id"]),
             )
 
         active_profile_label = (
@@ -999,9 +1050,26 @@ class DefaultsRegistry:
             base_source = self._source(selected_entry["source_id"])
 
         velocity_label = "generic"
+        measured_profile_label = "generic"
         final_factor = base_factor
         velocity_source = base_source
-        if hood_face_velocity_m_per_s is not None:
+        measured_profiles = values.get("measured_profile_overrides", {})
+        measured_profile_values = (
+            measured_profiles.get(active_profile_label) or measured_profiles.get("generic")
+        )
+        if hood_face_velocity_m_per_s is not None and measured_profile_values is not None:
+            for candidate_label, candidate_entry in measured_profile_values.items():
+                min_velocity = candidate_entry.get("min_m_per_s")
+                max_velocity = candidate_entry.get("max_m_per_s")
+                if min_velocity is not None and hood_face_velocity_m_per_s < float(min_velocity):
+                    continue
+                if max_velocity is not None and hood_face_velocity_m_per_s > float(max_velocity):
+                    continue
+                measured_profile_label = candidate_label
+                final_factor *= float(candidate_entry["value"])
+                velocity_source = self._source(candidate_entry["source_id"])
+                break
+        elif hood_face_velocity_m_per_s is not None:
             velocity_values = values.get("hood_face_velocity_adjustment", {})
             velocity_entry = velocity_values.get(active_profile_label) or velocity_values.get(
                 "generic"
@@ -1022,6 +1090,7 @@ class DefaultsRegistry:
             base_label,
             active_profile_label,
             velocity_label,
+            measured_profile_label,
             final_factor,
             velocity_source,
         )
@@ -1156,6 +1225,14 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  for example hydrocarbon_propellant_solvent or water_ethanol_propellant.",
             "  This remains a bounded screening interpretation layer rather than a full",
             "  formulation mass-balance or propellant-composition solver.",
+            "",
+            "### Pressurized Aerosol Formulation-Profile Heuristics 2026",
+            "",
+            "- `pressurized_aerosol_formulation_profile_heuristics_2026` adds a second",
+            "  explicit refinement layer when callers know a formulation profile such as",
+            "  anhydrous_ethanol_propellant, water_quat_propellant, or",
+            "  high_solids_polymer_propellant. This remains a bounded interpretation layer,",
+            "  not a full propellant mass-balance or aerosolization solver.",
             "",
             "### Heuristic Retention Defaults",
             "",
@@ -1333,6 +1410,8 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  claiming measured hood-face velocity or capture-velocity profiles. When",
             "  callers declare `levFamily` and `hoodFaceVelocityMPerS`, those explicit",
             "  values are used instead of relying only on inferred free-text control tokens.",
+            "  For supported LEV families, bounded measured-profile bands can apply on top",
+            "  of the family class instead of only a generic high/low velocity adjustment.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",

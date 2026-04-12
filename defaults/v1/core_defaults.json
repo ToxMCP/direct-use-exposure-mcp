@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v30",
+  "defaults_version": "2026.04.13.v31",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -272,6 +272,18 @@
       "version": "2026.04.12.v1"
     },
     {
+      "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded pressurized-aerosol formulation-profile heuristics",
+      "locator": "docs://defaults-evidence-map#pressurized-aerosol-formulation-profile-heuristics-2026",
+      "version": "2026.04.13.v1"
+    },
+    {
+      "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded worker inhalation measured LEV capture-profile heuristics",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-capture-velocity-heuristics-2026",
+      "version": "2026.04.13.v1"
+    },
+    {
       "source_id": "worker_inhalation_capture_zone_heuristics_2026",
       "title": "Direct-Use Exposure MCP bounded worker inhalation capture-zone alignment heuristics",
       "locator": "docs://defaults-evidence-map#worker-inhalation-capture-zone-heuristics-2026",
@@ -530,6 +542,66 @@
         "oil_wax_propellant": {
           "value": 1.0,
           "source_id": "pressurized_aerosol_carrier_family_heuristics_2026"
+        }
+      },
+      "formulation_profile_adjustment_factor": {
+        "global": {
+          "high_propellant_solvent": {
+            "value": 0.9,
+            "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+          },
+          "water_ethanol_propellant": {
+            "value": 0.96,
+            "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+          },
+          "oil_wax_propellant": {
+            "value": 1.0,
+            "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+          }
+        },
+        "product_category_overrides": {
+          "disinfectant": {
+            "water_quat_propellant": {
+              "value": 0.94,
+              "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+            }
+          },
+          "paint_coating": {
+            "solvent_propellant_coating": {
+              "value": 0.88,
+              "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+            }
+          }
+        },
+        "product_subtype_overrides": {
+          "deodorant_spray": {
+            "anhydrous_ethanol_propellant": {
+              "value": 0.88,
+              "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+            },
+            "water_ethanol_propellant": {
+              "value": 0.94,
+              "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+            }
+          },
+          "body_spray": {
+            "anhydrous_ethanol_propellant": {
+              "value": 0.88,
+              "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+            }
+          },
+          "hair_spray": {
+            "high_solids_polymer_propellant": {
+              "value": 0.9,
+              "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+            }
+          },
+          "spray_sunscreen": {
+            "oil_wax_propellant": {
+              "value": 1.0,
+              "source_id": "pressurized_aerosol_formulation_profile_heuristics_2026"
+            }
+          }
         }
       }
     }
@@ -1704,6 +1776,62 @@
           "low_threshold_m_per_s": 0.25,
           "low_factor": 1.03,
           "source_id": "worker_inhalation_capture_velocity_heuristics_2026"
+        }
+      },
+      "measured_profile_overrides": {
+        "portable_capture_or_extractor": {
+          "measured_low_capture_band": {
+            "max_m_per_s": 0.2,
+            "value": 1.06,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          },
+          "measured_target_capture_band": {
+            "min_m_per_s": 0.2,
+            "max_m_per_s": 0.75,
+            "value": 0.98,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          },
+          "measured_high_capture_band": {
+            "min_m_per_s": 0.75,
+            "value": 0.93,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          }
+        },
+        "capture_hood_or_slot_hood": {
+          "measured_low_capture_band": {
+            "max_m_per_s": 0.4,
+            "value": 1.05,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          },
+          "measured_target_capture_band": {
+            "min_m_per_s": 0.4,
+            "max_m_per_s": 0.85,
+            "value": 0.97,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          },
+          "measured_high_capture_band": {
+            "min_m_per_s": 0.85,
+            "value": 0.91,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          }
+        },
+        "spray_booth_or_partial_enclosure": {
+          "measured_low_capture_band": {
+            "max_m_per_s": 0.25,
+            "value": 1.03,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          },
+          "measured_target_capture_band": {
+            "min_m_per_s": 0.25,
+            "max_m_per_s": 0.6,
+            "value": 0.99,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          },
+          "measured_high_capture_band": {
+            "min_m_per_s": 0.6,
+            "value": 0.95,
+            "source_id": "worker_inhalation_measured_capture_profile_heuristics_2026"
+          }
         }
       },
       "profile_overrides": {

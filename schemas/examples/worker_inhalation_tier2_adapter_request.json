@@ -63,6 +63,7 @@
         "product_name": "Example Workplace Disinfectant Spray",
         "product_subtype": null,
         "aerosolCarrierFamily": null,
+        "aerosolFormulationProfile": null,
         "product_category": "disinfectant",
         "physical_form": "spray",
         "application_method": "trigger_spray",

@@ -3315,6 +3315,8 @@ def execute_worker_inhalation_tier2_task(
     pressurized_aerosol_physchem_label = "generic"
     pressurized_aerosol_carrier_factor = 1.0
     pressurized_aerosol_carrier_label = "generic"
+    pressurized_aerosol_formulation_factor = 1.0
+    pressurized_aerosol_formulation_label = "generic"
 
     if base_request is None:
         limitations.append(
@@ -3482,6 +3484,8 @@ def execute_worker_inhalation_tier2_task(
             pressurized_aerosol_physchem_label = "generic"
             pressurized_aerosol_carrier_factor = 1.0
             pressurized_aerosol_carrier_label = "generic"
+            pressurized_aerosol_formulation_factor = 1.0
+            pressurized_aerosol_formulation_label = "generic"
             if use_amount_unit == ProductAmountUnit.G:
                 product_mass_g_event = use_amount_per_event
                 if product_mass_g_event is not None:
@@ -3649,6 +3653,52 @@ def execute_worker_inhalation_tier2_task(
                                     ),
                                 )
                             )
+                    aerosol_formulation_adjustment = (
+                        registry.pressurized_aerosol_formulation_profile_adjustment_factor(
+                            product_category=product_category or None,
+                            product_subtype=product_subtype or None,
+                            aerosol_formulation_profile=(
+                                base_request.product_use_profile.aerosol_formulation_profile
+                            ),
+                        )
+                    )
+                    if aerosol_formulation_adjustment is not None:
+                        (
+                            pressurized_aerosol_formulation_label,
+                            pressurized_aerosol_formulation_factor,
+                            aerosol_formulation_source,
+                        ) = aerosol_formulation_adjustment
+                        assumptions.append(
+                            _assumption_record(
+                                name="pressurized_aerosol_formulation_profile_adjustment_factor",
+                                value=pressurized_aerosol_formulation_factor,
+                                unit="fraction",
+                                source_kind=SourceKind.DEFAULT_REGISTRY,
+                                source=aerosol_formulation_source,
+                                rationale=(
+                                    "Worker aerosol mass semantics were further adjusted with "
+                                    "a bounded formulation-profile heuristic because explicit "
+                                    "aerosol formulation context was supplied."
+                                ),
+                                applicability_domain=applicability_domain,
+                            )
+                        )
+                        if pressurized_aerosol_formulation_factor < 1.0:
+                            quality_flags.append(
+                                QualityFlag(
+                                    code=(
+                                        "worker_inhalation_pressurized_aerosol_formulation_"
+                                        "profile_adjustment_defaulted"
+                                    ),
+                                    severity=Severity.WARNING,
+                                    message=(
+                                        "Worker inhalation execution further reduced "
+                                        "volumetric aerosol mass with a bounded aerosol "
+                                        "formulation-profile adjustment."
+                                    ),
+                                )
+                            )
+                    pressurized_aerosol_volume_factor *= pressurized_aerosol_formulation_factor
                     pressurized_aerosol_volume_factor *= pressurized_aerosol_carrier_factor
                     pressurized_aerosol_volume_factor *= pressurized_aerosol_physchem_factor
                     assumptions.append(
@@ -4035,6 +4085,7 @@ def execute_worker_inhalation_tier2_task(
     capture_velocity_label = "generic"
     capture_velocity_context_label = "generic"
     capture_velocity_velocity_label = "generic"
+    capture_velocity_measured_profile_label = "generic"
     capture_velocity_factor = 1.0
     if control_factor is None:
         control_context_terms = [
@@ -4128,6 +4179,7 @@ def execute_worker_inhalation_tier2_task(
             capture_velocity_label,
             capture_velocity_context_label,
             capture_velocity_velocity_label,
+            capture_velocity_measured_profile_label,
             capture_velocity_factor,
             capture_velocity_source,
         ) = registry.worker_inhalation_capture_velocity_factor(
@@ -4330,6 +4382,10 @@ def execute_worker_inhalation_tier2_task(
         route_metrics["captureVelocityContextProfile"] = capture_velocity_context_label
     if capture_velocity_velocity_label != "generic":
         route_metrics["captureVelocityVelocityBand"] = capture_velocity_velocity_label
+    if capture_velocity_measured_profile_label != "generic":
+        route_metrics["captureVelocityMeasuredProfileBand"] = (
+            capture_velocity_measured_profile_label
+        )
     if explicit_lev_family_label is not None:
         route_metrics["levFamily"] = explicit_lev_family_label
     if hood_face_velocity_m_per_s is not None:
@@ -4353,6 +4409,14 @@ def execute_worker_inhalation_tier2_task(
             8,
         )
         route_metrics["pressurizedAerosolCarrierFamily"] = pressurized_aerosol_carrier_label
+    if pressurized_aerosol_formulation_factor != 1.0:
+        route_metrics["pressurizedAerosolFormulationProfileAdjustmentFactor"] = round(
+            pressurized_aerosol_formulation_factor,
+            8,
+        )
+        route_metrics["pressurizedAerosolFormulationProfile"] = (
+            pressurized_aerosol_formulation_label
+        )
     assumption_lookup = {item.name: item for item in assumptions}
     aerosol_assumption = assumption_lookup.get(
         "pressurized_aerosol_volume_interpretation_factor"
@@ -4459,6 +4523,47 @@ def execute_worker_inhalation_tier2_task(
                 message=(
                     "Worker inhalation execution further reduced volumetric aerosol mass "
                     "with a bounded aerosol carrier-family adjustment."
+                ),
+            )
+        )
+    aerosol_formulation_assumption = assumption_lookup.get(
+        "pressurized_aerosol_formulation_profile_adjustment_factor"
+    )
+    if (
+        "pressurizedAerosolFormulationProfileAdjustmentFactor" not in route_metrics
+        and aerosol_formulation_assumption is not None
+        and float(aerosol_formulation_assumption.value) < 1.0
+    ):
+        route_metrics["pressurizedAerosolFormulationProfileAdjustmentFactor"] = round(
+            float(aerosol_formulation_assumption.value),
+            8,
+        )
+    if (
+        "pressurizedAerosolFormulationProfile" not in route_metrics
+        and base_request is not None
+        and base_request.product_use_profile.aerosol_formulation_profile is not None
+        and aerosol_formulation_assumption is not None
+        and float(aerosol_formulation_assumption.value) < 1.0
+    ):
+        route_metrics["pressurizedAerosolFormulationProfile"] = (
+            base_request.product_use_profile.aerosol_formulation_profile
+        )
+    if (
+        aerosol_formulation_assumption is not None
+        and float(aerosol_formulation_assumption.value) < 1.0
+        and not any(
+            flag.code
+            == "worker_inhalation_pressurized_aerosol_formulation_profile_adjustment_defaulted"
+            for flag in quality_flags
+        )
+    ):
+        quality_flags.append(
+            QualityFlag(
+                code="worker_inhalation_pressurized_aerosol_formulation_profile_adjustment_defaulted",
+                severity=Severity.WARNING,
+                message=(
+                    "Worker inhalation execution further reduced volumetric aerosol mass "
+                    "with a bounded aerosol formulation-profile adjustment."
                 ),
             )
         )

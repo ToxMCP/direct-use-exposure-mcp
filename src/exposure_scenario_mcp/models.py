@@ -1062,6 +1062,16 @@ class ProductUseProfile(StrictModel):
             "or water_ethanol_propellant when formulation-level spray semantics are known."
         ),
     )
+    aerosol_formulation_profile: str | None = Field(
+        default=None,
+        alias="aerosolFormulationProfile",
+        description=(
+            "Optional explicit aerosol formulation profile such as "
+            "anhydrous_ethanol_propellant, water_quat_propellant, or "
+            "high_solids_polymer_propellant when formulation-specific spray semantics are "
+            "known."
+        ),
+    )
     product_category: str = Field(..., description="Product category or PUC-like category.")
     physical_form: str = Field(
         ..., description="Physical form such as cream, liquid, spray, or gel."
@@ -1120,6 +1130,7 @@ class ProductUseProfile(StrictModel):
         "product_name",
         "product_subtype",
         "aerosol_carrier_family",
+        "aerosol_formulation_profile",
         "product_category",
         "physical_form",
         "application_method",

@@ -23,6 +23,7 @@
       "product_name": "Example Hand Cream",
       "product_subtype": null,
       "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
       "product_category": "personal_care",
       "physical_form": "cream",
       "application_method": "hand_application",
@@ -239,7 +240,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -269,7 +270,7 @@
           "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
           "version": "2026.03.25.v6",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -302,7 +303,7 @@
           "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
           "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
           "version": "RIVM report 2025-0099 / 2025",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -372,7 +373,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -436,8 +437,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.04.12.v30",
-      "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+      "defaults_version": "2026.04.13.v31",
+      "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -666,6 +667,7 @@
       "product_name": "Example Hand Cream",
       "product_subtype": null,
       "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
       "product_category": "personal_care",
       "physical_form": "cream",
       "application_method": "hand_application",
@@ -912,7 +914,7 @@
           "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
           "version": "2026.03.25.v6",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -945,7 +947,7 @@
           "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
           "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
           "version": "RIVM report 2025-0099 / 2025",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1015,7 +1017,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1079,8 +1081,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.04.12.v30",
-      "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+      "defaults_version": "2026.04.13.v31",
+      "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -1304,6 +1306,7 @@
       "product_name": "Example Hand Cream",
       "product_subtype": null,
       "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
       "product_category": "personal_care",
       "physical_form": "cream",
       "application_method": "hand_application",
@@ -1550,7 +1553,7 @@
           "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
           "version": "2026.03.25.v6",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1583,7 +1586,7 @@
           "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
           "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
           "version": "RIVM report 2025-0099 / 2025",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1653,7 +1656,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1"
+          "hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1717,8 +1720,8 @@
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.1.0",
-      "defaults_version": "2026.04.12.v30",
-      "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+      "defaults_version": "2026.04.13.v31",
+      "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first v0.1 engine.",
@@ -2064,8 +2067,8 @@
     "algorithm_id": "uncertainty.bounds.v1",
     "plugin_id": "parameter_bounds_service",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.12.v30",
-    "defaults_hash_sha256": "794e661e27ca8d43e757a27c00aa6047d01a4bca53278c0625b58c6710158ff1",
+    "defaults_version": "2026.04.13.v31",
+    "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",

@@ -11,6 +11,7 @@
       "product_name": "Example Trigger Spray",
       "product_subtype": null,
       "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
       "product_category": "household_cleaner",
       "physical_form": "spray",
       "application_method": "trigger_spray",

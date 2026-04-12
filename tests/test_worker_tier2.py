@@ -1025,14 +1025,16 @@ def test_worker_art_execution_applies_explicit_lev_family_and_face_velocity() ->
         registry=DefaultsRegistry.load(),
     )
 
-    assert result.route_metrics["captureVelocityFactor"] == pytest.approx(0.8832, rel=1e-6)
+    assert result.route_metrics["captureVelocityFactor"] == pytest.approx(0.8372, rel=1e-6)
     assert result.route_metrics["captureVelocityProfile"] == (
         "slot_hood_or_high_face_velocity"
     )
     assert result.route_metrics["captureVelocityContextProfile"] == (
         "capture_hood_or_slot_hood"
     )
-    assert result.route_metrics["captureVelocityVelocityBand"] == "high_face_velocity"
+    assert result.route_metrics["captureVelocityMeasuredProfileBand"] == (
+        "measured_high_capture_band"
+    )
     assert result.route_metrics["levFamily"] == "slot_hood"
     assert result.route_metrics["hoodFaceVelocityMPerS"] == pytest.approx(0.9, rel=1e-6)
     assert any(item.code == "worker_lev_family_screening" for item in result.limitations)
@@ -1259,6 +1261,66 @@ def test_worker_art_execution_applies_explicit_carrier_family_adjustment() -> No
     )
     assert any(
         flag.code == "worker_inhalation_pressurized_aerosol_carrier_family_adjustment_defaulted"
+        for flag in result.quality_flags
+    )
+
+
+def test_worker_art_execution_applies_explicit_formulation_profile_adjustment() -> None:
+    bridge_package = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "chemical_name": "Example Worker Personal-Care Aerosol",
+                    "product_use_profile": _base_request().product_use_profile.model_copy(
+                        update={
+                            "product_category": "personal_care",
+                            "product_subtype": "deodorant_spray",
+                            "aerosol_carrier_family": "hydrocarbon_propellant_solvent",
+                            "aerosol_formulation_profile": "anhydrous_ethanol_propellant",
+                            "application_method": "aerosol_spray",
+                            "use_amount_per_event": 10.0,
+                        }
+                    ),
+                }
+            ),
+            task_description="Worker deodorant aerosol task",
+            workplace_setting="product testing room",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.GENERAL_VENTILATION,
+            local_controls=["general ventilation"],
+            respiratory_protection="none",
+            emission_descriptor="pressurized personal-care aerosol near the breathing zone",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=bridge_package.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assumption_map = {item.name: item for item in result.assumptions}
+    assert assumption_map[
+        "pressurized_aerosol_formulation_profile_adjustment_factor"
+    ].value == pytest.approx(0.88, rel=1e-6)
+    assert assumption_map[
+        "pressurized_aerosol_formulation_profile_adjustment_factor"
+    ].source.source_id == "pressurized_aerosol_formulation_profile_heuristics_2026"
+    assert result.route_metrics["pressurizedAerosolVolumeInterpretationFactor"] == pytest.approx(
+        0.3608, rel=1e-6
+    )
+    assert result.route_metrics[
+        "pressurizedAerosolFormulationProfileAdjustmentFactor"
+    ] == pytest.approx(0.88, rel=1e-6)
+    assert result.route_metrics["pressurizedAerosolFormulationProfile"] == (
+        "anhydrous_ethanol_propellant"
+    )
+    assert any(
+        flag.code
+        == "worker_inhalation_pressurized_aerosol_formulation_profile_adjustment_defaulted"
         for flag in result.quality_flags
     )
 
