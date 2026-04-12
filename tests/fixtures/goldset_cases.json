@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.10.v13",
+  "goldset_version": "2026.04.12.v14",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -353,13 +353,18 @@
       "id": "consumer_air_space_insecticide_aerosol",
       "title": "Air-space insecticide aerosol room-decay challenge",
       "coverage_status": "challenge_case",
-      "benchmark_case_ids": [],
+      "benchmark_case_ids": [
+        "inhalation_air_space_insecticide_aerosol_screening",
+        "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001",
+        "inhalation_air_space_insecticide_aerosol_time_series_6h_2001"
+      ],
       "recognizable_examples": ["bug spray aerosol", "room insecticide aerosol"],
       "challenge_tags": ["full_room_aerosol", "longer_decay", "subtype_selection", "pesticide_consumer"],
       "why_it_matters": "Room-filling insecticide aerosols are familiar and scientifically hard because they combine full-air release, room persistence, and deposition in a way that stresses a simple screening stack.",
-      "showcase_story": "This is the pesticide consumer case most likely to convince skeptical users that the MCP understands where it is still extrapolating and where a future validation package is needed.",
+      "showcase_story": "This remains the pesticide consumer challenge case even though the MCP now has narrow executable room-air and sparse time-series anchors for the air-space insecticide family; it is still the clearest example of where longer-decay and deposition realism need deeper chamber validation.",
       "evidence_gaps": [
-        "Needs external chamber concentration time series and aerosol deposition anchors before it can move from challenge case to benchmark-regressed showcase."
+        "The current anchors are still a narrow closed-room pyrethroid aerosol scenario rather than a broader chamber-validation family for room insecticide aerosols.",
+        "Longer-decay persistence and deposition behavior still need richer external chamber datasets before this family can be treated as broadly benchmarked."
       ],
       "external_sources": [
         {

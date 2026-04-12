@@ -8,7 +8,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     benchmark_ids = {case["id"] for case in load_benchmark_manifest()["cases"]}
 
     assert goldset["schema_version"] == "benchmarkGoldsetManifest.v1"
-    assert goldset["goldset_version"] == "2026.04.10.v13"
+    assert goldset["goldset_version"] == "2026.04.12.v14"
     assert len(goldset["cases"]) >= 6
 
     coverage_statuses = {case["coverage_status"] for case in goldset["cases"]}
@@ -90,6 +90,16 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
         if case["id"] == "consumer_mosquito_aerosol_room_air_validation"
     )
     assert set(aerosol_case["benchmark_case_ids"]) >= {
+        "inhalation_air_space_insecticide_aerosol_screening",
+        "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001",
+        "inhalation_air_space_insecticide_aerosol_time_series_6h_2001",
+    }
+    aerosol_challenge_case = next(
+        case
+        for case in goldset["cases"]
+        if case["id"] == "consumer_air_space_insecticide_aerosol"
+    )
+    assert set(aerosol_challenge_case["benchmark_case_ids"]) >= {
         "inhalation_air_space_insecticide_aerosol_screening",
         "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001",
         "inhalation_air_space_insecticide_aerosol_time_series_6h_2001",

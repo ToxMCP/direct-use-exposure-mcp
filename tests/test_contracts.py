@@ -432,7 +432,6 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
         "integration_showcase": 1,
     }
     assert set(report["unmappedGoldsetCaseIds"]) == {
-        "consumer_air_space_insecticide_aerosol",
         "eu_diazinon_indoor_surface_insecticide",
     }
 
