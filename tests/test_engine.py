@@ -120,6 +120,8 @@ def _registry_with_full_pressurized_aerosol_volume_interpretation() -> DefaultsR
     payload = deepcopy(base.payload)
     section = payload["conversion_defaults"]["pressurized_aerosol_volume_interpretation_factor"]
     section["global"]["value"] = 1.0
+    for entry in section.get("product_category_overrides", {}).values():
+        entry["value"] = 1.0
     for entry in section.get("product_subtype_overrides", {}).values():
         entry["value"] = 1.0
     return DefaultsRegistry(
@@ -1682,6 +1684,58 @@ def test_generic_volumetric_aerosol_spray_applies_pressurized_interpretation_fac
     )
     assert constrained.route_metrics["released_mass_mg_per_event"] == pytest.approx(
         baseline.route_metrics["released_mass_mg_per_event"] * 0.35,
+        abs=1e-8,
+    )
+    assert any(
+        item.code == "pressurized_aerosol_volume_interpretation_defaulted"
+        for item in constrained.quality_flags
+    )
+
+
+def test_personal_care_deodorant_aerosol_uses_subtype_pressurized_override() -> None:
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            product_subtype="deodorant_spray",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.001,
+            use_amount_per_event=10.0,
+            use_amount_unit="mL",
+            use_events_per_day=1.0,
+            room_volume_m3=20.0,
+            air_exchange_rate_per_hour=1.0,
+            exposure_duration_hours=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            inhalation_rate_m3_per_hour=1.0,
+        ),
+    )
+
+    baseline_engine = build_engine(_registry_with_full_pressurized_aerosol_volume_interpretation())
+    constrained_engine = build_engine()
+
+    baseline = baseline_engine.build(request)
+    constrained = constrained_engine.build(request)
+    assumptions = {item.name: item for item in constrained.assumptions}
+
+    assert assumptions["pressurized_aerosol_volume_interpretation_factor"].value == pytest.approx(
+        0.5, rel=1e-6
+    )
+    assert assumptions["pressurized_aerosol_volume_interpretation_factor"].source.source_id == (
+        "pressurized_aerosol_volume_interpretation_heuristics_2026"
+    )
+    assert constrained.external_dose.value == pytest.approx(
+        baseline.external_dose.value * 0.5,
+        abs=1e-8,
+    )
+    assert constrained.route_metrics["released_mass_mg_per_event"] == pytest.approx(
+        baseline.route_metrics["released_mass_mg_per_event"] * 0.5,
         abs=1e-8,
     )
     assert any(

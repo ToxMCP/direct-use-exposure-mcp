@@ -875,15 +875,66 @@ def test_worker_art_execution_applies_capture_distance_factor_for_far_source() -
         0.9, rel=1e-6
     )
     assert far_result.route_metrics["captureDistanceAlignmentFactor"] == pytest.approx(
-        1.2, rel=1e-6
+        1.25, rel=1e-6
     )
     assert far_result.route_metrics["captureDistanceProfile"] == "far_from_capture_zone"
+    assert far_result.route_metrics["captureDistanceContextProfile"] == (
+        "capture_hood_or_slot_hood"
+    )
     assert far_result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
-        0.3672, rel=1e-6
+        0.3825, rel=1e-6
     )
     assert any(
         item.code == "worker_capture_distance_screening"
         for item in far_result.limitations
+    )
+
+
+def test_worker_art_execution_applies_smaller_far_distance_penalty_for_spray_booth() -> None:
+    booth_bridge = build_worker_inhalation_tier2_bridge(
+        ExportWorkerInhalationTier2BridgeRequest(
+            base_request=_base_request().model_copy(
+                update={
+                    "product_use_profile": _base_request().product_use_profile.model_copy(
+                        update={
+                            "product_category": "paint_coating",
+                            "application_method": "aerosol_spray",
+                        }
+                    ),
+                    "chemical_name": "Example Worker Coating",
+                    "source_distance_m": 1.6,
+                }
+            ),
+            task_description="Worker paint booth aerosol coating task",
+            workplace_setting="finishing booth",
+            task_duration_hours=0.5,
+            ventilation_context=WorkerVentilationContext.LOCAL_EXHAUST,
+            local_controls=["local exhaust ventilation", "spray booth"],
+            respiratory_protection="none",
+            emission_descriptor="pressurized coating aerosol near the painted surface",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    booth_result = execute_worker_inhalation_tier2_task(
+        ExecuteWorkerInhalationTier2Request(
+            adapter_request=booth_bridge.tool_call.arguments,
+            context_of_use="worker-art-execution-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assert booth_result.route_metrics["captureDistanceAlignmentFactor"] == pytest.approx(
+        1.08, rel=1e-6
+    )
+    assert booth_result.route_metrics["captureDistanceProfile"] == "far_from_capture_zone"
+    assert booth_result.route_metrics["captureDistanceContextProfile"] == (
+        "spray_booth_or_partial_enclosure"
+    )
+    assert booth_result.route_metrics["captureDistanceAlignmentFactor"] < 1.25
+    assert any(
+        item.code == "worker_capture_distance_screening"
+        for item in booth_result.limitations
     )
 
 

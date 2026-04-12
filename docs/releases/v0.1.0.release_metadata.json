@@ -5,7 +5,7 @@
   "packageVersion": "0.1.0",
   "serverName": "exposure_scenario_mcp",
   "serverVersion": "0.1.0",
-  "defaultsVersion": "2026.04.12.v26",
+  "defaultsVersion": "2026.04.12.v27",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
   "benchmarkCaseCount": 31,

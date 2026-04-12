@@ -3886,6 +3886,7 @@ def execute_worker_inhalation_tier2_task(
     capture_zone_label = "generic"
     capture_zone_alignment_factor = 1.0
     capture_distance_label = "generic"
+    capture_distance_context_label = "generic"
     capture_distance_alignment_factor = 1.0
     if control_factor is None:
         control_factor, control_source = registry.worker_inhalation_control_profile_factor(
@@ -3956,11 +3957,13 @@ def execute_worker_inhalation_tier2_task(
         )
         (
             capture_distance_label,
+            capture_distance_context_label,
             capture_distance_alignment_factor,
             capture_distance_source,
         ) = registry.worker_inhalation_capture_distance_alignment_factor(
             source_distance_m,
             envelope.control_profile,
+            control_context_label,
         )
         assumptions.append(
             _assumption_record(
@@ -3972,7 +3975,8 @@ def execute_worker_inhalation_tier2_task(
                 rationale=(
                     "Worker capture-distance alignment factor defaulted from the declared "
                     "source distance and the bounded capture-distance heuristics for local "
-                    "exhaust or enclosed-capture tasks."
+                    "exhaust or enclosed-capture tasks, refined with the inferred hood or "
+                    "enclosure profile when available."
                 ),
                 applicability_domain=applicability_domain,
             )
@@ -4123,6 +4127,8 @@ def execute_worker_inhalation_tier2_task(
         route_metrics["captureZoneProfile"] = capture_zone_label
     if capture_distance_label != "generic":
         route_metrics["captureDistanceProfile"] = capture_distance_label
+    if capture_distance_context_label != "generic":
+        route_metrics["captureDistanceContextProfile"] = capture_distance_context_label
     if pressurized_aerosol_volume_factor != 1.0:
         route_metrics["pressurizedAerosolVolumeInterpretationFactor"] = round(
             pressurized_aerosol_volume_factor,

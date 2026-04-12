@@ -792,7 +792,8 @@ class DefaultsRegistry:
         self,
         source_distance_m: float | None,
         control_profile: str,
-    ) -> tuple[str, float, AssumptionSourceReference]:
+        control_context_profile: str | None = None,
+    ) -> tuple[str, str, float, AssumptionSourceReference]:
         values = self.payload["worker_inhalation_execution_defaults"][
             "capture_distance_alignment_factor"
         ]
@@ -801,11 +802,21 @@ class DefaultsRegistry:
         if source_distance_m is None or not any(
             item in normalized_profile for item in ("local_exhaust", "enclosed_process")
         ):
-            return "generic", float(generic_entry["value"]), self._source(
+            return "generic", "generic", float(generic_entry["value"]), self._source(
                 generic_entry["source_id"]
             )
 
+        active_profile_label = "generic"
+        profile_entries = values.get("profile_overrides", {})
+        if control_context_profile:
+            candidate_profile = profile_entries.get(control_context_profile.lower())
+            if candidate_profile:
+                active_profile_label = control_context_profile.lower()
+                values = candidate_profile
+
         for candidate_label, candidate_entry in values.items():
+            if candidate_label in {"generic", "profile_overrides"}:
+                continue
             if candidate_label == "generic":
                 continue
             min_distance = candidate_entry.get("min_distance_m")
@@ -814,11 +825,14 @@ class DefaultsRegistry:
                 continue
             if max_distance is not None and source_distance_m > float(max_distance):
                 continue
-            return candidate_label, float(candidate_entry["value"]), self._source(
-                candidate_entry["source_id"]
+            return (
+                candidate_label,
+                active_profile_label,
+                float(candidate_entry["value"]),
+                self._source(candidate_entry["source_id"]),
             )
 
-        return "generic", float(generic_entry["value"]), self._source(
+        return "generic", active_profile_label, float(generic_entry["value"]), self._source(
             generic_entry["source_id"]
         )
 
@@ -931,7 +945,9 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  branches such as `air_space_insecticide` where the emitted active mass is",
             "  already handled as a whole-room aerosol release boundary. The current pack now",
             "  distinguishes broader propellant-rich personal-care aerosols from less extreme",
-            "  cleaner and disinfectant aerosol families instead of using one global factor.",
+            "  cleaner and disinfectant aerosol families, and also tightens subtype-specific",
+            "  personal-care branches such as deodorant/body sprays, hair sprays, and spray",
+            "  sunscreens instead of using one blanket factor.",
             "",
             "### Heuristic Retention Defaults",
             "",
@@ -1094,7 +1110,9 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "- `worker_inhalation_capture_distance_heuristics_2026` adds a bounded",
             "  source-distance refinement for local exhaust and enclosed-capture worker tasks.",
             "  It is intended to stop obviously offset or remote sources from receiving the",
-            "  same effective control benefit as a capture zone positioned close to the source.",
+            "  same effective control benefit as a capture zone positioned close to the",
+            "  source, and it now distinguishes looser hood capture from more enclosed booth",
+            "  or enclosure contexts.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",

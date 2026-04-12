@@ -2,7 +2,7 @@
   "schema_version": "contractManifest.v1",
   "server_name": "exposure_scenario_mcp",
   "server_version": "0.1.0",
-  "defaults_version": "2026.04.12.v26",
+  "defaults_version": "2026.04.12.v27",
   "tools": [
     {
       "name": "exposure_build_screening_exposure_scenario",

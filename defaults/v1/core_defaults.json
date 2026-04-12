@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v26",
+  "defaults_version": "2026.04.12.v27",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -319,6 +319,22 @@
         }
       },
       "product_subtype_overrides": {
+        "deodorant_spray": {
+          "value": 0.5,
+          "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        },
+        "body_spray": {
+          "value": 0.5,
+          "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        },
+        "hair_spray": {
+          "value": 0.55,
+          "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        },
+        "spray_sunscreen": {
+          "value": 0.65,
+          "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        },
         "air_space_insecticide": {
           "value": 1.0,
           "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
@@ -1343,6 +1359,62 @@
         "value": 1.2,
         "min_distance_m": 1.5,
         "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+      },
+      "profile_overrides": {
+        "portable_capture_or_extractor": {
+          "close_to_capture_zone": {
+            "value": 0.93,
+            "max_distance_m": 0.25,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          },
+          "offset_from_capture_zone": {
+            "value": 1.12,
+            "min_distance_m": 0.75,
+            "max_distance_m": 1.5,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          },
+          "far_from_capture_zone": {
+            "value": 1.2,
+            "min_distance_m": 1.5,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          }
+        },
+        "capture_hood_or_slot_hood": {
+          "close_to_capture_zone": {
+            "value": 0.88,
+            "max_distance_m": 0.25,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          },
+          "offset_from_capture_zone": {
+            "value": 1.15,
+            "min_distance_m": 0.75,
+            "max_distance_m": 1.5,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          },
+          "far_from_capture_zone": {
+            "value": 1.25,
+            "min_distance_m": 1.5,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          }
+        },
+        "spray_booth_or_partial_enclosure": {
+          "close_to_capture_zone": {
+            "value": 0.95,
+            "max_distance_m": 0.25,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          },
+          "offset_from_capture_zone": {
+            "value": 1.0,
+            "min_distance_m": 0.75,
+            "max_distance_m": 1.5,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          },
+          "far_from_capture_zone": {
+            "value": 1.08,
+            "min_distance_m": 1.5,
+            "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+          }
+        }
       }
     },
     "respiratory_protection_factor": {
