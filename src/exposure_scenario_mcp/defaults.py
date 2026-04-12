@@ -148,6 +148,50 @@ class DefaultsRegistry:
                 entry = subtype_entry
         return float(entry["value"]), self._source(entry["source_id"])
 
+    def pressurized_aerosol_physchem_adjustment_factor(
+        self,
+        product_category: str | None = None,
+        product_subtype: str | None = None,
+        vapor_pressure_mmhg: float | None = None,
+    ) -> tuple[str, float, AssumptionSourceReference] | None:
+        if vapor_pressure_mmhg is None:
+            return None
+        section = self.payload["conversion_defaults"][
+            "pressurized_aerosol_volume_interpretation_factor"
+        ].get("physchem_vapor_pressure_adjustment_factor", {})
+        candidate_rules = None
+        if product_subtype:
+            candidate_rules = section.get("product_subtype_overrides", {}).get(
+                product_subtype.lower()
+            )
+        if not candidate_rules and product_category:
+            candidate_rules = section.get("product_category_overrides", {}).get(
+                product_category.lower()
+            )
+        if not candidate_rules:
+            candidate_rules = section.get("global", {})
+
+        matched_label = None
+        matched_entry = None
+        matched_threshold = float("-inf")
+        for label, entry in candidate_rules.items():
+            threshold = float(entry.get("min_vapor_pressure_mmhg", 0.0))
+            if vapor_pressure_mmhg < threshold:
+                continue
+            if threshold >= matched_threshold:
+                matched_label = label
+                matched_entry = entry
+                matched_threshold = threshold
+
+        if matched_entry is None or matched_label is None:
+            return None
+
+        return (
+            matched_label,
+            float(matched_entry["value"]),
+            self._source(matched_entry["source_id"]),
+        )
+
     def population_defaults(
         self, population_group: str
     ) -> tuple[dict[str, float], AssumptionSourceReference]:
@@ -814,10 +858,11 @@ class DefaultsRegistry:
                 active_profile_label = control_context_profile.lower()
                 values = candidate_profile
 
+        resolved_label = "generic"
+        resolved_entry = generic_entry
+
         for candidate_label, candidate_entry in values.items():
-            if candidate_label in {"generic", "profile_overrides"}:
-                continue
-            if candidate_label == "generic":
+            if candidate_label in {"generic", "profile_overrides", "decay_profile_overrides"}:
                 continue
             min_distance = candidate_entry.get("min_distance_m")
             max_distance = candidate_entry.get("max_distance_m")
@@ -825,15 +870,37 @@ class DefaultsRegistry:
                 continue
             if max_distance is not None and source_distance_m > float(max_distance):
                 continue
+            resolved_label = candidate_label
+            resolved_entry = candidate_entry
+            break
+
+        decay_profiles = self.payload["worker_inhalation_execution_defaults"][
+            "capture_distance_alignment_factor"
+        ].get("decay_profile_overrides", {})
+        decay_entry = decay_profiles.get(active_profile_label) or decay_profiles.get("generic")
+        if decay_entry is not None and resolved_label != "generic":
+            reference_distance = float(decay_entry["reference_distance_m"])
+            reference_factor = float(decay_entry["reference_factor"])
+            decay_per_m = float(decay_entry["distance_decay_per_m"])
+            max_factor = float(decay_entry["max_factor"])
+            factor = reference_factor
+            if source_distance_m > reference_distance:
+                factor = min(
+                    reference_factor + decay_per_m * (source_distance_m - reference_distance),
+                    max_factor,
+                )
             return (
-                candidate_label,
+                resolved_label,
                 active_profile_label,
-                float(candidate_entry["value"]),
-                self._source(candidate_entry["source_id"]),
+                factor,
+                self._source(decay_entry["source_id"]),
             )
 
-        return "generic", active_profile_label, float(generic_entry["value"]), self._source(
-            generic_entry["source_id"]
+        return (
+            resolved_label,
+            active_profile_label,
+            float(resolved_entry["value"]),
+            self._source(resolved_entry["source_id"]),
         )
 
     def worker_inhalation_respiratory_protection_factor(
@@ -948,6 +1015,15 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  cleaner and disinfectant aerosol families, and also tightens subtype-specific",
             "  personal-care branches such as deodorant/body sprays, hair sprays, and spray",
             "  sunscreens instead of using one blanket factor.",
+            "",
+            "### Pressurized Aerosol Physchem Adjustment Heuristics 2026",
+            "",
+            "- `pressurized_aerosol_physchem_adjustment_heuristics_2026` adds a bounded",
+            "  vapor-pressure adjustment on top of the family- and subtype-aware aerosol",
+            "  volume interpretation factor when callers supply physchem context. This is",
+            "  intended to keep very volatile aerosol families from inheriting the same",
+            "  condensed-liquid semantics as less volatile sprays, without claiming a full",
+            "  formulation or can-propellant composition model.",
             "",
             "### Heuristic Retention Defaults",
             "",
@@ -1112,7 +1188,8 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  It is intended to stop obviously offset or remote sources from receiving the",
             "  same effective control benefit as a capture zone positioned close to the",
             "  source, and it now distinguishes looser hood capture from more enclosed booth",
-            "  or enclosure contexts.",
+            "  or enclosure contexts with bounded source-distance decay profiles rather than",
+            "  one flat distance penalty.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",

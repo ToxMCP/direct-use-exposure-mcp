@@ -649,6 +649,14 @@ def _mechanistic_constraint_entries(
         ),
         None,
     )
+    aerosol_physchem_factor = next(
+        (
+            item.value
+            for item in scenario.assumptions
+            if item.name == "pressurized_aerosol_physchem_adjustment_factor"
+        ),
+        None,
+    )
     if isinstance(aerosol_volume_factor, int | float) and float(aerosol_volume_factor) < 1.0:
         entries.append(
             UncertaintyRegisterEntry(
@@ -662,6 +670,7 @@ def _mechanistic_constraint_entries(
                     "use_amount_per_event",
                     "density_g_per_ml",
                     "pressurized_aerosol_volume_interpretation_factor",
+                    "pressurized_aerosol_physchem_adjustment_factor",
                 ),
                 quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
                 bias_direction=BiasDirection.BIDIRECTIONAL,
@@ -674,6 +683,38 @@ def _mechanistic_constraint_entries(
                 recommendation=(
                     "Prefer product-specific mass-per-event or explicit density semantics "
                     "for pressurized aerosols when higher-confidence route realism is needed."
+                ),
+            )
+        )
+    if isinstance(aerosol_physchem_factor, int | float) and float(aerosol_physchem_factor) < 1.0:
+        entries.append(
+            UncertaintyRegisterEntry(
+                entry_id="mechanistic-constraint-pressurized-aerosol-physchem-adjustment",
+                title=(
+                    "Pressurized aerosol volume was further adjusted with bounded "
+                    "volatility semantics"
+                ),
+                uncertainty_types=[
+                    UncertaintyType.MODEL_UNCERTAINTY,
+                    UncertaintyType.PARAMETER_UNCERTAINTY,
+                ],
+                related_assumptions=_related(
+                    "pressurized_aerosol_volume_interpretation_factor",
+                    "pressurized_aerosol_physchem_adjustment_factor",
+                    "density_g_per_ml",
+                ),
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level=_impact_from_sensitivity("use_amount_per_event", sensitivity_ranking),
+                summary=(
+                    "Default-density pressurized aerosol mass semantics were further "
+                    "adjusted with a bounded vapor-pressure heuristic instead of a full "
+                    "formulation or can-propellant composition model."
+                ),
+                recommendation=(
+                    "Prefer product-specific aerosol mass-per-event semantics or explicit "
+                    "density and formulation data when higher-confidence aerosol route "
+                    "realism is needed."
                 ),
             )
         )

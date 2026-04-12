@@ -24,6 +24,7 @@ from exposure_scenario_mcp.models import (
     PbpkConcentrationProfilePoint,
     PbpkPopulationContext,
     PbpkScenarioInput,
+    PhyschemContext,
     Route,
     RouteDoseTotal,
     ScenarioClass,
@@ -86,6 +87,7 @@ def resolve_product_mass_g(
     profile,
     registry: DefaultsRegistry,
     tracker: AssumptionTracker,
+    physchem_context: PhyschemContext | None = None,
 ) -> float:
     if profile.use_amount_unit.value == "g":
         tracker.add_user(
@@ -141,6 +143,30 @@ def resolve_product_mass_g(
             physical_form=profile.physical_form,
             product_subtype=profile.product_subtype,
         )
+        physchem_adjustment = registry.pressurized_aerosol_physchem_adjustment_factor(
+            product_category=profile.product_category,
+            product_subtype=profile.product_subtype,
+            vapor_pressure_mmhg=(
+                None
+                if physchem_context is None
+                else physchem_context.vapor_pressure_mmhg
+            ),
+        )
+        aerosol_physchem_factor = 1.0
+        if physchem_adjustment is not None:
+            _, aerosol_physchem_factor, physchem_source = physchem_adjustment
+            tracker.add_default(
+                "pressurized_aerosol_physchem_adjustment_factor",
+                aerosol_physchem_factor,
+                "fraction",
+                physchem_source,
+                (
+                    "Aerosol volume interpretation was further adjusted with a bounded "
+                    "vapor-pressure heuristic because pressurized aerosol mass semantics "
+                    "were resolved from default density plus supplied physchem context."
+                ),
+            )
+            aerosol_volume_factor *= aerosol_physchem_factor
         tracker.add_default(
             "pressurized_aerosol_volume_interpretation_factor",
             aerosol_volume_factor,
@@ -152,6 +178,16 @@ def resolve_product_mass_g(
                 "from product-specific mass semantics."
             ),
         )
+        if aerosol_physchem_factor < 1.0:
+            tracker.add_quality_flag(
+                "pressurized_aerosol_physchem_adjustment_defaulted",
+                (
+                    "Volumetric aerosol-spray mass was further reduced with a bounded "
+                    "vapor-pressure aerosol adjustment because default density and "
+                    "pressurized product semantics were used together."
+                ),
+                severity=Severity.WARNING,
+            )
         if aerosol_volume_factor < 1.0:
             tracker.add_quality_flag(
                 "pressurized_aerosol_volume_interpretation_defaulted",

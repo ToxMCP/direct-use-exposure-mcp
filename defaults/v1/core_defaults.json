@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v27",
+  "defaults_version": "2026.04.12.v28",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -260,6 +260,12 @@
       "version": "2026.04.12.v1"
     },
     {
+      "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded pressurized-aerosol physchem adjustment heuristics",
+      "locator": "docs://defaults-evidence-map#pressurized-aerosol-physchem-adjustment-heuristics-2026",
+      "version": "2026.04.12.v1"
+    },
+    {
       "source_id": "worker_inhalation_capture_zone_heuristics_2026",
       "title": "Direct-Use Exposure MCP bounded worker inhalation capture-zone alignment heuristics",
       "locator": "docs://defaults-evidence-map#worker-inhalation-capture-zone-heuristics-2026",
@@ -338,6 +344,120 @@
         "air_space_insecticide": {
           "value": 1.0,
           "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        }
+      },
+      "physchem_vapor_pressure_adjustment_factor": {
+        "global": {
+          "generic_volatile_aerosol": {
+            "min_vapor_pressure_mmhg": 20.0,
+            "value": 0.95,
+            "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+          },
+          "generic_highly_volatile_aerosol": {
+            "min_vapor_pressure_mmhg": 80.0,
+            "value": 0.9,
+            "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+          }
+        },
+        "product_category_overrides": {
+          "personal_care": {
+            "volatile_personal_care_aerosol": {
+              "min_vapor_pressure_mmhg": 10.0,
+              "value": 0.9,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_personal_care_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "value": 0.85,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            }
+          },
+          "household_cleaner": {
+            "volatile_cleaner_aerosol": {
+              "min_vapor_pressure_mmhg": 20.0,
+              "value": 0.95,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_cleaner_aerosol": {
+              "min_vapor_pressure_mmhg": 80.0,
+              "value": 0.9,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            }
+          },
+          "disinfectant": {
+            "volatile_disinfectant_aerosol": {
+              "min_vapor_pressure_mmhg": 20.0,
+              "value": 0.95,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_disinfectant_aerosol": {
+              "min_vapor_pressure_mmhg": 80.0,
+              "value": 0.9,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            }
+          },
+          "paint_coating": {
+            "volatile_paint_coating_aerosol": {
+              "min_vapor_pressure_mmhg": 10.0,
+              "value": 0.92,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_paint_coating_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "value": 0.88,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            }
+          }
+        },
+        "product_subtype_overrides": {
+          "deodorant_spray": {
+            "volatile_deodorant_aerosol": {
+              "min_vapor_pressure_mmhg": 10.0,
+              "value": 0.88,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_deodorant_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "value": 0.82,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            }
+          },
+          "body_spray": {
+            "volatile_body_spray_aerosol": {
+              "min_vapor_pressure_mmhg": 10.0,
+              "value": 0.88,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_body_spray_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "value": 0.82,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            }
+          },
+          "hair_spray": {
+            "volatile_hair_spray_aerosol": {
+              "min_vapor_pressure_mmhg": 10.0,
+              "value": 0.92,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_hair_spray_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "value": 0.88,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            }
+          },
+          "spray_sunscreen": {
+            "volatile_spray_sunscreen_aerosol": {
+              "min_vapor_pressure_mmhg": 10.0,
+              "value": 0.95,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            },
+            "highly_volatile_spray_sunscreen_aerosol": {
+              "min_vapor_pressure_mmhg": 50.0,
+              "value": 0.9,
+              "source_id": "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+            }
+          }
         }
       }
     }
@@ -1346,12 +1466,12 @@
       },
       "close_to_capture_zone": {
         "value": 0.9,
-        "max_distance_m": 0.25,
+        "max_distance_m": 0.5,
         "source_id": "worker_inhalation_capture_distance_heuristics_2026"
       },
       "offset_from_capture_zone": {
         "value": 1.1,
-        "min_distance_m": 0.75,
+        "min_distance_m": 0.5,
         "max_distance_m": 1.5,
         "source_id": "worker_inhalation_capture_distance_heuristics_2026"
       },
@@ -1364,12 +1484,12 @@
         "portable_capture_or_extractor": {
           "close_to_capture_zone": {
             "value": 0.93,
-            "max_distance_m": 0.25,
+            "max_distance_m": 0.5,
             "source_id": "worker_inhalation_capture_distance_heuristics_2026"
           },
           "offset_from_capture_zone": {
             "value": 1.12,
-            "min_distance_m": 0.75,
+            "min_distance_m": 0.5,
             "max_distance_m": 1.5,
             "source_id": "worker_inhalation_capture_distance_heuristics_2026"
           },
@@ -1382,12 +1502,12 @@
         "capture_hood_or_slot_hood": {
           "close_to_capture_zone": {
             "value": 0.88,
-            "max_distance_m": 0.25,
+            "max_distance_m": 0.5,
             "source_id": "worker_inhalation_capture_distance_heuristics_2026"
           },
           "offset_from_capture_zone": {
             "value": 1.15,
-            "min_distance_m": 0.75,
+            "min_distance_m": 0.5,
             "max_distance_m": 1.5,
             "source_id": "worker_inhalation_capture_distance_heuristics_2026"
           },
@@ -1400,12 +1520,12 @@
         "spray_booth_or_partial_enclosure": {
           "close_to_capture_zone": {
             "value": 0.95,
-            "max_distance_m": 0.25,
+            "max_distance_m": 0.5,
             "source_id": "worker_inhalation_capture_distance_heuristics_2026"
           },
           "offset_from_capture_zone": {
             "value": 1.0,
-            "min_distance_m": 0.75,
+            "min_distance_m": 0.5,
             "max_distance_m": 1.5,
             "source_id": "worker_inhalation_capture_distance_heuristics_2026"
           },
@@ -1414,6 +1534,36 @@
             "min_distance_m": 1.5,
             "source_id": "worker_inhalation_capture_distance_heuristics_2026"
           }
+        }
+      },
+      "decay_profile_overrides": {
+        "generic": {
+          "reference_distance_m": 0.25,
+          "reference_factor": 0.94,
+          "distance_decay_per_m": 0.16,
+          "max_factor": 1.18,
+          "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+        },
+        "portable_capture_or_extractor": {
+          "reference_distance_m": 0.25,
+          "reference_factor": 0.94,
+          "distance_decay_per_m": 0.18,
+          "max_factor": 1.18,
+          "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+        },
+        "capture_hood_or_slot_hood": {
+          "reference_distance_m": 0.25,
+          "reference_factor": 0.9,
+          "distance_decay_per_m": 0.24,
+          "max_factor": 1.22,
+          "source_id": "worker_inhalation_capture_distance_heuristics_2026"
+        },
+        "spray_booth_or_partial_enclosure": {
+          "reference_distance_m": 0.25,
+          "reference_factor": 0.96,
+          "distance_decay_per_m": 0.07,
+          "max_factor": 1.05,
+          "source_id": "worker_inhalation_capture_distance_heuristics_2026"
         }
       }
     },

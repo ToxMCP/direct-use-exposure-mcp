@@ -464,7 +464,12 @@ def build_inhalation_tier_1_screening_scenario(
         matched_profile,
     )
 
-    product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
+    product_mass_g_event = resolve_product_mass_g(
+        profile,
+        registry,
+        tracker,
+        physchem_context=request.physchem_context,
+    )
     chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
     tracker.add_user(
         "concentration_fraction",
@@ -1553,7 +1558,12 @@ def build_inhalation_residual_air_reentry_scenario(
                 severity=Severity.WARNING,
             )
 
-        product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
+        product_mass_g_event = resolve_product_mass_g(
+            profile,
+            registry,
+            tracker,
+            physchem_context=request.physchem_context,
+        )
         chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
         tracker.add_user(
             "concentration_fraction",
@@ -2006,7 +2016,12 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 },
             )
 
-        product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
+        product_mass_g_event = resolve_product_mass_g(
+            profile,
+            registry,
+            tracker,
+            physchem_context=request.physchem_context,
+        )
         chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
         tracker.add_user(
             "concentration_fraction",

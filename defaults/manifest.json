@@ -1,7 +1,7 @@
 {
-  "defaults_version": "2026.04.12.v27",
-  "defaults_hash_sha256": "f60c5e20610fc9b92a7bb66e35e4fe9fdeb655961464c89616a53113ba268c56",
-  "source_count": 45,
+  "defaults_version": "2026.04.12.v28",
+  "defaults_hash_sha256": "75fa8be5c5a4e9dde6b8f6e563732eaa7c30db7f679999ac861c0887e944cb61",
+  "source_count": 46,
   "supported_regions": [
     "eu",
     "global"

@@ -44,7 +44,12 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
         population = request.population_profile
         registry = context.registry
 
-        product_mass_g_event = resolve_product_mass_g(profile, registry, tracker)
+        product_mass_g_event = resolve_product_mass_g(
+            profile,
+            registry,
+            tracker,
+            physchem_context=request.physchem_context,
+        )
         chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
         tracker.add_user(
             "concentration_fraction",

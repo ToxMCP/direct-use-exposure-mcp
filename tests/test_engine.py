@@ -124,6 +124,15 @@ def _registry_with_full_pressurized_aerosol_volume_interpretation() -> DefaultsR
         entry["value"] = 1.0
     for entry in section.get("product_subtype_overrides", {}).values():
         entry["value"] = 1.0
+    physchem_section = section.get("physchem_vapor_pressure_adjustment_factor", {})
+    for entry in physchem_section.get("global", {}).values():
+        entry["value"] = 1.0
+    for family in physchem_section.get("product_category_overrides", {}).values():
+        for entry in family.values():
+            entry["value"] = 1.0
+    for family in physchem_section.get("product_subtype_overrides", {}).values():
+        for entry in family.values():
+            entry["value"] = 1.0
     return DefaultsRegistry(
         path=base.path,
         location=base.location,
@@ -438,7 +447,7 @@ def test_inhalation_saturation_cap_clamps_impossible_room_concentration() -> Non
         53781.63753201, rel=1e-6
     )
     assert scenario.route_metrics["uncapped_average_air_concentration_mg_per_m3"] == pytest.approx(
-        410774.05669097, rel=1e-6
+        369696.65102187, rel=1e-6
     )
     assert any(flag.code == "saturation_cap_applied" for flag in scenario.quality_flags)
     assert any(
@@ -1740,6 +1749,58 @@ def test_personal_care_deodorant_aerosol_uses_subtype_pressurized_override() -> 
     )
     assert any(
         item.code == "pressurized_aerosol_volume_interpretation_defaulted"
+        for item in constrained.quality_flags
+    )
+
+
+def test_personal_care_deodorant_aerosol_uses_physchem_aerosol_adjustment() -> None:
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        physchem_context=PhyschemContext(vaporPressureMmhg=80.0),
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            product_subtype="deodorant_spray",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.001,
+            use_amount_per_event=10.0,
+            use_amount_unit="mL",
+            use_events_per_day=1.0,
+            room_volume_m3=20.0,
+            air_exchange_rate_per_hour=1.0,
+            exposure_duration_hours=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            inhalation_rate_m3_per_hour=1.0,
+        ),
+    )
+
+    baseline_engine = build_engine(_registry_with_full_pressurized_aerosol_volume_interpretation())
+    constrained_engine = build_engine()
+
+    baseline = baseline_engine.build(request)
+    constrained = constrained_engine.build(request)
+    assumptions = {item.name: item for item in constrained.assumptions}
+
+    assert assumptions["pressurized_aerosol_physchem_adjustment_factor"].value == pytest.approx(
+        0.82, rel=1e-6
+    )
+    assert assumptions["pressurized_aerosol_physchem_adjustment_factor"].source.source_id == (
+        "pressurized_aerosol_physchem_adjustment_heuristics_2026"
+    )
+    assert assumptions["pressurized_aerosol_volume_interpretation_factor"].value == pytest.approx(
+        0.41, rel=1e-6
+    )
+    assert constrained.external_dose.value == pytest.approx(
+        baseline.external_dose.value * 0.41,
+        abs=1e-8,
+    )
+    assert any(
+        item.code == "pressurized_aerosol_physchem_adjustment_defaulted"
         for item in constrained.quality_flags
     )
 

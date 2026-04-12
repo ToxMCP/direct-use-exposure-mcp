@@ -3275,6 +3275,8 @@ def execute_worker_inhalation_tier2_task(
     body_weight = None
     inhalation_rate = None
     pressurized_aerosol_volume_factor = 1.0
+    pressurized_aerosol_physchem_factor = 1.0
+    pressurized_aerosol_physchem_label = "generic"
 
     if base_request is None:
         limitations.append(
@@ -3438,6 +3440,8 @@ def execute_worker_inhalation_tier2_task(
 
             density_g_per_ml = None
             pressurized_aerosol_volume_factor = 1.0
+            pressurized_aerosol_physchem_factor = 1.0
+            pressurized_aerosol_physchem_label = "generic"
             if use_amount_unit == ProductAmountUnit.G:
                 product_mass_g_event = use_amount_per_event
                 if product_mass_g_event is not None:
@@ -3511,6 +3515,54 @@ def execute_worker_inhalation_tier2_task(
                         physical_form or None,
                         product_subtype or None,
                     )
+                    aerosol_physchem_adjustment = (
+                        registry.pressurized_aerosol_physchem_adjustment_factor(
+                            product_category or None,
+                            product_subtype or None,
+                            None
+                            if base_request is None or base_request.physchem_context is None
+                            else _float_or_none(
+                                base_request.physchem_context.vapor_pressure_mmhg
+                            ),
+                        )
+                    )
+                    if aerosol_physchem_adjustment is not None:
+                        (
+                            pressurized_aerosol_physchem_label,
+                            pressurized_aerosol_physchem_factor,
+                            aerosol_physchem_source,
+                        ) = aerosol_physchem_adjustment
+                        assumptions.append(
+                            _assumption_record(
+                                name="pressurized_aerosol_physchem_adjustment_factor",
+                                value=pressurized_aerosol_physchem_factor,
+                                unit="fraction",
+                                source_kind=SourceKind.DEFAULT_REGISTRY,
+                                source=aerosol_physchem_source,
+                                rationale=(
+                                    "Worker aerosol mass semantics were further adjusted with "
+                                    "a bounded vapor-pressure heuristic because default "
+                                    "density and supplied physchem context were both active."
+                                ),
+                                applicability_domain=applicability_domain,
+                            )
+                        )
+                        if pressurized_aerosol_physchem_factor < 1.0:
+                            quality_flags.append(
+                                QualityFlag(
+                                    code=(
+                                        "worker_inhalation_pressurized_aerosol_physchem_"
+                                        "adjustment_defaulted"
+                                    ),
+                                    severity=Severity.WARNING,
+                                    message=(
+                                        "Worker inhalation execution further reduced "
+                                        "volumetric aerosol mass with a bounded vapor-"
+                                        "pressure aerosol adjustment."
+                                    ),
+                                )
+                            )
+                    pressurized_aerosol_volume_factor *= pressurized_aerosol_physchem_factor
                     assumptions.append(
                         _assumption_record(
                             name="pressurized_aerosol_volume_interpretation_factor",
@@ -4134,6 +4186,82 @@ def execute_worker_inhalation_tier2_task(
             pressurized_aerosol_volume_factor,
             8,
         )
+    if pressurized_aerosol_physchem_factor != 1.0:
+        route_metrics["pressurizedAerosolPhyschemAdjustmentFactor"] = round(
+            pressurized_aerosol_physchem_factor,
+            8,
+        )
+        route_metrics["pressurizedAerosolPhyschemProfile"] = (
+            pressurized_aerosol_physchem_label
+        )
+    assumption_lookup = {item.name: item for item in assumptions}
+    aerosol_assumption = assumption_lookup.get(
+        "pressurized_aerosol_volume_interpretation_factor"
+    )
+    if (
+        "pressurizedAerosolVolumeInterpretationFactor" not in route_metrics
+        and aerosol_assumption is not None
+        and float(aerosol_assumption.value) < 1.0
+    ):
+        route_metrics["pressurizedAerosolVolumeInterpretationFactor"] = round(
+            float(aerosol_assumption.value),
+            8,
+        )
+        if not any(
+            flag.code == "worker_inhalation_pressurized_aerosol_volume_interpretation_defaulted"
+            for flag in quality_flags
+        ):
+            quality_flags.append(
+                QualityFlag(
+                    code="worker_inhalation_pressurized_aerosol_volume_interpretation_defaulted",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Worker inhalation execution reduced volumetric aerosol mass with "
+                        "a bounded pressurized-aerosol interpretation factor because "
+                        "default density was used."
+                    ),
+                )
+            )
+    aerosol_physchem_assumption = assumption_lookup.get(
+        "pressurized_aerosol_physchem_adjustment_factor"
+    )
+    if (
+        "pressurizedAerosolPhyschemAdjustmentFactor" not in route_metrics
+        and aerosol_physchem_assumption is not None
+        and float(aerosol_physchem_assumption.value) < 1.0
+    ):
+        route_metrics["pressurizedAerosolPhyschemAdjustmentFactor"] = round(
+            float(aerosol_physchem_assumption.value),
+            8,
+        )
+        if not any(
+            flag.code == "worker_inhalation_pressurized_aerosol_physchem_adjustment_defaulted"
+            for flag in quality_flags
+        ):
+            quality_flags.append(
+                QualityFlag(
+                    code="worker_inhalation_pressurized_aerosol_physchem_adjustment_defaulted",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Worker inhalation execution further reduced volumetric aerosol "
+                        "mass with a bounded vapor-pressure aerosol adjustment."
+                    ),
+                )
+            )
+    if (
+        "pressurizedAerosolPhyschemProfile" not in route_metrics
+        and base_request is not None
+        and base_request.physchem_context is not None
+    ):
+        aerosol_physchem_adjustment = registry.pressurized_aerosol_physchem_adjustment_factor(
+            base_request.product_use_profile.product_category,
+            base_request.product_use_profile.product_subtype,
+            _float_or_none(base_request.physchem_context.vapor_pressure_mmhg),
+        )
+        if aerosol_physchem_adjustment is not None:
+            aerosol_physchem_label, aerosol_physchem_factor, _ = aerosol_physchem_adjustment
+            if aerosol_physchem_factor < 1.0:
+                route_metrics["pressurizedAerosolPhyschemProfile"] = aerosol_physchem_label
 
     if baseline_average_air_concentration is not None:
         adjusted_average_air_concentration = (

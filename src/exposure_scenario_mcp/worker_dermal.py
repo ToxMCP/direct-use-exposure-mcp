@@ -2067,6 +2067,9 @@ def execute_worker_dermal_absorbed_dose_task(
 
     explicit_external_mass = None if overrides is None else overrides.external_skin_mass_mg_per_day
     external_mass_mg_day: float | None = None
+    pressurized_aerosol_volume_factor = 1.0
+    pressurized_aerosol_physchem_factor = 1.0
+    pressurized_aerosol_physchem_label = "generic"
     if explicit_external_mass is not None:
         external_mass_mg_day = float(explicit_external_mass)
         assumptions.append(
@@ -2171,7 +2174,6 @@ def execute_worker_dermal_absorbed_dose_task(
                         applicability_domain=applicability_domain,
                     )
                 )
-            pressurized_aerosol_volume_factor = 1.0
             if density_defaulted and application_method == "aerosol_spray":
                 (
                     pressurized_aerosol_volume_factor,
@@ -2181,6 +2183,52 @@ def execute_worker_dermal_absorbed_dose_task(
                     physical_form or None,
                     product_subtype,
                 )
+                aerosol_physchem_adjustment = (
+                    registry.pressurized_aerosol_physchem_adjustment_factor(
+                        product_category or None,
+                        product_subtype,
+                        None
+                        if chemical_context is None
+                        else _float_or_none(chemical_context.vapor_pressure_mmhg),
+                    )
+                )
+                if aerosol_physchem_adjustment is not None:
+                    (
+                        pressurized_aerosol_physchem_label,
+                        pressurized_aerosol_physchem_factor,
+                        aerosol_physchem_source,
+                    ) = aerosol_physchem_adjustment
+                    assumptions.append(
+                        _assumption_record(
+                            name="pressurized_aerosol_physchem_adjustment_factor",
+                            value=pressurized_aerosol_physchem_factor,
+                            unit="fraction",
+                            source_kind=SourceKind.DEFAULT_REGISTRY,
+                            source=aerosol_physchem_source,
+                            rationale=(
+                                "Worker dermal aerosol mass semantics were further adjusted "
+                                "with a bounded vapor-pressure heuristic because default "
+                                "density and supplied physchem context were both active."
+                            ),
+                            applicability_domain=applicability_domain,
+                        )
+                    )
+                    if pressurized_aerosol_physchem_factor < 1.0:
+                        quality_flags.append(
+                            QualityFlag(
+                                code=(
+                                    "worker_dermal_pressurized_aerosol_physchem_"
+                                    "adjustment_defaulted"
+                                ),
+                                severity=Severity.WARNING,
+                                message=(
+                                    "Worker dermal execution further reduced volumetric "
+                                    "aerosol mass with a bounded vapor-pressure aerosol "
+                                    "adjustment."
+                                ),
+                            )
+                        )
+                pressurized_aerosol_volume_factor *= pressurized_aerosol_physchem_factor
                 assumptions.append(
                     _assumption_record(
                         name="pressurized_aerosol_volume_interpretation_factor",
@@ -3193,6 +3241,19 @@ def execute_worker_dermal_absorbed_dose_task(
         route_metrics["surfaceLoadingCapApplied"] = surface_loading_cap_applied
         route_metrics["ppePenetrationFactor"] = round(ppe_penetration_factor, 8)
         route_metrics["dermalAbsorptionFraction"] = round(dermal_absorption_fraction, 8)
+        if pressurized_aerosol_volume_factor != 1.0:
+            route_metrics["pressurizedAerosolVolumeInterpretationFactor"] = round(
+                pressurized_aerosol_volume_factor,
+                8,
+            )
+        if pressurized_aerosol_physchem_factor != 1.0:
+            route_metrics["pressurizedAerosolPhyschemAdjustmentFactor"] = round(
+                pressurized_aerosol_physchem_factor,
+                8,
+            )
+            route_metrics["pressurizedAerosolPhyschemProfile"] = (
+                pressurized_aerosol_physchem_label
+            )
         if ppe_penetration_override is None:
             route_metrics["basePpePenetrationFactor"] = round(
                 base_ppe_penetration_factor,
