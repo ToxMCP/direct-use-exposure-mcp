@@ -2125,6 +2125,7 @@ def execute_worker_dermal_absorbed_dose_task(
                 )
             )
         elif use_amount_per_event is not None and use_amount_unit == ProductAmountUnit.ML:
+            density_defaulted = density_g_per_ml is None
             if density_g_per_ml is None:
                 density_g_per_ml, density_source = registry.default_density_g_per_ml(
                     product_category or None,
@@ -2170,7 +2171,51 @@ def execute_worker_dermal_absorbed_dose_task(
                         applicability_domain=applicability_domain,
                     )
                 )
-            product_mass_g_event = use_amount_per_event * density_g_per_ml
+            pressurized_aerosol_volume_factor = 1.0
+            if density_defaulted and application_method == "aerosol_spray":
+                (
+                    pressurized_aerosol_volume_factor,
+                    aerosol_source,
+                ) = registry.pressurized_aerosol_volume_interpretation_factor(
+                    product_category or None,
+                    physical_form or None,
+                    product_subtype,
+                )
+                assumptions.append(
+                    _assumption_record(
+                        name="pressurized_aerosol_volume_interpretation_factor",
+                        value=pressurized_aerosol_volume_factor,
+                        unit="fraction",
+                        source_kind=SourceKind.DEFAULT_REGISTRY,
+                        source=aerosol_source,
+                        rationale=(
+                            "Volumetric aerosol-spray amount was bounded with a "
+                            "pressurized-aerosol interpretation factor because the worker "
+                            "dermal execution request relied on default density."
+                        ),
+                        applicability_domain=applicability_domain,
+                    )
+                )
+                if pressurized_aerosol_volume_factor < 1.0:
+                    quality_flags.append(
+                        QualityFlag(
+                            code=(
+                                "worker_dermal_pressurized_aerosol_volume_"
+                                "interpretation_defaulted"
+                            ),
+                            severity=Severity.WARNING,
+                            message=(
+                                "Worker dermal execution reduced volumetric aerosol mass with "
+                                "a bounded pressurized-aerosol interpretation factor because "
+                                "density was defaulted."
+                            ),
+                        )
+                    )
+            product_mass_g_event = (
+                use_amount_per_event
+                * density_g_per_ml
+                * pressurized_aerosol_volume_factor
+            )
             assumptions.append(
                 _assumption_record(
                     name="use_amount_per_event",

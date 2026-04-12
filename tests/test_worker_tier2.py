@@ -818,17 +818,27 @@ def test_worker_art_execution_applies_control_context_factor_for_capture_hood() 
     assert capture_result.route_metrics["controlContextFactor"] == pytest.approx(
         0.85, rel=1e-6
     )
-    assert capture_result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
-        0.34, rel=1e-6
+    assert capture_result.route_metrics["captureZoneAlignmentFactor"] == pytest.approx(
+        0.9, rel=1e-6
     )
-    assert capture_result.route_metrics["workerControlFactor"] == pytest.approx(0.34, rel=1e-6)
+    assert capture_result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
+        0.306, rel=1e-6
+    )
+    assert capture_result.route_metrics["workerControlFactor"] == pytest.approx(0.306, rel=1e-6)
     assert capture_result.route_metrics["controlContextProfile"] == "capture_hood_or_slot_hood"
+    assert capture_result.route_metrics["captureZoneProfile"] == (
+        "direct_capture_zone_or_downdraft"
+    )
     assert capture_result.external_dose.value == pytest.approx(
-        base_result.external_dose.value * 0.85,
+        base_result.external_dose.value * 0.85 * 0.9,
         rel=1e-6,
     )
     assert any(
         item.code == "worker_control_context_screening"
+        for item in capture_result.limitations
+    )
+    assert any(
+        item.code == "worker_capture_zone_screening"
         for item in capture_result.limitations
     )
 

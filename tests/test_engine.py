@@ -115,6 +115,21 @@ def _registry_with_zero_tier1_local_entrainment() -> DefaultsRegistry:
     )
 
 
+def _registry_with_full_pressurized_aerosol_volume_interpretation() -> DefaultsRegistry:
+    base = DefaultsRegistry.load()
+    payload = deepcopy(base.payload)
+    section = payload["conversion_defaults"]["pressurized_aerosol_volume_interpretation_factor"]
+    section["global"]["value"] = 1.0
+    for entry in section.get("product_subtype_overrides", {}).values():
+        entry["value"] = 1.0
+    return DefaultsRegistry(
+        path=base.path,
+        location=base.location,
+        payload=payload,
+        sha256=base.sha256,
+    )
+
+
 def test_dermal_screening_defaults_and_dose() -> None:
     engine = build_engine()
     request = ExposureScenarioRequest(
@@ -421,7 +436,7 @@ def test_inhalation_saturation_cap_clamps_impossible_room_concentration() -> Non
         53781.63753201, rel=1e-6
     )
     assert scenario.route_metrics["uncapped_average_air_concentration_mg_per_m3"] == pytest.approx(
-        684623.42781828, rel=1e-6
+        239618.1997364, rel=1e-6
     )
     assert any(flag.code == "saturation_cap_applied" for flag in scenario.quality_flags)
     assert any(
@@ -1585,6 +1600,9 @@ def test_air_space_pesticide_aerosol_subtype_uses_consexpo_branches() -> None:
     assert assumptions["density_g_per_ml"].source.source_id == (
         "heuristic_consexpo_pest_control_aerosol_density_bridge_2026"
     )
+    assert assumptions["pressurized_aerosol_volume_interpretation_factor"].value == pytest.approx(
+        1.0, rel=1e-6
+    )
     assert assumptions["aerosolized_fraction"].value == pytest.approx(1.0, rel=1e-6)
     assert assumptions["aerosolized_fraction"].source.source_id == (
         "heuristic_consexpo_pest_control_aerosol_airborne_fraction_bridge_2026"
@@ -1611,10 +1629,65 @@ def test_air_space_pesticide_aerosol_subtype_uses_consexpo_branches() -> None:
         item.code == "product_subtype_missing_for_spray_family"
         for item in scenario.quality_flags
     )
+    assert not any(
+        item.code == "pressurized_aerosol_volume_interpretation_defaulted"
+        for item in scenario.quality_flags
+    )
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         3.01983709, rel=1e-6
     )
     assert scenario.external_dose.value == pytest.approx(0.15987373, rel=1e-6)
+
+
+def test_generic_volumetric_aerosol_spray_applies_pressurized_interpretation_factor() -> None:
+    request = InhalationScenarioRequest(
+        chemical_id="DTXSID123",
+        route=Route.INHALATION,
+        product_use_profile=ProductUseProfile(
+            product_category="disinfectant",
+            physical_form="spray",
+            application_method="aerosol_spray",
+            retention_type="surface_contact",
+            concentration_fraction=0.001,
+            use_amount_per_event=10.0,
+            use_amount_unit="mL",
+            use_events_per_day=1.0,
+            room_volume_m3=20.0,
+            air_exchange_rate_per_hour=1.0,
+            exposure_duration_hours=1.0,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70.0,
+            inhalation_rate_m3_per_hour=1.0,
+        ),
+    )
+
+    baseline_engine = build_engine(_registry_with_full_pressurized_aerosol_volume_interpretation())
+    constrained_engine = build_engine()
+
+    baseline = baseline_engine.build(request)
+    constrained = constrained_engine.build(request)
+    assumptions = {item.name: item for item in constrained.assumptions}
+
+    assert assumptions["pressurized_aerosol_volume_interpretation_factor"].value == pytest.approx(
+        0.35, rel=1e-6
+    )
+    assert assumptions["pressurized_aerosol_volume_interpretation_factor"].source.source_id == (
+        "pressurized_aerosol_volume_interpretation_heuristics_2026"
+    )
+    assert constrained.external_dose.value == pytest.approx(
+        baseline.external_dose.value * 0.35,
+        abs=1e-8,
+    )
+    assert constrained.route_metrics["released_mass_mg_per_event"] == pytest.approx(
+        baseline.route_metrics["released_mass_mg_per_event"] * 0.35,
+        abs=1e-8,
+    )
+    assert any(
+        item.code == "pressurized_aerosol_volume_interpretation_defaulted"
+        for item in constrained.quality_flags
+    )
 
 
 def test_inhalation_tier_1_matches_pesticide_subtype_profile() -> None:

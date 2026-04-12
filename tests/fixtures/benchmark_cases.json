@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v24",
+  "defaults_version": "2026.04.12.v25",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -1696,7 +1696,7 @@
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "average_air_concentration_mg_per_m3": 53781.63753201,
-          "uncapped_average_air_concentration_mg_per_m3": 684623.42781828,
+          "uncapped_average_air_concentration_mg_per_m3": 239618.1997364,
           "saturation_cap_mg_per_m3": 53781.63753201,
           "deposition_rate_per_hour": 0.03,
           "total_loss_rate_per_hour": 0.53

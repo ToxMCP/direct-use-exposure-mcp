@@ -3274,6 +3274,7 @@ def execute_worker_inhalation_tier2_task(
     baseline_external_dose = None
     body_weight = None
     inhalation_rate = None
+    pressurized_aerosol_volume_factor = 1.0
 
     if base_request is None:
         limitations.append(
@@ -3436,6 +3437,7 @@ def execute_worker_inhalation_tier2_task(
                 )
 
             density_g_per_ml = None
+            pressurized_aerosol_volume_factor = 1.0
             if use_amount_unit == ProductAmountUnit.G:
                 product_mass_g_event = use_amount_per_event
                 if product_mass_g_event is not None:
@@ -3459,6 +3461,7 @@ def execute_worker_inhalation_tier2_task(
                     if base_request is not None
                     else None
                 )
+                density_defaulted = density_g_per_ml is None
                 if density_g_per_ml is None:
                     density_g_per_ml, density_source = registry.default_density_g_per_ml(
                         product_category or None,
@@ -3493,10 +3496,57 @@ def execute_worker_inhalation_tier2_task(
                             applicability_domain=applicability_domain,
                         )
                     )
+                if (
+                    density_defaulted
+                    and use_amount_per_event is not None
+                    and density_g_per_ml is not None
+                    and base_request is not None
+                    and base_request.product_use_profile.application_method == "aerosol_spray"
+                ):
+                    (
+                        pressurized_aerosol_volume_factor,
+                        aerosol_source,
+                    ) = registry.pressurized_aerosol_volume_interpretation_factor(
+                        product_category or None,
+                        physical_form or None,
+                        product_subtype or None,
+                    )
+                    assumptions.append(
+                        _assumption_record(
+                            name="pressurized_aerosol_volume_interpretation_factor",
+                            value=pressurized_aerosol_volume_factor,
+                            unit="fraction",
+                            source_kind=SourceKind.DEFAULT_REGISTRY,
+                            source=aerosol_source,
+                            rationale=(
+                                "Volumetric aerosol-spray amount was bounded with a "
+                                "pressurized-aerosol interpretation factor because the worker "
+                                "adapter request relied on default density."
+                            ),
+                            applicability_domain=applicability_domain,
+                        )
+                    )
+                    if pressurized_aerosol_volume_factor < 1.0:
+                        quality_flags.append(
+                            QualityFlag(
+                                code=(
+                                    "worker_inhalation_pressurized_aerosol_volume_"
+                                    "interpretation_defaulted"
+                                ),
+                                severity=Severity.WARNING,
+                                message=(
+                                    "Worker inhalation execution reduced volumetric aerosol "
+                                    "mass with a bounded pressurized-aerosol interpretation "
+                                    "factor because density was defaulted."
+                                ),
+                            )
+                        )
                 product_mass_g_event = (
                     None
                     if use_amount_per_event is None or density_g_per_ml is None
-                    else use_amount_per_event * density_g_per_ml
+                    else use_amount_per_event
+                    * density_g_per_ml
+                    * pressurized_aerosol_volume_factor
                 )
                 if use_amount_per_event is not None:
                     assumptions.append(
@@ -3830,6 +3880,8 @@ def execute_worker_inhalation_tier2_task(
     control_factor = None if overrides is None else overrides.control_factor
     control_context_label = "generic"
     control_context_factor = 1.0
+    capture_zone_label = "generic"
+    capture_zone_alignment_factor = 1.0
     if control_factor is None:
         control_factor, control_source = registry.worker_inhalation_control_profile_factor(
             envelope.control_profile
@@ -3870,6 +3922,33 @@ def execute_worker_inhalation_tier2_task(
                 applicability_domain=applicability_domain,
             )
         )
+        (
+            capture_zone_label,
+            capture_zone_alignment_factor,
+            capture_zone_source,
+        ) = registry.worker_inhalation_capture_zone_alignment_factor(
+            [
+                task_context.workplace_setting or "",
+                *task_context.local_controls,
+                task_context.emission_descriptor or "",
+            ],
+            envelope.control_profile,
+        )
+        assumptions.append(
+            _assumption_record(
+                name="worker_capture_zone_alignment_factor",
+                value=capture_zone_alignment_factor,
+                unit="fraction",
+                source_kind=SourceKind.DEFAULT_REGISTRY,
+                source=capture_zone_source,
+                rationale=(
+                    "Worker capture-zone alignment factor defaulted from explicit local "
+                    "controls and source-capture descriptors using the bounded capture-zone "
+                    "heuristics."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
         if control_context_label != "generic":
             limitations.append(
                 LimitationNote(
@@ -3879,6 +3958,18 @@ def execute_worker_inhalation_tier2_task(
                         "Explicit worker control context refined the control factor with a "
                         "bounded LEV/control-context heuristic rather than measured capture or "
                         "dilution efficiency."
+                    ),
+                )
+            )
+        if capture_zone_label != "generic":
+            limitations.append(
+                LimitationNote(
+                    code="worker_capture_zone_screening",
+                    severity=Severity.WARNING,
+                    message=(
+                        "Worker capture-zone alignment refined the control factor with a "
+                        "bounded source-capture heuristic rather than measured hood capture "
+                        "or containment performance."
                     ),
                 )
             )
@@ -3895,7 +3986,10 @@ def execute_worker_inhalation_tier2_task(
             )
         )
 
-    effective_control_factor = min(control_factor * control_context_factor, 1.0)
+    effective_control_factor = min(
+        control_factor * control_context_factor * capture_zone_alignment_factor,
+        1.0,
+    )
     assumptions.append(
         _assumption_record(
             name="effective_worker_control_factor",
@@ -3905,7 +3999,8 @@ def execute_worker_inhalation_tier2_task(
             source=_execution_algorithm_source(),
             rationale=(
                 "Effective worker control factor was derived from the base control-profile "
-                "factor and the bounded control-context refinement."
+                "factor, the bounded control-context refinement, and the bounded "
+                "capture-zone alignment refinement."
             ),
             applicability_domain=applicability_domain,
         )
@@ -3973,9 +4068,17 @@ def execute_worker_inhalation_tier2_task(
         route_metrics["taskIntensityFactor"] = round(task_intensity_factor, 8)
     route_metrics["baseControlProfileFactor"] = round(control_factor, 8)
     route_metrics["controlContextFactor"] = round(control_context_factor, 8)
+    route_metrics["captureZoneAlignmentFactor"] = round(capture_zone_alignment_factor, 8)
     route_metrics["effectiveWorkerControlFactor"] = round(effective_control_factor, 8)
     if control_context_label != "generic":
         route_metrics["controlContextProfile"] = control_context_label
+    if capture_zone_label != "generic":
+        route_metrics["captureZoneProfile"] = capture_zone_label
+    if pressurized_aerosol_volume_factor != 1.0:
+        route_metrics["pressurizedAerosolVolumeInterpretationFactor"] = round(
+            pressurized_aerosol_volume_factor,
+            8,
+        )
 
     if baseline_average_air_concentration is not None:
         adjusted_average_air_concentration = (

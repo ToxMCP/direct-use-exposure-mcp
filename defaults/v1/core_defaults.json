@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.12.v24",
+  "defaults_version": "2026.04.12.v25",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -252,6 +252,18 @@
       "title": "Direct-Use Exposure MCP bounded worker inhalation task-intensity scaling factors",
       "locator": "docs://defaults-evidence-map#worker-inhalation-task-intensity-heuristics-2026",
       "version": "2026.04.12.v1"
+    },
+    {
+      "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded pressurized-aerosol volume interpretation heuristics",
+      "locator": "docs://defaults-evidence-map#pressurized-aerosol-volume-interpretation-heuristics-2026",
+      "version": "2026.04.12.v1"
+    },
+    {
+      "source_id": "worker_inhalation_capture_zone_heuristics_2026",
+      "title": "Direct-Use Exposure MCP bounded worker inhalation capture-zone alignment heuristics",
+      "locator": "docs://defaults-evidence-map#worker-inhalation-capture-zone-heuristics-2026",
+      "version": "2026.04.12.v1"
     }
   ],
   "conversion_defaults": {
@@ -279,6 +291,18 @@
       "air_space_insecticide": {
         "density_g_per_ml": 0.8,
         "source_id": "heuristic_consexpo_pest_control_aerosol_density_bridge_2026"
+      }
+    },
+    "pressurized_aerosol_volume_interpretation_factor": {
+      "global": {
+        "value": 0.35,
+        "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+      },
+      "product_subtype_overrides": {
+        "air_space_insecticide": {
+          "value": 1.0,
+          "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026"
+        }
       }
     }
   },
@@ -1234,6 +1258,49 @@
           "downflow_booth"
         ],
         "source_id": "worker_inhalation_control_context_heuristics_2026"
+      }
+    },
+    "capture_zone_alignment_factor": {
+      "generic": {
+        "value": 1.0,
+        "tokens": [],
+        "source_id": "worker_inhalation_capture_zone_heuristics_2026"
+      },
+      "adjacent_capture_zone": {
+        "value": 0.95,
+        "tokens": [
+          "portable_extractor",
+          "portable_lev",
+          "extractor",
+          "capture_arm",
+          "capture_hood"
+        ],
+        "source_id": "worker_inhalation_capture_zone_heuristics_2026"
+      },
+      "direct_capture_zone_or_downdraft": {
+        "value": 0.9,
+        "tokens": [
+          "slot_hood",
+          "hood",
+          "on_tool_extraction",
+          "downdraft",
+          "downdraft_table",
+          "backdraft"
+        ],
+        "source_id": "worker_inhalation_capture_zone_heuristics_2026"
+      },
+      "enclosed_capture_zone": {
+        "value": 0.85,
+        "tokens": [
+          "spray_booth",
+          "booth",
+          "enclosure",
+          "enclosed_hood",
+          "glovebox",
+          "downflow_booth",
+          "sealed"
+        ],
+        "source_id": "worker_inhalation_capture_zone_heuristics_2026"
       }
     },
     "respiratory_protection_factor": {

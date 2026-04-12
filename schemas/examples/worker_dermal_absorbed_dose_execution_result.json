@@ -339,7 +339,7 @@
         "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening surface-contact retention",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
         "version": "RIVM report 2016-0179 / 2018",
-        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+        "hash_sha256": "d134910e4de965f5279ffc4b572f05054978724ca4449c69b876fc721995bf17"
       },
       "confidence": "curated_default",
       "default_applied": true,
@@ -374,7 +374,7 @@
         "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening transfer efficiency",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
         "version": "RIVM report 2016-0179 / 2018",
-        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+        "hash_sha256": "d134910e4de965f5279ffc4b572f05054978724ca4449c69b876fc721995bf17"
       },
       "confidence": "curated_default",
       "default_applied": true,
@@ -513,7 +513,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal retained surface-loading caps",
         "locator": "docs://defaults-evidence-map#worker-dermal-surface-cap-heuristics-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+        "hash_sha256": "d134910e4de965f5279ffc4b572f05054978724ca4449c69b876fc721995bf17"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -687,7 +687,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+        "hash_sha256": "d134910e4de965f5279ffc4b572f05054978724ca4449c69b876fc721995bf17"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -722,7 +722,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+        "hash_sha256": "d134910e4de965f5279ffc4b572f05054978724ca4449c69b876fc721995bf17"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -757,7 +757,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal contact-duration scaling defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-contact-duration-scaling-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+        "hash_sha256": "d134910e4de965f5279ffc4b572f05054978724ca4449c69b876fc721995bf17"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -792,7 +792,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce"
+        "hash_sha256": "d134910e4de965f5279ffc4b572f05054978724ca4449c69b876fc721995bf17"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -1046,8 +1046,8 @@
     "algorithm_id": "worker.dermal_absorbed_dose_execution.v1",
     "plugin_id": "worker_dermal_absorbed_dose_execution",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.12.v24",
-    "defaults_hash_sha256": "9ce7aaf167cf3365464e77dfcb6ac3cd0bd7207b3f7e3cbbed70c5e91f4133ce",
+    "defaults_version": "2026.04.12.v25",
+    "defaults_hash_sha256": "d134910e4de965f5279ffc4b572f05054978724ca4449c69b876fc721995bf17",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Execution starts from screening-style skin-boundary mass semantics and then applies PPE penetration and generic dermal absorption factors.",

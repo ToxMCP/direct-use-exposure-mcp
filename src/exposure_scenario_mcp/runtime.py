@@ -29,6 +29,7 @@ from exposure_scenario_mcp.models import (
     ScenarioClass,
     ScenarioComparisonRecord,
     ScenarioDose,
+    Severity,
 )
 from exposure_scenario_mcp.provenance import AssumptionTracker
 from exposure_scenario_mcp.uncertainty import (
@@ -107,6 +108,7 @@ def resolve_product_mass_g(
         "mL",
         "Product amount per event was supplied in milliliters and converted with density.",
     )
+    density_defaulted = profile.density_g_per_ml is None
     if profile.density_g_per_ml is not None:
         tracker.add_user(
             "density_g_per_ml",
@@ -132,12 +134,43 @@ def resolve_product_mass_g(
                 "available."
             ),
         )
-    product_mass_g = profile.use_amount_per_event * density
+    aerosol_volume_factor = 1.0
+    if density_defaulted and profile.application_method == "aerosol_spray":
+        aerosol_volume_factor, source = registry.pressurized_aerosol_volume_interpretation_factor(
+            product_category=profile.product_category,
+            physical_form=profile.physical_form,
+            product_subtype=profile.product_subtype,
+        )
+        tracker.add_default(
+            "pressurized_aerosol_volume_interpretation_factor",
+            aerosol_volume_factor,
+            "fraction",
+            source,
+            (
+                "Volumetric aerosol-spray amount was bounded with a pressurized-aerosol "
+                "interpretation factor because density was defaulted rather than supplied "
+                "from product-specific mass semantics."
+            ),
+        )
+        if aerosol_volume_factor < 1.0:
+            tracker.add_quality_flag(
+                "pressurized_aerosol_volume_interpretation_defaulted",
+                (
+                    "Volumetric aerosol-spray mass was reduced with a bounded "
+                    "pressurized-aerosol interpretation factor because default density was "
+                    "used for a pressurized product."
+                ),
+                severity=Severity.WARNING,
+            )
+    product_mass_g = profile.use_amount_per_event * density * aerosol_volume_factor
     tracker.add_derived(
         "product_mass_g_per_event",
         product_mass_g,
         "g",
-        "Converted volume-based use amount into mass using density.",
+        (
+            "Converted volume-based use amount into mass using density and, when needed, "
+            "a bounded pressurized-aerosol interpretation factor."
+        ),
     )
     return product_mass_g
 

@@ -54,6 +54,10 @@ ASSUMPTION_UNCERTAINTY_TYPES: dict[str, tuple[UncertaintyType, ...]] = {
         UncertaintyType.PARAMETER_UNCERTAINTY,
     ),
     "density_g_per_ml": (UncertaintyType.PARAMETER_UNCERTAINTY,),
+    "pressurized_aerosol_volume_interpretation_factor": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.MODEL_UNCERTAINTY,
+    ),
     "retention_factor": (
         UncertaintyType.PARAMETER_UNCERTAINTY,
         UncertaintyType.SCENARIO_UNCERTAINTY,
@@ -186,6 +190,12 @@ ASSUMPTION_DOMAIN_FIELDS: dict[str, tuple[str, ...]] = {
     "inhalation_rate_m3_per_hour": ("population_group", "region"),
     "exposed_surface_area_cm2": ("population_group", "region"),
     "density_g_per_ml": ("product_category", "product_subtype", "physical_form"),
+    "pressurized_aerosol_volume_interpretation_factor": (
+        "product_category",
+        "product_subtype",
+        "physical_form",
+        "application_method",
+    ),
     "retention_factor": (
         "product_category",
         "product_subtype",

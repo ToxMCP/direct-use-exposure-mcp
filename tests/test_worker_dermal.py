@@ -346,6 +346,56 @@ def test_worker_dermal_execution_returns_ppe_adjusted_absorbed_dose() -> None:
     )
 
 
+def test_worker_dermal_execution_applies_pressurized_aerosol_volume_interpretation() -> None:
+    aerosol_request = _base_request().model_copy(
+        update={
+            "product_use_profile": _base_request().product_use_profile.model_copy(
+                update={
+                    "product_category": "disinfectant",
+                    "physical_form": "spray",
+                    "application_method": "aerosol_spray",
+                    "use_amount_per_event": 10.0,
+                    "use_amount_unit": ProductAmountUnit.ML,
+                    "use_events_per_day": 1.0,
+                    "concentration_fraction": 0.01,
+                }
+            )
+        }
+    )
+    bridge_package = build_worker_dermal_absorbed_dose_bridge(
+        ExportWorkerDermalAbsorbedDoseBridgeRequest(
+            base_request=aerosol_request,
+            task_description="Worker aerosol disinfection task with incidental gloved hand contact",
+            workplace_setting="janitorial closet",
+            contact_duration_hours=0.5,
+            contact_pattern=WorkerDermalContactPattern.DIRECT_HANDLING,
+            exposed_body_areas=["hands"],
+            ppe_state=WorkerDermalPpeState.WORK_GLOVES,
+            control_measures=["general ventilation"],
+            surface_loading_context="short aerosol spray with incidental hand contamination",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    result = execute_worker_dermal_absorbed_dose_task(
+        ExecuteWorkerDermalAbsorbedDoseRequest(
+            adapter_request=bridge_package.tool_call.arguments,
+            context_of_use="worker-dermal-test",
+        ),
+        registry=DefaultsRegistry.load(),
+    )
+
+    assumption_map = {item.name: item for item in result.assumptions}
+    assert assumption_map["pressurized_aerosol_volume_interpretation_factor"].value == 0.35
+    assert assumption_map["pressurized_aerosol_volume_interpretation_factor"].source.source_id == (
+        "pressurized_aerosol_volume_interpretation_heuristics_2026"
+    )
+    assert any(
+        flag.code == "worker_dermal_pressurized_aerosol_volume_interpretation_defaulted"
+        for flag in result.quality_flags
+    )
+
+
 def test_worker_dermal_execution_runs_handheld_biocidal_external_anchor_check() -> None:
     study_like_request = _base_request().model_copy(
         update={

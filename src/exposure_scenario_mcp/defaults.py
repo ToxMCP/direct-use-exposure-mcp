@@ -120,6 +120,34 @@ class DefaultsRegistry:
                 entry = subtype_entry
         return float(entry["density_g_per_ml"]), self._source(entry["source_id"])
 
+    def pressurized_aerosol_volume_interpretation_factor(
+        self,
+        product_category: str | None = None,
+        physical_form: str | None = None,
+        product_subtype: str | None = None,
+    ) -> tuple[float, AssumptionSourceReference]:
+        section = self.payload["conversion_defaults"][
+            "pressurized_aerosol_volume_interpretation_factor"
+        ]
+        entry = section["global"]
+        if product_category:
+            category_entry = section.get("product_category_overrides", {}).get(
+                product_category.lower()
+            )
+            if category_entry:
+                entry = category_entry
+        if physical_form:
+            form_entry = section.get("physical_form_overrides", {}).get(physical_form.lower())
+            if form_entry:
+                entry = form_entry
+        if product_subtype:
+            subtype_entry = section.get("product_subtype_overrides", {}).get(
+                product_subtype.lower()
+            )
+            if subtype_entry:
+                entry = subtype_entry
+        return float(entry["value"]), self._source(entry["source_id"])
+
     def population_defaults(
         self, population_group: str
     ) -> tuple[dict[str, float], AssumptionSourceReference]:
@@ -726,6 +754,40 @@ class DefaultsRegistry:
                     entry = candidate_entry
         return label, float(entry["value"]), self._source(entry["source_id"])
 
+    def worker_inhalation_capture_zone_alignment_factor(
+        self,
+        context_terms: list[str],
+        control_profile: str,
+    ) -> tuple[str, float, AssumptionSourceReference]:
+        normalized_profile = control_profile.lower()
+        values = self.payload["worker_inhalation_execution_defaults"][
+            "capture_zone_alignment_factor"
+        ]
+        generic_entry = values["generic"]
+        if not any(
+            item in normalized_profile for item in ("local_exhaust", "enclosed_process")
+        ):
+            return "generic", float(generic_entry["value"]), self._source(
+                generic_entry["source_id"]
+            )
+
+        normalized_terms = " ".join(
+            item.strip().lower().replace("-", "_").replace(" ", "_")
+            for item in context_terms
+            if item and item.strip()
+        )
+        label = "generic"
+        entry = generic_entry
+        for candidate_label, candidate_entry in values.items():
+            tokens = tuple(str(item).lower() for item in candidate_entry.get("tokens", []))
+            if not tokens:
+                continue
+            if any(token in normalized_terms for token in tokens):
+                if float(candidate_entry["value"]) < float(entry["value"]):
+                    label = candidate_label
+                    entry = candidate_entry
+        return label, float(entry["value"]), self._source(entry["source_id"])
+
     def worker_inhalation_respiratory_protection_factor(
         self, respiratory_protection: str
     ) -> tuple[float, AssumptionSourceReference]:
@@ -825,6 +887,15 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  interim density branch for subtype-specific pest-control aerosol scenarios such",
             "  as `air_space_insecticide`, where solvent-propellant style product families are",
             "  not well represented by the generic liquid screening density.",
+            "",
+            "### Pressurized Aerosol Volume Interpretation Heuristics 2026",
+            "",
+            "- `pressurized_aerosol_volume_interpretation_heuristics_2026` applies a bounded",
+            "  conversion factor when volumetric `aerosol_spray` scenarios rely on default",
+            "  density. This prevents pressurized aerosol cans from being treated as fully",
+            "  condensed liquid volume in screening mode while preserving subtype-specific",
+            "  branches such as `air_space_insecticide` where the emitted active mass is",
+            "  already handled as a whole-room aerosol release boundary.",
             "",
             "### Heuristic Retention Defaults",
             "",
@@ -974,6 +1045,13 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  inhalation-rate scaling factors for light, moderate, and high worker task",
             "  intensity classes. These are screening physiology modifiers, not measured",
             "  minute-ventilation or metabolic-rate models.",
+            "",
+            "### Worker Inhalation Capture-Zone Heuristics 2026",
+            "",
+            "- `worker_inhalation_capture_zone_heuristics_2026` refines local exhaust and",
+            "  enclosed-process worker control factors with a bounded capture-zone alignment",
+            "  factor. This remains a screening heuristic and does not replace measured hood",
+            "  capture efficiency or industrial-hygiene verification.",
             "",
             "### RIVM Cosmetics Hand-Cream Direct Application Defaults 2025",
             "",
@@ -1216,6 +1294,34 @@ def build_defaults_curation_report(
             value=entry["density_g_per_ml"],
             source_id=entry["source_id"],
             applicability={"product_subtype": product_subtype},
+        )
+    aerosol_volume_factor = conversion_defaults.get(
+        "pressurized_aerosol_volume_interpretation_factor",
+        {},
+    )
+    global_aerosol_volume_factor = aerosol_volume_factor.get("global")
+    if global_aerosol_volume_factor:
+        _append_entry(
+            entries,
+            active_registry,
+            parameter_name="pressurized_aerosol_volume_interpretation_factor",
+            value=global_aerosol_volume_factor["value"],
+            source_id=global_aerosol_volume_factor["source_id"],
+            applicability={"application_method": "aerosol_spray"},
+        )
+    for product_subtype, entry in (
+        aerosol_volume_factor.get("product_subtype_overrides", {}).items()
+    ):
+        _append_entry(
+            entries,
+            active_registry,
+            parameter_name="pressurized_aerosol_volume_interpretation_factor",
+            value=entry["value"],
+            source_id=entry["source_id"],
+            applicability={
+                "application_method": "aerosol_spray",
+                "product_subtype": product_subtype,
+            },
         )
 
     def append_method_family(

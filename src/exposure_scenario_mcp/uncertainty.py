@@ -641,6 +641,43 @@ def _mechanistic_constraint_entries(
             )
         )
 
+    aerosol_volume_factor = next(
+        (
+            item.value
+            for item in scenario.assumptions
+            if item.name == "pressurized_aerosol_volume_interpretation_factor"
+        ),
+        None,
+    )
+    if isinstance(aerosol_volume_factor, int | float) and float(aerosol_volume_factor) < 1.0:
+        entries.append(
+            UncertaintyRegisterEntry(
+                entry_id="mechanistic-constraint-pressurized-aerosol-volume-interpretation",
+                title="Pressurized aerosol volume was bounded before mass conversion",
+                uncertainty_types=[
+                    UncertaintyType.MODEL_UNCERTAINTY,
+                    UncertaintyType.PARAMETER_UNCERTAINTY,
+                ],
+                related_assumptions=_related(
+                    "use_amount_per_event",
+                    "density_g_per_ml",
+                    "pressurized_aerosol_volume_interpretation_factor",
+                ),
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level=_impact_from_sensitivity("use_amount_per_event", sensitivity_ranking),
+                summary=(
+                    "Volumetric aerosol product mass was reduced with a bounded "
+                    "pressurized-aerosol interpretation factor instead of treating the "
+                    "declared can volume as fully condensed liquid mass."
+                ),
+                recommendation=(
+                    "Prefer product-specific mass-per-event or explicit density semantics "
+                    "for pressurized aerosols when higher-confidence route realism is needed."
+                ),
+            )
+        )
+
     reentry_mode = str(route_metrics.get("reentry_mode") or "").strip().lower()
     if reentry_mode == "native_treated_surface_reentry":
         entries.append(
