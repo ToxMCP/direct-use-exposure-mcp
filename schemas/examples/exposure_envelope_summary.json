@@ -634,7 +634,8 @@
           "benchmarkCaseIds": [
             "dermal_density_precedence_volume_case",
             "dermal_face_cream_sccs_screening",
-            "dermal_hand_cream_screening"
+            "dermal_hand_cream_screening",
+            "dermal_tcm_topical_balm_screening"
           ],
           "externalDatasetIds": [
             "skin_protection_cream_dose_per_area_2012"
@@ -1275,7 +1276,8 @@
           "benchmarkCaseIds": [
             "dermal_density_precedence_volume_case",
             "dermal_face_cream_sccs_screening",
-            "dermal_hand_cream_screening"
+            "dermal_hand_cream_screening",
+            "dermal_tcm_topical_balm_screening"
           ],
           "externalDatasetIds": [
             "skin_protection_cream_dose_per_area_2012"
@@ -1926,7 +1928,8 @@
           "benchmarkCaseIds": [
             "dermal_density_precedence_volume_case",
             "dermal_face_cream_sccs_screening",
-            "dermal_hand_cream_screening"
+            "dermal_hand_cream_screening",
+            "dermal_tcm_topical_balm_screening"
           ],
           "externalDatasetIds": [
             "skin_protection_cream_dose_per_area_2012"
@@ -2078,7 +2081,8 @@
     "benchmarkCaseIds": [
       "dermal_density_precedence_volume_case",
       "dermal_face_cream_sccs_screening",
-      "dermal_hand_cream_screening"
+      "dermal_hand_cream_screening",
+      "dermal_tcm_topical_balm_screening"
     ],
     "externalDatasetIds": [
       "skin_protection_cream_dose_per_area_2012"

@@ -677,7 +677,8 @@
       "benchmark_case_ids": [
         "dermal_density_precedence_volume_case",
         "dermal_face_cream_sccs_screening",
-        "dermal_hand_cream_screening"
+        "dermal_hand_cream_screening",
+        "dermal_tcm_topical_balm_screening"
       ],
       "external_dataset_ids": [
         "skin_protection_cream_dose_per_area_2012"

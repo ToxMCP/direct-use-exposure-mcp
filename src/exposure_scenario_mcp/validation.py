@@ -33,8 +33,11 @@ BENCHMARK_CASE_DOMAINS = {
     "dermal_face_cream_sccs_screening": "dermal_direct_application",
     "dermal_hand_cream_screening": "dermal_direct_application",
     "dermal_density_precedence_volume_case": "dermal_direct_application",
+    "dermal_tcm_topical_balm_screening": "dermal_direct_application",
     "oral_direct_oral_screening": "oral_direct_intake",
     "oral_medicinal_liquid_delivered_dose_screening": "oral_direct_intake",
+    "oral_tcm_medicinal_direct_use_screening": "oral_direct_intake",
+    "oral_botanical_supplement_direct_use_screening": "oral_direct_intake",
     "inhalation_trigger_spray_screening": "inhalation_well_mixed_spray",
     "inhalation_saturation_cap_stress_case": "inhalation_well_mixed_spray",
     "inhalation_air_space_insecticide_aerosol_screening": "inhalation_well_mixed_spray",
@@ -90,14 +93,17 @@ BENCHMARK_CASE_DOMAINS = {
 BENCHMARK_DOMAIN_NOTES = {
     "dermal_direct_application": [
         (
-            "Current executable coverage is deterministic benchmark regression rather "
-            "than external calibration."
+            "Current executable coverage is deterministic benchmark regression across "
+            "core leave-on cream, SCCS face-cream, and direct-use herbal topical-balm "
+            "cases rather than external calibration."
         )
     ],
     "oral_direct_intake": [
         (
-            "Current executable coverage verifies direct-intake screening arithmetic "
-            "but does not yet benchmark distributional use factors."
+            "Current executable coverage now verifies direct-intake screening arithmetic "
+            "across generic direct-oral, medicinal-liquid, medicinal tablet, and "
+            "product-centric supplement capsule cases, but it still does not benchmark "
+            "distributional use factors."
         )
     ],
     "inhalation_well_mixed_spray": [
@@ -612,10 +618,12 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
                 "heuristic_incidental_oral_defaults_v1",
             ],
             note=(
-                "Direct-oral screening is benchmarked internally and now has a narrow "
-                "executable medicinal-liquid delivered-dose check plus a real delivered-dose "
-                "study anchor, but that evidence still comes from a single medication family "
-                "rather than a broad oral-product calibration set."
+                "Direct-oral screening is benchmarked internally across generic direct-oral, "
+                "medicinal-liquid, medicinal tablet, and product-centric supplement capsule "
+                "cases, and it now has a narrow executable medicinal-liquid delivered-dose "
+                "check plus a real delivered-dose study anchor, but external validation "
+                "evidence still comes from a single medication family rather than a broad "
+                "oral-product calibration set."
             ),
             recommendation=(
                 "Add broader observed dosing or dispensed-amount datasets before broadening "

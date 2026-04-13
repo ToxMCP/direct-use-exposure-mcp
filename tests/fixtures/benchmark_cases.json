@@ -852,6 +852,151 @@
       }
     },
     {
+      "id": "oral_tcm_medicinal_direct_use_screening",
+      "kind": "scenario",
+      "description": "Adult Traditional Chinese Medicine pill case covering medicinal direct-use oral routing semantics and deterministic tablet-mass arithmetic.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID990001",
+        "chemical_name": "Benchmark Herbal Marker A",
+        "route": "oral",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Traditional Chinese Medicine Pill",
+          "product_category": "herbal_medicinal_product",
+          "physical_form": "tablet",
+          "application_method": "direct_oral",
+          "retention_type": "ingested",
+          "concentration_fraction": 0.25,
+          "use_amount_per_event": 0.8,
+          "use_amount_unit": "g",
+          "use_events_per_day": 2,
+          "intendedUseFamily": "medicinal",
+          "oralExposureContext": "direct_use_medicinal"
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 60,
+          "region": "CN",
+          "demographic_tags": [
+            "consumer"
+          ]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 6.66666667,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 200.0,
+          "external_mass_mg_per_day": 400.0
+        },
+        "assumptions": {
+          "ingestion_fraction": 1.0,
+          "body_weight_kg": 60.0
+        }
+      }
+    },
+    {
+      "id": "oral_botanical_supplement_direct_use_screening",
+      "kind": "scenario",
+      "description": "Adult botanical supplement capsule case covering product-centric direct-use supplement routing semantics without collapsing into food-mediated dietary intake.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID990002",
+        "chemical_name": "Benchmark Botanical Marker B",
+        "route": "oral",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Botanical Supplement Capsule",
+          "product_category": "botanical_supplement",
+          "physical_form": "capsule",
+          "application_method": "direct_oral",
+          "retention_type": "ingested",
+          "concentration_fraction": 0.12,
+          "use_amount_per_event": 0.6,
+          "use_amount_unit": "g",
+          "use_events_per_day": 1,
+          "intendedUseFamily": "supplement",
+          "oralExposureContext": "direct_use_supplement"
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 70,
+          "region": "EU",
+          "demographic_tags": [
+            "consumer"
+          ]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 1.02857143,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 72.0,
+          "external_mass_mg_per_day": 72.0
+        },
+        "assumptions": {
+          "ingestion_fraction": 1.0,
+          "body_weight_kg": 70.0
+        }
+      }
+    },
+    {
+      "id": "dermal_tcm_topical_balm_screening",
+      "kind": "scenario",
+      "description": "Adult Traditional Chinese Medicine topical balm case covering direct-use dermal semantics for leave-on herbal medicinal preparations.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID990003",
+        "chemical_name": "Benchmark Herbal Balm Marker C",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark TCM Topical Balm",
+          "product_category": "herbal_topical_product",
+          "physical_form": "ointment",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.04,
+          "use_amount_per_event": 1.2,
+          "use_amount_unit": "g",
+          "use_events_per_day": 3,
+          "intendedUseFamily": "medicinal"
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 60,
+          "region": "CN",
+          "demographic_tags": [
+            "consumer"
+          ]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 2.4,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 48.0,
+          "external_mass_mg_per_day": 144.0,
+          "surface_loading_mg_per_cm2_day": 0.02526316
+        },
+        "assumptions": {
+          "body_weight_kg": 60.0,
+          "retention_factor": 1.0,
+          "transfer_efficiency": 1.0
+        }
+      }
+    },
+    {
       "id": "dermal_density_precedence_volume_case",
       "kind": "scenario",
       "description": "Adult dermal cream case covering physical-form density override precedence for mL inputs.",

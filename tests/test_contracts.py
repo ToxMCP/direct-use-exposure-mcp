@@ -429,9 +429,9 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     assert report["externalDatasetCount"] == 14
     assert report["referenceBandCount"] == 11
     assert report["timeSeriesPackCount"] == 3
-    assert report["goldsetCaseCount"] == 14
+    assert report["goldsetCaseCount"] == 17
     assert report["goldsetCoverageCounts"] == {
-        "benchmark_regressed_showcase": 12,
+        "benchmark_regressed_showcase": 15,
         "challenge_case": 1,
         "integration_showcase": 1,
     }

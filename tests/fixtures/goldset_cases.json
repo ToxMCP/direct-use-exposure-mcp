@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.12.v16",
+  "goldset_version": "2026.04.13.v17",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -122,6 +122,86 @@
           "locator": "https://doi.org/10.1007/s12325-024-03089-0",
           "publisher": "Advances in Therapy",
           "source_type": "journal_article"
+        }
+      ]
+    },
+    {
+      "id": "tcm_medicinal_oral_regimen",
+      "title": "Traditional Chinese Medicine oral regimen routing realism",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["oral_tcm_medicinal_direct_use_screening"],
+      "recognizable_examples": ["Traditional Chinese Medicine pill", "herbal medicinal tablet", "prescribed botanical oral regimen"],
+      "challenge_tags": ["tcm", "medicinal_oral", "direct_use_routing", "tablet_mass_semantics"],
+      "why_it_matters": "TCM oral regimens are increasingly recognizable and they are exactly the kind of case that gets misrouted if the MCP boundary is not explicit about medicinal direct-use versus dietary intake.",
+      "showcase_story": "Shows that the MCP can treat a TCM pill as a medicinal direct-use oral scenario with auditable dosing arithmetic and explicit route semantics instead of collapsing it into Dietary MCP by label alone.",
+      "evidence_gaps": [
+        "This benchmark locks deterministic medicinal oral semantics and routing, not externally observed TCM dispensing variability or ingredient-specific bioavailability."
+      ],
+      "external_sources": [
+        {
+          "source_id": "who_traditional_medicine_qna",
+          "title": "Traditional medicine",
+          "locator": "https://www.who.int/news-room/questions-and-answers/item/traditional-medicine",
+          "publisher": "World Health Organization",
+          "source_type": "program_overview"
+        },
+        {
+          "source_id": "ema_traditional_herbal_medicinal_products_guideline",
+          "title": "Non-clinical documentation in applications for marketing authorisation / registration of well-established and traditional herbal medicinal products - Scientific guideline",
+          "locator": "https://www.ema.europa.eu/en/non-clinical-documentation-applications-marketing-authorisation-registration-well-established-traditional-herbal-medicinal-products-scientific-guideline",
+          "publisher": "European Medicines Agency",
+          "source_type": "regulatory_guidance"
+        }
+      ]
+    },
+    {
+      "id": "botanical_supplement_direct_use_capsule",
+      "title": "Product-centric botanical supplement capsule routing realism",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["oral_botanical_supplement_direct_use_screening"],
+      "recognizable_examples": ["botanical supplement capsule", "herbal supplement pill", "dose-form food supplement"],
+      "challenge_tags": ["supplement", "oral_routing", "direct_use_vs_dietary", "capsule_mass_semantics"],
+      "why_it_matters": "Supplement pills are easy to confuse with ordinary dietary intake, so the MCP needs an auditable way to keep product-centric labeled regimens separate from food-mediated exposure workflows.",
+      "showcase_story": "Shows that a labeled botanical supplement capsule can stay in the Direct-Use engine when the workflow is explicitly product-centric and regimen-based, while still keeping broader nutrition-style supplement intake in Dietary MCP.",
+      "evidence_gaps": [
+        "This benchmark anchors deterministic capsule-dose semantics and routing, not population dietary supplement intake patterns or nutritional exposure distributions."
+      ],
+      "external_sources": [
+        {
+          "source_id": "ec_food_supplements_page",
+          "title": "Food supplements",
+          "locator": "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-supplements_en",
+          "publisher": "European Commission",
+          "source_type": "regulatory_overview"
+        }
+      ]
+    },
+    {
+      "id": "tcm_topical_balm_direct_application",
+      "title": "Traditional Chinese Medicine topical balm direct-use realism",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["dermal_tcm_topical_balm_screening"],
+      "recognizable_examples": ["TCM balm", "herbal ointment", "medicinal topical balm"],
+      "challenge_tags": ["tcm", "topical_medicinal", "direct_application", "leave_on_dermal"],
+      "why_it_matters": "Topical herbal balms are a common direct-use medicinal pattern and they test whether the dermal engine can treat herbal products as ordinary direct-use preparations without inventing a separate product silo.",
+      "showcase_story": "Shows that topical TCM and herbal balm use can be expressed as a benchmarked leave-on dermal case with explicit medicinal direct-use semantics rather than being treated as an undefined special category.",
+      "evidence_gaps": [
+        "This benchmark anchors deterministic leave-on topical balm semantics, not formulation-specific dermal absorption or ingredient-specific permeation behavior."
+      ],
+      "external_sources": [
+        {
+          "source_id": "who_traditional_medicine_qna",
+          "title": "Traditional medicine",
+          "locator": "https://www.who.int/news-room/questions-and-answers/item/traditional-medicine",
+          "publisher": "World Health Organization",
+          "source_type": "program_overview"
+        },
+        {
+          "source_id": "who_traditional_medicine_strategy_2025_2034",
+          "title": "WHO global traditional medicine strategy 2025-2034",
+          "locator": "https://www.who.int/publications/i/item/9789240113176",
+          "publisher": "World Health Organization",
+          "source_type": "strategy_document"
         }
       ]
     },
