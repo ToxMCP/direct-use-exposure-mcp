@@ -157,6 +157,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`cleaning_trigger_spray_airborne_fraction_2019_band`" in validation_bands
     assert "`hand_cream_application_loading_2012_band`" in validation_bands
     assert "`dietary_supplement_iron_capsule_daily_mass_2025_band`" in validation_bands
+    assert "`capsicum_hydrogel_patch_label_amount_2025_band`" in validation_bands
+    assert "`herbal_recovery_patch_label_amount_2025_band`" in validation_bands
     assert "`herbal_medicinal_valerian_infusion_daily_mass_2015_band`" in validation_bands
     assert "`herbal_medicinal_valerian_oral_daily_mass_2015_band`" in validation_bands
     assert "`herbal_topical_application_strip_length_2014_band`" in validation_bands
@@ -209,6 +211,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`eu_herbal_medicinal_oral_posology_alignment`" in goldset
     assert "`eu_herbal_medicinal_infusion_posology_alignment`" in goldset
     assert "`dietary_supplement_capsule_label_alignment`" in goldset
+    assert "`capsicum_hydrogel_patch_label_amount_alignment`" in goldset
+    assert "`herbal_recovery_patch_label_amount_alignment`" in goldset
     assert "`herbal_topical_spray_label_amount_alignment`" in goldset
     assert "`inhalation_residual_air_reentry_chlorpyrifos_time_series_1990`" in goldset
     assert "`worker_biocidal_spray_dermal_contact`" in goldset
@@ -223,6 +227,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`who_traditional_medicine_topical_context_2026`" in coverage_report
     assert "`ema_arnica_topical_application_geometry_2014`" in coverage_report
     assert "`nlm_dailymed_ahealon_topical_spray_label_2026`" in coverage_report
+    assert "`nlm_dailymed_activmend_patch_label_2025`" in coverage_report
+    assert "`nlm_dailymed_upup_capsicum_patch_label_2025`" in coverage_report
     assert "Defaults Curation Report" in defaults_curation
     cleaner_wipe_transfer = (
         "`transfer_efficiency:application_method=wipe,product_category=household_cleaner`"

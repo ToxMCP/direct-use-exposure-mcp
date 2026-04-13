@@ -1,5 +1,5 @@
 {
-  "reference_version": "2026.04.13.v15",
+  "reference_version": "2026.04.13.v16",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
@@ -40,6 +40,42 @@
         "retention_type": "leave_on"
       },
       "note": "Official-label topical-herbal spray delivered-amount band derived from the DailyMed AHEALON label stating approximately 0.15 mL per spray and 4-6 sprays per topical application, giving 0.6-0.9 mL per event."
+    },
+    {
+      "reference_band_id": "herbal_recovery_patch_label_amount_2025_band",
+      "check_id": "herbal_recovery_patch_label_amount_2025",
+      "reference_dataset_id": "nlm_dailymed_activmend_patch_label_2025",
+      "domain": "dermal_direct_application",
+      "compared_metric": "use_amount_per_event",
+      "reference_lower": 14.0,
+      "reference_upper": 14.0,
+      "unit": "g/event",
+      "applicable_selectors": {
+        "product_category": "herbal_topical_product",
+        "product_subtype": "herbal_recovery_patch",
+        "physical_form": "patch",
+        "application_method": "patch_application",
+        "retention_type": "leave_on"
+      },
+      "note": "Official-label herbal recovery patch unit-mass band derived from the DailyMed ActivMend label stating 14 g in 1 patch."
+    },
+    {
+      "reference_band_id": "capsicum_hydrogel_patch_label_amount_2025_band",
+      "check_id": "capsicum_hydrogel_patch_label_amount_2025",
+      "reference_dataset_id": "nlm_dailymed_upup_capsicum_patch_label_2025",
+      "domain": "dermal_direct_application",
+      "compared_metric": "use_amount_per_event",
+      "reference_lower": 1.0,
+      "reference_upper": 1.0,
+      "unit": "g/event",
+      "applicable_selectors": {
+        "product_category": "botanical_topical_patch",
+        "product_subtype": "capsicum_hydrogel_patch",
+        "physical_form": "patch",
+        "application_method": "patch_application",
+        "retention_type": "leave_on"
+      },
+      "note": "Official-label capsicum hydrogel patch unit-mass band derived from the DailyMed UP UP label stating 1000 mg in 1 patch."
     },
     {
       "reference_band_id": "herbal_topical_application_strip_length_2014_band",

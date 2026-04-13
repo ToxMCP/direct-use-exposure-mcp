@@ -621,6 +621,56 @@ def build_examples() -> dict[str, dict]:
             region="US",
         ),
     )
+    herbal_recovery_patch_request = ExposureScenarioRequest(
+        chemical_id="HERBAL-PATCH-EXAMPLE-001",
+        chemical_name="Example Herbal Recovery Patch Constituent",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Herbal Recovery Patch",
+            product_category="herbal_topical_product",
+            product_subtype="herbal_recovery_patch",
+            physical_form="patch",
+            application_method="patch_application",
+            retention_type="leave_on",
+            concentration_fraction=0.108,
+            use_amount_per_event=14.0,
+            use_amount_unit="g",
+            transfer_efficiency=1.0,
+            use_events_per_day=1,
+            intendedUseFamily=IntendedUseFamily.MEDICINAL,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="US",
+        ),
+    )
+    capsicum_hydrogel_patch_request = ExposureScenarioRequest(
+        chemical_id="CAPSICUM-PATCH-EXAMPLE-001",
+        chemical_name="Example Capsicum Patch Constituent",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Capsicum Hydrogel Patch",
+            product_category="botanical_topical_patch",
+            product_subtype="capsicum_hydrogel_patch",
+            physical_form="patch",
+            application_method="patch_application",
+            retention_type="leave_on",
+            concentration_fraction=0.022,
+            use_amount_per_event=1.0,
+            use_amount_unit="g",
+            transfer_efficiency=1.0,
+            use_events_per_day=1,
+            intendedUseFamily=IntendedUseFamily.MEDICINAL,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="US",
+        ),
+    )
     dermal_scenario = _freeze_scenario(
         engine.build(dermal_request),
         EXAMPLE_IDS["screening_dermal_scenario"],
@@ -1701,6 +1751,12 @@ def build_examples() -> dict[str, dict]:
             mode="json", by_alias=True
         ),
         "herbal_topical_spray_request": herbal_topical_spray_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "herbal_recovery_patch_request": herbal_recovery_patch_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "capsicum_hydrogel_patch_request": capsicum_hydrogel_patch_request.model_dump(
             mode="json", by_alias=True
         ),
         "route_dose_estimate": route_dose_estimate.model_dump(mode="json", by_alias=True),

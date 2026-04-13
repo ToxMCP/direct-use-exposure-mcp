@@ -8,7 +8,7 @@
   "defaultsVersion": "2026.04.13.v33",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
-  "benchmarkCaseCount": 38,
+  "benchmarkCaseCount": 40,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
     "dermal_face_cream_sccs_screening",
@@ -33,6 +33,8 @@
     "oral_dietary_supplement_iron_capsule_label_screening",
     "dermal_tcm_topical_balm_screening",
     "dermal_herbal_topical_spray_label_amount_screening",
+    "dermal_herbal_recovery_patch_label_amount_screening",
+    "dermal_capsicum_hydrogel_patch_label_amount_screening",
     "dermal_density_precedence_volume_case",
     "cross_route_aggregate_summary",
     "cross_route_aggregate_internal_equivalent_summary",
@@ -50,7 +52,7 @@
     "worker_dermal_extreme_loading_surface_cap_execution"
   ],
   "contractSchemaCount": 151,
-  "contractExampleCount": 89,
+  "contractExampleCount": 91,
   "distributionArtifacts": [
     {
       "kind": "wheel",

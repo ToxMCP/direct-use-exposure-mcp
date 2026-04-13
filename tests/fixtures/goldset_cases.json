@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.13.v21",
+  "goldset_version": "2026.04.13.v22",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -295,6 +295,50 @@
           "source_id": "nlm_dailymed_ahealon_topical_spray_label_2026",
           "title": "DailyMed - AHEALON topical spray label",
           "locator": "https://dailymed.nlm.nih.gov/dailymed/getFile.cfm?setid=6720fab5-6ef0-e922-0c2c-2fe5280838ab&type=pdf",
+          "publisher": "National Library of Medicine / DailyMed",
+          "source_type": "official_label"
+        }
+      ]
+    },
+    {
+      "id": "herbal_recovery_patch_label_amount_alignment",
+      "title": "Herbal recovery patch label-mass alignment",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["dermal_herbal_recovery_patch_label_amount_screening"],
+      "recognizable_examples": ["arnica patch", "herbal recovery patch", "product-centric topical herbal patch"],
+      "challenge_tags": ["herbal_topical", "patch", "official_label", "unit_mass"],
+      "why_it_matters": "Topical herbal direct-use families are stronger when at least one patch case is anchored to an official unit mass rather than only to generic patch semantics.",
+      "showcase_story": "Shows that the MCP can express a labeled herbal recovery patch regimen and land exactly on the official DailyMed ActivMend patch mass of 14 g per application event.",
+      "evidence_gaps": [
+        "This showcase anchors official patch unit mass per application, not transdermal release kinetics, skin uptake, or wear-time-dependent delivery."
+      ],
+      "external_sources": [
+        {
+          "source_id": "nlm_dailymed_activmend_patch_label_2025",
+          "title": "DailyMed - ActivMend topical patch label",
+          "locator": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=baefc5d4-a7e4-4ba2-e053-2995a90a4b86",
+          "publisher": "National Library of Medicine / DailyMed",
+          "source_type": "official_label"
+        }
+      ]
+    },
+    {
+      "id": "capsicum_hydrogel_patch_label_amount_alignment",
+      "title": "Capsicum hydrogel patch label-mass alignment",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["dermal_capsicum_hydrogel_patch_label_amount_screening"],
+      "recognizable_examples": ["capsicum patch", "botanical hydrogel patch", "product-centric botanical topical patch"],
+      "challenge_tags": ["botanical_topical", "patch", "official_label", "unit_mass"],
+      "why_it_matters": "Botanical patch direct-use families are stronger when at least one case is anchored to an official labeled patch mass and active amount instead of only to route semantics.",
+      "showcase_story": "Shows that the MCP can express a labeled capsicum hydrogel patch regimen and land exactly on the official DailyMed UP UP patch unit mass of 1 g per application event.",
+      "evidence_gaps": [
+        "This showcase anchors official patch unit mass per application, not botanical active release, occlusion effects, or skin-delivery kinetics."
+      ],
+      "external_sources": [
+        {
+          "source_id": "nlm_dailymed_upup_capsicum_patch_label_2025",
+          "title": "DailyMed - UP UP capsicum hydrogel patch label",
+          "locator": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=44128b70-3172-ee37-e063-6294a90a705f",
           "publisher": "National Library of Medicine / DailyMed",
           "source_type": "official_label"
         }

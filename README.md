@@ -109,7 +109,8 @@ For a suite-level map of sibling services and shared handoff contracts, see
   product-centric supplement capsules, and topical herbal balms in the governed defaults and
   validation surfaces, including narrow EMA herbal-medicinal oral executable bands, an
   official DailyMed supplement-label executable band, an executable topical-herbal
-  application-geometry analogue band, and an official topical-herbal delivered-amount anchor
+  application-geometry analogue band, an official topical-herbal delivered-amount anchor,
+  and official topical patch unit-mass anchors
 - Worker-task routing guidance plus a deterministic router for current MCP vs future occupational adapter paths
 - Worker inhalation Tier 2 bridge export for future ART-style occupational adapter handoff
 - Worker inhalation Tier 2 execution plus governed ART external exchange packages and imports

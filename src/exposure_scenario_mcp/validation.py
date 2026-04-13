@@ -36,6 +36,8 @@ BENCHMARK_CASE_DOMAINS = {
     "dermal_density_precedence_volume_case": "dermal_direct_application",
     "dermal_tcm_topical_balm_screening": "dermal_direct_application",
     "dermal_herbal_topical_spray_label_amount_screening": "dermal_direct_application",
+    "dermal_herbal_recovery_patch_label_amount_screening": "dermal_direct_application",
+    "dermal_capsicum_hydrogel_patch_label_amount_screening": "dermal_direct_application",
     "oral_direct_oral_screening": "oral_direct_intake",
     "oral_medicinal_liquid_delivered_dose_screening": "oral_direct_intake",
     "oral_herbal_medicinal_valerian_posology_screening": "oral_direct_intake",
@@ -100,9 +102,9 @@ BENCHMARK_DOMAIN_NOTES = {
         (
             "Current executable coverage is deterministic benchmark regression across "
             "core leave-on cream, SCCS face-cream, and direct-use herbal topical-balm "
-            "and spray cases, now paired with executable topical-herbal geometry and "
-            "official-label delivered-amount anchors rather than a true dermal absorption "
-            "calibration set."
+            "and spray cases, now paired with executable topical-herbal geometry, "
+            "official-label delivered-amount anchors, and patch unit-mass anchors rather "
+            "than a true dermal absorption calibration set."
         )
     ],
     "oral_direct_intake": [
@@ -684,6 +686,52 @@ EXTERNAL_VALIDATION_DATASETS = [
             "and 4-6 sprays per topical administration. This provides a narrow product-"
             "centric delivered-amount anchor of 0.6-0.9 mL per event for herbal topical "
             "spray direct-use workflows."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="nlm_dailymed_activmend_patch_label_2025",
+        domain="dermal_direct_application",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "official per-application unit mass for a product-centric herbal recovery "
+            "patch regimen"
+        ),
+        targetMetrics=["use_amount_per_event"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["herbal_topical_product"],
+        referenceTitle="DailyMed - ActivMend topical patch label",
+        referenceLocator=(
+            "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?"
+            "setid=baefc5d4-a7e4-4ba2-e053-2995a90a4b86"
+        ),
+        note=(
+            "The official DailyMed ActivMend label states 14 g in 1 patch and directions "
+            "to wear one patch up to 24 hours. This provides a narrow official-label "
+            "unit-mass anchor for product-centric herbal recovery patch direct-use "
+            "workflows."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="nlm_dailymed_upup_capsicum_patch_label_2025",
+        domain="dermal_direct_application",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "official per-application unit mass and active amount for a product-centric "
+            "capsicum hydrogel patch regimen"
+        ),
+        targetMetrics=["use_amount_per_event", "chemical_mass_mg_per_event"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["botanical_topical_patch"],
+        referenceTitle="DailyMed - UP UP capsicum hydrogel patch label",
+        referenceLocator=(
+            "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?"
+            "setid=44128b70-3172-ee37-e063-6294a90a705f"
+        ),
+        note=(
+            "The official DailyMed UP UP capsicum hydrogel patch label states 1000 mg in "
+            "1 patch and 22 mg capsicum extract per patch. This provides a narrow "
+            "official-label unit-mass anchor for product-centric botanical patch direct-"
+            "use workflows."
         ),
     ),
     ExternalValidationDataset(
@@ -1527,6 +1575,82 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                     "DailyMed AHEALON topical-spray instruction of approximately 0.15 mL "
                     "per spray and 4-6 sprays per application, giving a 0.6-0.9 mL/event "
                     "delivered-amount anchor."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.product_category == "herbal_topical_product"
+        and profile.product_subtype == "herbal_recovery_patch"
+        and profile.application_method == "patch_application"
+        and profile.retention_type == "leave_on"
+        and profile.use_amount_unit == ProductAmountUnit.G
+    ):
+        observed = float(profile.use_amount_per_event)
+        reference_band = reference_registry.band_for_check(
+            "herbal_recovery_patch_label_amount_2025"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="herbal_recovery_patch_label_amount_2025",
+                title="Herbal recovery patch unit mass vs DailyMed label",
+                referenceDatasetId="nlm_dailymed_activmend_patch_label_2025",
+                status=status,
+                comparedMetric="use_amount_per_event",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed use_amount_per_event is compared against the official "
+                    "DailyMed ActivMend label stating 14 g in 1 patch with one patch worn "
+                    "up to 24 hours, giving a narrow herbal recovery patch unit-mass anchor."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.product_category == "botanical_topical_patch"
+        and profile.product_subtype == "capsicum_hydrogel_patch"
+        and profile.application_method == "patch_application"
+        and profile.retention_type == "leave_on"
+        and profile.use_amount_unit == ProductAmountUnit.G
+    ):
+        observed = float(profile.use_amount_per_event)
+        reference_band = reference_registry.band_for_check(
+            "capsicum_hydrogel_patch_label_amount_2025"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="capsicum_hydrogel_patch_label_amount_2025",
+                title="Capsicum hydrogel patch unit mass vs DailyMed label",
+                referenceDatasetId="nlm_dailymed_upup_capsicum_patch_label_2025",
+                status=status,
+                comparedMetric="use_amount_per_event",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed use_amount_per_event is compared against the official "
+                    "DailyMed UP UP capsicum hydrogel patch label stating 1000 mg in 1 "
+                    "patch, giving a narrow botanical patch unit-mass anchor."
                 ),
             )
         )

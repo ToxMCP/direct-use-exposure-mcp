@@ -53,6 +53,10 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
   application-geometry analogue band
 - Adult herbal topical spray screening linked to an official DailyMed delivered-amount
   label anchor
+- Adult herbal recovery patch screening linked to an official DailyMed ActivMend label
+  unit-mass anchor
+- Adult capsicum hydrogel patch screening linked to an official DailyMed UP UP label
+  unit-mass anchor
 - Adult dermal cream volume-to-mass conversion with density override precedence
 - Cross-route aggregate summary with contributor fractions and limitation flagging
 - Cross-route internal-equivalent aggregate summary using route-specific bioavailability fractions

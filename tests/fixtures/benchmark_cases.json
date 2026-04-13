@@ -1247,6 +1247,108 @@
       }
     },
     {
+      "id": "dermal_herbal_recovery_patch_label_amount_screening",
+      "kind": "scenario",
+      "description": "Adult herbal recovery patch case aligned to the official DailyMed ActivMend label mass of one 14 g patch worn up to 24 hours.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "ARNICA-PATCH-001",
+        "chemical_name": "Benchmark Arnica Patch Constituent",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark ActivMend-style Herbal Patch",
+          "product_category": "herbal_topical_product",
+          "product_subtype": "herbal_recovery_patch",
+          "physical_form": "patch",
+          "application_method": "patch_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.108,
+          "use_amount_per_event": 14.0,
+          "use_amount_unit": "g",
+          "transfer_efficiency": 1.0,
+          "use_events_per_day": 1,
+          "intendedUseFamily": "medicinal"
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 70,
+          "region": "US",
+          "demographic_tags": [
+            "consumer"
+          ]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 21.6,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 1512.0,
+          "external_mass_mg_per_day": 1512.0,
+          "surface_loading_mg_per_cm2_day": 0.26526316
+        },
+        "assumptions": {
+          "body_weight_kg": 70.0,
+          "retention_factor": 1.0,
+          "transfer_efficiency": 1.0
+        }
+      }
+    },
+    {
+      "id": "dermal_capsicum_hydrogel_patch_label_amount_screening",
+      "kind": "scenario",
+      "description": "Adult capsicum hydrogel patch case aligned to the official DailyMed UP UP label mass of one 1000 mg patch with 22 mg capsicum extract.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "CAPSICUM-PATCH-001",
+        "chemical_name": "Benchmark Capsicum Patch Constituent",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark UP UP Capsicum Patch",
+          "product_category": "botanical_topical_patch",
+          "product_subtype": "capsicum_hydrogel_patch",
+          "physical_form": "patch",
+          "application_method": "patch_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.022,
+          "use_amount_per_event": 1.0,
+          "use_amount_unit": "g",
+          "transfer_efficiency": 1.0,
+          "use_events_per_day": 1,
+          "intendedUseFamily": "medicinal"
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 70,
+          "region": "US",
+          "demographic_tags": [
+            "consumer"
+          ]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.31428571,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 22.0,
+          "external_mass_mg_per_day": 22.0,
+          "surface_loading_mg_per_cm2_day": 0.00385965
+        },
+        "assumptions": {
+          "body_weight_kg": 70.0,
+          "retention_factor": 1.0,
+          "transfer_efficiency": 1.0
+        }
+      }
+    },
+    {
       "id": "dermal_density_precedence_volume_case",
       "kind": "scenario",
       "description": "Adult dermal cream case covering physical-form density override precedence for mL inputs.",

@@ -643,9 +643,11 @@
       "validationStatus": "benchmark_regression",
       "routeMechanism": "dermal_direct_application",
       "benchmarkCaseIds": [
+        "dermal_capsicum_hydrogel_patch_label_amount_screening",
         "dermal_density_precedence_volume_case",
         "dermal_face_cream_sccs_screening",
         "dermal_hand_cream_screening",
+        "dermal_herbal_recovery_patch_label_amount_screening",
         "dermal_herbal_topical_spray_label_amount_screening",
         "dermal_tcm_topical_balm_screening"
       ],
@@ -782,9 +784,11 @@
     "validationStatus": "benchmark_regression",
     "routeMechanism": "dermal_direct_application",
     "benchmarkCaseIds": [
+      "dermal_capsicum_hydrogel_patch_label_amount_screening",
       "dermal_density_precedence_volume_case",
       "dermal_face_cream_sccs_screening",
       "dermal_hand_cream_screening",
+      "dermal_herbal_recovery_patch_label_amount_screening",
       "dermal_herbal_topical_spray_label_amount_screening",
       "dermal_tcm_topical_balm_screening"
     ],
