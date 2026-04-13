@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.13.v17",
+  "goldset_version": "2026.04.13.v18",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -177,6 +177,28 @@
       ]
     },
     {
+      "id": "eu_herbal_medicinal_oral_posology_alignment",
+      "title": "EU herbal medicinal oral posology alignment",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["oral_herbal_medicinal_valerian_posology_screening"],
+      "recognizable_examples": ["valerian root extract tablet", "regulated herbal medicinal oral dose", "traditional herbal medicinal solid-dose product"],
+      "challenge_tags": ["herbal_medicinal", "oral_posology", "ema_monograph", "direct_use_regimen"],
+      "why_it_matters": "Herbal medicinal oral products need to stay on the Direct-Use side of the stack and they are stronger when anchored to regulated posology instead of only generic tablet arithmetic.",
+      "showcase_story": "Shows that the MCP can express a regulated herbal medicinal oral regimen and land inside a narrow EMA-aligned daily-dose band for a valerian-like solid-dose case without collapsing it into Dietary MCP or a food-style supplement workflow.",
+      "evidence_gaps": [
+        "This showcase uses a narrow EMA valerian posology envelope as a family anchor. It does not validate dispensing variability, adherence, or ingredient-specific internal exposure."
+      ],
+      "external_sources": [
+        {
+          "source_id": "ema_valerian_root_oral_posology_2015",
+          "title": "European Union herbal monograph on Valeriana officinalis L., radix",
+          "locator": "https://www.ema.europa.eu/en/documents/herbal-monograph/draft-european-union-herbal-monograph-valeriana-officinalis-l-radix_en.pdf",
+          "publisher": "European Medicines Agency",
+          "source_type": "herbal_monograph"
+        }
+      ]
+    },
+    {
       "id": "tcm_topical_balm_direct_application",
       "title": "Traditional Chinese Medicine topical balm direct-use realism",
       "coverage_status": "benchmark_regressed_showcase",
@@ -202,6 +224,13 @@
           "locator": "https://www.who.int/publications/i/item/9789240113176",
           "publisher": "World Health Organization",
           "source_type": "strategy_document"
+        },
+        {
+          "source_id": "ema_arnica_topical_application_geometry_2014",
+          "title": "Overview of comments received on Community herbal monograph on Arnica montana L., flos",
+          "locator": "https://www.ema.europa.eu/en/documents/herbal-comments/overview-comments-received-community-herbal-monograph-arnica-montana-l-flos_en.pdf",
+          "publisher": "European Medicines Agency",
+          "source_type": "regulatory_comment_overview"
         }
       ]
     },

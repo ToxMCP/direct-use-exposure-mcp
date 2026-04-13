@@ -156,6 +156,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     )
     assert "`cleaning_trigger_spray_airborne_fraction_2019_band`" in validation_bands
     assert "`hand_cream_application_loading_2012_band`" in validation_bands
+    assert "`herbal_medicinal_valerian_oral_daily_mass_2015_band`" in validation_bands
     assert "`medicinal_liquid_direct_oral_delivered_mass_2025_band`" in validation_bands
     assert "`consumer_disinfectant_trigger_spray_inhaled_dose_2015_band`" in validation_bands
     assert "`trigger_spray_aerosol_decay_half_life_2023_band`" in validation_bands
@@ -201,14 +202,17 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`worker_handheld_biocidal_trigger_spray_monitoring`" in goldset
     assert "`consumer_mosquito_aerosol_room_air_validation`" in goldset
     assert "`consumer_disinfectant_trigger_spray_tier1_monitoring`" in goldset
+    assert "`eu_herbal_medicinal_oral_posology_alignment`" in goldset
     assert "`inhalation_residual_air_reentry_chlorpyrifos_time_series_1990`" in goldset
     assert "`worker_biocidal_spray_dermal_contact`" in goldset
     assert "`benchmark_regressed_showcase`" in goldset
     assert "pubmed.ncbi.nlm.nih.gov/31361572" in goldset
     assert "pubmed.ncbi.nlm.nih.gov/1693041" in goldset
     assert "`ema_traditional_herbal_medicinal_oral_context_2026`" in coverage_report
+    assert "`ema_valerian_root_oral_posology_2015`" in coverage_report
     assert "`ec_food_supplement_capsule_context_2026`" in coverage_report
     assert "`who_traditional_medicine_topical_context_2026`" in coverage_report
+    assert "`ema_arnica_topical_application_geometry_2014`" in coverage_report
     assert "Defaults Curation Report" in defaults_curation
     cleaner_wipe_transfer = (
         "`transfer_efficiency:application_method=wipe,product_category=household_cleaner`"

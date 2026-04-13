@@ -40,10 +40,13 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
 - Child medicinal-liquid direct-oral screening linked to a narrow ready-to-use dosing benchmark
 - Adult Traditional Chinese Medicine pill screening covering medicinal direct-use oral routing
   semantics
+- Adult herbal medicinal solid-dose screening linked to a narrow EMA valerian oral posology
+  benchmark band
 - Adult product-centric botanical supplement capsule screening covering direct-use supplement
   routing semantics
 - Adult Traditional Chinese Medicine topical balm screening covering direct-use leave-on dermal
-  semantics
+  semantics, now paired in the validation surface with an EMA topical-herbal application-
+  geometry analogue anchor
 - Adult dermal cream volume-to-mass conversion with density override precedence
 - Cross-route aggregate summary with contributor fractions and limitation flagging
 - Cross-route internal-equivalent aggregate summary using route-specific bioavailability fractions

@@ -793,6 +793,46 @@ def test_medicinal_liquid_direct_oral_executes_delivered_dose_check() -> None:
     assert checks[0].reference_dataset_id == "vigabatrin_ready_to_use_dosing_accuracy_2025"
 
 
+def test_herbal_medicinal_valerian_direct_oral_executes_posology_check() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="HMPC_VALERIAN_2015",
+        chemical_name="Benchmark Valerian Root Extract",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="herbal_medicinal_product",
+            product_subtype="valerian_root_extract",
+            physical_form="tablet",
+            application_method="direct_oral",
+            retention_type="ingested",
+            concentration_fraction=1.0,
+            use_amount_per_event=0.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+            intendedUseFamily="medicinal",
+            oralExposureContext="direct_use_medicinal",
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert "ema_valerian_root_oral_posology_2015" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "herbal_medicinal_valerian_oral_daily_mass_2015"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(1500.0, rel=1e-6)
+    assert checks[0].reference_dataset_id == "ema_valerian_root_oral_posology_2015"
+
+
 def test_indoor_surface_insecticide_trigger_spray_does_not_borrow_reentry_candidates() -> None:
     engine = build_engine()
     request = InhalationScenarioRequest(

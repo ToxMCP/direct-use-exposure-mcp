@@ -8,7 +8,7 @@
   "defaultsVersion": "2026.04.13.v32",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
-  "benchmarkCaseCount": 34,
+  "benchmarkCaseCount": 35,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
     "dermal_face_cream_sccs_screening",
@@ -27,6 +27,7 @@
     "oral_direct_oral_screening",
     "oral_medicinal_liquid_delivered_dose_screening",
     "oral_tcm_medicinal_direct_use_screening",
+    "oral_herbal_medicinal_valerian_posology_screening",
     "oral_botanical_supplement_direct_use_screening",
     "dermal_tcm_topical_balm_screening",
     "dermal_density_precedence_volume_case",

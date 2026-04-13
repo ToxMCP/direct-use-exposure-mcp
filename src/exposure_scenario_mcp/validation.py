@@ -36,6 +36,7 @@ BENCHMARK_CASE_DOMAINS = {
     "dermal_tcm_topical_balm_screening": "dermal_direct_application",
     "oral_direct_oral_screening": "oral_direct_intake",
     "oral_medicinal_liquid_delivered_dose_screening": "oral_direct_intake",
+    "oral_herbal_medicinal_valerian_posology_screening": "oral_direct_intake",
     "oral_tcm_medicinal_direct_use_screening": "oral_direct_intake",
     "oral_botanical_supplement_direct_use_screening": "oral_direct_intake",
     "inhalation_trigger_spray_screening": "inhalation_well_mixed_spray",
@@ -95,15 +96,16 @@ BENCHMARK_DOMAIN_NOTES = {
         (
             "Current executable coverage is deterministic benchmark regression across "
             "core leave-on cream, SCCS face-cream, and direct-use herbal topical-balm "
-            "cases rather than external calibration."
+            "cases, now paired with a quantitative EMA topical-herbal application-geometry "
+            "analogue anchor rather than a true mass-per-application external calibration set."
         )
     ],
     "oral_direct_intake": [
         (
             "Current executable coverage now verifies direct-intake screening arithmetic "
-            "across generic direct-oral, medicinal-liquid, medicinal tablet, and "
-            "product-centric supplement capsule cases, but it still does not benchmark "
-            "distributional use factors."
+            "across generic direct-oral, medicinal-liquid, EMA-aligned herbal medicinal "
+            "solid-dose, medicinal tablet, and product-centric supplement capsule cases, "
+            "but it still does not benchmark distributional use factors."
         )
     ],
     "inhalation_well_mixed_spray": [
@@ -478,6 +480,29 @@ EXTERNAL_VALIDATION_DATASETS = [
         ),
     ),
     ExternalValidationDataset(
+        datasetId="ema_valerian_root_oral_posology_2015",
+        domain="oral_direct_intake",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "regulated single-dose and daily-dose oral posology for solid-dose valerian "
+            "root dry-extract medicinal products"
+        ),
+        targetMetrics=["chemical_mass_mg_per_event", "external_mass_mg_per_day"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["herbal_medicinal_product"],
+        referenceTitle="European Union herbal monograph on Valeriana officinalis L., radix",
+        referenceLocator=(
+            "https://www.ema.europa.eu/en/documents/herbal-monograph/"
+            "draft-european-union-herbal-monograph-valeriana-officinalis-l-radix_en.pdf"
+        ),
+        note=(
+            "The EMA HMPC monograph states a 450-600 mg dry-extract single dose for oral "
+            "solid dosage forms, up to 3 times daily for mild nervous tension. This is a "
+            "narrow regulated posology anchor for herbal medicinal oral direct-use "
+            "screening, not an observed adherence or dispensing-variability dataset."
+        ),
+    ),
+    ExternalValidationDataset(
         datasetId="ema_traditional_herbal_medicinal_oral_context_2026",
         domain="oral_direct_intake",
         status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
@@ -557,6 +582,33 @@ EXTERNAL_VALIDATION_DATASETS = [
             "dataset, but it is a defendable context anchor for treating topical TCM and "
             "related herbal balms as explicit direct-use dermal products rather than as an "
             "undefined special category."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="ema_arnica_topical_application_geometry_2014",
+        domain="dermal_direct_application",
+        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
+        observable=(
+            "quantitative strip-length topical application guidance for arnica gel and "
+            "ointment family products"
+        ),
+        targetMetrics=["application_strip_length_cm", "application_coverage_context"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["herbal_topical_product"],
+        referenceTitle=(
+            "Overview of comments received on Community herbal monograph on Arnica "
+            "montana L., flos"
+        ),
+        referenceLocator=(
+            "https://www.ema.europa.eu/en/documents/herbal-comments/"
+            "overview-comments-received-community-herbal-monograph-arnica-montana-l-flos_en.pdf"
+        ),
+        note=(
+            "The EMA comment overview records marketed topical arnica products with explicit "
+            "application geometry such as 2-10 cm to the affected area 2-4 times daily and "
+            "3 cm for a palm-sized area or 8 cm for a lower leg. This is a useful "
+            "quantitative analogue anchor for topical herbal application semantics, but it "
+            "does not provide a direct mass-per-application calibration set."
         ),
     ),
     ExternalValidationDataset(
@@ -1383,6 +1435,43 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                     "Observed external_mass_mg_per_day is compared against the 1125 mg target "
                     "dose with a +/-5% band, matching the delivered-dose accuracy envelope "
                     "reported for the ready-to-use vigabatrin solution."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.ORAL
+        and profile.product_category == "herbal_medicinal_product"
+        and profile.product_subtype == "valerian_root_extract"
+        and profile.application_method == "direct_oral"
+    ):
+        observed = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
+        reference_band = reference_registry.band_for_check(
+            "herbal_medicinal_valerian_oral_daily_mass_2015"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="herbal_medicinal_valerian_oral_daily_mass_2015",
+                title="Herbal medicinal oral daily mass vs EMA valerian monograph posology",
+                referenceDatasetId="ema_valerian_root_oral_posology_2015",
+                status=status,
+                comparedMetric="external_mass_mg_per_day",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed external_mass_mg_per_day is compared against the EMA HMPC "
+                    "valerian dry-extract oral posology envelope of 450-600 mg per dose "
+                    "up to 3 times daily, giving a 1350-1800 mg/day narrow direct-use "
+                    "herbal medicinal benchmark band."
                 ),
             )
         )

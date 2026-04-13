@@ -1,5 +1,5 @@
 {
-  "reference_version": "2026.04.12.v10",
+  "reference_version": "2026.04.13.v11",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
@@ -54,6 +54,23 @@
         "application_method": "direct_oral"
       },
       "note": "Ready-to-use vigabatrin delivered-dose benchmark band using the stated 1125 mg target dose with a +/-5% acceptance band, matching the dosing-accuracy envelope reported for the ready-to-use solution."
+    },
+    {
+      "reference_band_id": "herbal_medicinal_valerian_oral_daily_mass_2015_band",
+      "check_id": "herbal_medicinal_valerian_oral_daily_mass_2015",
+      "reference_dataset_id": "ema_valerian_root_oral_posology_2015",
+      "domain": "oral_direct_intake",
+      "compared_metric": "external_mass_mg_per_day",
+      "reference_lower": 1350.0,
+      "reference_upper": 1800.0,
+      "unit": "mg/day",
+      "applicable_selectors": {
+        "product_category": "herbal_medicinal_product",
+        "product_subtype": "valerian_root_extract",
+        "physical_form": "tablet",
+        "application_method": "direct_oral"
+      },
+      "note": "EMA HMPC oral solid-dose valerian benchmark band derived from the stated 450-600 mg dry-extract dose taken up to 3 times daily for mild nervous tension."
     },
     {
       "reference_band_id": "air_space_insecticide_aerosol_concentration_2001_band",
