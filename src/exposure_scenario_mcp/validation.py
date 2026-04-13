@@ -478,6 +478,88 @@ EXTERNAL_VALIDATION_DATASETS = [
         ),
     ),
     ExternalValidationDataset(
+        datasetId="ema_traditional_herbal_medicinal_oral_context_2026",
+        domain="oral_direct_intake",
+        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
+        observable=(
+            "regulated medicinal oral-product context for traditional herbal medicinal "
+            "products"
+        ),
+        targetMetrics=[
+            "application_method",
+            "intended_use_family",
+            "oral_exposure_context",
+        ],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["herbal_medicinal_product"],
+        referenceTitle=(
+            "Non-clinical documentation in applications for marketing authorisation / "
+            "registration of well-established and traditional herbal medicinal products"
+        ),
+        referenceLocator=(
+            "https://www.ema.europa.eu/en/non-clinical-documentation-applications-"
+            "marketing-authorisation-registration-well-established-and-traditional-"
+            "herbal-medicinal-products-scientific-guideline"
+        ),
+        note=(
+            "This EMA guideline does not provide a quantitative direct-use dosing "
+            "distribution, but it is a strong medicinal-product anchor for keeping TCM and "
+            "related herbal oral regimens on the Direct-Use side of the boundary when the "
+            "workflow is explicitly product-centric and medicinal."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="ec_food_supplement_capsule_context_2026",
+        domain="oral_direct_intake",
+        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
+        observable=(
+            "regulated dose-form context for food supplements when a capsule or pill is "
+            "being assessed as a labeled product regimen"
+        ),
+        targetMetrics=[
+            "application_method",
+            "intended_use_family",
+            "oral_exposure_context",
+        ],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["botanical_supplement"],
+        referenceTitle="Food supplements",
+        referenceLocator=(
+            "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/"
+            "food-supplements_en"
+        ),
+        note=(
+            "The European Commission overview does not provide quantitative supplement-dose "
+            "distributions, but it is a useful source-backed anchor for distinguishing a "
+            "product-centric supplement capsule workflow from broader food-mediated dietary "
+            "intake."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="who_traditional_medicine_topical_context_2026",
+        domain="dermal_direct_application",
+        status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
+        observable=(
+            "direct-use topical traditional-medicine product context for leave-on balms, "
+            "liniments, and related herbal skin preparations"
+        ),
+        targetMetrics=[
+            "application_method",
+            "retention_type",
+            "transfer_efficiency",
+        ],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["herbal_topical_product"],
+        referenceTitle="Traditional medicine",
+        referenceLocator="https://www.who.int/news-room/questions-and-answers/item/traditional-medicine",
+        note=(
+            "The WHO traditional-medicine overview is not a quantitative dermal loading "
+            "dataset, but it is a defendable context anchor for treating topical TCM and "
+            "related herbal balms as explicit direct-use dermal products rather than as an "
+            "undefined special category."
+        ),
+    ),
+    ExternalValidationDataset(
         datasetId="aggregate_external_proxy_candidate",
         domain="aggregate_cross_route_screening",
         status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
@@ -621,9 +703,9 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
                 "Direct-oral screening is benchmarked internally across generic direct-oral, "
                 "medicinal-liquid, medicinal tablet, and product-centric supplement capsule "
                 "cases, and it now has a narrow executable medicinal-liquid delivered-dose "
-                "check plus a real delivered-dose study anchor, but external validation "
-                "evidence still comes from a single medication family rather than a broad "
-                "oral-product calibration set."
+                "check plus source-backed medicinal and supplement family context anchors, "
+                "but quantitative external validation evidence still comes from a single "
+                "medication family rather than a broad oral-product calibration set."
             ),
             recommendation=(
                 "Add broader observed dosing or dispensed-amount datasets before broadening "

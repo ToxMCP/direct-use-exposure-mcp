@@ -426,7 +426,7 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     assert report["policyVersion"] == "2026.03.25.v4"
     assert report["domainCount"] == 11
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
-    assert report["externalDatasetCount"] == 14
+    assert report["externalDatasetCount"] == 17
     assert report["referenceBandCount"] == 11
     assert report["timeSeriesPackCount"] == 3
     assert report["goldsetCaseCount"] == 17
@@ -462,6 +462,14 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     ] == "benchmark_plus_executable_references"
     assert domain_summaries["worker_dermal_absorbed_dose_screening"]["coverageLevel"] == (
         "benchmark_plus_executable_references"
+    )
+    assert {
+        "vigabatrin_ready_to_use_dosing_accuracy_2025",
+        "ema_traditional_herbal_medicinal_oral_context_2026",
+        "ec_food_supplement_capsule_context_2026",
+    } <= set(domain_summaries["oral_direct_intake"]["externalDatasetIds"])
+    assert "who_traditional_medicine_topical_context_2026" in set(
+        domain_summaries["dermal_direct_application"]["externalDatasetIds"]
     )
     assert any(
         "Coverage levels describe current trust posture by domain"

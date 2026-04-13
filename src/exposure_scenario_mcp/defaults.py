@@ -336,10 +336,23 @@ class DefaultsRegistry:
         return float(entry["value"]), self._source(entry["source_id"])
 
     def ingestion_fraction(
-        self, application_method: str
+        self,
+        application_method: str,
+        product_category: str | None = None,
     ) -> tuple[float, AssumptionSourceReference]:
         key = application_method.lower()
         values = self.payload["ingestion_fraction_defaults"]
+        if "global" in values:
+            resolved = values["global"]
+            if product_category:
+                category_values = values.get("product_category_overrides", {}).get(
+                    product_category.lower(),
+                    {},
+                )
+                if key in category_values:
+                    entry = category_values[key]
+                    return float(entry["value"]), self._source(entry["source_id"])
+            values = resolved
         ensure(
             key in values,
             "ingestion_method_unsupported",
@@ -1181,6 +1194,21 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  when the modeled product amount is interpreted as the skin-boundary amount",
             "  for direct-application or spray-contact screening.",
             "",
+            "### Herbal and Supplement Route-Semantic Anchors 2026",
+            "",
+            "- `ema_traditional_herbal_medicinal_products_guideline_2026` anchors the",
+            "  category-specific direct-oral ingestion branch for `herbal_medicinal_product`",
+            "  so medicinal TCM and related herbal regimens stay auditable as Direct-Use oral",
+            "  workflows rather than being treated as generic dietary intake by label alone.",
+            "- `ec_food_supplements_page_2026` anchors the category-specific direct-oral",
+            "  ingestion branch for `botanical_supplement` when a case is explicitly a",
+            "  product-centric supplement regimen rather than a broader dietary-consumption",
+            "  workflow.",
+            "- `who_traditional_medicine_qna_2026` anchors the category-specific",
+            "  `leave_on=1.0` and `hand_application=1.0` route-semantics branches for",
+            "  `herbal_topical_product` so topical TCM and related herbal balms remain explicit",
+            "  direct-use dermal products in the defaults curation surface.",
+            "",
             "### Heuristic Density Defaults",
             "",
             "- `heuristic_density_defaults_v1` covers liquid-product density screening values and",
@@ -1744,15 +1772,11 @@ def build_defaults_curation_report(
         "application_method",
     )
 
-    for application_method, entry in payload.get("ingestion_fraction_defaults", {}).items():
-        _append_entry(
-            entries,
-            active_registry,
-            parameter_name="ingestion_fraction",
-            value=entry["value"],
-            source_id=entry["source_id"],
-            applicability={"application_method": application_method},
-        )
+    append_method_family(
+        "ingestion_fraction_defaults",
+        "ingestion_fraction",
+        "application_method",
+    )
 
     append_method_family(
         "aerosolized_fraction_defaults",

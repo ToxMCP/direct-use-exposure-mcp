@@ -206,6 +206,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`benchmark_regressed_showcase`" in goldset
     assert "pubmed.ncbi.nlm.nih.gov/31361572" in goldset
     assert "pubmed.ncbi.nlm.nih.gov/1693041" in goldset
+    assert "`ema_traditional_herbal_medicinal_oral_context_2026`" in coverage_report
+    assert "`ec_food_supplement_capsule_context_2026`" in coverage_report
+    assert "`who_traditional_medicine_topical_context_2026`" in coverage_report
     assert "Defaults Curation Report" in defaults_curation
     cleaner_wipe_transfer = (
         "`transfer_efficiency:application_method=wipe,product_category=household_cleaner`"
@@ -223,6 +226,17 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert cleaner_surface_contact in defaults_curation
     assert personal_care_pump_spray in defaults_curation
     assert personal_care_aerosol_spray in defaults_curation
+    assert (
+        "`ingestion_fraction:application_method=direct_oral,product_category=herbal_medicinal_product`"
+        in defaults_curation
+    )
+    assert (
+        "`ingestion_fraction:application_method=direct_oral,product_category=botanical_supplement`"
+        in defaults_curation
+    )
+    assert "`ema_traditional_herbal_medicinal_products_guideline_2026`" in defaults_curation
+    assert "`ec_food_supplements_page_2026`" in defaults_curation
+    assert "`who_traditional_medicine_qna_2026`" in defaults_curation
     assert "Route-Semantic Highlights" in defaults_curation
     assert "`transfer_efficiency:application_method=trigger_spray`" in defaults_curation
     assert "`transfer_efficiency:application_method=hand_application`" in defaults_curation

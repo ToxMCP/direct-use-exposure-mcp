@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.13.v31",
+  "defaults_version": "2026.04.13.v32",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -24,6 +24,24 @@
       "title": "SCCS Notes of Guidance for the Testing of Cosmetic Ingredients and their Safety Evaluation, 12th revision",
       "locator": "https://health.ec.europa.eu/document/download/32a999f7-d820-496a-b659-d8c296cc99c1_en?filename=sccs_o_273_final.pdf",
       "version": "SCCS/1647/22, adopted 15 May 2023, corrigendum 2 on 21 December 2023"
+    },
+    {
+      "source_id": "ema_traditional_herbal_medicinal_products_guideline_2026",
+      "title": "EMA scientific guideline for well-established and traditional herbal medicinal products",
+      "locator": "https://www.ema.europa.eu/en/non-clinical-documentation-applications-marketing-authorisation-registration-well-established-traditional-herbal-medicinal-products-scientific-guideline",
+      "version": "EMA webpage accessed 2026-04-13"
+    },
+    {
+      "source_id": "who_traditional_medicine_qna_2026",
+      "title": "WHO Traditional medicine question-and-answer page",
+      "locator": "https://www.who.int/news-room/questions-and-answers/item/traditional-medicine",
+      "version": "WHO webpage accessed 2026-04-13"
+    },
+    {
+      "source_id": "ec_food_supplements_page_2026",
+      "title": "European Commission food supplements overview",
+      "locator": "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-supplements_en",
+      "version": "European Commission webpage accessed 2026-04-13"
     },
     {
       "source_id": "heuristic_retention_defaults_v1",
@@ -642,6 +660,12 @@
       }
     },
     "product_category_overrides": {
+      "herbal_topical_product": {
+        "leave_on": {
+          "value": 1.0,
+          "source_id": "who_traditional_medicine_qna_2026"
+        }
+      },
       "household_cleaner": {
         "surface_contact": {
           "value": 0.2,
@@ -680,6 +704,12 @@
           "source_id": "rivm_cosmetics_hand_cream_direct_application_defaults_2025"
         }
       },
+      "herbal_topical_product": {
+        "hand_application": {
+          "value": 1.0,
+          "source_id": "who_traditional_medicine_qna_2026"
+        }
+      },
       "household_cleaner": {
         "wipe": {
           "value": 0.5,
@@ -689,13 +719,29 @@
     }
   },
   "ingestion_fraction_defaults": {
-    "direct_oral": {
-      "value": 1.0,
-      "source_id": "screening_route_semantics_defaults_v1"
+    "global": {
+      "direct_oral": {
+        "value": 1.0,
+        "source_id": "screening_route_semantics_defaults_v1"
+      },
+      "incidental_oral": {
+        "value": 0.1,
+        "source_id": "heuristic_incidental_oral_defaults_v1"
+      }
     },
-    "incidental_oral": {
-      "value": 0.1,
-      "source_id": "heuristic_incidental_oral_defaults_v1"
+    "product_category_overrides": {
+      "herbal_medicinal_product": {
+        "direct_oral": {
+          "value": 1.0,
+          "source_id": "ema_traditional_herbal_medicinal_products_guideline_2026"
+        }
+      },
+      "botanical_supplement": {
+        "direct_oral": {
+          "value": 1.0,
+          "source_id": "ec_food_supplements_page_2026"
+        }
+      }
     }
   },
   "aerosolized_fraction_defaults": {

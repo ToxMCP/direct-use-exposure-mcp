@@ -111,8 +111,8 @@
     "algorithm_id": "worker.dermal_absorbed_dose_adapter_ingest.v1",
     "plugin_id": "worker_dermal_absorbed_dose_adapter_ingest",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.13.v31",
-    "defaults_hash_sha256": "5ead8f4363cd88427d520ffc20cffd46e3c6678424c8a788c16860c19a08d2ff",
+    "defaults_version": "2026.04.13.v32",
+    "defaults_hash_sha256": "929bbeba7234abd43c5b863ce5e433a50206a7d725358b9fbfc3239251c092c4",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Adapter ingest only; no dermal absorption, permeation, or glove breakthrough solver is executed here.",

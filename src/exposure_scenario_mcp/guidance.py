@@ -1725,6 +1725,7 @@ def defaults_curation_report_markdown() -> str:
         if entry.parameter_name not in {
             "retention_factor",
             "transfer_efficiency",
+            "ingestion_fraction",
             "aerosolized_fraction",
         }:
             continue

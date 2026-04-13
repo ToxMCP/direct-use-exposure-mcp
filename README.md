@@ -105,6 +105,9 @@ For a suite-level map of sibling services and shared handoff contracts, see
 - Published architecture guidance for splitting exposure, fate, dietary, and worker domains
 - Published herbal/TCM/supplement routing guidance for keeping medicinal direct-use and dietary
   intake semantics separate
+- Source-backed herbal/TCM/supplement route-semantics anchors for medicinal oral regimens,
+  product-centric supplement capsules, and topical herbal balms in the governed defaults and
+  validation surfaces
 - Worker-task routing guidance plus a deterministic router for current MCP vs future occupational adapter paths
 - Worker inhalation Tier 2 bridge export for future ART-style occupational adapter handoff
 - Worker inhalation Tier 2 execution plus governed ART external exchange packages and imports

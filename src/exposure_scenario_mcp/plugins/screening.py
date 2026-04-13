@@ -170,7 +170,10 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 )
                 ingestion_fraction = profile.ingestion_fraction
             else:
-                ingestion_fraction, source = registry.ingestion_fraction(profile.application_method)
+                ingestion_fraction, source = registry.ingestion_fraction(
+                    profile.application_method,
+                    profile.product_category,
+                )
                 tracker.add_default(
                     "ingestion_fraction",
                     ingestion_fraction,
@@ -178,7 +181,8 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                     source,
                     (
                         "Ingestion fraction defaulted from "
-                        f"application_method='{profile.application_method}'."
+                        f"application_method='{profile.application_method}' and "
+                        f"product_category='{profile.product_category}'."
                     ),
                 )
 
