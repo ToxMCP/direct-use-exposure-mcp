@@ -15,7 +15,8 @@ These cases belong in Direct-Use Exposure MCP:
 - topical herbal or TCM balms, liniments, oils, and patches
 - inhaled herbal or medicinal vapors when the workflow is still a direct-use near-field case
 - product-centric supplement dosing only when the workflow is explicitly about a labeled
-  consumer regimen rather than dietary intake
+  consumer regimen rather than dietary intake, including official-label capsule or tablet
+  regimens
 
 Recommended request semantics:
 

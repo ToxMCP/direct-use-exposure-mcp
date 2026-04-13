@@ -873,6 +873,49 @@ def test_herbal_medicinal_valerian_infusion_direct_oral_executes_posology_check(
     assert checks[0].reference_dataset_id == "ema_valerian_root_infusion_posology_2015"
 
 
+def test_dietary_supplement_iron_capsule_direct_oral_executes_label_check() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID8020462",
+        chemical_name="Iron",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="dietary_supplement",
+            product_subtype="iron_capsule",
+            physical_form="capsule",
+            application_method="direct_oral",
+            retention_type="ingested",
+            concentration_fraction=0.3,
+            use_amount_per_event=0.1,
+            use_amount_unit="g",
+            dosageUnitCountPerEvent=1,
+            dosageUnitMassG=0.1,
+            dosageUnitLabel="capsule",
+            use_events_per_day=1,
+            intendedUseFamily="supplement",
+            oralExposureContext="direct_use_supplement",
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="US",
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert "nlm_dailymed_sideral_iron_capsule_label_2025" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "dietary_supplement_iron_capsule_daily_mass_2025"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(30.0, rel=1e-6)
+    assert checks[0].reference_dataset_id == "nlm_dailymed_sideral_iron_capsule_label_2025"
+
+
 def test_tcm_oral_solid_preserves_dosage_unit_semantics() -> None:
     engine = build_engine()
     request = ExposureScenarioRequest(

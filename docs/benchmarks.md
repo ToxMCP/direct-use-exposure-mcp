@@ -46,6 +46,8 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
   medicinal posology benchmark band
 - Adult product-centric botanical supplement capsule screening covering direct-use supplement
   routing semantics and counted capsule-regimen auditability
+- Adult dietary supplement iron capsule screening linked to an official DailyMed serving-size
+  and daily-mass label anchor
 - Adult Traditional Chinese Medicine topical balm screening covering direct-use leave-on dermal
   semantics, now paired in the validation surface with an executable EMA topical-herbal
   application-geometry analogue band

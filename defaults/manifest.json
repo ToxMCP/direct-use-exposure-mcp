@@ -1,7 +1,7 @@
 {
-  "defaults_version": "2026.04.13.v32",
-  "defaults_hash_sha256": "929bbeba7234abd43c5b863ce5e433a50206a7d725358b9fbfc3239251c092c4",
-  "source_count": 53,
+  "defaults_version": "2026.04.13.v33",
+  "defaults_hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094",
+  "source_count": 54,
   "supported_regions": [
     "eu",
     "global"

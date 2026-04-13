@@ -1,5 +1,5 @@
 {
-  "reference_version": "2026.04.13.v13",
+  "reference_version": "2026.04.13.v14",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
@@ -106,6 +106,23 @@
         "application_method": "direct_oral"
       },
       "note": "EMA HMPC valerian herbal-tea benchmark band derived from the stated 0.3-3.0 g comminuted herbal substance per dose infused in 150 ml boiling water up to 3 times daily."
+    },
+    {
+      "reference_band_id": "dietary_supplement_iron_capsule_daily_mass_2025_band",
+      "check_id": "dietary_supplement_iron_capsule_daily_mass_2025",
+      "reference_dataset_id": "nlm_dailymed_sideral_iron_capsule_label_2025",
+      "domain": "oral_direct_intake",
+      "compared_metric": "external_mass_mg_per_day",
+      "reference_lower": 30.0,
+      "reference_upper": 30.0,
+      "unit": "mg/day",
+      "applicable_selectors": {
+        "product_category": "dietary_supplement",
+        "product_subtype": "iron_capsule",
+        "physical_form": "capsule",
+        "application_method": "direct_oral"
+      },
+      "note": "Official-label supplement band derived from the DailyMed SIDERAL label stating one 100 mg capsule per day containing 30 mg elemental iron per serving."
     },
     {
       "reference_band_id": "air_space_insecticide_aerosol_concentration_2001_band",

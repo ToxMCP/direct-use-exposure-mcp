@@ -2,7 +2,7 @@
   "schema_version": "contractManifest.v1",
   "server_name": "exposure_scenario_mcp",
   "server_version": "0.1.0",
-  "defaults_version": "2026.04.13.v32",
+  "defaults_version": "2026.04.13.v33",
   "tools": [
     {
       "name": "exposure_build_screening_exposure_scenario",
@@ -629,6 +629,7 @@
     "exposure_scenario_definition": "schemas/examples/exposure_scenario_definition.json",
     "tcm_medicinal_oral_request": "schemas/examples/tcm_medicinal_oral_request.json",
     "botanical_supplement_oral_request": "schemas/examples/botanical_supplement_oral_request.json",
+    "dietary_supplement_oral_request": "schemas/examples/dietary_supplement_oral_request.json",
     "herbal_medicinal_infusion_request": "schemas/examples/herbal_medicinal_infusion_request.json",
     "tcm_topical_balm_request": "schemas/examples/tcm_topical_balm_request.json",
     "route_dose_estimate": "schemas/examples/route_dose_estimate.json",

@@ -8,7 +8,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     benchmark_ids = {case["id"] for case in load_benchmark_manifest()["cases"]}
 
     assert goldset["schema_version"] == "benchmarkGoldsetManifest.v1"
-    assert goldset["goldset_version"] == "2026.04.13.v19"
+    assert goldset["goldset_version"] == "2026.04.13.v20"
     assert len(goldset["cases"]) >= 6
 
     coverage_statuses = {case["coverage_status"] for case in goldset["cases"]}
@@ -107,6 +107,14 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     )
     assert supplement_case["benchmark_case_ids"] == [
         "oral_botanical_supplement_direct_use_screening"
+    ]
+    label_supplement_case = next(
+        case
+        for case in goldset["cases"]
+        if case["id"] == "dietary_supplement_capsule_label_alignment"
+    )
+    assert label_supplement_case["benchmark_case_ids"] == [
+        "oral_dietary_supplement_iron_capsule_label_screening"
     ]
     valerian_case = next(
         case

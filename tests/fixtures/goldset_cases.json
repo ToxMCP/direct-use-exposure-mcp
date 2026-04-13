@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.13.v19",
+  "goldset_version": "2026.04.13.v20",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -173,6 +173,28 @@
           "locator": "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-supplements_en",
           "publisher": "European Commission",
           "source_type": "regulatory_overview"
+        }
+      ]
+    },
+    {
+      "id": "dietary_supplement_capsule_label_alignment",
+      "title": "Product-centric dietary supplement label alignment",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["oral_dietary_supplement_iron_capsule_label_screening"],
+      "recognizable_examples": ["labeled iron capsule", "supplement facts serving size", "product-centric capsule regimen"],
+      "challenge_tags": ["supplement", "oral_posology", "official_label", "direct_use_regimen"],
+      "why_it_matters": "Direct-Use supplement coverage is stronger when at least one capsule regimen is anchored to an official product label instead of only generic supplement semantics.",
+      "showcase_story": "Shows that the MCP can express a labeled oral dietary supplement regimen and land inside a narrow official-label daily-mass band for a one-capsule-per-day iron product without collapsing the case into broader Dietary MCP intake semantics.",
+      "evidence_gaps": [
+        "This showcase anchors a single official label regimen and serving mass, not market-wide supplement use distributions, adherence variability, or nutrient-status assessment."
+      ],
+      "external_sources": [
+        {
+          "source_id": "nlm_dailymed_sideral_iron_capsule_label_2025",
+          "title": "DailyMed - SIDERAL- iron capsule, gelatin coated",
+          "locator": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b6fadf1a-fbe5-4537-87d9-179ca4aefdc6&version=1",
+          "publisher": "National Library of Medicine / DailyMed",
+          "source_type": "official_label"
         }
       ]
     },

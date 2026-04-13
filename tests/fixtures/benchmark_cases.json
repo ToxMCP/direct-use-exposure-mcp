@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.13.v32",
+  "defaults_version": "2026.04.13.v33",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -1072,6 +1072,66 @@
         "assumptions": {
           "dosage_unit_count_per_event": 2.0,
           "dosage_unit_mass_g": 0.3,
+          "dosage_unit_label": "capsule",
+          "ingestion_fraction": 1.0,
+          "body_weight_kg": 70.0
+        }
+      }
+    },
+    {
+      "id": "oral_dietary_supplement_iron_capsule_label_screening",
+      "kind": "scenario",
+      "description": "Adult dietary supplement capsule case aligned to the official DailyMed SIDERAL label serving of one 100 mg capsule per day delivering 30 mg elemental iron.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID8020462",
+        "chemical_name": "Iron",
+        "route": "oral",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "SIDERAL Iron Capsule",
+          "product_category": "dietary_supplement",
+          "product_subtype": "iron_capsule",
+          "physical_form": "capsule",
+          "application_method": "direct_oral",
+          "retention_type": "ingested",
+          "concentration_fraction": 0.3,
+          "use_amount_per_event": 0.1,
+          "use_amount_unit": "g",
+          "dosageUnitCountPerEvent": 1,
+          "dosageUnitMassG": 0.1,
+          "dosageUnitLabel": "capsule",
+          "use_events_per_day": 1,
+          "intendedUseFamily": "supplement",
+          "oralExposureContext": "direct_use_supplement"
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 70,
+          "region": "US",
+          "demographic_tags": [
+            "consumer"
+          ]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 0.42857143,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 30.0,
+          "external_mass_mg_per_day": 30.0,
+          "dosage_unit_count_per_event": 1.0,
+          "dosage_unit_mass_g": 0.1,
+          "dosage_unit_label": "capsule",
+          "product_mass_from_dosage_units_g_per_event": 0.1,
+          "chemical_mass_mg_per_unit": 30.0
+        },
+        "assumptions": {
+          "dosage_unit_count_per_event": 1.0,
+          "dosage_unit_mass_g": 0.1,
           "dosage_unit_label": "capsule",
           "ingestion_fraction": 1.0,
           "body_weight_kg": 70.0

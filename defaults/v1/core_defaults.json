@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.13.v32",
+  "defaults_version": "2026.04.13.v33",
   "sources": [
     {
       "source_id": "benchmark_population_defaults_v1",
@@ -42,6 +42,12 @@
       "title": "European Commission food supplements overview",
       "locator": "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-supplements_en",
       "version": "European Commission webpage accessed 2026-04-13"
+    },
+    {
+      "source_id": "nlm_dailymed_dietary_supplement_label_2025",
+      "title": "DailyMed official dietary supplement label anchor",
+      "locator": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b6fadf1a-fbe5-4537-87d9-179ca4aefdc6&version=1",
+      "version": "DailyMed label updated 2025-06-09, accessed 2026-04-13"
     },
     {
       "source_id": "heuristic_retention_defaults_v1",
@@ -740,6 +746,12 @@
         "direct_oral": {
           "value": 1.0,
           "source_id": "ec_food_supplements_page_2026"
+        }
+      },
+      "dietary_supplement": {
+        "direct_oral": {
+          "value": 1.0,
+          "source_id": "nlm_dailymed_dietary_supplement_label_2025"
         }
       }
     }

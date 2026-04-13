@@ -40,6 +40,7 @@ BENCHMARK_CASE_DOMAINS = {
     "oral_herbal_medicinal_valerian_infusion_posology_screening": "oral_direct_intake",
     "oral_tcm_medicinal_direct_use_screening": "oral_direct_intake",
     "oral_botanical_supplement_direct_use_screening": "oral_direct_intake",
+    "oral_dietary_supplement_iron_capsule_label_screening": "oral_direct_intake",
     "inhalation_trigger_spray_screening": "inhalation_well_mixed_spray",
     "inhalation_saturation_cap_stress_case": "inhalation_well_mixed_spray",
     "inhalation_air_space_insecticide_aerosol_screening": "inhalation_well_mixed_spray",
@@ -106,8 +107,8 @@ BENCHMARK_DOMAIN_NOTES = {
             "Current executable coverage now verifies direct-intake screening arithmetic "
             "across generic direct-oral, medicinal-liquid, EMA-aligned herbal medicinal "
             "solid-dose and infusion-style regimens, medicinal tablet, and product-centric "
-            "supplement capsule cases, but it still does not benchmark distributional use "
-            "factors."
+            "supplement capsule cases including an official-label serving anchor, but it "
+            "still does not benchmark distributional use factors."
         )
     ],
     "inhalation_well_mixed_spray": [
@@ -583,6 +584,29 @@ EXTERNAL_VALIDATION_DATASETS = [
             "distributions, but it is a useful source-backed anchor for distinguishing a "
             "product-centric supplement capsule workflow from broader food-mediated dietary "
             "intake."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="nlm_dailymed_sideral_iron_capsule_label_2025",
+        domain="oral_direct_intake",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "official serving-size and daily elemental-iron mass for a labeled oral "
+            "dietary supplement capsule regimen"
+        ),
+        targetMetrics=["chemical_mass_mg_per_event", "external_mass_mg_per_day"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["dietary_supplement"],
+        referenceTitle="DailyMed - SIDERAL- iron capsule, gelatin coated",
+        referenceLocator=(
+            "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?"
+            "setid=b6fadf1a-fbe5-4537-87d9-179ca4aefdc6&version=1"
+        ),
+        note=(
+            "The official DailyMed label states one 100 mg capsule per day and 30 mg "
+            "elemental iron per serving. This is a narrow official-label anchor for "
+            "product-centric direct-use supplement dosing, not a dietary supplement "
+            "population-intake dataset."
         ),
     ),
     ExternalValidationDataset(
@@ -1586,6 +1610,43 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                     "valerian herbal-tea oral posology envelope of 0.3-3.0 g comminuted "
                     "herbal substance per dose up to 3 times daily, giving a 900-9000 "
                     "mg/day medicinal infusion/decoction benchmark band."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.ORAL
+        and profile.product_category == "dietary_supplement"
+        and profile.product_subtype == "iron_capsule"
+        and profile.application_method == "direct_oral"
+    ):
+        observed = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
+        reference_band = reference_registry.band_for_check(
+            "dietary_supplement_iron_capsule_daily_mass_2025"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="dietary_supplement_iron_capsule_daily_mass_2025",
+                title="Dietary supplement capsule daily mass vs official DailyMed label",
+                referenceDatasetId="nlm_dailymed_sideral_iron_capsule_label_2025",
+                status=status,
+                comparedMetric="external_mass_mg_per_day",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed external_mass_mg_per_day is compared against the official "
+                    "DailyMed SIDERAL label stating one 100 mg capsule per day "
+                    "delivering 30 mg elemental iron, giving a narrow 30 mg/day "
+                    "product-centric supplement benchmark anchor."
                 ),
             )
         )

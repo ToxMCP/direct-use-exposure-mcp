@@ -5,10 +5,10 @@
   "packageVersion": "0.1.0",
   "serverName": "exposure_scenario_mcp",
   "serverVersion": "0.1.0",
-  "defaultsVersion": "2026.04.13.v32",
+  "defaultsVersion": "2026.04.13.v33",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
-  "benchmarkCaseCount": 36,
+  "benchmarkCaseCount": 37,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
     "dermal_face_cream_sccs_screening",
@@ -30,6 +30,7 @@
     "oral_herbal_medicinal_valerian_posology_screening",
     "oral_herbal_medicinal_valerian_infusion_posology_screening",
     "oral_botanical_supplement_direct_use_screening",
+    "oral_dietary_supplement_iron_capsule_label_screening",
     "dermal_tcm_topical_balm_screening",
     "dermal_density_precedence_volume_case",
     "cross_route_aggregate_summary",
@@ -48,7 +49,7 @@
     "worker_dermal_extreme_loading_surface_cap_execution"
   ],
   "contractSchemaCount": 151,
-  "contractExampleCount": 87,
+  "contractExampleCount": 88,
   "distributionArtifacts": [
     {
       "kind": "wheel",

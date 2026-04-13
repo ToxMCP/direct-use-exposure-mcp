@@ -255,6 +255,7 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "exposure_scenario_definition" in manifest["examples"]
     assert "tcm_medicinal_oral_request" in manifest["examples"]
     assert "botanical_supplement_oral_request" in manifest["examples"]
+    assert "dietary_supplement_oral_request" in manifest["examples"]
     assert "herbal_medicinal_infusion_request" in manifest["examples"]
     assert "tcm_topical_balm_request" in manifest["examples"]
     assert "route_dose_estimate" in manifest["examples"]
@@ -427,12 +428,12 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     assert report["policyVersion"] == "2026.03.25.v4"
     assert report["domainCount"] == 11
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
-    assert report["externalDatasetCount"] == 20
-    assert report["referenceBandCount"] == 14
+    assert report["externalDatasetCount"] == 21
+    assert report["referenceBandCount"] == 15
     assert report["timeSeriesPackCount"] == 3
-    assert report["goldsetCaseCount"] == 19
+    assert report["goldsetCaseCount"] == 20
     assert report["goldsetCoverageCounts"] == {
-        "benchmark_regressed_showcase": 17,
+        "benchmark_regressed_showcase": 18,
         "challenge_case": 1,
         "integration_showcase": 1,
     }
@@ -470,11 +471,13 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
         "ema_valerian_root_infusion_posology_2015",
         "ema_traditional_herbal_medicinal_oral_context_2026",
         "ec_food_supplement_capsule_context_2026",
+        "nlm_dailymed_sideral_iron_capsule_label_2025",
     } <= set(domain_summaries["oral_direct_intake"]["externalDatasetIds"])
     assert {
         "medicinal_liquid_direct_oral_delivered_mass_2025",
         "herbal_medicinal_valerian_oral_daily_mass_2015",
         "herbal_medicinal_valerian_infusion_daily_mass_2015",
+        "dietary_supplement_iron_capsule_daily_mass_2025",
     } <= set(domain_summaries["oral_direct_intake"]["executableReferenceBandIds"])
     assert {
         "who_traditional_medicine_topical_context_2026",
@@ -503,13 +506,14 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
     )
 
     validate(instance=report, schema=schema)
-    assert report["referenceVersion"] == "2026.04.13.v13"
-    assert report["bandCount"] == 14
+    assert report["referenceVersion"] == "2026.04.13.v14"
+    assert report["bandCount"] == 15
     assert {item["checkId"] for item in report["bands"]} == {
         "air_space_insecticide_aerosol_concentration_2001",
         "chlorpyrifos_residual_air_reentry_start_concentration_1990",
         "cleaning_trigger_spray_airborne_fraction_2019",
         "consumer_disinfectant_trigger_spray_inhaled_dose_2015",
+        "dietary_supplement_iron_capsule_daily_mass_2025",
         "diazinon_home_use_residual_air_concentration_2008",
         "hand_cream_application_loading_2012",
         "herbal_medicinal_valerian_infusion_daily_mass_2015",
@@ -726,7 +730,7 @@ def test_verification_summary_report_matches_schema_and_surface() -> None:
     assert report["publicSurface"]["resourceCount"] == len(manifest["resources"])
     assert report["validationDomainCount"] == 11
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
-    assert report["referenceBandCount"] == 14
+    assert report["referenceBandCount"] == 15
     assert report["timeSeriesPackCount"] == 3
     assert report["goldsetCaseCount"] >= 1
     check_ids = {item["checkId"] for item in report["checks"]}

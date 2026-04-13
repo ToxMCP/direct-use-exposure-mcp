@@ -156,6 +156,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     )
     assert "`cleaning_trigger_spray_airborne_fraction_2019_band`" in validation_bands
     assert "`hand_cream_application_loading_2012_band`" in validation_bands
+    assert "`dietary_supplement_iron_capsule_daily_mass_2025_band`" in validation_bands
     assert "`herbal_medicinal_valerian_infusion_daily_mass_2015_band`" in validation_bands
     assert "`herbal_medicinal_valerian_oral_daily_mass_2015_band`" in validation_bands
     assert "`herbal_topical_application_strip_length_2014_band`" in validation_bands
@@ -206,6 +207,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`consumer_disinfectant_trigger_spray_tier1_monitoring`" in goldset
     assert "`eu_herbal_medicinal_oral_posology_alignment`" in goldset
     assert "`eu_herbal_medicinal_infusion_posology_alignment`" in goldset
+    assert "`dietary_supplement_capsule_label_alignment`" in goldset
     assert "`inhalation_residual_air_reentry_chlorpyrifos_time_series_1990`" in goldset
     assert "`worker_biocidal_spray_dermal_contact`" in goldset
     assert "`benchmark_regressed_showcase`" in goldset
@@ -215,6 +217,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`ema_valerian_root_infusion_posology_2015`" in coverage_report
     assert "`ema_valerian_root_oral_posology_2015`" in coverage_report
     assert "`ec_food_supplement_capsule_context_2026`" in coverage_report
+    assert "`nlm_dailymed_sideral_iron_capsule_label_2025`" in coverage_report
     assert "`who_traditional_medicine_topical_context_2026`" in coverage_report
     assert "`ema_arnica_topical_application_geometry_2014`" in coverage_report
     assert "Defaults Curation Report" in defaults_curation
@@ -242,8 +245,13 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
         "`ingestion_fraction:application_method=direct_oral,product_category=botanical_supplement`"
         in defaults_curation
     )
+    assert (
+        "`ingestion_fraction:application_method=direct_oral,product_category=dietary_supplement`"
+        in defaults_curation
+    )
     assert "`ema_traditional_herbal_medicinal_products_guideline_2026`" in defaults_curation
     assert "`ec_food_supplements_page_2026`" in defaults_curation
+    assert "`nlm_dailymed_dietary_supplement_label_2025`" in defaults_curation
     assert "`who_traditional_medicine_qna_2026`" in defaults_curation
     assert "Route-Semantic Highlights" in defaults_curation
     assert "`transfer_efficiency:application_method=trigger_spray`" in defaults_curation

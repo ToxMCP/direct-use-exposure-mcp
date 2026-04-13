@@ -517,6 +517,34 @@ def build_examples() -> dict[str, dict]:
             region="EU",
         ),
     )
+    dietary_supplement_oral_request = ExposureScenarioRequest(
+        chemical_id="SUPPLEMENT-IRON-EXAMPLE-001",
+        chemical_name="Example Iron Supplement Constituent",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Iron Supplement Capsule",
+            product_category="dietary_supplement",
+            product_subtype="iron_capsule",
+            physical_form="capsule",
+            application_method="direct_oral",
+            retention_type="ingested",
+            concentration_fraction=0.3,
+            use_amount_per_event=0.1,
+            use_amount_unit="g",
+            dosageUnitCountPerEvent=1,
+            dosageUnitMassG=0.1,
+            dosageUnitLabel="capsule",
+            use_events_per_day=1,
+            intendedUseFamily=IntendedUseFamily.SUPPLEMENT,
+            oralExposureContext=OralExposureContext.DIRECT_USE_SUPPLEMENT,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="US",
+        ),
+    )
     herbal_medicinal_infusion_request = ExposureScenarioRequest(
         chemical_id="HMPC-INFUSION-EXAMPLE-001",
         chemical_name="Example Valerian Infusion Constituent",
@@ -1635,6 +1663,9 @@ def build_examples() -> dict[str, dict]:
             mode="json", by_alias=True
         ),
         "botanical_supplement_oral_request": botanical_supplement_oral_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "dietary_supplement_oral_request": dietary_supplement_oral_request.model_dump(
             mode="json", by_alias=True
         ),
         "herbal_medicinal_infusion_request": herbal_medicinal_infusion_request.model_dump(
