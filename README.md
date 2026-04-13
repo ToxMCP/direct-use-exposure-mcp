@@ -413,6 +413,8 @@ That means:
   to a sibling Dietary MCP
 - it now supports explicit oral routing tags for medicinal, supplement, incidental, and
   non-Direct-Use dietary semantics
+- it now supports explicit oral-solid regimen semantics for counted tablets, capsules,
+  pills, and similar discrete-dose direct-use products
 - it can publish shared suite contracts for future Fate and Dietary handoffs without taking
   ownership of those runtimes
 

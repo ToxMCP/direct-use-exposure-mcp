@@ -501,6 +501,10 @@ Recommended request semantics:
 - `productUseProfile.intendedUseFamily=supplement` plus
   `productUseProfile.oralExposureContext=direct_use_supplement` when a supplement case is being
   treated as a direct-use product regimen.
+- When pill or capsule counts matter, add `productUseProfile.dosageUnitCountPerEvent`,
+  `productUseProfile.dosageUnitMassG`, and optionally `productUseProfile.dosageUnitLabel`
+  so the regimen stays auditable as a counted oral-solid use pattern rather than only a
+  bulk mass-per-event number.
 
 ## Dietary MCP Cases
 

@@ -33,6 +33,9 @@
       "concentration_fraction": 0.02,
       "use_amount_per_event": 1.5,
       "use_amount_unit": "g",
+      "dosageUnitCountPerEvent": null,
+      "dosageUnitMassG": null,
+      "dosageUnitLabel": null,
       "use_events_per_day": 3.0,
       "density_g_per_ml": null,
       "particleMaterialContext": null,
@@ -682,6 +685,9 @@
       "concentration_fraction": 0.02,
       "use_amount_per_event": 1.5,
       "use_amount_unit": "g",
+      "dosageUnitCountPerEvent": null,
+      "dosageUnitMassG": null,
+      "dosageUnitLabel": null,
       "use_events_per_day": 3.0,
       "density_g_per_ml": null,
       "particleMaterialContext": null,
@@ -1357,9 +1363,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "52746ea39f839419ecf3f331c3b6a79486afea558a65de0b972f172b18ecb887",
+    "contentHash": "f5ec021e74da87129a524fe481695b09eaca8e4933783c06adcb7044e8ebda22",
     "dataClassification": "internal",
-    "evidenceId": "evidence-a8aac07453de2f4e",
+    "evidenceId": "evidence-802b646e30d19690",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1381,8 +1387,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "52746ea39f839419ecf3f331c3b6a79486afea558a65de0b972f172b18ecb887",
-    "evidenceId": "evidence-a8aac07453de2f4e",
+    "contentHash": "f5ec021e74da87129a524fe481695b09eaca8e4933783c06adcb7044e8ebda22",
+    "evidenceId": "evidence-802b646e30d19690",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1410,7 +1416,7 @@
         "claimId": "claim-e1d4880e484aa82b",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-a8aac07453de2f4e"
+          "evidence-802b646e30d19690"
         ],
         "text": "Baseline scenario exp-example-dermal-001 estimates 1.125 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day."
       },
@@ -1419,7 +1425,7 @@
         "claimId": "claim-f056e8490cf5cc2b",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-a8aac07453de2f4e"
+          "evidence-802b646e30d19690"
         ],
         "text": "Comparison dose decreased by 48.00% relative to baseline."
       },
@@ -1428,7 +1434,7 @@
         "claimId": "claim-98be2d7dd8221ca2",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-a8aac07453de2f4e"
+          "evidence-802b646e30d19690"
         ],
         "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
       },
@@ -1437,13 +1443,13 @@
         "claimId": "claim-0409d2d114518ff0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-a8aac07453de2f4e"
+          "evidence-802b646e30d19690"
         ],
         "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
       }
     ],
     "evidenceIds": [
-      "evidence-a8aac07453de2f4e"
+      "evidence-802b646e30d19690"
     ],
     "sectionKey": "exposure-refinement",
     "title": "Exposure Refinement Delta"

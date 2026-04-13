@@ -833,6 +833,101 @@ def test_herbal_medicinal_valerian_direct_oral_executes_posology_check() -> None
     assert checks[0].reference_dataset_id == "ema_valerian_root_oral_posology_2015"
 
 
+def test_tcm_oral_solid_preserves_dosage_unit_semantics() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID990001",
+        chemical_name="Benchmark Herbal Marker A",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="herbal_medicinal_product",
+            physical_form="tablet",
+            application_method="direct_oral",
+            retention_type="ingested",
+            concentration_fraction=0.25,
+            use_amount_per_event=0.8,
+            use_amount_unit="g",
+            dosageUnitCountPerEvent=4,
+            dosageUnitMassG=0.2,
+            dosageUnitLabel="pill",
+            use_events_per_day=2,
+            intendedUseFamily="medicinal",
+            oralExposureContext="direct_use_medicinal",
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=60,
+            region="CN",
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert scenario.route_metrics["dosage_unit_count_per_event"] == pytest.approx(4.0, rel=1e-6)
+    assert scenario.route_metrics["dosage_unit_mass_g"] == pytest.approx(0.2, rel=1e-6)
+    assert scenario.route_metrics["dosage_unit_label"] == "pill"
+    assert scenario.route_metrics["product_mass_from_dosage_units_g_per_event"] == pytest.approx(
+        0.8, rel=1e-6
+    )
+    assert scenario.route_metrics["chemical_mass_mg_per_unit"] == pytest.approx(50.0, rel=1e-6)
+    assumption_names = {item.name for item in scenario.assumptions}
+    assert {
+        "dosage_unit_count_per_event",
+        "dosage_unit_mass_g",
+        "dosage_unit_label",
+    } <= assumption_names
+    assert not any(
+        flag.code == "dosage_unit_mass_inconsistent_with_event_mass"
+        for flag in scenario.quality_flags
+    )
+
+
+def test_oral_solid_inconsistent_dosage_units_raise_audit_warning() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID990002",
+        chemical_name="Benchmark Botanical Marker B",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="botanical_supplement",
+            physical_form="capsule",
+            application_method="direct_oral",
+            retention_type="ingested",
+            concentration_fraction=0.12,
+            use_amount_per_event=0.6,
+            use_amount_unit="g",
+            dosageUnitCountPerEvent=2,
+            dosageUnitMassG=0.2,
+            dosageUnitLabel="capsule",
+            use_events_per_day=1,
+            intendedUseFamily="supplement",
+            oralExposureContext="direct_use_supplement",
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="EU",
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert scenario.route_metrics["product_mass_from_dosage_units_g_per_event"] == pytest.approx(
+        0.4, rel=1e-6
+    )
+    assert scenario.route_metrics["chemical_mass_mg_per_event"] == pytest.approx(72.0, rel=1e-6)
+    assert any(
+        flag.code == "dosage_unit_mass_inconsistent_with_event_mass"
+        for flag in scenario.quality_flags
+    )
+    assert any(
+        limitation.code == "oral_solid_unit_mass_inconsistency"
+        for limitation in scenario.limitations
+    )
+
+
 def test_herbal_topical_balm_executes_application_geometry_check() -> None:
     engine = build_engine()
     request = ExposureScenarioRequest(

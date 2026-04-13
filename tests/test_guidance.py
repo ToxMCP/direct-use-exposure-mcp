@@ -280,6 +280,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Herbal, TCM, and Supplement Routing Guide" in herbal_routing
     assert "`productUseProfile.intendedUseFamily=medicinal`" in herbal_routing
     assert "`productUseProfile.oralExposureContext=direct_use_supplement`" in herbal_routing
+    assert "`productUseProfile.dosageUnitCountPerEvent`" in herbal_routing
+    assert "`productUseProfile.dosageUnitMassG`" in herbal_routing
     assert "Herbal tea consumed as part of normal diet -> `Dietary MCP`" in herbal_routing
     assert "docs://herbal-medicinal-routing-guide" in suite_index
     assert "Worker Routing Guide" in worker_routing

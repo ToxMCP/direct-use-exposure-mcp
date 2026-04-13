@@ -158,12 +158,28 @@ ASSUMPTION_UNCERTAINTY_TYPES: dict[str, tuple[UncertaintyType, ...]] = {
         UncertaintyType.VARIABILITY,
         UncertaintyType.PARAMETER_UNCERTAINTY,
     ),
+    "dosage_unit_count_per_event": (
+        UncertaintyType.VARIABILITY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "dosage_unit_mass_g": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
     "concentration_fraction": (
         UncertaintyType.PARAMETER_UNCERTAINTY,
         UncertaintyType.SCENARIO_UNCERTAINTY,
     ),
     "product_mass_g_per_event": (UncertaintyType.PARAMETER_UNCERTAINTY,),
+    "product_mass_from_dosage_units_g_per_event": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
     "chemical_mass_mg_per_event": (
+        UncertaintyType.PARAMETER_UNCERTAINTY,
+        UncertaintyType.SCENARIO_UNCERTAINTY,
+    ),
+    "chemical_mass_mg_per_unit": (
         UncertaintyType.PARAMETER_UNCERTAINTY,
         UncertaintyType.SCENARIO_UNCERTAINTY,
     ),
@@ -286,6 +302,30 @@ ASSUMPTION_DOMAIN_FIELDS: dict[str, tuple[str, ...]] = {
         "application_method",
     ),
     "use_amount_per_event": (
+        "product_category",
+        "product_subtype",
+        "physical_form",
+        "application_method",
+    ),
+    "dosage_unit_count_per_event": (
+        "product_category",
+        "product_subtype",
+        "physical_form",
+        "application_method",
+    ),
+    "dosage_unit_mass_g": (
+        "product_category",
+        "product_subtype",
+        "physical_form",
+        "application_method",
+    ),
+    "product_mass_from_dosage_units_g_per_event": (
+        "product_category",
+        "product_subtype",
+        "physical_form",
+        "application_method",
+    ),
+    "chemical_mass_mg_per_unit": (
         "product_category",
         "product_subtype",
         "physical_form",

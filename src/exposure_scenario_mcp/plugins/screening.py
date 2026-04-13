@@ -11,6 +11,7 @@ from exposure_scenario_mcp.models import (
     Route,
     ScenarioClass,
     ScenarioDose,
+    Severity,
     TierLevel,
 )
 from exposure_scenario_mcp.runtime import (
@@ -69,6 +70,69 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
             "mg/event",
             "Product mass per event multiplied by concentration fraction.",
         )
+        dosage_unit_count = profile.dosage_unit_count_per_event
+        dosage_unit_mass_g = profile.dosage_unit_mass_g
+        if dosage_unit_count is not None:
+            tracker.add_user(
+                "dosage_unit_count_per_event",
+                dosage_unit_count,
+                "count/event",
+                "Discrete dosage-unit count per event was supplied explicitly.",
+            )
+        if dosage_unit_mass_g is not None:
+            tracker.add_user(
+                "dosage_unit_mass_g",
+                dosage_unit_mass_g,
+                "g/unit",
+                "Discrete dosage-unit mass was supplied explicitly.",
+            )
+        if profile.dosage_unit_label is not None:
+            tracker.add_user(
+                "dosage_unit_label",
+                profile.dosage_unit_label,
+                "label",
+                "Discrete dosage-unit label was supplied explicitly.",
+            )
+        product_mass_from_units_g_event = None
+        chemical_mass_mg_per_unit = None
+        if dosage_unit_count is not None and dosage_unit_mass_g is not None:
+            product_mass_from_units_g_event = dosage_unit_count * dosage_unit_mass_g
+            chemical_mass_mg_per_unit = (
+                grams_to_mg(dosage_unit_mass_g) * profile.concentration_fraction
+            )
+            tracker.add_derived(
+                "product_mass_from_dosage_units_g_per_event",
+                product_mass_from_units_g_event,
+                "g/event",
+                "Dosage-unit event mass = dosage-unit count x dosage-unit mass.",
+            )
+            tracker.add_derived(
+                "chemical_mass_mg_per_unit",
+                chemical_mass_mg_per_unit,
+                "mg/unit",
+                "Per-unit chemical mass = dosage-unit mass x concentration fraction.",
+            )
+            if abs(product_mass_from_units_g_event - product_mass_g_event) > max(
+                1e-9, product_mass_g_event * 0.01
+            ):
+                tracker.add_quality_flag(
+                    code="dosage_unit_mass_inconsistent_with_event_mass",
+                    severity=Severity.WARNING,
+                    message=(
+                        "dosageUnitCountPerEvent x dosageUnitMassG does not match "
+                        "use_amount_per_event within 1%; use_amount_per_event remains the "
+                        "authoritative event mass for dose calculation."
+                    ),
+                )
+                tracker.add_limitation(
+                    code="oral_solid_unit_mass_inconsistency",
+                    message=(
+                        "Discrete dosage-unit semantics were supplied but do not reconcile "
+                        "with the total event mass. The engine preserved the explicit event "
+                        "mass for dose arithmetic and treated the unit-count fields as "
+                        "audit metadata."
+                    ),
+                )
 
         body_weight_kg = resolve_population_value(
             field_name="body_weight_kg",
@@ -219,6 +283,20 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 "chemical_mass_mg_per_event": round(chemical_mass_mg_event, 8),
                 "external_mass_mg_per_day": round(external_mass_mg_day, 8),
             }
+            if dosage_unit_count is not None:
+                route_metrics["dosage_unit_count_per_event"] = round(dosage_unit_count, 8)
+            if dosage_unit_mass_g is not None:
+                route_metrics["dosage_unit_mass_g"] = round(dosage_unit_mass_g, 8)
+            if profile.dosage_unit_label is not None:
+                route_metrics["dosage_unit_label"] = profile.dosage_unit_label
+            if product_mass_from_units_g_event is not None:
+                route_metrics["product_mass_from_dosage_units_g_per_event"] = round(
+                    product_mass_from_units_g_event, 8
+                )
+            if chemical_mass_mg_per_unit is not None:
+                route_metrics["chemical_mass_mg_per_unit"] = round(
+                    chemical_mass_mg_per_unit, 8
+                )
             notes = ["Deterministic oral screening scenario using explicit ingestion semantics."]
 
         normalized_dose = external_mass_mg_day / body_weight_kg

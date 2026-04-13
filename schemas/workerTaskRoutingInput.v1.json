@@ -534,6 +534,47 @@
           "$ref": "#/$defs/ProductAmountUnit",
           "description": "Unit for the use amount per event."
         },
+        "dosageUnitCountPerEvent": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional count of tablets, capsules, pills, sachets, or similar dosage units used per event for oral solid or discrete-dose direct-use regimens.",
+          "title": "Dosageunitcountperevent"
+        },
+        "dosageUnitMassG": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional product mass per dosage unit in grams when oral or discrete-dose regimens are represented as counted tablets, capsules, or pills.",
+          "title": "Dosageunitmassg"
+        },
+        "dosageUnitLabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional dosage-unit label such as tablet, capsule, pill, sachet, or lozenge used to make direct-use oral-solid semantics auditable.",
+          "title": "Dosageunitlabel"
+        },
         "use_events_per_day": {
           "description": "Number of product-use events per day.",
           "exclusiveMinimum": 0.0,

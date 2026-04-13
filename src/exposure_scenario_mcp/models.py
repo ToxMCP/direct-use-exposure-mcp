@@ -1126,6 +1126,32 @@ class ProductUseProfile(StrictModel):
     use_amount_unit: ProductAmountUnit = Field(
         ..., description="Unit for the use amount per event."
     )
+    dosage_unit_count_per_event: float | None = Field(
+        default=None,
+        alias="dosageUnitCountPerEvent",
+        description=(
+            "Optional count of tablets, capsules, pills, sachets, or similar dosage units "
+            "used per event for oral solid or discrete-dose direct-use regimens."
+        ),
+        gt=0.0,
+    )
+    dosage_unit_mass_g: float | None = Field(
+        default=None,
+        alias="dosageUnitMassG",
+        description=(
+            "Optional product mass per dosage unit in grams when oral or discrete-dose "
+            "regimens are represented as counted tablets, capsules, or pills."
+        ),
+        gt=0.0,
+    )
+    dosage_unit_label: str | None = Field(
+        default=None,
+        alias="dosageUnitLabel",
+        description=(
+            "Optional dosage-unit label such as tablet, capsule, pill, sachet, or lozenge "
+            "used to make direct-use oral-solid semantics auditable."
+        ),
+    )
     use_events_per_day: float = Field(
         ..., description="Number of product-use events per day.", gt=0.0
     )
@@ -1184,6 +1210,7 @@ class ProductUseProfile(StrictModel):
         "product_subtype",
         "aerosol_carrier_family",
         "aerosol_formulation_profile",
+        "dosage_unit_label",
         "application_coverage_context",
         "product_category",
         "physical_form",

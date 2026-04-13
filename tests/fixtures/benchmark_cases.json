@@ -871,6 +871,9 @@
           "concentration_fraction": 0.25,
           "use_amount_per_event": 0.8,
           "use_amount_unit": "g",
+          "dosageUnitCountPerEvent": 4,
+          "dosageUnitMassG": 0.2,
+          "dosageUnitLabel": "pill",
           "use_events_per_day": 2,
           "intendedUseFamily": "medicinal",
           "oralExposureContext": "direct_use_medicinal"
@@ -891,9 +894,17 @@
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "chemical_mass_mg_per_event": 200.0,
-          "external_mass_mg_per_day": 400.0
+          "external_mass_mg_per_day": 400.0,
+          "dosage_unit_count_per_event": 4.0,
+          "dosage_unit_mass_g": 0.2,
+          "dosage_unit_label": "pill",
+          "product_mass_from_dosage_units_g_per_event": 0.8,
+          "chemical_mass_mg_per_unit": 50.0
         },
         "assumptions": {
+          "dosage_unit_count_per_event": 4.0,
+          "dosage_unit_mass_g": 0.2,
+          "dosage_unit_label": "pill",
           "ingestion_fraction": 1.0,
           "body_weight_kg": 60.0
         }
@@ -920,6 +931,9 @@
           "concentration_fraction": 1.0,
           "use_amount_per_event": 0.5,
           "use_amount_unit": "g",
+          "dosageUnitCountPerEvent": 1,
+          "dosageUnitMassG": 0.5,
+          "dosageUnitLabel": "tablet",
           "use_events_per_day": 3,
           "intendedUseFamily": "medicinal",
           "oralExposureContext": "direct_use_medicinal"
@@ -940,9 +954,17 @@
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "chemical_mass_mg_per_event": 500.0,
-          "external_mass_mg_per_day": 1500.0
+          "external_mass_mg_per_day": 1500.0,
+          "dosage_unit_count_per_event": 1.0,
+          "dosage_unit_mass_g": 0.5,
+          "dosage_unit_label": "tablet",
+          "product_mass_from_dosage_units_g_per_event": 0.5,
+          "chemical_mass_mg_per_unit": 500.0
         },
         "assumptions": {
+          "dosage_unit_count_per_event": 1.0,
+          "dosage_unit_mass_g": 0.5,
+          "dosage_unit_label": "tablet",
           "ingestion_fraction": 1.0,
           "body_weight_kg": 70.0
         }
@@ -968,6 +990,9 @@
           "concentration_fraction": 0.12,
           "use_amount_per_event": 0.6,
           "use_amount_unit": "g",
+          "dosageUnitCountPerEvent": 2,
+          "dosageUnitMassG": 0.3,
+          "dosageUnitLabel": "capsule",
           "use_events_per_day": 1,
           "intendedUseFamily": "supplement",
           "oralExposureContext": "direct_use_supplement"
@@ -988,9 +1013,17 @@
         "external_dose_unit": "mg/kg-day",
         "route_metrics": {
           "chemical_mass_mg_per_event": 72.0,
-          "external_mass_mg_per_day": 72.0
+          "external_mass_mg_per_day": 72.0,
+          "dosage_unit_count_per_event": 2.0,
+          "dosage_unit_mass_g": 0.3,
+          "dosage_unit_label": "capsule",
+          "product_mass_from_dosage_units_g_per_event": 0.6,
+          "chemical_mass_mg_per_unit": 36.0
         },
         "assumptions": {
+          "dosage_unit_count_per_event": 2.0,
+          "dosage_unit_mass_g": 0.3,
+          "dosage_unit_label": "capsule",
           "ingestion_fraction": 1.0,
           "body_weight_kg": 70.0
         }
