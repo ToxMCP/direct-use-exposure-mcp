@@ -8,7 +8,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     benchmark_ids = {case["id"] for case in load_benchmark_manifest()["cases"]}
 
     assert goldset["schema_version"] == "benchmarkGoldsetManifest.v1"
-    assert goldset["goldset_version"] == "2026.04.13.v20"
+    assert goldset["goldset_version"] == "2026.04.13.v21"
     assert len(goldset["cases"]) >= 6
 
     coverage_statuses = {case["coverage_status"] for case in goldset["cases"]}
@@ -138,6 +138,14 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
         if case["id"] == "tcm_topical_balm_direct_application"
     )
     assert tcm_balm_case["benchmark_case_ids"] == ["dermal_tcm_topical_balm_screening"]
+    topical_spray_case = next(
+        case
+        for case in goldset["cases"]
+        if case["id"] == "herbal_topical_spray_label_amount_alignment"
+    )
+    assert topical_spray_case["benchmark_case_ids"] == [
+        "dermal_herbal_topical_spray_label_amount_screening"
+    ]
     aerosol_case = next(
         case
         for case in goldset["cases"]

@@ -1051,6 +1051,47 @@ def test_herbal_topical_balm_executes_application_geometry_check() -> None:
     assert checks[0].reference_dataset_id == "ema_arnica_topical_application_geometry_2014"
 
 
+def test_herbal_topical_spray_executes_label_amount_check() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="HERBAL-TOPICAL-SPRAY-001",
+        chemical_name="Benchmark Herbal Topical Spray Formulation",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="herbal_topical_product",
+            product_subtype="herbal_topical_spray",
+            physical_form="spray",
+            application_method="pump_spray",
+            retention_type="leave_on",
+            concentration_fraction=1.0,
+            use_amount_per_event=0.75,
+            use_amount_unit="mL",
+            density_g_per_ml=1.0,
+            transfer_efficiency=1.0,
+            use_events_per_day=1,
+            intendedUseFamily="medicinal",
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="US",
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert "nlm_dailymed_ahealon_topical_spray_label_2026" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "herbal_topical_spray_label_amount_2026"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(0.75, rel=1e-6)
+    assert checks[0].reference_dataset_id == "nlm_dailymed_ahealon_topical_spray_label_2026"
+
+
 def test_indoor_surface_insecticide_trigger_spray_does_not_borrow_reentry_candidates() -> None:
     engine = build_engine()
     request = InhalationScenarioRequest(

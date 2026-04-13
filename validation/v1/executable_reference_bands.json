@@ -1,5 +1,5 @@
 {
-  "reference_version": "2026.04.13.v14",
+  "reference_version": "2026.04.13.v15",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
@@ -22,6 +22,24 @@
         "retention_type": "leave_on"
       },
       "note": "Mean ± SD hand-cream application loading band derived from workplace nurse-use observations in Schliemann et al. (2012)."
+    },
+    {
+      "reference_band_id": "herbal_topical_spray_label_amount_2026_band",
+      "check_id": "herbal_topical_spray_label_amount_2026",
+      "reference_dataset_id": "nlm_dailymed_ahealon_topical_spray_label_2026",
+      "domain": "dermal_direct_application",
+      "compared_metric": "use_amount_per_event",
+      "reference_lower": 0.6,
+      "reference_upper": 0.9,
+      "unit": "mL/event",
+      "applicable_selectors": {
+        "product_category": "herbal_topical_product",
+        "product_subtype": "herbal_topical_spray",
+        "physical_form": "spray",
+        "application_method": "pump_spray",
+        "retention_type": "leave_on"
+      },
+      "note": "Official-label topical-herbal spray delivered-amount band derived from the DailyMed AHEALON label stating approximately 0.15 mL per spray and 4-6 sprays per topical application, giving 0.6-0.9 mL per event."
     },
     {
       "reference_band_id": "herbal_topical_application_strip_length_2014_band",

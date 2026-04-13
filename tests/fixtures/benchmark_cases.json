@@ -1194,6 +1194,59 @@
       }
     },
     {
+      "id": "dermal_herbal_topical_spray_label_amount_screening",
+      "kind": "scenario",
+      "description": "Adult herbal topical spray case aligned to the official DailyMed AHEALON label amount of 4-6 sprays at approximately 0.15 mL per spray.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "HERBAL-TOPICAL-SPRAY-001",
+        "chemical_name": "Benchmark Herbal Topical Spray Formulation",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark AHEALON-style Topical Spray",
+          "product_category": "herbal_topical_product",
+          "product_subtype": "herbal_topical_spray",
+          "physical_form": "spray",
+          "application_method": "pump_spray",
+          "retention_type": "leave_on",
+          "concentration_fraction": 1.0,
+          "use_amount_per_event": 0.75,
+          "use_amount_unit": "mL",
+          "density_g_per_ml": 1.0,
+          "transfer_efficiency": 1.0,
+          "use_events_per_day": 1,
+          "intendedUseFamily": "medicinal"
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 70,
+          "region": "US",
+          "demographic_tags": [
+            "consumer"
+          ]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 10.71428571,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 750.0,
+          "external_mass_mg_per_day": 750.0,
+          "surface_loading_mg_per_cm2_day": 0.13157895
+        },
+        "assumptions": {
+          "body_weight_kg": 70.0,
+          "density_g_per_ml": 1.0,
+          "retention_factor": 1.0,
+          "transfer_efficiency": 1.0
+        }
+      }
+    },
+    {
       "id": "dermal_density_precedence_volume_case",
       "kind": "scenario",
       "description": "Adult dermal cream case covering physical-form density override precedence for mL inputs.",

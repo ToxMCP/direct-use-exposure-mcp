@@ -595,6 +595,32 @@ def build_examples() -> dict[str, dict]:
             region="CN",
         ),
     )
+    herbal_topical_spray_request = ExposureScenarioRequest(
+        chemical_id="HERBAL-SPRAY-EXAMPLE-001",
+        chemical_name="Example Herbal Topical Spray Formulation",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Herbal Topical Spray",
+            product_category="herbal_topical_product",
+            product_subtype="herbal_topical_spray",
+            physical_form="spray",
+            application_method="pump_spray",
+            retention_type="leave_on",
+            concentration_fraction=1.0,
+            use_amount_per_event=0.75,
+            use_amount_unit="mL",
+            density_g_per_ml=1.0,
+            transfer_efficiency=1.0,
+            use_events_per_day=1,
+            intendedUseFamily=IntendedUseFamily.MEDICINAL,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="US",
+        ),
+    )
     dermal_scenario = _freeze_scenario(
         engine.build(dermal_request),
         EXAMPLE_IDS["screening_dermal_scenario"],
@@ -1672,6 +1698,9 @@ def build_examples() -> dict[str, dict]:
             mode="json", by_alias=True
         ),
         "tcm_topical_balm_request": tcm_topical_balm_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "herbal_topical_spray_request": herbal_topical_spray_request.model_dump(
             mode="json", by_alias=True
         ),
         "route_dose_estimate": route_dose_estimate.model_dump(mode="json", by_alias=True),

@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.13.v20",
+  "goldset_version": "2026.04.13.v21",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -275,6 +275,28 @@
           "locator": "https://www.ema.europa.eu/en/documents/herbal-comments/overview-comments-received-community-herbal-monograph-arnica-montana-l-flos_en.pdf",
           "publisher": "European Medicines Agency",
           "source_type": "regulatory_comment_overview"
+        }
+      ]
+    },
+    {
+      "id": "herbal_topical_spray_label_amount_alignment",
+      "title": "Topical herbal spray label-amount alignment",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["dermal_herbal_topical_spray_label_amount_screening"],
+      "recognizable_examples": ["herbal wound spray", "arnica topical spray", "product-centric herbal topical spray"],
+      "challenge_tags": ["herbal_topical", "topical_spray", "official_label", "application_amount"],
+      "why_it_matters": "Topical herbal direct-use families are stronger when at least one case is anchored to an official delivered-amount instruction instead of geometry alone.",
+      "showcase_story": "Shows that the MCP can express a labeled herbal topical spray regimen and land inside a narrow official-label delivered-amount band using the DailyMed AHEALON per-spray volume and 4-6 spray application instruction.",
+      "evidence_gaps": [
+        "This showcase anchors labeled delivered amount per application, not dermal absorption, overspray loss, or formulation-specific transfer to the skin."
+      ],
+      "external_sources": [
+        {
+          "source_id": "nlm_dailymed_ahealon_topical_spray_label_2026",
+          "title": "DailyMed - AHEALON topical spray label",
+          "locator": "https://dailymed.nlm.nih.gov/dailymed/getFile.cfm?setid=6720fab5-6ef0-e922-0c2c-2fe5280838ab&type=pdf",
+          "publisher": "National Library of Medicine / DailyMed",
+          "source_type": "official_label"
         }
       ]
     },

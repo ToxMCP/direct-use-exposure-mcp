@@ -51,6 +51,8 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
 - Adult Traditional Chinese Medicine topical balm screening covering direct-use leave-on dermal
   semantics, now paired in the validation surface with an executable EMA topical-herbal
   application-geometry analogue band
+- Adult herbal topical spray screening linked to an official DailyMed delivered-amount
+  label anchor
 - Adult dermal cream volume-to-mass conversion with density override precedence
 - Cross-route aggregate summary with contributor fractions and limitation flagging
 - Cross-route internal-equivalent aggregate summary using route-specific bioavailability fractions

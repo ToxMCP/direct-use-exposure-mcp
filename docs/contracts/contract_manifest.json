@@ -632,6 +632,7 @@
     "dietary_supplement_oral_request": "schemas/examples/dietary_supplement_oral_request.json",
     "herbal_medicinal_infusion_request": "schemas/examples/herbal_medicinal_infusion_request.json",
     "tcm_topical_balm_request": "schemas/examples/tcm_topical_balm_request.json",
+    "herbal_topical_spray_request": "schemas/examples/herbal_topical_spray_request.json",
     "route_dose_estimate": "schemas/examples/route_dose_estimate.json",
     "environmental_release_scenario": "schemas/examples/environmental_release_scenario.json",
     "concentration_surface": "schemas/examples/concentration_surface.json",

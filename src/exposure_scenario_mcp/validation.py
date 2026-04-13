@@ -11,6 +11,7 @@ from exposure_scenario_mcp.models import (
     ExposureScenario,
     ExternalValidationDataset,
     ExternalValidationDatasetStatus,
+    ProductAmountUnit,
     Route,
     ScalarValue,
     TierLevel,
@@ -34,6 +35,7 @@ BENCHMARK_CASE_DOMAINS = {
     "dermal_hand_cream_screening": "dermal_direct_application",
     "dermal_density_precedence_volume_case": "dermal_direct_application",
     "dermal_tcm_topical_balm_screening": "dermal_direct_application",
+    "dermal_herbal_topical_spray_label_amount_screening": "dermal_direct_application",
     "oral_direct_oral_screening": "oral_direct_intake",
     "oral_medicinal_liquid_delivered_dose_screening": "oral_direct_intake",
     "oral_herbal_medicinal_valerian_posology_screening": "oral_direct_intake",
@@ -98,8 +100,9 @@ BENCHMARK_DOMAIN_NOTES = {
         (
             "Current executable coverage is deterministic benchmark regression across "
             "core leave-on cream, SCCS face-cream, and direct-use herbal topical-balm "
-            "cases, now paired with an executable EMA topical-herbal application-geometry "
-            "analogue band rather than a true mass-per-application external calibration set."
+            "and spray cases, now paired with executable topical-herbal geometry and "
+            "official-label delivered-amount anchors rather than a true dermal absorption "
+            "calibration set."
         )
     ],
     "oral_direct_intake": [
@@ -658,6 +661,29 @@ EXTERNAL_VALIDATION_DATASETS = [
             "3 cm for a palm-sized area or 8 cm for a lower leg. This is a useful "
             "quantitative analogue anchor for topical herbal application semantics, but it "
             "does not provide a direct mass-per-application calibration set."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="nlm_dailymed_ahealon_topical_spray_label_2026",
+        domain="dermal_direct_application",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "official delivered amount per application for a product-centric topical "
+            "herbal spray regimen"
+        ),
+        targetMetrics=["use_amount_per_event"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["herbal_topical_product"],
+        referenceTitle="DailyMed - AHEALON topical spray label",
+        referenceLocator=(
+            "https://dailymed.nlm.nih.gov/dailymed/getFile.cfm?"
+            "setid=6720fab5-6ef0-e922-0c2c-2fe5280838ab&type=pdf"
+        ),
+        note=(
+            "The official DailyMed AHEALON label states approximately 0.15 mL per spray "
+            "and 4-6 sprays per topical administration. This provides a narrow product-"
+            "centric delivered-amount anchor of 0.6-0.9 mL per event for herbal topical "
+            "spray direct-use workflows."
         ),
     ),
     ExternalValidationDataset(
@@ -1462,9 +1488,48 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                         "application instruction captured in the EMA arnica comment overview. "
                         "This is an application-geometry realism check, not a mass-per-use "
                         "calibration set."
-                    ),
-                )
+                ),
             )
+        )
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.product_category == "herbal_topical_product"
+        and profile.product_subtype == "herbal_topical_spray"
+        and profile.application_method == "pump_spray"
+        and profile.retention_type == "leave_on"
+        and profile.use_amount_unit == ProductAmountUnit.ML
+    ):
+        observed = float(profile.use_amount_per_event)
+        reference_band = reference_registry.band_for_check(
+            "herbal_topical_spray_label_amount_2026"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="herbal_topical_spray_label_amount_2026",
+                title="Topical herbal spray delivered amount vs DailyMed label",
+                referenceDatasetId="nlm_dailymed_ahealon_topical_spray_label_2026",
+                status=status,
+                comparedMetric="use_amount_per_event",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed use_amount_per_event is compared against the official "
+                    "DailyMed AHEALON topical-spray instruction of approximately 0.15 mL "
+                    "per spray and 4-6 sprays per application, giving a 0.6-0.9 mL/event "
+                    "delivered-amount anchor."
+                ),
+            )
+        )
 
     if (
         scenario.route == Route.DERMAL
