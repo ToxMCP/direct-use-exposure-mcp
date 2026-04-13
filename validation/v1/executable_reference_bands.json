@@ -1,5 +1,5 @@
 {
-  "reference_version": "2026.04.13.v12",
+  "reference_version": "2026.04.13.v13",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
@@ -89,6 +89,23 @@
         "application_method": "direct_oral"
       },
       "note": "EMA HMPC oral solid-dose valerian benchmark band derived from the stated 450-600 mg dry-extract dose taken up to 3 times daily for mild nervous tension."
+    },
+    {
+      "reference_band_id": "herbal_medicinal_valerian_infusion_daily_mass_2015_band",
+      "check_id": "herbal_medicinal_valerian_infusion_daily_mass_2015",
+      "reference_dataset_id": "ema_valerian_root_infusion_posology_2015",
+      "domain": "oral_direct_intake",
+      "compared_metric": "external_mass_mg_per_day",
+      "reference_lower": 900.0,
+      "reference_upper": 9000.0,
+      "unit": "mg/day",
+      "applicable_selectors": {
+        "product_category": "herbal_medicinal_product",
+        "product_subtype": "valerian_root_infusion",
+        "physical_form": "herbal_tea",
+        "application_method": "direct_oral"
+      },
+      "note": "EMA HMPC valerian herbal-tea benchmark band derived from the stated 0.3-3.0 g comminuted herbal substance per dose infused in 150 ml boiling water up to 3 times daily."
     },
     {
       "reference_band_id": "air_space_insecticide_aerosol_concentration_2001_band",

@@ -971,6 +971,55 @@
       }
     },
     {
+      "id": "oral_herbal_medicinal_valerian_infusion_posology_screening",
+      "kind": "scenario",
+      "description": "Adult regulated herbal medicinal oral infusion case aligned to the EMA valerian herbal-tea posology envelope of 0.3-3.0 g comminuted herbal substance per dose up to 3 times daily.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "HMPC_VALERIAN_INFUSION_2015",
+        "chemical_name": "Benchmark Valerian Root Infusion",
+        "route": "oral",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Valerian Root Herbal Tea",
+          "product_category": "herbal_medicinal_product",
+          "product_subtype": "valerian_root_infusion",
+          "physical_form": "herbal_tea",
+          "application_method": "direct_oral",
+          "retention_type": "ingested",
+          "concentration_fraction": 1.0,
+          "use_amount_per_event": 2.0,
+          "use_amount_unit": "g",
+          "use_events_per_day": 3,
+          "intendedUseFamily": "medicinal",
+          "oralExposureContext": "direct_use_medicinal"
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 70,
+          "region": "EU",
+          "demographic_tags": [
+            "consumer"
+          ]
+        },
+        "assumption_overrides": {}
+      },
+      "expected": {
+        "external_dose_value": 85.71428571,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "chemical_mass_mg_per_event": 2000.0,
+          "external_mass_mg_per_day": 6000.0
+        },
+        "assumptions": {
+          "ingestion_fraction": 1.0,
+          "body_weight_kg": 70.0
+        }
+      }
+    },
+    {
       "id": "oral_botanical_supplement_direct_use_screening",
       "kind": "scenario",
       "description": "Adult botanical supplement capsule case covering product-centric direct-use supplement routing semantics without collapsing into food-mediated dietary intake.",

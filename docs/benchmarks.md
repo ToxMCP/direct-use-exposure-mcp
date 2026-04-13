@@ -42,6 +42,8 @@ The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`
   semantics and counted oral-solid dosage-unit auditability
 - Adult herbal medicinal solid-dose screening linked to a narrow EMA valerian oral posology
   benchmark band
+- Adult herbal medicinal infusion screening linked to an EMA valerian herbal-tea
+  medicinal posology benchmark band
 - Adult product-centric botanical supplement capsule screening covering direct-use supplement
   routing semantics and counted capsule-regimen auditability
 - Adult Traditional Chinese Medicine topical balm screening covering direct-use leave-on dermal

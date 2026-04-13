@@ -37,6 +37,7 @@ BENCHMARK_CASE_DOMAINS = {
     "oral_direct_oral_screening": "oral_direct_intake",
     "oral_medicinal_liquid_delivered_dose_screening": "oral_direct_intake",
     "oral_herbal_medicinal_valerian_posology_screening": "oral_direct_intake",
+    "oral_herbal_medicinal_valerian_infusion_posology_screening": "oral_direct_intake",
     "oral_tcm_medicinal_direct_use_screening": "oral_direct_intake",
     "oral_botanical_supplement_direct_use_screening": "oral_direct_intake",
     "inhalation_trigger_spray_screening": "inhalation_well_mixed_spray",
@@ -104,8 +105,9 @@ BENCHMARK_DOMAIN_NOTES = {
         (
             "Current executable coverage now verifies direct-intake screening arithmetic "
             "across generic direct-oral, medicinal-liquid, EMA-aligned herbal medicinal "
-            "solid-dose, medicinal tablet, and product-centric supplement capsule cases, "
-            "but it still does not benchmark distributional use factors."
+            "solid-dose and infusion-style regimens, medicinal tablet, and product-centric "
+            "supplement capsule cases, but it still does not benchmark distributional use "
+            "factors."
         )
     ],
     "inhalation_well_mixed_spray": [
@@ -500,6 +502,29 @@ EXTERNAL_VALIDATION_DATASETS = [
             "solid dosage forms, up to 3 times daily for mild nervous tension. This is a "
             "narrow regulated posology anchor for herbal medicinal oral direct-use "
             "screening, not an observed adherence or dispensing-variability dataset."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="ema_valerian_root_infusion_posology_2015",
+        domain="oral_direct_intake",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "regulated single-dose and daily-dose oral posology for valerian herbal-tea "
+            "or infusion-style medicinal use"
+        ),
+        targetMetrics=["chemical_mass_mg_per_event", "external_mass_mg_per_day"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["herbal_medicinal_product"],
+        referenceTitle="European Union herbal monograph on Valeriana officinalis L., radix",
+        referenceLocator=(
+            "https://www.ema.europa.eu/en/documents/herbal-monograph/"
+            "draft-european-union-herbal-monograph-valeriana-officinalis-l-radix_en.pdf"
+        ),
+        note=(
+            "The EMA HMPC monograph states a 0.3-3.0 g single dose of comminuted herbal "
+            "substance as herbal tea in 150 ml boiling water, up to 3 times daily. This "
+            "is a medicinal infusion/decoction-style oral direct-use posology anchor, not "
+            "an ordinary dietary tea intake dataset."
         ),
     ),
     ExternalValidationDataset(
@@ -1524,6 +1549,43 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                     "valerian dry-extract oral posology envelope of 450-600 mg per dose "
                     "up to 3 times daily, giving a 1350-1800 mg/day narrow direct-use "
                     "herbal medicinal benchmark band."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.ORAL
+        and profile.product_category == "herbal_medicinal_product"
+        and profile.product_subtype == "valerian_root_infusion"
+        and profile.application_method == "direct_oral"
+    ):
+        observed = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
+        reference_band = reference_registry.band_for_check(
+            "herbal_medicinal_valerian_infusion_daily_mass_2015"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="herbal_medicinal_valerian_infusion_daily_mass_2015",
+                title="Herbal medicinal infusion daily mass vs EMA valerian monograph posology",
+                referenceDatasetId="ema_valerian_root_infusion_posology_2015",
+                status=status,
+                comparedMetric="external_mass_mg_per_day",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed external_mass_mg_per_day is compared against the EMA HMPC "
+                    "valerian herbal-tea oral posology envelope of 0.3-3.0 g comminuted "
+                    "herbal substance per dose up to 3 times daily, giving a 900-9000 "
+                    "mg/day medicinal infusion/decoction benchmark band."
                 ),
             )
         )

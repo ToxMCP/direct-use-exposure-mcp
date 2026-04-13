@@ -1,6 +1,6 @@
 {
   "schema_version": "benchmarkGoldsetManifest.v1",
-  "goldset_version": "2026.04.13.v18",
+  "goldset_version": "2026.04.13.v19",
   "selection_criteria": [
     "Prefer recognizable products or chemicals that regulators, product stewards, and scientists already understand without reading the code first.",
     "Each goldset case must stress a nontrivial MCP behavior such as regional evidence reconciliation, near-field inhalation, PPE handling, or cross-MCP orchestration.",
@@ -191,6 +191,28 @@
       "external_sources": [
         {
           "source_id": "ema_valerian_root_oral_posology_2015",
+          "title": "European Union herbal monograph on Valeriana officinalis L., radix",
+          "locator": "https://www.ema.europa.eu/en/documents/herbal-monograph/draft-european-union-herbal-monograph-valeriana-officinalis-l-radix_en.pdf",
+          "publisher": "European Medicines Agency",
+          "source_type": "herbal_monograph"
+        }
+      ]
+    },
+    {
+      "id": "eu_herbal_medicinal_infusion_posology_alignment",
+      "title": "EU herbal medicinal infusion posology alignment",
+      "coverage_status": "benchmark_regressed_showcase",
+      "benchmark_case_ids": ["oral_herbal_medicinal_valerian_infusion_posology_screening"],
+      "recognizable_examples": ["valerian herbal tea", "regulated herbal infusion", "traditional herbal medicinal decoction-style oral product"],
+      "challenge_tags": ["herbal_medicinal", "oral_posology", "ema_monograph", "infusion", "direct_use_regimen"],
+      "why_it_matters": "Medicinal herbal infusions and decoctions are common direct-use oral regimens and they need to stay on the Direct-Use side of the stack without being mistaken for ordinary dietary tea consumption.",
+      "showcase_story": "Shows that the MCP can express a regulated herbal medicinal infusion-style regimen and land inside an EMA-aligned valerian herbal-tea daily-dose envelope without collapsing the case into Dietary MCP semantics.",
+      "evidence_gaps": [
+        "This showcase uses a narrow EMA valerian herbal-tea posology envelope as a medicinal family anchor. It does not validate extraction efficiency, cup-to-cup preparation variability, or ingredient-specific internal exposure."
+      ],
+      "external_sources": [
+        {
+          "source_id": "ema_valerian_root_infusion_posology_2015",
           "title": "European Union herbal monograph on Valeriana officinalis L., radix",
           "locator": "https://www.ema.europa.eu/en/documents/herbal-monograph/draft-european-union-herbal-monograph-valeriana-officinalis-l-radix_en.pdf",
           "publisher": "European Medicines Agency",

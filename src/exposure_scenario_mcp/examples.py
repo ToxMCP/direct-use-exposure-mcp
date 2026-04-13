@@ -517,6 +517,31 @@ def build_examples() -> dict[str, dict]:
             region="EU",
         ),
     )
+    herbal_medicinal_infusion_request = ExposureScenarioRequest(
+        chemical_id="HMPC-INFUSION-EXAMPLE-001",
+        chemical_name="Example Valerian Infusion Constituent",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Herbal Medicinal Infusion",
+            product_category="herbal_medicinal_product",
+            product_subtype="valerian_root_infusion",
+            physical_form="herbal_tea",
+            application_method="direct_oral",
+            retention_type="ingested",
+            concentration_fraction=1.0,
+            use_amount_per_event=2.0,
+            use_amount_unit="g",
+            use_events_per_day=2,
+            intendedUseFamily=IntendedUseFamily.MEDICINAL,
+            oralExposureContext=OralExposureContext.DIRECT_USE_MEDICINAL,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="EU",
+        ),
+    )
     tcm_topical_balm_request = ExposureScenarioRequest(
         chemical_id="TCM-TOPICAL-001",
         chemical_name="Example Herbal Balm Constituent",
@@ -1610,6 +1635,9 @@ def build_examples() -> dict[str, dict]:
             mode="json", by_alias=True
         ),
         "botanical_supplement_oral_request": botanical_supplement_oral_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "herbal_medicinal_infusion_request": herbal_medicinal_infusion_request.model_dump(
             mode="json", by_alias=True
         ),
         "tcm_topical_balm_request": tcm_topical_balm_request.model_dump(

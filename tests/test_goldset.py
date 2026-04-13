@@ -8,7 +8,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     benchmark_ids = {case["id"] for case in load_benchmark_manifest()["cases"]}
 
     assert goldset["schema_version"] == "benchmarkGoldsetManifest.v1"
-    assert goldset["goldset_version"] == "2026.04.13.v18"
+    assert goldset["goldset_version"] == "2026.04.13.v19"
     assert len(goldset["cases"]) >= 6
 
     coverage_statuses = {case["coverage_status"] for case in goldset["cases"]}
@@ -115,6 +115,14 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     )
     assert valerian_case["benchmark_case_ids"] == [
         "oral_herbal_medicinal_valerian_posology_screening"
+    ]
+    valerian_infusion_case = next(
+        case
+        for case in goldset["cases"]
+        if case["id"] == "eu_herbal_medicinal_infusion_posology_alignment"
+    )
+    assert valerian_infusion_case["benchmark_case_ids"] == [
+        "oral_herbal_medicinal_valerian_infusion_posology_screening"
     ]
     tcm_balm_case = next(
         case
