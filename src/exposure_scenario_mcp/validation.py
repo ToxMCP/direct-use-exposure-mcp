@@ -96,8 +96,8 @@ BENCHMARK_DOMAIN_NOTES = {
         (
             "Current executable coverage is deterministic benchmark regression across "
             "core leave-on cream, SCCS face-cream, and direct-use herbal topical-balm "
-            "cases, now paired with a quantitative EMA topical-herbal application-geometry "
-            "analogue anchor rather than a true mass-per-application external calibration set."
+            "cases, now paired with an executable EMA topical-herbal application-geometry "
+            "analogue band rather than a true mass-per-application external calibration set."
         )
     ],
     "oral_direct_intake": [
@@ -1185,6 +1185,18 @@ def _selector_matches_scenario(
         return _normalized_text(profile.application_method) == _normalized_text(str(expected_value))
     if key == "retention_type":
         return _normalized_text(profile.retention_type) == _normalized_text(str(expected_value))
+    if key == "intended_use_family":
+        return _normalized_text(
+            profile.intended_use_family.value if profile.intended_use_family else None
+        ) == _normalized_text(str(expected_value))
+    if key == "oral_exposure_context":
+        return _normalized_text(
+            profile.oral_exposure_context.value if profile.oral_exposure_context else None
+        ) == _normalized_text(str(expected_value))
+    if key == "application_coverage_context":
+        return _normalized_text(profile.application_coverage_context) == _normalized_text(
+            str(expected_value)
+        )
     if key == "chemical_id":
         return _normalized_text(scenario.chemical_id) == _normalized_text(str(expected_value))
     if key == "chemical_name":
@@ -1361,6 +1373,46 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                         "Observed hand-cream application loading is compared against the "
                         "reported mean ± SD band from Schliemann et al. when the supplied "
                         "exposed area is hand-scale."
+                    ),
+                )
+            )
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.product_category == "herbal_topical_product"
+        and profile.application_method == "hand_application"
+        and profile.retention_type == "leave_on"
+        and profile.application_coverage_context == "palm_sized_area"
+    ):
+        strip_length = scenario.route_metrics.get("application_strip_length_cm")
+        if isinstance(strip_length, int | float):
+            reference_band = reference_registry.band_for_check(
+                "herbal_topical_application_strip_length_2014"
+            )
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= float(strip_length)
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="herbal_topical_application_strip_length_2014",
+                    title="Topical herbal strip length vs EMA palm-area arnica application anchor",
+                    referenceDatasetId="ema_arnica_topical_application_geometry_2014",
+                    status=status,
+                    comparedMetric="application_strip_length_cm",
+                    observedValue=round(float(strip_length), 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed topical strip length is compared against a narrow "
+                        "palm-sized-area herbal topical analogue anchor centered on the 3 cm "
+                        "application instruction captured in the EMA arnica comment overview. "
+                        "This is an application-geometry realism check, not a mass-per-use "
+                        "calibration set."
                     ),
                 )
             )

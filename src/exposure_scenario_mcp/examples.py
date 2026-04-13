@@ -527,6 +527,8 @@ def build_examples() -> dict[str, dict]:
             use_amount_unit="g",
             use_events_per_day=3,
             intendedUseFamily=IntendedUseFamily.MEDICINAL,
+            applicationStripLengthCm=3.0,
+            applicationCoverageContext="palm_sized_area",
         ),
         population_profile=PopulationProfile(
             population_group="adult",

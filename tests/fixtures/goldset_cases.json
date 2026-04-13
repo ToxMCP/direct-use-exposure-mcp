@@ -206,9 +206,9 @@
       "recognizable_examples": ["TCM balm", "herbal ointment", "medicinal topical balm"],
       "challenge_tags": ["tcm", "topical_medicinal", "direct_application", "leave_on_dermal"],
       "why_it_matters": "Topical herbal balms are a common direct-use medicinal pattern and they test whether the dermal engine can treat herbal products as ordinary direct-use preparations without inventing a separate product silo.",
-      "showcase_story": "Shows that topical TCM and herbal balm use can be expressed as a benchmarked leave-on dermal case with explicit medicinal direct-use semantics rather than being treated as an undefined special category.",
+      "showcase_story": "Shows that topical TCM and herbal balm use can be expressed as a benchmarked leave-on dermal case with explicit medicinal direct-use semantics and an executable application-geometry analogue check rather than being treated as an undefined special category.",
       "evidence_gaps": [
-        "This benchmark anchors deterministic leave-on topical balm semantics, not formulation-specific dermal absorption or ingredient-specific permeation behavior."
+        "This benchmark anchors deterministic leave-on topical balm semantics plus a narrow topical application-geometry analogue band, not formulation-specific dermal absorption or ingredient-specific permeation behavior."
       ],
       "external_sources": [
         {

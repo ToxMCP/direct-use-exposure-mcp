@@ -88,6 +88,8 @@
       "particle_material_context": null,
       "transfer_efficiency": null,
       "retention_factor": null,
+      "application_strip_length_cm": null,
+      "application_coverage_context": null,
       "ingestion_fraction": null,
       "aerosolized_fraction": null,
       "room_volume_m3": null,

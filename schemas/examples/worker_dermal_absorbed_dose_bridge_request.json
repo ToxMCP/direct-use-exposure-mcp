@@ -26,6 +26,8 @@
       "particleMaterialContext": null,
       "transfer_efficiency": null,
       "retention_factor": null,
+      "applicationStripLengthCm": null,
+      "applicationCoverageContext": null,
       "ingestion_fraction": null,
       "aerosolized_fraction": null,
       "room_volume_m3": null,

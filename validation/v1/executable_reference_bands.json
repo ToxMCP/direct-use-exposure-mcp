@@ -1,5 +1,5 @@
 {
-  "reference_version": "2026.04.13.v11",
+  "reference_version": "2026.04.13.v12",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
@@ -22,6 +22,24 @@
         "retention_type": "leave_on"
       },
       "note": "Mean ± SD hand-cream application loading band derived from workplace nurse-use observations in Schliemann et al. (2012)."
+    },
+    {
+      "reference_band_id": "herbal_topical_application_strip_length_2014_band",
+      "check_id": "herbal_topical_application_strip_length_2014",
+      "reference_dataset_id": "ema_arnica_topical_application_geometry_2014",
+      "domain": "dermal_direct_application",
+      "compared_metric": "application_strip_length_cm",
+      "reference_lower": 2.5,
+      "reference_upper": 3.5,
+      "unit": "cm/application",
+      "applicable_selectors": {
+        "product_category": "herbal_topical_product",
+        "application_method": "hand_application",
+        "retention_type": "leave_on",
+        "intended_use_family": "medicinal",
+        "application_coverage_context": "palm_sized_area"
+      },
+      "note": "Narrow topical-herbal application-geometry band centered on the 3 cm palm-sized-area instruction reported in the EMA arnica topical product comment overview, widened to +/-0.5 cm for screening comparability."
     },
     {
       "reference_band_id": "wet_cloth_contact_mass_2018_band",

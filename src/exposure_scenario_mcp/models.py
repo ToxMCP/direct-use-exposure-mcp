@@ -1143,6 +1143,23 @@ class ProductUseProfile(StrictModel):
     retention_factor: float | None = Field(
         default=None, description="Retention modifier for dermal screening.", gt=0.0, le=1.0
     )
+    application_strip_length_cm: float | None = Field(
+        default=None,
+        alias="applicationStripLengthCm",
+        description=(
+            "Optional topical application geometry input for strip-length dosed gels, "
+            "ointments, or balms when official directions use cm per application."
+        ),
+        gt=0.0,
+    )
+    application_coverage_context: str | None = Field(
+        default=None,
+        alias="applicationCoverageContext",
+        description=(
+            "Optional topical application coverage note such as palm_sized_area or "
+            "lower_leg when product instructions define geometry by treated area."
+        ),
+    )
     ingestion_fraction: float | None = Field(
         default=None,
         description="Fraction of chemical mass incidentally or directly ingested.",
@@ -1167,6 +1184,7 @@ class ProductUseProfile(StrictModel):
         "product_subtype",
         "aerosol_carrier_family",
         "aerosol_formulation_profile",
+        "application_coverage_context",
         "product_category",
         "physical_form",
         "application_method",

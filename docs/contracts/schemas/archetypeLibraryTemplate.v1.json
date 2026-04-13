@@ -616,6 +616,33 @@
           "description": "Retention modifier for dermal screening.",
           "title": "Retention Factor"
         },
+        "applicationStripLengthCm": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional topical application geometry input for strip-length dosed gels, ointments, or balms when official directions use cm per application.",
+          "title": "Applicationstriplengthcm"
+        },
+        "applicationCoverageContext": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional topical application coverage note such as palm_sized_area or lower_leg when product instructions define geometry by treated area.",
+          "title": "Applicationcoveragecontext"
+        },
         "ingestion_fraction": {
           "anyOf": [
             {

@@ -157,6 +157,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`cleaning_trigger_spray_airborne_fraction_2019_band`" in validation_bands
     assert "`hand_cream_application_loading_2012_band`" in validation_bands
     assert "`herbal_medicinal_valerian_oral_daily_mass_2015_band`" in validation_bands
+    assert "`herbal_topical_application_strip_length_2014_band`" in validation_bands
     assert "`medicinal_liquid_direct_oral_delivered_mass_2025_band`" in validation_bands
     assert "`consumer_disinfectant_trigger_spray_inhaled_dose_2015_band`" in validation_bands
     assert "`trigger_spray_aerosol_decay_half_life_2023_band`" in validation_bands

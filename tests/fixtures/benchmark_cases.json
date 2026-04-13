@@ -1017,7 +1017,9 @@
           "use_amount_per_event": 1.2,
           "use_amount_unit": "g",
           "use_events_per_day": 3,
-          "intendedUseFamily": "medicinal"
+          "intendedUseFamily": "medicinal",
+          "applicationStripLengthCm": 3.0,
+          "applicationCoverageContext": "palm_sized_area"
         },
         "population_profile": {
           "schema_version": "populationProfile.v1",
@@ -1036,9 +1038,13 @@
         "route_metrics": {
           "chemical_mass_mg_per_event": 48.0,
           "external_mass_mg_per_day": 144.0,
-          "surface_loading_mg_per_cm2_day": 0.02526316
+          "surface_loading_mg_per_cm2_day": 0.02526316,
+          "application_strip_length_cm": 3.0,
+          "application_coverage_context": "palm_sized_area"
         },
         "assumptions": {
+          "application_strip_length_cm": 3.0,
+          "application_coverage_context": "palm_sized_area",
           "body_weight_kg": 60.0,
           "retention_factor": 1.0,
           "transfer_efficiency": 1.0

@@ -81,6 +81,20 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
         )
 
         if request.route == Route.DERMAL:
+            if profile.application_strip_length_cm is not None:
+                tracker.add_user(
+                    "application_strip_length_cm",
+                    profile.application_strip_length_cm,
+                    "cm",
+                    "Topical strip-length application geometry was supplied explicitly.",
+                )
+            if profile.application_coverage_context is not None:
+                tracker.add_user(
+                    "application_coverage_context",
+                    profile.application_coverage_context,
+                    "context",
+                    "Topical application coverage context was supplied explicitly.",
+                )
             if profile.retention_factor is not None:
                 tracker.add_user(
                     "retention_factor",
@@ -156,6 +170,12 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 "external_mass_mg_per_day": round(external_mass_mg_day, 8),
                 "surface_loading_mg_per_cm2_day": round(external_mass_mg_day / surface_area_cm2, 8),
             }
+            if profile.application_strip_length_cm is not None:
+                route_metrics["application_strip_length_cm"] = round(
+                    profile.application_strip_length_cm, 8
+                )
+            if profile.application_coverage_context is not None:
+                route_metrics["application_coverage_context"] = profile.application_coverage_context
             notes = [
                 "Deterministic dermal screening scenario using explicit "
                 "retention and transfer modifiers."

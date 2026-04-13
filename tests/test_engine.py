@@ -833,6 +833,46 @@ def test_herbal_medicinal_valerian_direct_oral_executes_posology_check() -> None
     assert checks[0].reference_dataset_id == "ema_valerian_root_oral_posology_2015"
 
 
+def test_herbal_topical_balm_executes_application_geometry_check() -> None:
+    engine = build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="DTXSID990003",
+        chemical_name="Benchmark Herbal Balm Marker C",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="herbal_topical_product",
+            physical_form="ointment",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.04,
+            use_amount_per_event=1.2,
+            use_amount_unit="g",
+            use_events_per_day=3,
+            intendedUseFamily="medicinal",
+            applicationStripLengthCm=3.0,
+            applicationCoverageContext="palm_sized_area",
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=60,
+            region="CN",
+        ),
+    )
+
+    scenario = engine.build(request)
+
+    assert "ema_arnica_topical_application_geometry_2014" in (
+        scenario.validation_summary.external_dataset_ids
+    )
+    checks = scenario.validation_summary.executed_validation_checks
+    assert len(checks) == 1
+    assert checks[0].check_id == "herbal_topical_application_strip_length_2014"
+    assert checks[0].status.value == "pass"
+    assert checks[0].observed_value == pytest.approx(3.0, rel=1e-6)
+    assert checks[0].reference_dataset_id == "ema_arnica_topical_application_geometry_2014"
+
+
 def test_indoor_surface_insecticide_trigger_spray_does_not_borrow_reentry_candidates() -> None:
     engine = build_engine()
     request = InhalationScenarioRequest(
