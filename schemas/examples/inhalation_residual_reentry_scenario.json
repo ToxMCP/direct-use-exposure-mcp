@@ -14,6 +14,8 @@
     "schema_version": "productUseProfile.v1",
     "product_name": "Example Indoor Surface Insecticide",
     "product_subtype": "indoor_surface_insecticide",
+    "intendedUseFamily": null,
+    "oralExposureContext": null,
     "aerosolCarrierFamily": null,
     "aerosolFormulationProfile": null,
     "product_category": "pesticide",

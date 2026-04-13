@@ -33,6 +33,8 @@
       "schema_version": "productUseProfile.v1",
       "product_name": "Example Trigger Spray",
       "product_subtype": "indoor_surface_insecticide",
+      "intendedUseFamily": null,
+      "oralExposureContext": null,
       "aerosolCarrierFamily": null,
       "aerosolFormulationProfile": null,
       "product_category": "pesticide",

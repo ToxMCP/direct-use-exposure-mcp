@@ -253,6 +253,9 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "tierSemantics.v1" in manifest["schemas"]
     assert "chemical_identity" in manifest["examples"]
     assert "exposure_scenario_definition" in manifest["examples"]
+    assert "tcm_medicinal_oral_request" in manifest["examples"]
+    assert "botanical_supplement_oral_request" in manifest["examples"]
+    assert "tcm_topical_balm_request" in manifest["examples"]
     assert "route_dose_estimate" in manifest["examples"]
     assert "environmental_release_scenario" in manifest["examples"]
     assert "concentration_surface" in manifest["examples"]
@@ -332,6 +335,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://repository-slug-decision",
         "docs://cross-mcp-contract-guide",
         "docs://service-selection-guide",
+        "docs://herbal-medicinal-routing-guide",
         "docs://toxmcp-suite-index",
         "docs://integrated-exposure-workflow-guide",
         "docs://worker-routing-guide",

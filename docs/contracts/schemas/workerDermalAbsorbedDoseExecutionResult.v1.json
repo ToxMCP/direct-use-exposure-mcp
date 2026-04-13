@@ -341,6 +341,20 @@
       "title": "FitForPurpose",
       "type": "object"
     },
+    "IntendedUseFamily": {
+      "enum": [
+        "medicinal",
+        "supplement",
+        "food",
+        "cosmetic",
+        "cleaning",
+        "pesticidal",
+        "occupational_material",
+        "other_direct_use"
+      ],
+      "title": "IntendedUseFamily",
+      "type": "string"
+    },
     "LimitationNote": {
       "additionalProperties": false,
       "properties": {
@@ -366,6 +380,17 @@
       ],
       "title": "LimitationNote",
       "type": "object"
+    },
+    "OralExposureContext": {
+      "enum": [
+        "direct_use_medicinal",
+        "direct_use_supplement",
+        "incidental_non_dietary",
+        "food_mediated",
+        "environmental_media"
+      ],
+      "title": "OralExposureContext",
+      "type": "string"
     },
     "ParticleAgglomerationState": {
       "enum": [
@@ -787,6 +812,30 @@
           "default": null,
           "description": "Optional narrower product-use subtype such as indoor_surface_insecticide or surface_trigger_spray_disinfectant.",
           "title": "Product Subtype"
+        },
+        "intendedUseFamily": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntendedUseFamily"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional intended-use family such as medicinal, supplement, food, cosmetic, cleaning, or pesticidal. This is carried for clearer suite routing and review."
+        },
+        "oralExposureContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OralExposureContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional oral pathway routing tag used to distinguish direct-use medicinal or supplement regimens from incidental, food-mediated, or environmental-media oral semantics."
         },
         "aerosolCarrierFamily": {
           "anyOf": [

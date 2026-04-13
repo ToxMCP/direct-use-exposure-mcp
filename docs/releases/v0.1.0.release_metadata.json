@@ -43,7 +43,7 @@
     "worker_dermal_extreme_loading_surface_cap_execution"
   ],
   "contractSchemaCount": 151,
-  "contractExampleCount": 83,
+  "contractExampleCount": 86,
   "distributionArtifacts": [
     {
       "kind": "wheel",
@@ -70,6 +70,7 @@
     "docs://verification-summary",
     "docs://goldset-benchmark-guide",
     "docs://capability-maturity-matrix",
+    "docs://herbal-medicinal-routing-guide",
     "docs://toxmcp-suite-index",
     "docs/releases/v0.1.0.md"
   ],

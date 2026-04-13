@@ -30,6 +30,7 @@ from exposure_scenario_mcp.guidance import (
     defaults_curation_report_markdown,
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
+    herbal_medicinal_routing_guide,
     inhalation_residual_air_reentry_guide,
     inhalation_tier_upgrade_guide,
     integrated_exposure_workflow_guide,
@@ -247,6 +248,12 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """Guide to routing questions and handoffs across the ToxMCP service boundaries."""
 
         return service_selection_guide()
+
+    @mcp.resource("docs://herbal-medicinal-routing-guide")
+    def docs_herbal_medicinal_routing_guide() -> str:
+        """Guide to routing TCM, herbal medicine, and supplement cases cleanly across the stack."""
+
+        return herbal_medicinal_routing_guide()
 
     @mcp.resource("docs://toxmcp-suite-index")
     def docs_toxmcp_suite_index() -> str:

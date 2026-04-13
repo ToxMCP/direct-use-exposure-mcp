@@ -107,11 +107,14 @@ Route by domain, not by brand name.
 - Consumer spray, cosmetic, cleaner, or particle-aware cosmetic task -> Direct-Use Exposure MCP
   direct-use engine or SCCS/SCCS-opinion/ConsExpo-aligned pack
 - Direct-use oral or incidental oral question -> Direct-Use Exposure MCP
+- Medicinal TCM regimen, topical herbal product, or product-centric supplement regimen ->
+  Direct-Use Exposure MCP
 - Worker task with limited data -> Direct-Use Exposure MCP worker router plus current screening/Tier 1 path
 - Worker task needing higher-tier refinement -> ART/Stoffenmanager adapter path
 - Indoor air or aerosol room problem -> Direct-Use Exposure MCP indoor engine now; CONTAM/IAQX adapter later
 - Environmental release or chronic multimedia question -> Fate MCP
-- Food-residue intake question -> Dietary MCP
+- Food-residue, food-mediated herbal intake, or nutrition-style supplement intake question ->
+  Dietary MCP
 
 ## Integration Principles
 

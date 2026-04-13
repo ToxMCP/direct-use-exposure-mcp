@@ -349,6 +349,10 @@
       "description": "Guide to routing questions and handoffs across Exposure, Fate, Dietary, PBPK, and ToxClaw."
     },
     {
+      "uri": "docs://herbal-medicinal-routing-guide",
+      "description": "Guide to routing TCM, herbal medicine, and supplement cases cleanly across Direct-Use, Dietary, and Fate seams."
+    },
+    {
       "uri": "docs://toxmcp-suite-index",
       "description": "One-page orientation guide to the current ToxMCP service family and its shared boundaries."
     },
@@ -623,6 +627,9 @@
   "examples": {
     "chemical_identity": "schemas/examples/chemical_identity.json",
     "exposure_scenario_definition": "schemas/examples/exposure_scenario_definition.json",
+    "tcm_medicinal_oral_request": "schemas/examples/tcm_medicinal_oral_request.json",
+    "botanical_supplement_oral_request": "schemas/examples/botanical_supplement_oral_request.json",
+    "tcm_topical_balm_request": "schemas/examples/tcm_topical_balm_request.json",
     "route_dose_estimate": "schemas/examples/route_dose_estimate.json",
     "environmental_release_scenario": "schemas/examples/environmental_release_scenario.json",
     "concentration_surface": "schemas/examples/concentration_surface.json",

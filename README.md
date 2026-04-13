@@ -70,6 +70,8 @@ bounded worker, exchange, and validation surfaces:
 - `PBPK MCP` owns kinetic translation and internal-dose interpretation.
 - `ToxClaw` owns evidence orchestration, review flow, and NGRA-facing report synthesis.
 - Defaults, assumptions, provenance, and limitations are first-class outputs, not hidden internals.
+- Oral routing is explicit: medicinal or product-centric oral regimens stay here, while
+  food-mediated intake belongs in Dietary MCP.
 
 For a one-page maturity framing of the full released surface, see
 [docs/capability_maturity_matrix.md](./docs/capability_maturity_matrix.md).
@@ -101,6 +103,8 @@ For a suite-level map of sibling services and shared handoff contracts, see
   Fate handoffs
 - Release-readiness, result-status, troubleshooting, and provenance resources
 - Published architecture guidance for splitting exposure, fate, dietary, and worker domains
+- Published herbal/TCM/supplement routing guidance for keeping medicinal direct-use and dietary
+  intake semantics separate
 - Worker-task routing guidance plus a deterministic router for current MCP vs future occupational adapter paths
 - Worker inhalation Tier 2 bridge export for future ART-style occupational adapter handoff
 - Worker inhalation Tier 2 execution plus governed ART external exchange packages and imports
@@ -343,10 +347,10 @@ uv run exposure-scenario-mcp --transport streamable-http --host 127.0.0.1 --port
 Current published surface from `docs/contracts/contract_manifest.json`:
 
 - `35` tools
-- `60` resources
+- `61` resources
 - `2` prompts
 - `151` schemas
-- `83` examples
+- `86` examples
 
 Legacy `Exposure_Scenario_MCP_tasks.*` planning artifacts at the repo root are now archived
 status notes, not the live implementation backlog.
@@ -365,6 +369,7 @@ The MCP also publishes a consolidated runtime trust surface through:
 
 - `verification://summary`
 - `docs://verification-summary`
+- `docs://herbal-medicinal-routing-guide`
 
 Current published package version: `0.1.0`
 
@@ -402,6 +407,8 @@ That means:
 - it may export PBPK- and ToxClaw-facing handoff objects
 - it keeps direct-use and incidental oral inside this repo while leaving diet-mediated oral
   to a sibling Dietary MCP
+- it now supports explicit oral routing tags for medicinal, supplement, incidental, and
+  non-Direct-Use dietary semantics
 - it can publish shared suite contracts for future Fate and Dietary handoffs without taking
   ownership of those runtimes
 

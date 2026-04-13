@@ -23,6 +23,8 @@
     "schema_version": "productUseProfile.v1",
     "product_name": "Example Hand Cream",
     "product_subtype": null,
+    "intendedUseFamily": null,
+    "oralExposureContext": null,
     "aerosolCarrierFamily": null,
     "aerosolFormulationProfile": null,
     "product_category": "personal_care",

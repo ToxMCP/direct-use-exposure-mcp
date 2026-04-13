@@ -366,12 +366,19 @@ should build against instead of inventing parallel handoff shapes.
   ConsExpo, nanomaterial, microplastics, and other source-normalized records.
 - Can carry quantitative product/population overrides plus `particleMaterialContext.v1` when
   the direct-use semantics depend on nano or microparticle properties.
+- Can also carry reviewed `ProductUseProfile` routing fields such as `intendedUseFamily` and
+  `oralExposureContext` when medicinal, supplement, botanical, or other oral cases need clear
+  Direct-Use vs Dietary routing.
 
 ### `exposureScenarioDefinition.v1`
 
 - Shared scenario-definition contract for direct-use or concentration-to-dose workflows.
 - Keeps product-use grammar separate from concentration-surface references so sibling MCPs can
   hand off cleanly without forcing tool-native payloads into each other.
+- When oral workflows are in scope, use `productUseProfile.intendedUseFamily` and
+  `productUseProfile.oralExposureContext` to keep medicinal direct-use, supplement regimens,
+  food-mediated intake, and environmental-media ingestion from collapsing into one ambiguous
+  oral category.
 
 ### `routeDoseEstimate.v1`
 
@@ -395,6 +402,11 @@ should build against instead of inventing parallel handoff shapes.
 - Direct-use oral and incidental oral stay in Direct-Use Exposure MCP.
 - diet-mediated oral belongs in Dietary MCP and should emit `routeDoseEstimate.v1` rather than
   overloading `exposureScenarioRequest.v1`.
+- Traditional Chinese Medicine, herbal medicine, and supplement cases should be routed by
+  pathway semantics rather than by cultural label:
+  - medicinal or product-centric oral regimens -> Direct-Use Exposure MCP
+  - topical or inhaled herbal preparations -> Direct-Use Exposure MCP
+  - food-mediated herbal intake or nutrition-style supplement intake -> Dietary MCP
 - Environmental release and multimedia transfer belong in Fate MCP and should emit
   `concentrationSurface.v1`, not body-weight-normalized human dose.
 - PBPK MCP should consume stable dose semantics and identity records, not product-use prose or
@@ -429,6 +441,11 @@ Use this guide when routing a question to the right ToxMCP service.
 
 - Direct-use oral stays in Direct-Use Exposure MCP.
 - Diet-mediated oral goes to Dietary MCP.
+- Medicinal oral products, including Traditional Chinese Medicine regimens, stay in Direct-Use
+  Exposure MCP when the workflow is product-centric dosing rather than food consumption.
+- Supplement pills or capsules should be split explicitly:
+  - labeled product regimen or consumer-use dosing -> Direct-Use Exposure MCP
+  - dietary or nutrition-style intake workflow -> Dietary MCP
 - Environmental oral from media is not Dietary by default; it should start with Fate MCP
   concentration outputs and then enter a future concentration-to-dose workflow.
 - Regional outdoor air due to emissions belongs to Fate MCP.
@@ -451,7 +468,73 @@ Use this guide when routing a question to the right ToxMCP service.
 - EU cosmetic nanomaterial, microplastic, and non-plastic particle direct-use questions stay in
   Direct-Use Exposure MCP while the workflow is about direct-use assumptions and external dose,
   not multimedia fate or final toxicology interpretation.
+- Oral direct-use cases can now declare `intendedUseFamily` plus `oralExposureContext` to make
+  medicinal, supplement, incidental, and non-Direct-Use dietary semantics auditable at the
+  request-contract layer.
 - Publishing these schemas here does not mean Fate or Dietary logic now belongs inside this repo.
+"""
+
+
+def herbal_medicinal_routing_guide() -> str:
+    return """# Herbal, TCM, and Supplement Routing Guide
+
+Use this guide when a case involves Traditional Chinese Medicine, herbal medicines,
+botanical supplements, or similar oral or topical consumer products.
+
+## Core Rule
+
+Route by **pathway semantics and intended use**, not by cultural label or dosage form alone.
+
+## Direct-Use Exposure MCP Cases
+
+- Medicinal oral regimens such as Traditional Chinese Medicine decoctions, pills, tinctures,
+  or therapeutic powders when the workflow is about labeled product use or explicit dosing.
+- Topical herbal or TCM balms, liniments, oils, patches, and related direct-use dermal cases.
+- Inhaled herbal or medicinal vapors when the workflow is still a direct-use near-field case.
+- Product-centric supplement dosing only when the assessment is explicitly about a labeled
+  consumer regimen rather than dietary intake.
+
+Recommended request semantics:
+
+- `productUseProfile.intendedUseFamily=medicinal` for TCM or other therapeutic herbal products.
+- `productUseProfile.oralExposureContext=direct_use_medicinal` for medicinal oral regimens.
+- `productUseProfile.intendedUseFamily=supplement` plus
+  `productUseProfile.oralExposureContext=direct_use_supplement` when a supplement case is being
+  treated as a direct-use product regimen.
+
+## Dietary MCP Cases
+
+- Food-mediated herbal intake, for example herbal teas or botanicals consumed as part of an
+  ordinary diet.
+- Nutrition-style supplement intake when the workflow is a dietary-consumption assessment
+  rather than a product-use dosing case.
+- Food-residue or commodity-residue workflows involving herbs, botanicals, or related foods.
+
+These cases should not be sent as `exposureScenarioRequest.v1` payloads in Direct-Use Exposure
+MCP.
+
+## Fate-Oriented Seam
+
+- Environmental-media oral intake from contaminated water or soil is not a Direct-Use request
+  and is not Dietary by default.
+- Start those workflows from Fate MCP `concentrationSurface.v1` outputs and move into a future
+  concentration-to-intake consumer.
+
+## Worked Examples
+
+- TCM pill taken as part of a prescribed regimen -> `Direct-Use Exposure MCP`
+- TCM balm applied to the skin -> `Direct-Use Exposure MCP`
+- Botanical capsule taken as a labeled consumer regimen -> `Direct-Use Exposure MCP`
+- Herbal tea consumed as part of normal diet -> `Dietary MCP`
+- Herb-derived residue in food commodity -> `Dietary MCP`
+- Soil or water ingestion of an herbal contaminant -> Fate seam, not Direct-Use by default
+
+## Why This Split Matters
+
+- It keeps medicinal product-use semantics separate from food-consumption semantics.
+- It preserves auditability by making the routing basis explicit in the request contract.
+- It avoids creating a separate TCM-specific MCP when the governing scientific distinction is
+  already direct-use versus dietary pathway ownership.
 """
 
 
@@ -497,8 +580,9 @@ across domain boundaries.
 
 - Product-use, direct-use oral, residual-air reentry, indoor aerosol, and near-field worker
   screening -> `Direct-Use Exposure MCP`
+- Herbal medicinal products, TCM regimens, and topical herbal products -> `Direct-Use Exposure MCP`
 - Environmental source term or multimedia concentration question -> `Fate MCP`
-- Dietary oral intake question -> `Dietary MCP`
+- Dietary oral intake, food-mediated herbal intake, or food-residue question -> `Dietary MCP`
 - Internal dose or TK simulation question -> `PBPK MCP`
 - Bioactivity/PoD interpretation question -> `Bioactivity-PoD MCP`
 - Cross-service case assembly, refinement choice, or reporting question -> `ToxClaw`
@@ -509,6 +593,7 @@ across domain boundaries.
 - Use `docs://cross-mcp-contract-guide` for the shared handoff shapes.
 - Use `docs://capability-maturity-matrix` for maturity/readiness of the released surface.
 - Use `docs://suite-integration-guide` for detailed Direct-Use Exposure MCP boundary notes.
+- Use `docs://herbal-medicinal-routing-guide` for TCM, herbal medicine, and supplement routing.
 
 Static companion: `docs/toxmcp_suite_index.md`
 """

@@ -24,8 +24,9 @@ Use it when you need to answer three questions quickly:
 
 - Product-use, direct-use oral, incidental oral, indoor aerosol, residual-air reentry, and
   near-field worker screening -> `Direct-Use Exposure MCP`
+- Herbal medicinal products, TCM regimens, and topical herbal products -> `Direct-Use Exposure MCP`
 - Environmental source term or multimedia concentration question -> `Fate MCP`
-- Dietary oral intake or food-residue question -> `Dietary MCP`
+- Dietary oral intake, food-mediated herbal intake, or food-residue question -> `Dietary MCP`
 - Internal dose or TK simulation question -> `PBPK MCP`
 - Bioactivity or PoD interpretation question -> `Bioactivity-PoD MCP`
 - Case assembly, refinement choice, or final NGRA-facing reporting question -> `ToxClaw`
@@ -54,5 +55,6 @@ These are the suite-facing handoff shapes currently published from this repo:
 
 - `docs://toxmcp-suite-index`
 - `docs://service-selection-guide`
+- `docs://herbal-medicinal-routing-guide`
 - `docs://cross-mcp-contract-guide`
 - `docs://capability-maturity-matrix`

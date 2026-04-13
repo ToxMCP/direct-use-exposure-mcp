@@ -16,6 +16,7 @@ from exposure_scenario_mcp.guidance import (
     defaults_curation_report_markdown,
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
+    herbal_medicinal_routing_guide,
     inhalation_residual_air_reentry_guide,
     inhalation_tier_upgrade_guide,
     integrated_exposure_workflow_guide,
@@ -91,6 +92,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     slug_decision = repository_slug_decision_guide()
     cross_mcp_contracts = cross_mcp_contract_guide()
     service_selection = service_selection_guide()
+    herbal_routing = herbal_medicinal_routing_guide()
     suite_index = toxmcp_suite_index_guide()
     worker_routing = worker_routing_guide()
     worker_tier2 = worker_tier2_bridge_guide()
@@ -249,10 +251,18 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`environmentalReleaseScenario.v1`" in cross_mcp_contracts
     assert "`concentrationSurface.v1`" in cross_mcp_contracts
     assert "diet-mediated oral belongs in Dietary MCP" in cross_mcp_contracts
+    assert "`oralExposureContext`" in cross_mcp_contracts
     assert "Service Selection Guide" in service_selection
     assert "Direct-use oral stays in Direct-Use Exposure MCP" in service_selection
+    assert "Traditional Chinese Medicine regimens" in service_selection
+    assert "Supplement pills or capsules should be split explicitly" in service_selection
     assert "Environmental release, multimedia transfer" in service_selection
     assert "`pbpkExternalImportBundle.v1`" in service_selection
+    assert "Herbal, TCM, and Supplement Routing Guide" in herbal_routing
+    assert "`productUseProfile.intendedUseFamily=medicinal`" in herbal_routing
+    assert "`productUseProfile.oralExposureContext=direct_use_supplement`" in herbal_routing
+    assert "Herbal tea consumed as part of normal diet -> `Dietary MCP`" in herbal_routing
+    assert "docs://herbal-medicinal-routing-guide" in suite_index
     assert "Worker Routing Guide" in worker_routing
     assert "exposure_route_worker_task" in worker_routing
     assert "workerTaskRoutingInput.v1" in worker_routing

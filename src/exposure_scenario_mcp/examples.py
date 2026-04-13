@@ -57,7 +57,9 @@ from exposure_scenario_mcp.models import (
     InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
+    IntendedUseFamily,
     LimitationNote,
+    OralExposureContext,
     ParameterBoundInput,
     ParameterBoundsSummary,
     ParticleAgglomerationState,
@@ -460,6 +462,77 @@ def build_examples() -> dict[str, dict]:
         notes=[
             "Example shared scenario-definition contract for a direct-use consumer hand cream case."
         ],
+    )
+    tcm_medicinal_oral_request = ExposureScenarioRequest(
+        chemical_id="TCM-EXAMPLE-001",
+        chemical_name="Example TCM Pill Constituent",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Traditional Chinese Medicine Pill",
+            product_category="herbal_medicinal_product",
+            physical_form="tablet",
+            application_method="direct_oral",
+            retention_type="ingested",
+            concentration_fraction=0.25,
+            use_amount_per_event=0.8,
+            use_amount_unit="g",
+            use_events_per_day=2,
+            intendedUseFamily=IntendedUseFamily.MEDICINAL,
+            oralExposureContext=OralExposureContext.DIRECT_USE_MEDICINAL,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=60,
+            region="CN",
+        ),
+    )
+    botanical_supplement_oral_request = ExposureScenarioRequest(
+        chemical_id="SUPPLEMENT-EXAMPLE-001",
+        chemical_name="Example Botanical Supplement Constituent",
+        route=Route.ORAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_name="Example Botanical Supplement Capsule",
+            product_category="dietary_supplement",
+            physical_form="capsule",
+            application_method="direct_oral",
+            retention_type="ingested",
+            concentration_fraction=0.12,
+            use_amount_per_event=0.6,
+            use_amount_unit="g",
+            use_events_per_day=1,
+            intendedUseFamily=IntendedUseFamily.SUPPLEMENT,
+            oralExposureContext=OralExposureContext.DIRECT_USE_SUPPLEMENT,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=70,
+            region="EU",
+        ),
+    )
+    tcm_topical_balm_request = ExposureScenarioRequest(
+        chemical_id="TCM-TOPICAL-001",
+        chemical_name="Example Herbal Balm Constituent",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_name="Example TCM Balm",
+            product_category="herbal_topical_product",
+            physical_form="ointment",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.04,
+            use_amount_per_event=1.2,
+            use_amount_unit="g",
+            use_events_per_day=3,
+            intendedUseFamily=IntendedUseFamily.MEDICINAL,
+        ),
+        population_profile=PopulationProfile(
+            population_group="adult",
+            body_weight_kg=60,
+            region="CN",
+        ),
     )
     dermal_scenario = _freeze_scenario(
         engine.build(dermal_request),
@@ -1523,6 +1596,15 @@ def build_examples() -> dict[str, dict]:
     return {
         "chemical_identity": chemical_identity.model_dump(mode="json", by_alias=True),
         "exposure_scenario_definition": exposure_scenario_definition.model_dump(
+            mode="json", by_alias=True
+        ),
+        "tcm_medicinal_oral_request": tcm_medicinal_oral_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "botanical_supplement_oral_request": botanical_supplement_oral_request.model_dump(
+            mode="json", by_alias=True
+        ),
+        "tcm_topical_balm_request": tcm_topical_balm_request.model_dump(
             mode="json", by_alias=True
         ),
         "route_dose_estimate": route_dose_estimate.model_dump(mode="json", by_alias=True),

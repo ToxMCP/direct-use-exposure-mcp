@@ -12,6 +12,8 @@ current ToxMCP service family.
 - Direct-Use Exposure MCP owns external dose construction and refinement only.
 - Direct-use oral and incidental oral stay inside Direct-Use Exposure MCP; diet-mediated oral
   belongs in a sibling Dietary MCP.
+- Traditional Chinese Medicine, herbal medicine, and supplement cases should be routed by
+  pathway semantics rather than by cultural label or dosage form alone.
 - Keep environmental release and multimedia fate in a sibling Fate MCP once those workflows are
   added; they should feed concentration surfaces into exposure workflows rather than blur the
   boundary inside this server.
@@ -42,8 +44,10 @@ summarized in `docs://cross-mcp-contract-guide`.
 
 - Consumer product use, direct-use oral, incidental oral, indoor aerosol, residual-air reentry,
   and near-field worker screening -> Direct-Use Exposure MCP
+- Medicinal TCM regimens, topical herbal products, and product-centric supplement dosing ->
+  Direct-Use Exposure MCP
 - Environmental release and multimedia concentration questions -> Fate MCP
-- Food-residue and dietary oral intake questions -> Dietary MCP
+- Food-residue, food-mediated herbal intake, and dietary oral intake questions -> Dietary MCP
 - Internal dose and TK simulation -> PBPK MCP
 - Cross-service orchestration and final reporting -> ToxClaw
 
@@ -55,6 +59,19 @@ summarized in `docs://cross-mcp-contract-guide`.
   concentration-to-intake consumer.
 - It should only enter Dietary MCP when the workflow becomes food-mediated residue plus
   consumption rather than generic media ingestion.
+
+## Herbal, TCM, and supplement split
+
+- TCM pills, decoctions, tinctures, and therapeutic powders stay in Direct-Use Exposure MCP
+  when the workflow is about product-centric or prescribed direct-use dosing.
+- Topical balms, liniments, oils, patches, or inhaled herbal preparations stay in Direct-Use
+  Exposure MCP.
+- Herbal teas, nutrition-style supplement intake, and other food-mediated herbal consumption
+  belong in Dietary MCP.
+- Environmental-media oral intake from contaminated water or soil is not a Direct-Use request
+  and is not Dietary by default; it should start from Fate MCP concentration outputs.
+
+See [herbal_medicinal_routing.md](./herbal_medicinal_routing.md) for the detailed routing note.
 
 ## Literature MCP (future/optional)
 

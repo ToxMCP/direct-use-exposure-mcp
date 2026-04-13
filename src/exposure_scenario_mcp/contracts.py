@@ -839,6 +839,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractResourceEntry(
+                uri="docs://herbal-medicinal-routing-guide",
+                description=(
+                    "Guide to routing TCM, herbal medicine, and supplement cases cleanly "
+                    "across Direct-Use, Dietary, and Fate seams."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="docs://toxmcp-suite-index",
                 description=(
                     "One-page orientation guide to the current ToxMCP service family and "
@@ -1406,6 +1413,7 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://verification-summary",
             "docs://goldset-benchmark-guide",
             "docs://capability-maturity-matrix",
+            "docs://herbal-medicinal-routing-guide",
             "docs://toxmcp-suite-index",
             "docs/releases/v0.1.0.md",
         ],
@@ -1610,6 +1618,7 @@ def build_verification_summary_report(
     boundary_guides_published = {
         "docs://cross-mcp-contract-guide",
         "docs://service-selection-guide",
+        "docs://herbal-medicinal-routing-guide",
         "docs://suite-integration-guide",
         "docs://toxmcp-suite-index",
     } <= published_resource_uris
@@ -1621,11 +1630,13 @@ def build_verification_summary_report(
             blocking=not boundary_guides_published,
             evidence=(
                 "The published resource surface includes explicit service-selection, "
-                "cross-contract, suite-integration, and suite-index guides."
+                "herbal/medicinal routing, cross-contract, suite-integration, and "
+                "suite-index guides."
             ),
             relatedResources=[
                 "docs://cross-mcp-contract-guide",
                 "docs://service-selection-guide",
+                "docs://herbal-medicinal-routing-guide",
                 "docs://suite-integration-guide",
                 "docs://toxmcp-suite-index",
             ],

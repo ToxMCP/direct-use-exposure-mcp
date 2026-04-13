@@ -56,6 +56,25 @@ class ProductAmountUnit(StrEnum):
     ML = "mL"
 
 
+class IntendedUseFamily(StrEnum):
+    MEDICINAL = "medicinal"
+    SUPPLEMENT = "supplement"
+    FOOD = "food"
+    COSMETIC = "cosmetic"
+    CLEANING = "cleaning"
+    PESTICIDAL = "pesticidal"
+    OCCUPATIONAL_MATERIAL = "occupational_material"
+    OTHER_DIRECT_USE = "other_direct_use"
+
+
+class OralExposureContext(StrEnum):
+    DIRECT_USE_MEDICINAL = "direct_use_medicinal"
+    DIRECT_USE_SUPPLEMENT = "direct_use_supplement"
+    INCIDENTAL_NON_DIETARY = "incidental_non_dietary"
+    FOOD_MEDIATED = "food_mediated"
+    ENVIRONMENTAL_MEDIA = "environmental_media"
+
+
 class SourceKind(StrEnum):
     USER_INPUT = "user_input"
     DEFAULT_REGISTRY = "default_registry"
@@ -1054,6 +1073,23 @@ class ProductUseProfile(StrictModel):
             "or surface_trigger_spray_disinfectant."
         ),
     )
+    intended_use_family: IntendedUseFamily | None = Field(
+        default=None,
+        alias="intendedUseFamily",
+        description=(
+            "Optional intended-use family such as medicinal, supplement, food, cosmetic, "
+            "cleaning, or pesticidal. This is carried for clearer suite routing and review."
+        ),
+    )
+    oral_exposure_context: OralExposureContext | None = Field(
+        default=None,
+        alias="oralExposureContext",
+        description=(
+            "Optional oral pathway routing tag used to distinguish direct-use medicinal or "
+            "supplement regimens from incidental, food-mediated, or environmental-media oral "
+            "semantics."
+        ),
+    )
     aerosol_carrier_family: str | None = Field(
         default=None,
         alias="aerosolCarrierFamily",
@@ -1595,6 +1631,64 @@ class ExposureScenarioRequest(StrictModel):
     @classmethod
     def validate_request_text_fields(cls, value: str | None) -> str | None:
         return _validate_optional_auditable_text(value)
+
+    @model_validator(mode="after")
+    def validate_oral_boundary_semantics(self) -> ExposureScenarioRequest:
+        oral_context = self.product_use_profile.oral_exposure_context
+        intended_use_family = self.product_use_profile.intended_use_family
+        application_method = self.product_use_profile.application_method
+
+        if self.route != Route.ORAL:
+            if oral_context is not None:
+                raise ValueError(
+                    "oralExposureContext is only valid on oral direct-use scenario requests."
+                )
+            return self
+
+        if oral_context == OralExposureContext.FOOD_MEDIATED:
+            raise ValueError(
+                "food_mediated oral intake belongs in Dietary MCP, not "
+                "exposureScenarioRequest.v1."
+            )
+        if oral_context == OralExposureContext.ENVIRONMENTAL_MEDIA:
+            raise ValueError(
+                "environmental_media oral intake should start from Fate MCP "
+                "concentrationSurface.v1 outputs and a future concentration-to-intake "
+                "workflow, not a direct-use scenario request."
+            )
+        if application_method == "incidental_oral":
+            if oral_context not in {None, OralExposureContext.INCIDENTAL_NON_DIETARY}:
+                raise ValueError(
+                    "incidental_oral requests may only use oralExposureContext="
+                    "incidental_non_dietary."
+                )
+        elif oral_context == OralExposureContext.INCIDENTAL_NON_DIETARY:
+            raise ValueError(
+                "oralExposureContext=incidental_non_dietary requires "
+                "application_method='incidental_oral'."
+            )
+        if oral_context in {
+            OralExposureContext.DIRECT_USE_MEDICINAL,
+            OralExposureContext.DIRECT_USE_SUPPLEMENT,
+        } and application_method != "direct_oral":
+            raise ValueError(
+                "Direct-use medicinal or supplement oral contexts require "
+                "application_method='direct_oral'."
+            )
+        if intended_use_family == IntendedUseFamily.FOOD:
+            raise ValueError(
+                "Food intended-use oral workflows should be routed through Dietary MCP, not "
+                "a direct-use scenario request."
+            )
+        if (
+            intended_use_family == IntendedUseFamily.SUPPLEMENT
+            and oral_context is None
+        ):
+            raise ValueError(
+                "Oral supplement workflows must declare oralExposureContext so reviewers can "
+                "distinguish direct-use supplement regimens from dietary intake."
+            )
+        return self
 
 
 class InhalationScenarioRequest(ExposureScenarioRequest):

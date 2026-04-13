@@ -1,23 +1,23 @@
 {
   "schema_version": "exposureScenarioRequest.v1",
-  "chemical_id": "DTXSID7020182",
-  "chemical_name": "Example Solvent A",
+  "chemical_id": "TCM-TOPICAL-001",
+  "chemical_name": "Example Herbal Balm Constituent",
   "route": "dermal",
   "scenario_class": "screening",
   "product_use_profile": {
     "schema_version": "productUseProfile.v1",
-    "product_name": "Example Hand Cream",
+    "product_name": "Example TCM Balm",
     "product_subtype": null,
-    "intendedUseFamily": null,
+    "intendedUseFamily": "medicinal",
     "oralExposureContext": null,
     "aerosolCarrierFamily": null,
     "aerosolFormulationProfile": null,
-    "product_category": "personal_care",
-    "physical_form": "cream",
+    "product_category": "herbal_topical_product",
+    "physical_form": "ointment",
     "application_method": "hand_application",
     "retention_type": "leave_on",
-    "concentration_fraction": 0.02,
-    "use_amount_per_event": 1.5,
+    "concentration_fraction": 0.04,
+    "use_amount_per_event": 1.2,
     "use_amount_unit": "g",
     "use_events_per_day": 3.0,
     "density_g_per_ml": null,
@@ -33,14 +33,11 @@
   "population_profile": {
     "schema_version": "populationProfile.v1",
     "population_group": "adult",
-    "body_weight_kg": null,
+    "body_weight_kg": 60.0,
     "inhalation_rate_m3_per_hour": null,
     "exposed_surface_area_cm2": null,
-    "demographic_tags": [
-      "consumer",
-      "general_population"
-    ],
-    "region": "EU"
+    "demographic_tags": [],
+    "region": "CN"
   },
   "physchemContext": null,
   "assumption_overrides": {}

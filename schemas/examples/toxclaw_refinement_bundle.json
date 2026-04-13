@@ -22,6 +22,8 @@
       "schema_version": "productUseProfile.v1",
       "product_name": "Example Hand Cream",
       "product_subtype": null,
+      "intendedUseFamily": null,
+      "oralExposureContext": null,
       "aerosolCarrierFamily": null,
       "aerosolFormulationProfile": null,
       "product_category": "personal_care",
@@ -666,6 +668,8 @@
       "schema_version": "productUseProfile.v1",
       "product_name": "Example Hand Cream",
       "product_subtype": null,
+      "intendedUseFamily": null,
+      "oralExposureContext": null,
       "aerosolCarrierFamily": null,
       "aerosolFormulationProfile": null,
       "product_category": "personal_care",
@@ -1347,9 +1351,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "25900d5d0be77b050483ef6e28c8d8251b55d4bd114efca17c74285f7f21a486",
+    "contentHash": "829917a1e430755a848c10a592aa7369d08ba5762c89c86c66a9770228c9cea1",
     "dataClassification": "internal",
-    "evidenceId": "evidence-21c90e2bd11ace26",
+    "evidenceId": "evidence-a64e6d3ce388ea6b",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1371,8 +1375,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "25900d5d0be77b050483ef6e28c8d8251b55d4bd114efca17c74285f7f21a486",
-    "evidenceId": "evidence-21c90e2bd11ace26",
+    "contentHash": "829917a1e430755a848c10a592aa7369d08ba5762c89c86c66a9770228c9cea1",
+    "evidenceId": "evidence-a64e6d3ce388ea6b",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1400,7 +1404,7 @@
         "claimId": "claim-e1d4880e484aa82b",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-21c90e2bd11ace26"
+          "evidence-a64e6d3ce388ea6b"
         ],
         "text": "Baseline scenario exp-example-dermal-001 estimates 1.125 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day."
       },
@@ -1409,7 +1413,7 @@
         "claimId": "claim-f056e8490cf5cc2b",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-21c90e2bd11ace26"
+          "evidence-a64e6d3ce388ea6b"
         ],
         "text": "Comparison dose decreased by 48.00% relative to baseline."
       },
@@ -1418,7 +1422,7 @@
         "claimId": "claim-98be2d7dd8221ca2",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-21c90e2bd11ace26"
+          "evidence-a64e6d3ce388ea6b"
         ],
         "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
       },
@@ -1427,13 +1431,13 @@
         "claimId": "claim-0409d2d114518ff0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-21c90e2bd11ace26"
+          "evidence-a64e6d3ce388ea6b"
         ],
         "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
       }
     ],
     "evidenceIds": [
-      "evidence-21c90e2bd11ace26"
+      "evidence-a64e6d3ce388ea6b"
     ],
     "sectionKey": "exposure-refinement",
     "title": "Exposure Refinement Delta"

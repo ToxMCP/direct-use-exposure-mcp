@@ -62,6 +62,8 @@
           "schema_version": "productUseProfile.v1",
           "product_name": "Example Workplace Wipe Cleaner",
           "product_subtype": null,
+          "intendedUseFamily": null,
+          "oralExposureContext": null,
           "aerosolCarrierFamily": null,
           "aerosolFormulationProfile": null,
           "product_category": "household_cleaner",
