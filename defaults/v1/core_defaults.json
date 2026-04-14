@@ -1535,6 +1535,14 @@
         "value": 0.7,
         "source_id": "worker_inhalation_control_factor_heuristics_2026"
       },
+      "professional_cleaning_control_profile": {
+        "value": 0.45,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
+      "surface_disinfection_control_profile": {
+        "value": 0.3,
+        "source_id": "worker_inhalation_control_factor_heuristics_2026"
+      },
       "local_exhaust_control_profile": {
         "value": 0.4,
         "source_id": "worker_inhalation_control_factor_heuristics_2026"

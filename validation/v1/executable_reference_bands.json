@@ -1,11 +1,28 @@
 {
-  "reference_version": "2026.04.14.v2",
+  "reference_version": "2026.04.14.v3",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
     "Callers should match the applicable selectors before treating a band as fit-for-purpose."
   ],
   "bands": [
+    {
+      "reference_band_id": "worker_biocidal_professional_cleaning_concentration_2023_band",
+      "check_id": "worker_biocidal_professional_cleaning_concentration_2023",
+      "reference_dataset_id": "worker_biocidal_professional_cleaning_2023",
+      "domain": "inhalation_well_mixed_spray",
+      "compared_metric": "control_adjusted_average_air_concentration_mg_per_m3",
+      "reference_lower": 0.015,
+      "reference_upper": 0.045,
+      "unit": "mg/m3",
+      "applicable_selectors": {
+        "product_category": "disinfectant",
+        "product_subtype": "professional_surface_disinfectant",
+        "application_method": "trigger_spray",
+        "control_profile": "professional_cleaning_control_profile"
+      },
+      "note": "Professional surface-disinfection concentration band derived from ART 1.5 calibration training sets for professional janitorial trigger-spraying with localized-behavior controls."
+    },
     {
       "reference_band_id": "ema_hmpc_topical_ointment_loading_default_band",
       "check_id": "ema_hmpc_topical_ointment_loading_default",

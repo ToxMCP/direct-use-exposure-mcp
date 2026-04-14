@@ -287,6 +287,24 @@ EXTERNAL_VALIDATION_DATASETS = [
         ),
     ),
     ExternalValidationDataset(
+        datasetId="worker_biocidal_professional_cleaning_2023",
+        domain="inhalation_well_mixed_spray",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable="professional surface disinfection air concentration and daily mass",
+        targetMetrics=[
+            "control_adjusted_average_air_concentration_mg_per_m3",
+            "adjusted_inhaled_mass_mg_per_day",
+        ],
+        applicableTierClaims=[TierLevel.TIER_2],
+        productFamilies=["disinfectant"],
+        referenceTitle="ART 1.5 Calibration Set - Professional Cleaning",
+        referenceLocator="https://www.advancedreachtool.com/",
+        note=(
+            "Professional surface-disinfection data derived from ART 1.5 calibration training "
+            "sets for professional janitorial trigger-spraying with localized-behavior controls."
+        ),
+    ),
+    ExternalValidationDataset(
         datasetId="worker_biocidal_spray_foam_inhalation_2023",
         domain="worker_inhalation_control_aware_screening",
         status=ExternalValidationDatasetStatus.PARTIAL,

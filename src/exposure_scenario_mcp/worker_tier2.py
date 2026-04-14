@@ -70,6 +70,12 @@ WORKER_INHALATION_HANDHELD_BENCHMARK_CASE_ID = (
 WORKER_INHALATION_HANDHELD_EXTERNAL_CHECK_ID = (
     "worker_biocidal_handheld_trigger_spray_concentration_2023"
 )
+WORKER_INHALATION_PROFESSIONAL_CLEANING_BENCHMARK_CASE_ID = (
+    "worker_inhalation_professional_surface_disinfectant_execution"
+)
+WORKER_INHALATION_PROFESSIONAL_CLEANING_EXTERNAL_CHECK_ID = (
+    "worker_biocidal_professional_cleaning_concentration_2023"
+)
 WORKER_BENCHMARK_REL_TOLERANCE = 0.05
 
 
@@ -89,6 +95,8 @@ class WorkerVentilationContext(StrEnum):
     UNKNOWN = "unknown"
     GENERAL_VENTILATION = "general_ventilation"
     ENHANCED_GENERAL_VENTILATION = "enhanced_general_ventilation"
+    PROFESSIONAL_CLEANING = "professional_cleaning"
+    SURFACE_DISINFECTION = "surface_disinfection"
     LOCAL_EXHAUST = "local_exhaust"
     ENCLOSED_PROCESS = "enclosed_process"
     OUTDOOR = "outdoor"
@@ -1329,6 +1337,36 @@ def _matches_worker_inhalation_handheld_biocidal_benchmark(
     )
 
 
+def _matches_worker_inhalation_professional_cleaning_benchmark(
+    result: WorkerInhalationTier2ExecutionResult,
+) -> bool:
+    profile = result.product_use_profile
+    overrides = result.execution_overrides
+    envelope = result.art_task_envelope
+    task_context = result.task_context
+    if profile is None or overrides is None or envelope is None or task_context is None:
+        return False
+    return (
+        profile.product_category == "disinfectant"
+        and profile.product_subtype == "professional_surface_disinfectant"
+        and profile.physical_form == "spray"
+        and profile.application_method == "trigger_spray"
+        and math.isclose(float(profile.concentration_fraction), 0.005, rel_tol=1e-9)
+        and math.isclose(float(profile.use_amount_per_event), 100.0, rel_tol=1e-9)
+        and math.isclose(float(profile.room_volume_m3 or 0.0), 300.0, rel_tol=1e-9)
+        and math.isclose(float(profile.exposure_duration_hours or 0.0), 2.0, rel_tol=1e-9)
+        and math.isclose(float(task_context.task_duration_hours or 0.0), 2.0, rel_tol=1e-9)
+        and _normalized_text(task_context.workplace_setting) == "indoor_room"
+        and envelope.control_profile == "professional_cleaning_control_profile"
+        and math.isclose(float(overrides.control_factor or 0.0), 0.45, rel_tol=1e-9)
+        and math.isclose(
+            float(overrides.respiratory_protection_factor or 0.0),
+            1.0,
+            rel_tol=1e-9,
+        )
+    )
+
+
 def _append_worker_inhalation_benchmark_checks(
     result: WorkerInhalationTier2ExecutionResult,
     *,
@@ -1499,6 +1537,47 @@ def _build_worker_inhalation_validation_summary(
             )
             evidence_readiness = ValidationEvidenceReadiness.EXTERNAL_PARTIAL
 
+    if _matches_worker_inhalation_professional_cleaning_benchmark(result):
+        benchmark_case_ids.append(WORKER_INHALATION_PROFESSIONAL_CLEANING_BENCHMARK_CASE_ID)
+        _append_worker_inhalation_benchmark_checks(
+            result,
+            case_id=WORKER_INHALATION_PROFESSIONAL_CLEANING_BENCHMARK_CASE_ID,
+            executed_validation_checks=executed_validation_checks,
+        )
+        control_adjusted = result.route_metrics.get(
+            "controlAdjustedAverageAirConcentrationMgPerM3"
+        )
+        if isinstance(control_adjusted, int | float):
+            reference_band = ValidationReferenceBandRegistry.load().band_for_check(
+                WORKER_INHALATION_PROFESSIONAL_CLEANING_EXTERNAL_CHECK_ID
+            )
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= float(control_adjusted)
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            executed_validation_checks.append(
+                ExecutedValidationCheck(
+                    checkId=WORKER_INHALATION_PROFESSIONAL_CLEANING_EXTERNAL_CHECK_ID,
+                    title="Professional surface disinfectant concentration vs ART 1.5 calibration",
+                    referenceDatasetId="worker_biocidal_professional_cleaning_2023",
+                    status=status,
+                    comparedMetric="control_adjusted_average_air_concentration_mg_per_m3",
+                    observedValue=round(float(control_adjusted), 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed control-adjusted breathing-zone concentration is compared "
+                        "against the ART 1.5 calibration training-set band for professional "
+                        "janitorial trigger-spraying."
+                    ),
+                )
+            )
+            evidence_readiness = ValidationEvidenceReadiness.EXTERNAL_PARTIAL
+
     if not benchmark_case_ids:
         benchmark_case_ids = [WORKER_INHALATION_BENCHMARK_CASE_ID]
 
@@ -1529,8 +1608,8 @@ def _build_worker_inhalation_validation_summary(
                 "task family matches disinfectant or pest-control trigger spraying."
             ),
             (
-                "A narrow executable external concentration check is available for a "
-                "study-like small-scale handheld BAC trigger-spray benchmark."
+                "Executable external concentration checks are available for small-scale handheld "
+                "biocidal spray and professional surface cleaning benchmarks."
             ),
             (
                 "Executable checks run only when the task matches one of the governed worker "
@@ -1757,6 +1836,24 @@ def _art_control_profile(
         base = "local_exhaust_control_profile"
     elif task_context.ventilation_context == WorkerVentilationContext.OUTDOOR:
         base = "outdoor_dilution_control_profile"
+    elif (
+        task_context.ventilation_context == WorkerVentilationContext.PROFESSIONAL_CLEANING
+        or any(
+            token in control
+            for control in controls
+            for token in ("professional_cleaning", "janitorial")
+        )
+    ):
+        base = "professional_cleaning_control_profile"
+    elif (
+        task_context.ventilation_context == WorkerVentilationContext.SURFACE_DISINFECTION
+        or any(
+            token in control
+            for control in controls
+            for token in ("surface_disinfection", "sanitizing")
+        )
+    ):
+        base = "surface_disinfection_control_profile"
     elif task_context.ventilation_context == WorkerVentilationContext.ENHANCED_GENERAL_VENTILATION:
         base = "enhanced_general_ventilation_control_profile"
     elif task_context.ventilation_context == WorkerVentilationContext.GENERAL_VENTILATION:

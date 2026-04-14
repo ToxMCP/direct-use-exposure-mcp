@@ -1677,7 +1677,7 @@
           "body_weight_kg": 80.0,
           "region": "EU"
         },
-        "supporting_assumption_count": 11
+        "supporting_assumption_count": 12
       }
     },
     {
@@ -1982,6 +1982,75 @@
           "baselineAverageAirConcentrationMgPerM3": 0.02278436,
           "controlAdjustedAverageAirConcentrationMgPerM3": 0.02278436,
           "adjustedInhaledMassMgPerDay": 0.0501256
+        }
+      }
+    },
+    {
+      "id": "worker_inhalation_professional_surface_disinfectant_execution",
+      "kind": "worker_inhalation_execution",
+      "description": "Professional surface-disinfection trigger spray worker case aligned to ART 1.5 calibration training sets.",
+      "bridge_request": {
+        "schema_version": "exportWorkerInhalationTier2BridgeRequest.v1",
+        "baseRequest": {
+          "schema_version": "inhalationTier1ScenarioRequest.v1",
+          "chemical_id": "DTXSID7020182",
+          "chemical_name": "Example Disinfectant",
+          "route": "inhalation",
+          "scenario_class": "inhalation",
+          "product_use_profile": {
+            "schema_version": "productUseProfile.v1",
+            "product_name": "Professional Disinfectant Spray",
+            "product_subtype": "professional_surface_disinfectant",
+            "product_category": "disinfectant",
+            "physical_form": "spray",
+            "application_method": "trigger_spray",
+            "retention_type": "surface_contact",
+            "concentration_fraction": 0.005,
+            "use_amount_per_event": 100.0,
+            "use_amount_unit": "g",
+            "use_events_per_day": 1.0,
+            "room_volume_m3": 300.0,
+            "air_exchange_rate_per_hour": 2.0,
+            "exposure_duration_hours": 2.0
+          },
+          "population_profile": {
+            "schema_version": "populationProfile.v1",
+            "population_group": "adult",
+            "body_weight_kg": 75.0,
+            "inhalation_rate_m3_per_hour": 1.1,
+            "region": "EU"
+          },
+          "requestedTier": "tier_1",
+          "source_distance_m": 1.0,
+          "spray_duration_seconds": 60.0,
+          "near_field_volume_m3": 50.0,
+          "airflow_directionality": "cross_draft",
+          "particle_size_regime": "coarse_spray"
+        },
+        "targetModelFamily": "art",
+        "taskDescription": "Professional surface disinfection spray task in an indoor room",
+        "workplaceSetting": "indoor room",
+        "taskDurationHours": 2.0,
+        "ventilationContext": "general_ventilation",
+        "localControls": [
+          "professional cleaning control profile"
+        ],
+        "respiratoryProtection": "none",
+        "emissionDescriptor": "professional trigger spray for large-surface disinfection",
+        "contextOfUse": "worker-tier2-bridge"
+      },
+      "execution_overrides": {
+        "controlFactor": 0.45,
+        "respiratoryProtectionFactor": 1.0
+      },
+      "context_of_use": "worker-art-execution",
+      "expected": {
+        "baseline_dose_value": 0.00217559,
+        "external_dose_value": 0.00097902,
+        "route_metrics": {
+          "baselineAverageAirConcentrationMgPerM3": 0.07416785,
+          "controlAdjustedAverageAirConcentrationMgPerM3": 0.03337553,
+          "adjustedInhaledMassMgPerDay": 0.07342617
         }
       }
     },
