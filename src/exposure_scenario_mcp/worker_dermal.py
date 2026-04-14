@@ -1352,6 +1352,34 @@ def _bridge_provenance(
     )
 
 
+def _calculate_potts_guy_kp(log_kow: float, molecular_weight: float) -> float:
+    """Calculate the permeability coefficient Kp (cm/h) using the Potts-Guy equation.
+    
+    log Kp = -2.72 + 0.71 * logKow - 0.0061 * MW
+    """
+    log_kp = -2.72 + (0.71 * log_kow) - (0.0061 * molecular_weight)
+    return math.pow(10, log_kp)
+
+
+def _calculate_permeation_limited_mass(
+    *,
+    kp_cm_h: float,
+    concentration_fraction: float,
+    density_g_ml: float,
+    area_cm2: float,
+    duration_h: float,
+) -> float:
+    """Calculate the maximum mass (mg) that can permeate over a given duration.
+    
+    Cv (mg/cm3) = density (g/mL) * 1000 * concentration_fraction
+    Flux J (mg/cm2/h) = Kp * Cv
+    Mass (mg) = J * Area * Duration
+    """
+    cv_mg_cm3 = density_g_ml * 1000.0 * concentration_fraction
+    flux_j_mg_cm2_h = kp_cm_h * cv_mg_cm3
+    return flux_j_mg_cm2_h * area_cm2 * duration_h
+
+
 def _adapter_ingest_provenance(
     registry: DefaultsRegistry,
     *,
@@ -1585,6 +1613,31 @@ def build_worker_dermal_absorbed_dose_bridge(
     )
 
     use_amount_unit = _product_amount_unit(base_request.product_use_profile.use_amount_unit)
+    density_g_per_ml = base_request.product_use_profile.density_g_per_ml
+    if density_g_per_ml is None:
+        density_g_per_ml, _ = registry.default_density_g_per_ml(
+            base_request.product_use_profile.product_category,
+            base_request.product_use_profile.physical_form,
+            base_request.product_use_profile.product_subtype,
+        )
+
+    retention_factor = base_request.product_use_profile.retention_factor
+    if retention_factor is None:
+        retention_factor, _ = registry.retention_factor(
+            base_request.product_use_profile.retention_type,
+            base_request.product_use_profile.product_category,
+        )
+
+    transfer_efficiency = base_request.product_use_profile.transfer_efficiency
+    if transfer_efficiency is None:
+        transfer_method = _normalized_transfer_application_method(
+            base_request.product_use_profile.application_method
+        )
+        transfer_efficiency, _ = registry.transfer_efficiency(
+            transfer_method,
+            base_request.product_use_profile.product_category,
+        )
+
     exposure_inputs: dict[str, ScalarValue | dict | list] = {
         "applicationMethod": base_request.product_use_profile.application_method,
         "physicalForm": base_request.product_use_profile.physical_form,
@@ -1600,9 +1653,9 @@ def build_worker_dermal_absorbed_dose_bridge(
         "useEventsPerDay": base_request.product_use_profile.use_events_per_day,
         "eventDurationHours": base_request.product_use_profile.exposure_duration_hours,
         "retentionType": base_request.product_use_profile.retention_type,
-        "retentionFactor": base_request.product_use_profile.retention_factor,
-        "transferEfficiency": base_request.product_use_profile.transfer_efficiency,
-        "densityGPerMl": base_request.product_use_profile.density_g_per_ml,
+        "retentionFactor": retention_factor,
+        "transferEfficiency": transfer_efficiency,
+        "densityGPerMl": density_g_per_ml,
         "bodyWeightKg": base_request.population_profile.body_weight_kg,
         "exposedSurfaceAreaCm2": base_request.population_profile.exposed_surface_area_cm2,
         "region": base_request.population_profile.region,
@@ -1836,6 +1889,7 @@ def ingest_worker_dermal_absorbed_dose_task(
         "skinCondition": params.task_context.skin_condition.value,
         "transferEfficiency": params.exposure_inputs.get("transferEfficiency"),
         "retentionFactor": params.exposure_inputs.get("retentionFactor"),
+        "densityGPerMl": params.exposure_inputs.get("densityGPerMl"),
         "exposedSurfaceAreaCm2": params.exposure_inputs.get("exposedSurfaceAreaCm2"),
         "bodyWeightKg": params.exposure_inputs.get("bodyWeightKg"),
         "region": params.exposure_inputs.get("region"),
@@ -2067,6 +2121,54 @@ def execute_worker_dermal_absorbed_dose_task(
 
     explicit_external_mass = None if overrides is None else overrides.external_skin_mass_mg_per_day
     external_mass_mg_day: float | None = None
+    concentration_fraction = _float_or_none(dermal_inputs.get("concentrationFraction"))
+    density_g_per_ml = _float_or_none(dermal_inputs.get("densityGPerMl"))
+    application_method = str(dermal_inputs.get("applicationMethod") or "")
+    product_category = str(dermal_inputs.get("productCategory") or "")
+    product_subtype = (
+        str(dermal_inputs.get("productSubtype"))
+        if dermal_inputs.get("productSubtype")
+        else None
+    )
+    physical_form = str(dermal_inputs.get("physicalForm") or "")
+
+    density_defaulted = False
+    if density_g_per_ml is None:
+        density_defaulted = True
+        density_g_per_ml, density_source = registry.default_density_g_per_ml(
+            product_category or None,
+            physical_form or None,
+            product_subtype,
+        )
+        assumptions.append(
+            _assumption_record(
+                name="density_g_per_ml",
+                value=density_g_per_ml,
+                unit="g/mL",
+                source_kind=SourceKind.DEFAULT_REGISTRY,
+                source=density_source,
+                rationale=(
+                    "Density defaulted from the shared registry to support volumetric "
+                    "conversions or mechanistic permeation refinements."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
+    else:
+        assumptions.append(
+            _assumption_record(
+                name="density_g_per_ml",
+                value=density_g_per_ml,
+                unit="g/mL",
+                source_kind=SourceKind.USER_INPUT,
+                source=_execution_algorithm_source(),
+                rationale=(
+                    "Density was carried through the dermal adapter request."
+                ),
+                applicability_domain=applicability_domain,
+            )
+        )
+
     pressurized_aerosol_volume_factor = 1.0
     pressurized_aerosol_physchem_factor = 1.0
     pressurized_aerosol_physchem_label = "generic"
@@ -2102,17 +2204,7 @@ def execute_worker_dermal_absorbed_dose_task(
         )
     else:
         use_amount_per_event = _float_or_none(dermal_inputs.get("useAmountPerEvent"))
-        concentration_fraction = _float_or_none(dermal_inputs.get("concentrationFraction"))
         use_events_per_day = _float_or_none(dermal_inputs.get("useEventsPerDay")) or 1.0
-        density_g_per_ml = _float_or_none(dermal_inputs.get("densityGPerMl"))
-        application_method = str(dermal_inputs.get("applicationMethod") or "")
-        product_category = str(dermal_inputs.get("productCategory") or "")
-        product_subtype = (
-            str(dermal_inputs.get("productSubtype"))
-            if dermal_inputs.get("productSubtype")
-            else None
-        )
-        physical_form = str(dermal_inputs.get("physicalForm") or "")
         use_amount_unit = _product_amount_unit(dermal_inputs.get("useAmountUnit"))
 
         product_mass_g_event: float | None = None
@@ -2132,53 +2224,7 @@ def execute_worker_dermal_absorbed_dose_task(
                 )
             )
         elif use_amount_per_event is not None and use_amount_unit == ProductAmountUnit.ML:
-            density_defaulted = density_g_per_ml is None
-            if density_g_per_ml is None:
-                density_g_per_ml, density_source = registry.default_density_g_per_ml(
-                    product_category or None,
-                    physical_form or None,
-                    product_subtype,
-                )
-                assumptions.append(
-                    _assumption_record(
-                        name="density_g_per_ml",
-                        value=density_g_per_ml,
-                        unit="g/mL",
-                        source_kind=SourceKind.DEFAULT_REGISTRY,
-                        source=density_source,
-                        rationale=(
-                            "Density defaulted because the worker dermal execution request "
-                            "provided a volumetric use amount without explicit density."
-                        ),
-                        applicability_domain=applicability_domain,
-                    )
-                )
-                quality_flags.append(
-                    QualityFlag(
-                        code="worker_dermal_execution_density_defaulted",
-                        severity=Severity.WARNING,
-                        message=(
-                            "Worker dermal execution defaulted density_g_per_ml from the "
-                            "shared defaults registry."
-                        ),
-                    )
-                )
-            else:
-                assumptions.append(
-                    _assumption_record(
-                        name="density_g_per_ml",
-                        value=density_g_per_ml,
-                        unit="g/mL",
-                        source_kind=SourceKind.USER_INPUT,
-                        source=_execution_algorithm_source(),
-                        rationale=(
-                            "Density was carried through the dermal adapter request for "
-                            "volumetric product-mass conversion."
-                        ),
-                        applicability_domain=applicability_domain,
-                    )
-                )
-            if density_defaulted and application_method == "aerosol_spray":
+            if application_method == "aerosol_spray":
                 (
                     pressurized_aerosol_volume_factor,
                     aerosol_source,
@@ -2215,7 +2261,7 @@ def execute_worker_dermal_absorbed_dose_task(
                             rationale=(
                                 "Worker dermal aerosol mass semantics were further adjusted "
                                 "with a bounded volatility and low-molecular-weight "
-                                "heuristic because default density and supplied physchem "
+                                "heuristic because pressurized aerosol and supplied physchem "
                                 "context were both active."
                             ),
                             applicability_domain=applicability_domain,
@@ -2258,8 +2304,8 @@ def execute_worker_dermal_absorbed_dose_task(
                             source=aerosol_carrier_source,
                             rationale=(
                                 "Worker dermal aerosol mass semantics were further adjusted "
-                                "with a bounded carrier-family heuristic because default "
-                                "density and explicit aerosol carrier context were both "
+                                "with a bounded carrier-family heuristic because pressurized "
+                                "aerosol and explicit aerosol carrier context were both "
                                 "active."
                             ),
                             applicability_domain=applicability_domain,
@@ -2306,9 +2352,9 @@ def execute_worker_dermal_absorbed_dose_task(
                             source=aerosol_formulation_source,
                             rationale=(
                                 "Worker dermal aerosol mass semantics were further adjusted "
-                                "with a bounded formulation-profile heuristic because default "
-                                "density and explicit aerosol formulation context were both "
-                                "active."
+                                "with a bounded formulation-profile heuristic because "
+                                "pressurized aerosol and explicit aerosol formulation "
+                                "context were both active."
                             ),
                             applicability_domain=applicability_domain,
                         )
@@ -2341,7 +2387,7 @@ def execute_worker_dermal_absorbed_dose_task(
                         rationale=(
                             "Volumetric aerosol-spray amount was bounded with a "
                             "pressurized-aerosol interpretation factor because the worker "
-                            "dermal execution request relied on default density."
+                            "dermal execution request used a volumetric pressurized spray form."
                         ),
                         applicability_domain=applicability_domain,
                     )
@@ -2356,8 +2402,7 @@ def execute_worker_dermal_absorbed_dose_task(
                             severity=Severity.WARNING,
                             message=(
                                 "Worker dermal execution reduced volumetric aerosol mass with "
-                                "a bounded pressurized-aerosol interpretation factor because "
-                                "density was defaulted."
+                                "a bounded pressurized-aerosol interpretation factor."
                             ),
                         )
                     )
@@ -3284,6 +3329,46 @@ def execute_worker_dermal_absorbed_dose_task(
     if external_mass_mg_day is not None:
         protected_external_mass_mg_day = retained_external_mass_mg_day * ppe_penetration_factor
         absorbed_mass_mg_day = protected_external_mass_mg_day * dermal_absorption_fraction
+
+        # Mechanistic Permeation Refinement (Potts-Guy)
+        permeation_limited_mass = None
+        kp_cm_h = None
+        if (
+            chemical_context is not None
+            and chemical_context.log_kow is not None
+            and chemical_context.molecular_weight_g_per_mol is not None
+            and concentration_fraction is not None
+            and density_g_per_ml is not None
+        ):
+            kp_cm_h = _calculate_potts_guy_kp(
+                chemical_context.log_kow,
+                chemical_context.molecular_weight_g_per_mol,
+            )
+            permeation_limited_mass = _calculate_permeation_limited_mass(
+                kp_cm_h=kp_cm_h,
+                concentration_fraction=concentration_fraction,
+                density_g_ml=density_g_per_ml,
+                area_cm2=body_zone_area_cm2,
+                duration_h=task_context.contact_duration_hours or 1.0,
+            )
+            # Apply the constraint: we cannot absorb more than the protected mass on skin
+            # AND we cannot permeate more than the mechanistic limit
+            fraction_based_absorbed = absorbed_mass_mg_day
+            absorbed_mass_mg_day = min(absorbed_mass_mg_day, permeation_limited_mass)
+
+            if absorbed_mass_mg_day < fraction_based_absorbed:
+                quality_flags.append(
+                    QualityFlag(
+                        code="worker_dermal_permeation_limit_active",
+                        severity=Severity.INFO,
+                        message=(
+                            "The absorbed dose was constrained by the mechanistic Potts-Guy "
+                            "permeation limit because it was lower than the factor-based "
+                            "absorption estimate."
+                        ),
+                    )
+                )
+
         assumptions.append(
             _assumption_record(
                 name="protected_external_skin_mass_mg_per_day",
@@ -3298,6 +3383,26 @@ def execute_worker_dermal_absorbed_dose_task(
                 applicability_domain=applicability_domain,
             )
         )
+        if permeation_limited_mass is not None:
+            assumptions.append(
+                _assumption_record(
+                    name="permeation_limited_absorbed_mass_mg_day",
+                    value=round(permeation_limited_mass, 8),
+                    unit="mg/day",
+                    source_kind=SourceKind.DERIVED,
+                    source=_execution_algorithm_source(),
+                    rationale=(
+                        "Mechanistic Potts-Guy permeation limit calculated from logKow and "
+                        "molecular weight."
+                    ),
+                    applicability_domain=applicability_domain,
+                )
+            )
+            route_metrics["pottsGuyKpCmPerHour"] = round(kp_cm_h, 10)
+            route_metrics["permeationLimitedAbsorbedMassMgDay"] = round(
+                permeation_limited_mass, 8
+            )
+
         assumptions.append(
             _assumption_record(
                 name="absorbed_mass_mg_per_day",
@@ -3307,7 +3412,9 @@ def execute_worker_dermal_absorbed_dose_task(
                 source=_execution_algorithm_source(),
                 rationale=(
                     "Absorbed dermal mass per day was derived by applying the effective dermal "
-                    "absorption fraction to the PPE-adjusted skin-boundary mass."
+                    "absorption fraction to the PPE-adjusted skin-boundary mass, further "
+                    "constrained by the mechanistic permeation limit if chemical properties "
+                    "were available."
                 ),
                 applicability_domain=applicability_domain,
             )
