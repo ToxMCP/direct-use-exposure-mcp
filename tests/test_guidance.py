@@ -28,7 +28,6 @@ from exposure_scenario_mcp.guidance import (
     release_trust_checklist_guide,
     repository_slug_decision_guide,
     service_selection_guide,
-    test_evidence_summary_guide as build_test_evidence_summary_guide,
     tier1_inhalation_parameter_guide,
     toxmcp_suite_index_guide,
     uncertainty_framework,
@@ -46,6 +45,9 @@ from exposure_scenario_mcp.guidance import (
     worker_dermal_execution_guide,
     worker_routing_guide,
     worker_tier2_bridge_guide,
+)
+from exposure_scenario_mcp.guidance import (
+    test_evidence_summary_guide as build_test_evidence_summary_guide,
 )
 
 
