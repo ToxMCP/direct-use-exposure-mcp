@@ -319,6 +319,7 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "toxclaw_refinement_bundle" in manifest["examples"]
     assert {
         "docs://operator-guide",
+        "docs://deployment-hardening-guide",
         "docs://provenance-policy",
         "docs://result-status-semantics",
         "docs://archetype-library-guide",
@@ -359,9 +360,11 @@ def test_contract_manifest_and_server_boot() -> None:
         "scenario-probability://manifest",
         "benchmarks://goldset",
         "docs://release-readiness",
+        "docs://release-trust-checklist",
         "docs://release-notes",
         "docs://conformance-report",
         "docs://security-provenance-review",
+        "docs://test-evidence-summary",
         "validation://manifest",
         "validation://dossier-report",
         "validation://coverage-report",
@@ -728,9 +731,12 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert artifact["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
     assert {"wheel", "sdist"} == {item["kind"] for item in artifact["distributionArtifacts"]}
     assert "docs://release-notes" in artifact["publishedDocs"]
+    assert "docs://release-trust-checklist" in artifact["publishedDocs"]
+    assert "docs://deployment-hardening-guide" in artifact["publishedDocs"]
     assert "docs://goldset-benchmark-guide" in artifact["publishedDocs"]
     assert "docs://capability-maturity-matrix" in artifact["publishedDocs"]
     assert "docs://red-team-review-memo" in artifact["publishedDocs"]
+    assert "docs://test-evidence-summary" in artifact["publishedDocs"]
     for item in artifact["distributionArtifacts"]:
         if item["present"]:
             assert item["sha256"] is not None
@@ -767,3 +773,6 @@ def test_verification_summary_report_matches_schema_and_surface() -> None:
     assert "suite-boundary-guides-published" in check_ids
     assert "verification://summary" in report["publishedResources"]
     assert "docs://verification-summary" in report["publishedResources"]
+    assert "docs://release-trust-checklist" in report["publishedResources"]
+    assert "docs://deployment-hardening-guide" in report["publishedResources"]
+    assert "docs://test-evidence-summary" in report["publishedResources"]

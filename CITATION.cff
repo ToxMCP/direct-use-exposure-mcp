@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: "Direct-Use Exposure MCP"
+message: "If you use this software, please cite the repository and tagged release."
+type: software
+authors:
+  - family-names: "Djidrovski"
+    given-names: "Ivo"
+repository-code: "https://github.com/ToxMCP/direct-use-exposure-mcp"
+url: "https://github.com/ToxMCP/direct-use-exposure-mcp"
+license: "Apache-2.0"
+version: "0.1.0"
+date-released: "2026-04-14"
+abstract: >-
+  Direct-Use Exposure MCP is a deterministic direct-use and near-field external
+  exposure construction server for the ToxMCP suite. It publishes governed
+  contracts, defaults, validation assets, provenance, and PBPK-ready handoff
+  objects for auditable external-dose scenario building.

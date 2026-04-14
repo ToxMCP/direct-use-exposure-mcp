@@ -218,6 +218,113 @@ uv run check-exposure-release-artifacts
 """
 
 
+def release_trust_checklist_guide() -> str:
+    return """# Release Trust Checklist
+
+Use this checklist before treating the current public build as ready for broad external use.
+
+## Required posture
+
+- Keep the release label at `ready_with_known_limitations`.
+- Keep worker extension layers described as bounded expert features, not mature solver replacements.
+- Keep heuristic defaults and partial validation families visible through warnings
+  and validation gaps.
+
+## Required trust resources
+
+- `contracts://manifest`
+- `release://metadata-report`
+- `release://readiness-report`
+- `release://security-provenance-review-report`
+- `verification://summary`
+- `validation://coverage-report`
+- `defaults://curation-report`
+
+## Required release commands
+
+```bash
+uv run ruff check .
+uv run pytest
+uv build
+uv run generate-exposure-contracts
+uv run check-exposure-release-artifacts
+```
+
+## Human sign-off questions
+
+- Which branches are benchmarked versus only context-anchored?
+- Which defaults remain heuristic?
+- Are remote deployment controls handled outside the MCP?
+- Are any downstream clients hiding warning-level trust findings?
+"""
+
+
+def deployment_hardening_guide() -> str:
+    return """# Deployment Hardening Guide
+
+Use `stdio` by default. Treat `streamable-http` as an externally hardened deployment mode.
+
+## Minimum controls
+
+- authentication in front of the MCP service
+- TLS termination
+- explicit origin allow-list
+- rate limiting
+- request logging and audit retention
+- network scoping so the service is not broadly exposed by default
+
+## Operator guidance
+
+- Bind to `127.0.0.1` for local development whenever possible.
+- Do not expose unauthenticated public endpoints.
+- Re-run release verification after transport or deployment changes.
+- Keep warning-level security and provenance findings visible to downstream users.
+
+## Boundary note
+
+This MCP does not provide built-in identity management or gateway policy enforcement.
+Those controls belong to the deployment environment, not the deterministic exposure engine.
+"""
+
+
+def test_evidence_summary_guide() -> str:
+    return """# Test Evidence Summary
+
+This repository uses command-level release gates plus typed contract validation.
+
+## Standard gates
+
+```bash
+uv run ruff check .
+uv run pytest
+uv run generate-exposure-contracts
+```
+
+## Release gates
+
+```bash
+uv run ruff check .
+uv run pytest
+uv build
+uv run generate-exposure-contracts
+uv run check-exposure-release-artifacts
+```
+
+## Published trust evidence
+
+- Contract assets are generated and schema-validated.
+- Release metadata is checked against built artifacts.
+- Validation coverage, executable reference bands, time-series packs, and goldset
+  mappings are published.
+- Wheel smoke testing checks the installed distribution against current packaged manifests.
+
+## Interpretation note
+
+This is strong software-release evidence. It is not, by itself, proof that every route family
+has the same empirical validation maturity.
+"""
+
+
 def exposure_platform_architecture_guide() -> str:
     return """# Exposure Platform Architecture
 

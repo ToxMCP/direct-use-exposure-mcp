@@ -261,6 +261,7 @@ The detailed maturity matrix is in
 - `docs://defaults-evidence-map`
 - `docs://defaults-curation-report`
 - `docs://operator-guide`
+- `docs://deployment-hardening-guide`
 - `docs://provenance-policy`
 - `docs://result-status-semantics`
 - `docs://uncertainty-framework`
@@ -293,7 +294,9 @@ The detailed maturity matrix is in
 - `docs://release-notes`
 - `docs://conformance-report`
 - `docs://release-readiness`
+- `docs://release-trust-checklist`
 - `docs://security-provenance-review`
+- `docs://test-evidence-summary`
 - `release://metadata-report`
 - `release://readiness-report`
 - `release://security-provenance-review-report`
@@ -333,10 +336,10 @@ uv run exposure-scenario-mcp --transport streamable-http --host 127.0.0.1 --port
 Current published surface from `docs/contracts/contract_manifest.json`:
 
 - `35` tools
-- `61` resources
+- `65` resources
 - `2` prompts
 - `151` schemas
-- `86` examples
+- `91` examples
 
 Legacy `Exposure_Scenario_MCP_tasks.*` planning artifacts at the repo root are now archived
 status notes, not the live implementation backlog.
@@ -355,9 +358,19 @@ The MCP also publishes a consolidated runtime trust surface through:
 
 - `verification://summary`
 - `docs://verification-summary`
+- `docs://release-trust-checklist`
+- `docs://deployment-hardening-guide`
+- `docs://test-evidence-summary`
 - `docs://herbal-medicinal-routing-guide`
 
 Current published package version: `0.1.0`
+
+Repository-facing release docs:
+
+- [CITATION.cff](./CITATION.cff)
+- [docs/release_trust_checklist.md](./docs/release_trust_checklist.md)
+- [docs/deployment_hardening.md](./docs/deployment_hardening.md)
+- [docs/test_evidence_summary.md](./docs/test_evidence_summary.md)
 
 ## Repository layout
 

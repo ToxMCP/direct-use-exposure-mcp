@@ -273,6 +273,10 @@
       "description": "Operator guide for validation, transports, and interpretation boundaries."
     },
     {
+      "uri": "docs://deployment-hardening-guide",
+      "description": "Guide to hardening remote streamable-http deployments with external auth, TLS, origin controls, and logging."
+    },
+    {
       "uri": "docs://provenance-policy",
       "description": "Provenance and assumption-emission policy for auditability."
     },
@@ -401,6 +405,10 @@
       "description": "Release-readiness guidance derived from the current contract surface."
     },
     {
+      "uri": "docs://release-trust-checklist",
+      "description": "Human-readable checklist for public-release trust posture, sign-off, and required trust artifacts."
+    },
+    {
       "uri": "docs://release-notes",
       "description": "Release notes and migration notes for the current published candidate."
     },
@@ -411,6 +419,10 @@
     {
       "uri": "docs://security-provenance-review",
       "description": "Human-readable security and provenance review derived from the current tool, resource, and defaults surface."
+    },
+    {
+      "uri": "docs://test-evidence-summary",
+      "description": "Human-readable summary of test gates, wheel smoke checks, and release artifact verification evidence."
     },
     {
       "uri": "benchmarks://manifest",

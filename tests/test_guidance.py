@@ -14,6 +14,7 @@ from exposure_scenario_mcp.guidance import (
     conformance_report_markdown,
     cross_mcp_contract_guide,
     defaults_curation_report_markdown,
+    deployment_hardening_guide,
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
     herbal_medicinal_routing_guide,
@@ -24,8 +25,10 @@ from exposure_scenario_mcp.guidance import (
     red_team_review_memo_guide,
     release_notes_markdown,
     release_readiness_markdown,
+    release_trust_checklist_guide,
     repository_slug_decision_guide,
     service_selection_guide,
+    test_evidence_summary_guide as build_test_evidence_summary_guide,
     tier1_inhalation_parameter_guide,
     toxmcp_suite_index_guide,
     uncertainty_framework,
@@ -89,6 +92,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     validation_bands = validation_reference_bands_guide()
     validation_time_series = validation_time_series_packs_guide()
     verification_summary = verification_summary_guide()
+    release_trust = release_trust_checklist_guide()
+    deployment_hardening = deployment_hardening_guide()
+    test_evidence = build_test_evidence_summary_guide()
     capability_matrix = capability_maturity_matrix_guide()
     slug_decision = repository_slug_decision_guide()
     red_team_review = red_team_review_memo_guide()
@@ -191,6 +197,12 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`diazinon_residual_air_reentry_48h_concentration_1990`" in validation_time_series
     assert "Verification Summary" in verification_summary
     assert "verification://summary" in verification_summary
+    assert "Release Trust Checklist" in release_trust
+    assert "ready_with_known_limitations" in release_trust
+    assert "Deployment Hardening Guide" in deployment_hardening
+    assert "streamable-http" in deployment_hardening
+    assert "Test Evidence Summary" in test_evidence
+    assert "uv run check-exposure-release-artifacts" in test_evidence
     assert "contract-surface-alignment" in verification_summary
     assert "validation-resource-publication" in verification_summary
     assert "release://metadata-report" in verification_summary

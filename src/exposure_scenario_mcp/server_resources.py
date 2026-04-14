@@ -28,6 +28,7 @@ from exposure_scenario_mcp.guidance import (
     conformance_report_markdown,
     cross_mcp_contract_guide,
     defaults_curation_report_markdown,
+    deployment_hardening_guide,
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
     herbal_medicinal_routing_guide,
@@ -40,10 +41,12 @@ from exposure_scenario_mcp.guidance import (
     red_team_review_memo_guide,
     release_notes_markdown,
     release_readiness_markdown,
+    release_trust_checklist_guide,
     repository_slug_decision_guide,
     result_status_semantics,
     security_provenance_review_markdown,
     service_selection_guide,
+    test_evidence_summary_guide,
     tier1_inhalation_parameter_guide,
     toxmcp_suite_index_guide,
     troubleshooting_guide,
@@ -165,6 +168,12 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """Operator guide for transports, validation, and interpretation boundaries."""
 
         return operator_guide()
+
+    @mcp.resource("docs://deployment-hardening-guide")
+    def docs_deployment_hardening_guide() -> str:
+        """Guide to externally hardening remote streamable-http deployments."""
+
+        return deployment_hardening_guide()
 
     @mcp.resource("docs://provenance-policy")
     def docs_provenance_policy() -> str:
@@ -329,6 +338,12 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         report = build_release_readiness_report(context.defaults_registry)
         return release_readiness_markdown(report)
 
+    @mcp.resource("docs://release-trust-checklist")
+    def docs_release_trust_checklist() -> str:
+        """Human-readable checklist for public-release trust posture and sign-off."""
+
+        return release_trust_checklist_guide()
+
     @mcp.resource("docs://release-notes")
     def docs_release_notes() -> str:
         """Human-readable release notes for the current published candidate."""
@@ -351,6 +366,12 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
 
         report = build_security_provenance_review_report(context.defaults_registry)
         return security_provenance_review_markdown(report)
+
+    @mcp.resource("docs://test-evidence-summary")
+    def docs_test_evidence_summary() -> str:
+        """Human-readable summary of public test and release-gate evidence."""
+
+        return test_evidence_summary_guide()
 
     @mcp.resource("benchmarks://manifest")
     def benchmarks_manifest() -> str:

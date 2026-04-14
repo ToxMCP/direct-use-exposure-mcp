@@ -743,6 +743,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractResourceEntry(
+                uri="docs://deployment-hardening-guide",
+                description=(
+                    "Guide to hardening remote streamable-http deployments with external "
+                    "auth, TLS, origin controls, and logging."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="docs://provenance-policy",
                 description="Provenance and assumption-emission policy for auditability.",
             ),
@@ -908,6 +915,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Release-readiness guidance derived from the current contract surface.",
             ),
             ContractResourceEntry(
+                uri="docs://release-trust-checklist",
+                description=(
+                    "Human-readable checklist for public-release trust posture, sign-off, "
+                    "and required trust artifacts."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="docs://release-notes",
                 description=(
                     "Release notes and migration notes for the current published candidate."
@@ -925,6 +939,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description=(
                     "Human-readable security and provenance review derived from the current "
                     "tool, resource, and defaults surface."
+                ),
+            ),
+            ContractResourceEntry(
+                uri="docs://test-evidence-summary",
+                description=(
+                    "Human-readable summary of test gates, wheel smoke checks, and release "
+                    "artifact verification evidence."
                 ),
             ),
             ContractResourceEntry(
@@ -1416,7 +1437,10 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://release-notes",
             "docs://conformance-report",
             "docs://release-readiness",
+            "docs://release-trust-checklist",
+            "docs://deployment-hardening-guide",
             "docs://security-provenance-review",
+            "docs://test-evidence-summary",
             "docs://verification-summary",
             "docs://goldset-benchmark-guide",
             "docs://capability-maturity-matrix",
@@ -1738,6 +1762,9 @@ def build_verification_summary_report(
                 "release://security-provenance-review-report",
                 "verification://summary",
                 "docs://verification-summary",
+                "docs://release-trust-checklist",
+                "docs://deployment-hardening-guide",
+                "docs://test-evidence-summary",
             ]
         ),
         validationCommands=metadata.validation_commands,
