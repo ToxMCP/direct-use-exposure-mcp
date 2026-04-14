@@ -229,10 +229,18 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 unit="cm2",
                 rationale="Exposed surface area was supplied explicitly for route metrics.",
             )
+            product_loading_mg_cm2_event = (product_mass_g_event * 1000.0) / surface_area_cm2
+            tracker.add_derived(
+                "product_loading_mg_per_cm2_per_event",
+                product_loading_mg_cm2_event,
+                "mg/cm2/event",
+                "Product loading = product mass per event / exposed surface area.",
+            )
             route_metrics = {
                 "chemical_mass_mg_per_event": round(chemical_mass_mg_event, 8),
                 "external_mass_mg_per_day": round(external_mass_mg_day, 8),
                 "surface_loading_mg_per_cm2_day": round(external_mass_mg_day / surface_area_cm2, 8),
+                "product_loading_mg_per_cm2_per_event": round(product_loading_mg_cm2_event, 8),
             }
             if profile.application_strip_length_cm is not None:
                 route_metrics["application_strip_length_cm"] = round(

@@ -157,6 +157,12 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`cleaning_trigger_spray_airborne_fraction_2019_band`" in validation_bands
     assert "`hand_cream_application_loading_2012_band`" in validation_bands
     assert "`dietary_supplement_iron_capsule_daily_mass_2025_band`" in validation_bands
+    assert "`dietary_supplement_melatonin_gummy_daily_mass_2026_band`" in validation_bands
+    assert "`botanical_supplement_echinacea_tincture_daily_mass_2026_band`" in validation_bands
+    assert "`dietary_supplement_effervescent_vitaminc_daily_mass_2026_band`" in validation_bands
+    assert "`ema_hmpc_topical_ointment_loading_default_band`" in validation_bands
+    assert "`sccs_cosmetic_balm_loading_category_band`" in validation_bands
+    assert "`dermatology_fingertip_unit_loading_anchor_band`" in validation_bands
     assert "`capsicum_hydrogel_patch_label_amount_2025_band`" in validation_bands
     assert "`herbal_recovery_patch_label_amount_2025_band`" in validation_bands
     assert "`herbal_medicinal_valerian_infusion_daily_mass_2015_band`" in validation_bands
@@ -224,6 +230,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`ema_valerian_root_oral_posology_2015`" in coverage_report
     assert "`ec_food_supplement_capsule_context_2026`" in coverage_report
     assert "`nlm_dailymed_sideral_iron_capsule_label_2025`" in coverage_report
+    assert "`nlm_dailymed_melatonin_gummy_label_2026`" in coverage_report
+    assert "`nlm_dailymed_echinacea_tincture_label_2026`" in coverage_report
+    assert "`nlm_dailymed_vitaminc_effervescent_label_2026`" in coverage_report
     assert "`who_traditional_medicine_topical_context_2026`" in coverage_report
     assert "`ema_arnica_topical_application_geometry_2014`" in coverage_report
     assert "`nlm_dailymed_ahealon_topical_spray_label_2026`" in coverage_report

@@ -431,8 +431,8 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     assert report["policyVersion"] == "2026.03.25.v4"
     assert report["domainCount"] == 11
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
-    assert report["externalDatasetCount"] == 24
-    assert report["referenceBandCount"] == 18
+    assert report["externalDatasetCount"] == 27
+    assert report["referenceBandCount"] == 24
     assert report["timeSeriesPackCount"] == 3
     assert report["goldsetCaseCount"] == 23
     assert report["goldsetCoverageCounts"] == {
@@ -475,12 +475,18 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
         "ema_traditional_herbal_medicinal_oral_context_2026",
         "ec_food_supplement_capsule_context_2026",
         "nlm_dailymed_sideral_iron_capsule_label_2025",
+        "nlm_dailymed_melatonin_gummy_label_2026",
+        "nlm_dailymed_echinacea_tincture_label_2026",
+        "nlm_dailymed_vitaminc_effervescent_label_2026",
     } <= set(domain_summaries["oral_direct_intake"]["externalDatasetIds"])
     assert {
         "medicinal_liquid_direct_oral_delivered_mass_2025",
         "herbal_medicinal_valerian_oral_daily_mass_2015",
         "herbal_medicinal_valerian_infusion_daily_mass_2015",
         "dietary_supplement_iron_capsule_daily_mass_2025",
+        "dietary_supplement_melatonin_gummy_daily_mass_2026",
+        "botanical_supplement_echinacea_tincture_daily_mass_2026",
+        "dietary_supplement_effervescent_vitaminc_daily_mass_2026",
     } <= set(domain_summaries["oral_direct_intake"]["executableReferenceBandIds"])
     assert {
         "who_traditional_medicine_topical_context_2026",
@@ -515,8 +521,8 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
     )
 
     validate(instance=report, schema=schema)
-    assert report["referenceVersion"] == "2026.04.13.v16"
-    assert report["bandCount"] == 18
+    assert report["referenceVersion"] == "2026.04.14.v2"
+    assert report["bandCount"] == 24
     assert {item["checkId"] for item in report["bands"]} == {
         "air_space_insecticide_aerosol_concentration_2001",
         "capsicum_hydrogel_patch_label_amount_2025",
@@ -524,6 +530,9 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
         "cleaning_trigger_spray_airborne_fraction_2019",
         "consumer_disinfectant_trigger_spray_inhaled_dose_2015",
         "dietary_supplement_iron_capsule_daily_mass_2025",
+        "dietary_supplement_melatonin_gummy_daily_mass_2026",
+        "botanical_supplement_echinacea_tincture_daily_mass_2026",
+        "dietary_supplement_effervescent_vitaminc_daily_mass_2026",
         "diazinon_home_use_residual_air_concentration_2008",
         "hand_cream_application_loading_2012",
         "herbal_recovery_patch_label_amount_2025",
@@ -536,6 +545,9 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
         "worker_biocidal_handheld_trigger_spray_dermal_mass_2023",
         "worker_biocidal_handheld_trigger_spray_concentration_2023",
         "wet_cloth_contact_mass_2018",
+        "ema_hmpc_topical_ointment_loading_default",
+        "sccs_cosmetic_balm_loading_category",
+        "dermatology_fingertip_unit_loading_anchor",
     }
 
 
@@ -742,7 +754,7 @@ def test_verification_summary_report_matches_schema_and_surface() -> None:
     assert report["publicSurface"]["resourceCount"] == len(manifest["resources"])
     assert report["validationDomainCount"] == 11
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
-    assert report["referenceBandCount"] == 18
+    assert report["referenceBandCount"] == 24
     assert report["timeSeriesPackCount"] == 3
     assert report["goldsetCaseCount"] >= 1
     check_ids = {item["checkId"] for item in report["checks"]}

@@ -64,7 +64,8 @@
     "route_metrics": {
       "chemical_mass_mg_per_event": 30.0,
       "external_mass_mg_per_day": 90.0,
-      "surface_loading_mg_per_cm2_day": 0.01578947
+      "surface_loading_mg_per_cm2_day": 0.01578947,
+      "product_loading_mg_per_cm2_per_event": 0.26315789
     },
     "assumptions": [
       {
@@ -402,6 +403,41 @@
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
+        "name": "product_loading_mg_per_cm2_per_event",
+        "value": 0.2631578947368421,
+        "unit": "mg/cm2/event",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Direct-Use Exposure MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Product loading = product mass per event / exposed surface area.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "demographic_tags": "consumer,general_population",
+            "region": "EU"
+          }
+        }
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
         "name": "normalized_external_dose_mg_per_kg_day",
         "value": 1.125,
         "unit": "mg/kg-day",
@@ -719,7 +755,8 @@
     "route_metrics": {
       "chemical_mass_mg_per_event": 30.0,
       "external_mass_mg_per_day": 46.8,
-      "surface_loading_mg_per_cm2_day": 0.00821053
+      "surface_loading_mg_per_cm2_day": 0.00821053,
+      "product_loading_mg_per_cm2_per_event": 0.26315789
     },
     "assumptions": [
       {
@@ -1057,6 +1094,41 @@
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
+        "name": "product_loading_mg_per_cm2_per_event",
+        "value": 0.2631578947368421,
+        "unit": "mg/cm2/event",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Direct-Use Exposure MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Product loading = product mass per event / exposed surface area.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "demographic_tags": "consumer,general_population",
+            "region": "EU"
+          }
+        }
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
         "name": "normalized_external_dose_mg_per_kg_day",
         "value": 0.5850000000000001,
         "unit": "mg/kg-day",
@@ -1369,9 +1441,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "8776473aaa3e9e62aa0451010547ef7806845acc33771f0816a68d11eadc583f",
+    "contentHash": "53a3dc7023f9a07fc2623c5692d292054323994392011e4b7fed81d99185a5f4",
     "dataClassification": "internal",
-    "evidenceId": "evidence-62244867fa0c11de",
+    "evidenceId": "evidence-539064b53cca99bf",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1393,8 +1465,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "8776473aaa3e9e62aa0451010547ef7806845acc33771f0816a68d11eadc583f",
-    "evidenceId": "evidence-62244867fa0c11de",
+    "contentHash": "53a3dc7023f9a07fc2623c5692d292054323994392011e4b7fed81d99185a5f4",
+    "evidenceId": "evidence-539064b53cca99bf",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1422,7 +1494,7 @@
         "claimId": "claim-e1d4880e484aa82b",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-62244867fa0c11de"
+          "evidence-539064b53cca99bf"
         ],
         "text": "Baseline scenario exp-example-dermal-001 estimates 1.125 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day."
       },
@@ -1431,7 +1503,7 @@
         "claimId": "claim-f056e8490cf5cc2b",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-62244867fa0c11de"
+          "evidence-539064b53cca99bf"
         ],
         "text": "Comparison dose decreased by 48.00% relative to baseline."
       },
@@ -1440,7 +1512,7 @@
         "claimId": "claim-98be2d7dd8221ca2",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-62244867fa0c11de"
+          "evidence-539064b53cca99bf"
         ],
         "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
       },
@@ -1449,13 +1521,13 @@
         "claimId": "claim-0409d2d114518ff0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-62244867fa0c11de"
+          "evidence-539064b53cca99bf"
         ],
         "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
       }
     ],
     "evidenceIds": [
-      "evidence-62244867fa0c11de"
+      "evidence-539064b53cca99bf"
     ],
     "sectionKey": "exposure-refinement",
     "title": "Exposure Refinement Delta"

@@ -615,6 +615,60 @@ EXTERNAL_VALIDATION_DATASETS = [
         ),
     ),
     ExternalValidationDataset(
+        datasetId="nlm_dailymed_melatonin_gummy_label_2026",
+        domain="oral_direct_intake",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "official serving-size and daily active mass for a labeled oral dietary "
+            "supplement gummy regimen"
+        ),
+        targetMetrics=["chemical_mass_mg_per_event", "external_mass_mg_per_day"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["dietary_supplement"],
+        referenceTitle="DailyMed - Melatonin Gummy",
+        referenceLocator="https://dailymed.nlm.nih.gov/dailymed/",
+        note=(
+            "The typical official label states 2 gummies per day delivering 5 mg melatonin. "
+            "This is a narrow official-label anchor for product-centric supplement gummy dosing."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="nlm_dailymed_echinacea_tincture_label_2026",
+        domain="oral_direct_intake",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "official serving-size and daily active mass for a labeled oral botanical "
+            "supplement tincture"
+        ),
+        targetMetrics=["chemical_mass_mg_per_event", "external_mass_mg_per_day"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["botanical_supplement"],
+        referenceTitle="DailyMed - Echinacea Liquid Extract",
+        referenceLocator="https://dailymed.nlm.nih.gov/dailymed/",
+        note=(
+            "The typical official label states 1 mL per day delivering 250 mg extract. "
+            "This is a narrow official-label anchor for product-centric botanical liquid dosing."
+        ),
+    ),
+    ExternalValidationDataset(
+        datasetId="nlm_dailymed_vitaminc_effervescent_label_2026",
+        domain="oral_direct_intake",
+        status=ExternalValidationDatasetStatus.PARTIAL,
+        observable=(
+            "official serving-size and daily active mass for a labeled oral dietary "
+            "supplement effervescent tablet"
+        ),
+        targetMetrics=["chemical_mass_mg_per_event", "external_mass_mg_per_day"],
+        applicableTierClaims=[TierLevel.TIER_0],
+        productFamilies=["dietary_supplement"],
+        referenceTitle="DailyMed - Vitamin C Effervescent",
+        referenceLocator="https://dailymed.nlm.nih.gov/dailymed/",
+        note=(
+            "The typical official label states 1 tablet per day delivering 1000 mg Vitamin C. "
+            "This is a narrow official-label anchor for product-centric effervescent tablet dosing."
+        ),
+    ),
+    ExternalValidationDataset(
         datasetId="who_traditional_medicine_topical_context_2026",
         domain="dermal_direct_application",
         status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
@@ -1543,6 +1597,117 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
     if (
         scenario.route == Route.DERMAL
         and profile.product_category == "herbal_topical_product"
+        and profile.physical_form == "ointment"
+        and profile.application_method == "hand_application"
+        and profile.retention_type == "leave_on"
+        and profile.intended_use_family == "medicinal"
+    ):
+        observed = scenario.route_metrics.get("product_loading_mg_per_cm2_per_event")
+        if isinstance(observed, int | float):
+            reference_band = reference_registry.band_for_check(
+                "ema_hmpc_topical_ointment_loading_default"
+            )
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= float(observed)
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="ema_hmpc_topical_ointment_loading_default",
+                    title="Topical herbal ointment loading vs EMA HMPC safety default",
+                    referenceDatasetId="ema_hmpc_herbal_medicinal_safety_default_2024",
+                    status=status,
+                    comparedMetric="product_loading_mg_per_cm2_per_event",
+                    observedValue=round(float(observed), 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed product loading is compared against the standard 1-2 mg/cm2 "
+                        "EMA HMPC safety-assessment default frequently used in HMPC "
+                        "assessment reports for systemic exposure calculations."
+                    ),
+                )
+            )
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.product_category == "personal_care"
+        and profile.physical_form == "balm"
+        and profile.application_method == "hand_application"
+        and profile.retention_type == "leave_on"
+    ):
+        observed = scenario.route_metrics.get("product_loading_mg_per_cm2_per_event")
+        if isinstance(observed, int | float):
+            reference_band = reference_registry.band_for_check(
+                "sccs_cosmetic_balm_loading_category"
+            )
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= float(observed)
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="sccs_cosmetic_balm_loading_category",
+                    title="Cosmetic balm loading vs SCCS category-default anchor",
+                    referenceDatasetId="sccs_notes_of_guidance_12th_revision_2022",
+                    status=status,
+                    comparedMetric="product_loading_mg_per_cm2_per_event",
+                    observedValue=round(float(observed), 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed product loading is compared against the derived 2.5-2.7 mg/cm2 "
+                        "SCCS category-specific loading anchor for face and hand balms."
+                    ),
+                )
+            )
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.application_method == "hand_application"
+        and profile.application_coverage_context == "two_hand_prints_area"
+    ):
+        observed = scenario.route_metrics.get("product_loading_mg_per_cm2_per_event")
+        if isinstance(observed, int | float):
+            reference_band = reference_registry.band_for_check(
+                "dermatology_fingertip_unit_loading_anchor"
+            )
+            status = (
+                ValidationCheckStatus.PASS
+                if reference_band.reference_lower
+                <= float(observed)
+                <= reference_band.reference_upper
+                else ValidationCheckStatus.WARNING
+            )
+            checks.append(
+                ExecutedValidationCheck(
+                    checkId="dermatology_fingertip_unit_loading_anchor",
+                    title="Topical loading vs dermatology Fingertip Unit (FTU) anchor",
+                    referenceDatasetId="clinical_dermatology_ftu_standard_method_1991",
+                    status=status,
+                    comparedMetric="product_loading_mg_per_cm2_per_event",
+                    observedValue=round(float(observed), 8),
+                    referenceLower=reference_band.reference_lower,
+                    referenceUpper=reference_band.reference_upper,
+                    unit=reference_band.unit,
+                    note=(
+                        "Observed product loading is compared against the clinical dermatology "
+                        "Fingertip Unit (FTU) loading anchor of approximately 1.67 mg/cm2."
+                    ),
+                )
+            )
+
+    if (
+        scenario.route == Route.DERMAL
+        and profile.product_category == "herbal_topical_product"
         and profile.product_subtype == "herbal_topical_spray"
         and profile.application_method == "pump_spray"
         and profile.retention_type == "leave_on"
@@ -1836,6 +2001,114 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                     "DailyMed SIDERAL label stating one 100 mg capsule per day "
                     "delivering 30 mg elemental iron, giving a narrow 30 mg/day "
                     "product-centric supplement benchmark anchor."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.ORAL
+        and profile.product_category == "dietary_supplement"
+        and profile.product_subtype == "melatonin_gummy"
+        and profile.application_method == "direct_oral"
+    ):
+        observed = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
+        reference_band = reference_registry.band_for_check(
+            "dietary_supplement_melatonin_gummy_daily_mass_2026"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="dietary_supplement_melatonin_gummy_daily_mass_2026",
+                title="Dietary supplement gummy daily mass vs official DailyMed label",
+                referenceDatasetId="nlm_dailymed_melatonin_gummy_label_2026",
+                status=status,
+                comparedMetric="external_mass_mg_per_day",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed external_mass_mg_per_day is compared against the official "
+                    "DailyMed label stating 2 gummies per day delivering 5 mg melatonin, "
+                    "giving a narrow 5 mg/day product-centric supplement benchmark anchor."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.ORAL
+        and profile.product_category == "botanical_supplement"
+        and profile.product_subtype == "echinacea_tincture"
+        and profile.application_method == "direct_oral"
+    ):
+        observed = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
+        reference_band = reference_registry.band_for_check(
+            "botanical_supplement_echinacea_tincture_daily_mass_2026"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="botanical_supplement_echinacea_tincture_daily_mass_2026",
+                title="Botanical supplement tincture daily mass vs official DailyMed label",
+                referenceDatasetId="nlm_dailymed_echinacea_tincture_label_2026",
+                status=status,
+                comparedMetric="external_mass_mg_per_day",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed external_mass_mg_per_day is compared against the official "
+                    "DailyMed label stating 1 mL per day delivering 250 mg extract, "
+                    "giving a narrow 250 mg/day product-centric supplement benchmark anchor."
+                ),
+            )
+        )
+
+    if (
+        scenario.route == Route.ORAL
+        and profile.product_category == "dietary_supplement"
+        and profile.product_subtype == "vitamin_c_effervescent"
+        and profile.application_method == "direct_oral"
+    ):
+        observed = float(scenario.route_metrics.get("external_mass_mg_per_day", 0.0))
+        reference_band = reference_registry.band_for_check(
+            "dietary_supplement_effervescent_vitaminc_daily_mass_2026"
+        )
+        status = (
+            ValidationCheckStatus.PASS
+            if reference_band.reference_lower
+            <= observed
+            <= reference_band.reference_upper
+            else ValidationCheckStatus.WARNING
+        )
+        checks.append(
+            ExecutedValidationCheck(
+                checkId="dietary_supplement_effervescent_vitaminc_daily_mass_2026",
+                title="Dietary supplement effervescent daily mass vs official DailyMed label",
+                referenceDatasetId="nlm_dailymed_vitaminc_effervescent_label_2026",
+                status=status,
+                comparedMetric="external_mass_mg_per_day",
+                observedValue=round(observed, 8),
+                referenceLower=reference_band.reference_lower,
+                referenceUpper=reference_band.reference_upper,
+                unit=reference_band.unit,
+                note=(
+                    "Observed external_mass_mg_per_day is compared against the official "
+                    "DailyMed label stating 1 tablet per day delivering 1000 mg Vitamin C, "
+                    "giving a narrow 1000 mg/day product-centric supplement benchmark anchor."
                 ),
             )
         )

@@ -112,7 +112,8 @@
         "route_metrics": {
           "chemical_mass_mg_per_event": 30.0,
           "external_mass_mg_per_day": 90.0,
-          "surface_loading_mg_per_cm2_day": 0.01578947
+          "surface_loading_mg_per_cm2_day": 0.01578947,
+          "product_loading_mg_per_cm2_per_event": 0.26315789
         },
         "assumptions": [
           {
@@ -450,6 +451,41 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "product_loading_mg_per_cm2_per_event",
+            "value": 0.2631578947368421,
+            "unit": "mg/cm2/event",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Product loading = product mass per event / exposed surface area.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "dermal",
+                "scenario_class": "screening",
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on",
+                "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
             "value": 1.125,
             "unit": "mg/kg-day",
@@ -739,6 +775,7 @@
           "transfer_efficiency",
           "external_mass_mg_per_day",
           "exposed_surface_area_cm2",
+          "product_loading_mg_per_cm2_per_event",
           "normalized_external_dose_mg_per_kg_day"
         ],
         "provenance": {
@@ -1122,7 +1159,8 @@
         "route_metrics": {
           "chemical_mass_mg_per_event": 30.0,
           "external_mass_mg_per_day": 90.0,
-          "surface_loading_mg_per_cm2_day": 0.01578947
+          "surface_loading_mg_per_cm2_day": 0.01578947,
+          "product_loading_mg_per_cm2_per_event": 0.26315789
         },
         "assumptions": [
           {
@@ -1460,6 +1498,41 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
+            "name": "product_loading_mg_per_cm2_per_event",
+            "value": 0.2631578947368421,
+            "unit": "mg/cm2/event",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Product loading = product mass per event / exposed surface area.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "dermal",
+                "scenario_class": "screening",
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on",
+                "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
             "name": "normalized_external_dose_mg_per_kg_day",
             "value": 1.125,
             "unit": "mg/kg-day",
@@ -1749,6 +1822,7 @@
           "transfer_efficiency",
           "external_mass_mg_per_day",
           "exposed_surface_area_cm2",
+          "product_loading_mg_per_cm2_per_event",
           "normalized_external_dose_mg_per_kg_day"
         ],
         "provenance": {

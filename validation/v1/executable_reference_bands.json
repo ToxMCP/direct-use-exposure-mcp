@@ -1,11 +1,61 @@
 {
-  "reference_version": "2026.04.13.v16",
+  "reference_version": "2026.04.14.v2",
   "notes": [
     "These bands back the narrow executable validation checks exposed through validationSummary.executedValidationChecks.",
     "They are screening-oriented acceptance anchors tied to specific reviewed reference datasets, not universal calibration targets.",
     "Callers should match the applicable selectors before treating a band as fit-for-purpose."
   ],
   "bands": [
+    {
+      "reference_band_id": "ema_hmpc_topical_ointment_loading_default_band",
+      "check_id": "ema_hmpc_topical_ointment_loading_default",
+      "reference_dataset_id": "ema_hmpc_herbal_medicinal_safety_default_2024",
+      "domain": "dermal_direct_application",
+      "compared_metric": "product_loading_mg_per_cm2_per_event",
+      "reference_lower": 1.0,
+      "reference_upper": 2.0,
+      "unit": "mg/cm2/event",
+      "applicable_selectors": {
+        "product_category": "herbal_topical_product",
+        "physical_form": "ointment",
+        "application_method": "hand_application",
+        "retention_type": "leave_on",
+        "intended_use_family": "medicinal"
+      },
+      "note": "Standard EMA HMPC topical herbal-medicinal safety-assessment default loading band (1-2 mg/cm2) frequently used in HMPC assessment reports for systemic exposure and MoS calculations."
+    },
+    {
+      "reference_band_id": "sccs_cosmetic_balm_loading_category_band",
+      "check_id": "sccs_cosmetic_balm_loading_category",
+      "reference_dataset_id": "sccs_notes_of_guidance_12th_revision_2022",
+      "domain": "dermal_direct_application",
+      "compared_metric": "product_loading_mg_per_cm2_per_event",
+      "reference_lower": 2.5,
+      "reference_upper": 2.7,
+      "unit": "mg/cm2/event",
+      "applicable_selectors": {
+        "product_category": "personal_care",
+        "physical_form": "balm",
+        "application_method": "hand_application",
+        "retention_type": "leave_on"
+      },
+      "note": "Derived SCCS category-specific loading band for face and hand balms (2.5-2.7 mg/cm2) calculated from the SCCS 12th Revision Notes of Guidance daily amount and surface area defaults."
+    },
+    {
+      "reference_band_id": "dermatology_fingertip_unit_loading_anchor_band",
+      "check_id": "dermatology_fingertip_unit_loading_anchor",
+      "reference_dataset_id": "clinical_dermatology_ftu_standard_method_1991",
+      "domain": "dermal_direct_application",
+      "compared_metric": "product_loading_mg_per_cm2_per_event",
+      "reference_lower": 1.5,
+      "reference_upper": 1.8,
+      "unit": "mg/cm2/event",
+      "applicable_selectors": {
+        "application_method": "hand_application",
+        "application_coverage_context": "two_hand_prints_area"
+      },
+      "note": "Clinical dermatology Fingertip Unit (FTU) loading anchor (approx. 1.67 mg/cm2) representing 0.5 g of semi-solid product applied to an area the size of two adult hand prints (~300 cm2)."
+    },
     {
       "reference_band_id": "hand_cream_application_loading_2012_band",
       "check_id": "hand_cream_application_loading_2012",
@@ -177,6 +227,54 @@
         "application_method": "direct_oral"
       },
       "note": "Official-label supplement band derived from the DailyMed SIDERAL label stating one 100 mg capsule per day containing 30 mg elemental iron per serving."
+    },
+    {
+      "reference_band_id": "dietary_supplement_melatonin_gummy_daily_mass_2026_band",
+      "check_id": "dietary_supplement_melatonin_gummy_daily_mass_2026",
+      "reference_dataset_id": "nlm_dailymed_melatonin_gummy_label_2026",
+      "domain": "oral_direct_intake",
+      "compared_metric": "external_mass_mg_per_day",
+      "reference_lower": 5.0,
+      "reference_upper": 5.0,
+      "unit": "mg/day",
+      "applicable_selectors": {
+        "product_category": "dietary_supplement",
+        "product_subtype": "melatonin_gummy",
+        "application_method": "direct_oral"
+      },
+      "note": "Official-label supplement band derived from the DailyMed Melatonin Gummy label stating 2 gummies per day containing 5 mg melatonin per serving."
+    },
+    {
+      "reference_band_id": "botanical_supplement_echinacea_tincture_daily_mass_2026_band",
+      "check_id": "botanical_supplement_echinacea_tincture_daily_mass_2026",
+      "reference_dataset_id": "nlm_dailymed_echinacea_tincture_label_2026",
+      "domain": "oral_direct_intake",
+      "compared_metric": "external_mass_mg_per_day",
+      "reference_lower": 250.0,
+      "reference_upper": 250.0,
+      "unit": "mg/day",
+      "applicable_selectors": {
+        "product_category": "botanical_supplement",
+        "product_subtype": "echinacea_tincture",
+        "application_method": "direct_oral"
+      },
+      "note": "Official-label botanical supplement band derived from the DailyMed Echinacea liquid extract label stating 1 mL per day containing 250 mg extract."
+    },
+    {
+      "reference_band_id": "dietary_supplement_effervescent_vitaminc_daily_mass_2026_band",
+      "check_id": "dietary_supplement_effervescent_vitaminc_daily_mass_2026",
+      "reference_dataset_id": "nlm_dailymed_vitaminc_effervescent_label_2026",
+      "domain": "oral_direct_intake",
+      "compared_metric": "external_mass_mg_per_day",
+      "reference_lower": 1000.0,
+      "reference_upper": 1000.0,
+      "unit": "mg/day",
+      "applicable_selectors": {
+        "product_category": "dietary_supplement",
+        "product_subtype": "vitamin_c_effervescent",
+        "application_method": "direct_oral"
+      },
+      "note": "Official-label supplement band derived from the DailyMed Vitamin C effervescent label stating 1 tablet per day delivering 1000 mg."
     },
     {
       "reference_band_id": "air_space_insecticide_aerosol_concentration_2001_band",
