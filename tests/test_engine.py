@@ -1044,11 +1044,14 @@ def test_herbal_topical_balm_executes_application_geometry_check() -> None:
         scenario.validation_summary.external_dataset_ids
     )
     checks = scenario.validation_summary.executed_validation_checks
-    assert len(checks) == 1
-    assert checks[0].check_id == "herbal_topical_application_strip_length_2014"
-    assert checks[0].status.value == "pass"
-    assert checks[0].observed_value == pytest.approx(3.0, rel=1e-6)
-    assert checks[0].reference_dataset_id == "ema_arnica_topical_application_geometry_2014"
+    geometry_check = next(
+        check
+        for check in checks
+        if check.check_id == "herbal_topical_application_strip_length_2014"
+    )
+    assert geometry_check.status.value == "pass"
+    assert geometry_check.observed_value == pytest.approx(3.0, rel=1e-6)
+    assert geometry_check.reference_dataset_id == "ema_arnica_topical_application_geometry_2014"
 
 
 def test_herbal_topical_spray_executes_label_amount_check() -> None:

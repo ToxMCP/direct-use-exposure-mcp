@@ -596,6 +596,8 @@ across domain boundaries.
 - Start with `docs://service-selection-guide` for service ownership.
 - Use `docs://cross-mcp-contract-guide` for the shared handoff shapes.
 - Use `docs://capability-maturity-matrix` for maturity/readiness of the released surface.
+- Use `docs://red-team-review-memo` for the strongest current hostile-review arguments and
+  the repo's remaining governance gaps.
 - Use `docs://suite-integration-guide` for detailed Direct-Use Exposure MCP boundary notes.
 - Use `docs://herbal-medicinal-routing-guide` for TCM, herbal medicine, and supplement routing.
 
@@ -675,6 +677,99 @@ through the `v0.1.x` line.
   released line
 
 Static companion: `docs/adr/0004-repository-slug.md`
+"""
+
+
+def red_team_review_memo_guide() -> str:
+    return """# Red-Team Review Memo
+
+This memo captures hostile-review arguments that a skeptical toxicologist, exposure physicist,
+or regulator could use to attack Direct-Use Exposure MCP, then evaluates which criticisms are
+substantive, which are overstated, and what the repo should do next.
+
+## Summary
+
+- The strongest valid attack is systemic-risk / monoculture risk.
+- The strongest partly valid attacks are transparency-by-exhaustion, default overuse, and
+  precision-without-accuracy in heuristic aerosol branches.
+- The correct response is not less transparency. It is layered transparency and stronger
+  human-review gating for low-evidence scenarios.
+
+## Attack Matrix
+
+### Transparency by Exhaustion
+
+- Validity: partly valid
+- Current mitigation:
+  - explicit provenance
+  - assumptions
+  - limitations
+  - validation artifacts
+  - verification artifacts
+- Remaining gap:
+  human review still needs a shorter first-pass digest
+- Recommended fix:
+  publish a one-page human review summary above the full bundle
+
+### Automated Ignorance / Default Trap
+
+- Validity: valid
+- Current mitigation:
+  defaults are versioned, source-tagged, and surfaced explicitly
+- Remaining gap:
+  some default-heavy cases still look too frictionless
+- Recommended fix:
+  apply stronger fit-for-purpose downgrades and unavoidable warning language when heuristic
+  defaults dominate the run
+
+### Scientific Anachronism
+
+- Validity: partly valid
+- Current mitigation:
+  bounded branches are already framed as screening/surrogate logic, not full high-tier physics
+- Remaining gap:
+  users can still overread “mechanistic” language if break conditions are not stated plainly
+- Recommended fix:
+  identify empirical model families by name and list their main break conditions
+
+### Systemic Risk / Monoculture
+
+- Validity: strongly valid
+- Current mitigation:
+  benchmark regression, goldset linkage, defaults versioning, release metadata, and executable
+  validation checks
+- Remaining gap:
+  a common engine still needs external comparison and periodic adversarial review
+- Recommended fix:
+  treat independent comparison and red-team review as governance requirements, not optional extras
+
+### Expertise Erasure
+
+- Validity: only if the system is presented badly
+- Current mitigation:
+  the MCP does not own PBPK execution, BER, WoE, PoD, or final risk conclusions
+- Remaining gap:
+  workflow users can still misuse a structured engine operationally
+- Recommended fix:
+  keep expert-review boundaries explicit in operator-facing outputs
+
+### Aerosol Pseudoscience / Precision without Accuracy
+
+- Validity: valid
+- Current mitigation:
+  aerosol semantics are bounded, family-aware, and quality-flagged rather than hidden
+- Remaining gap:
+  some heuristic aerosol branches still look more precise than the evidence deserves
+- Recommended fix:
+  round heuristic outputs more conservatively and label them as screening-resolution
+
+## Bottom Line
+
+The right answer to hostile criticism is not to deny uncertainty. It is to show that defaults,
+model limits, benchmark posture, and human-review boundaries are already first-class, then keep
+improving the human audit surface.
+
+Static companion: `docs/red_team_review_memo.md`
 """
 
 

@@ -44,9 +44,9 @@
       "useEventsPerDay": 3.0,
       "eventDurationHours": 0.75,
       "retentionType": "surface_contact",
-      "retentionFactor": null,
-      "transferEfficiency": null,
-      "densityGPerMl": null,
+      "retentionFactor": 0.2,
+      "transferEfficiency": 0.5,
+      "densityGPerMl": 1.0,
       "bodyWeightKg": 75.0,
       "exposedSurfaceAreaCm2": 840.0,
       "region": "EU"

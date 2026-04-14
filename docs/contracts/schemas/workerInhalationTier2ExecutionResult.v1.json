@@ -1918,6 +1918,8 @@
         "unknown",
         "general_ventilation",
         "enhanced_general_ventilation",
+        "professional_cleaning",
+        "surface_disinfection",
         "local_exhaust",
         "enclosed_process",
         "outdoor"

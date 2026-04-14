@@ -21,6 +21,7 @@ from exposure_scenario_mcp.guidance import (
     inhalation_tier_upgrade_guide,
     integrated_exposure_workflow_guide,
     probability_bounds_guide,
+    red_team_review_memo_guide,
     release_notes_markdown,
     release_readiness_markdown,
     repository_slug_decision_guide,
@@ -90,6 +91,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     verification_summary = verification_summary_guide()
     capability_matrix = capability_maturity_matrix_guide()
     slug_decision = repository_slug_decision_guide()
+    red_team_review = red_team_review_memo_guide()
     cross_mcp_contracts = cross_mcp_contract_guide()
     service_selection = service_selection_guide()
     herbal_routing = herbal_medicinal_routing_guide()
@@ -292,6 +294,10 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`ToxMCP/direct-use-exposure-mcp`" in slug_decision
     assert "`v0.1.x`" in slug_decision
     assert "docs/adr/0004-repository-slug.md" in slug_decision
+    assert "Red-Team Review Memo" in red_team_review
+    assert "Systemic Risk / Monoculture" in red_team_review
+    assert "Automated Ignorance / Default Trap" in red_team_review
+    assert "docs://red-team-review-memo" in suite_index
     assert "Cross-MCP Contract Guide" in cross_mcp_contracts
     assert "`chemicalIdentity.v1`" in cross_mcp_contracts
     assert "`exposureScenarioDefinition.v1`" in cross_mcp_contracts

@@ -338,6 +338,7 @@ def test_contract_manifest_and_server_boot() -> None:
         "docs://exposure-platform-architecture",
         "docs://capability-maturity-matrix",
         "docs://repository-slug-decision",
+        "docs://red-team-review-memo",
         "docs://cross-mcp-contract-guide",
         "docs://service-selection-guide",
         "docs://herbal-medicinal-routing-guide",
@@ -429,10 +430,10 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
 
     validate(instance=report, schema=schema)
     assert report["policyVersion"] == "2026.03.25.v4"
-    assert report["domainCount"] == 11
+    assert report["domainCount"] == 12
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
-    assert report["externalDatasetCount"] == 27
-    assert report["referenceBandCount"] == 24
+    assert report["externalDatasetCount"] == 28
+    assert report["referenceBandCount"] == 25
     assert report["timeSeriesPackCount"] == 3
     assert report["goldsetCaseCount"] == 23
     assert report["goldsetCoverageCounts"] == {
@@ -461,6 +462,7 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
         "air_space_insecticide_aerosol_concentration_2001",
         "cleaning_trigger_spray_airborne_fraction_2019",
         "trigger_spray_aerosol_decay_half_life_2023",
+        "worker_biocidal_professional_cleaning_concentration_2023",
     }
     assert domain_summaries["worker_inhalation_control_aware_screening"][
         "coverageLevel"
@@ -521,8 +523,8 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
     )
 
     validate(instance=report, schema=schema)
-    assert report["referenceVersion"] == "2026.04.14.v2"
-    assert report["bandCount"] == 24
+    assert report["referenceVersion"] == "2026.04.14.v3"
+    assert report["bandCount"] == 25
     assert {item["checkId"] for item in report["bands"]} == {
         "air_space_insecticide_aerosol_concentration_2001",
         "capsicum_hydrogel_patch_label_amount_2025",
@@ -544,6 +546,7 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
         "trigger_spray_aerosol_decay_half_life_2023",
         "worker_biocidal_handheld_trigger_spray_dermal_mass_2023",
         "worker_biocidal_handheld_trigger_spray_concentration_2023",
+        "worker_biocidal_professional_cleaning_concentration_2023",
         "wet_cloth_contact_mass_2018",
         "ema_hmpc_topical_ointment_loading_default",
         "sccs_cosmetic_balm_loading_category",
@@ -727,6 +730,7 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert "docs://release-notes" in artifact["publishedDocs"]
     assert "docs://goldset-benchmark-guide" in artifact["publishedDocs"]
     assert "docs://capability-maturity-matrix" in artifact["publishedDocs"]
+    assert "docs://red-team-review-memo" in artifact["publishedDocs"]
     for item in artifact["distributionArtifacts"]:
         if item["present"]:
             assert item["sha256"] is not None
@@ -752,9 +756,9 @@ def test_verification_summary_report_matches_schema_and_surface() -> None:
     validate(instance=report, schema=schema)
     assert report["publicSurface"]["toolCount"] == len(manifest["tools"])
     assert report["publicSurface"]["resourceCount"] == len(manifest["resources"])
-    assert report["validationDomainCount"] == 11
+    assert report["validationDomainCount"] == 12
     assert report["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
-    assert report["referenceBandCount"] == 24
+    assert report["referenceBandCount"] == 25
     assert report["timeSeriesPackCount"] == 3
     assert report["goldsetCaseCount"] >= 1
     check_ids = {item["checkId"] for item in report["checks"]}

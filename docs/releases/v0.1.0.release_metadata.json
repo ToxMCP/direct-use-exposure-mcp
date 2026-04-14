@@ -8,7 +8,7 @@
   "defaultsVersion": "2026.04.13.v33",
   "readinessStatus": "ready_with_known_limitations",
   "securityReviewStatus": "acceptable_with_warnings",
-  "benchmarkCaseCount": 40,
+  "benchmarkCaseCount": 41,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
     "dermal_face_cream_sccs_screening",
@@ -45,6 +45,7 @@
     "inhalation_tier1_scenario_package_probability",
     "worker_inhalation_janitorial_trigger_spray_execution",
     "worker_inhalation_handheld_biocidal_trigger_spray_execution",
+    "worker_inhalation_professional_surface_disinfectant_execution",
     "worker_dermal_wet_wipe_gloved_hands_execution",
     "worker_dermal_handheld_biocidal_trigger_spray_execution",
     "inhalation_saturation_cap_stress_case",
@@ -79,6 +80,7 @@
     "docs://verification-summary",
     "docs://goldset-benchmark-guide",
     "docs://capability-maturity-matrix",
+    "docs://red-team-review-memo",
     "docs://herbal-medicinal-routing-guide",
     "docs://toxmcp-suite-index",
     "docs/releases/v0.1.0.md"

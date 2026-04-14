@@ -153,8 +153,9 @@
       ],
       "surfaceLoadingContext": "wet cleaning cloth contact with surface residue transfer",
       "skinCondition": "unknown",
-      "transferEfficiency": null,
-      "retentionFactor": null,
+      "transferEfficiency": 0.5,
+      "retentionFactor": 0.2,
+      "densityGPerMl": 1.0,
       "exposedSurfaceAreaCm2": 840.0,
       "bodyWeightKg": 75.0,
       "region": "EU",
@@ -217,6 +218,40 @@
       "confidence": "explicit_input",
       "default_applied": false,
       "rationale": "Body weight was carried through the dermal adapter request.",
+      "governance": {
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "user_asserted",
+        "uncertainty_types": [
+          "scenario_uncertainty"
+        ],
+        "applicability_domain": {
+          "product_category": "household_cleaner",
+          "application_method": "wipe",
+          "physical_form": "liquid",
+          "contact_pattern": "surface_transfer",
+          "ppe_state": "work_gloves",
+          "barrier_material": "unknown"
+        }
+      }
+    },
+    {
+      "schema_version": "exposureAssumptionRecord.v1",
+      "name": "density_g_per_ml",
+      "value": 1.0,
+      "unit": "g/mL",
+      "source_kind": "user_input",
+      "source": {
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Direct-Use Exposure MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
+      },
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Density was carried through the dermal adapter request.",
       "governance": {
         "evidence_grade": "grade_4",
         "evidence_basis": "explicit_input",
@@ -342,24 +377,23 @@
       "name": "retention_factor",
       "value": 0.2,
       "unit": "fraction",
-      "source_kind": "default_registry",
+      "source_kind": "user_input",
       "source": {
-        "source_id": "rivm_cleaning_surface_contact_retention_defaults_2018",
-        "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening surface-contact retention",
-        "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
-        "version": "RIVM report 2016-0179 / 2018",
-        "hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094"
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Direct-Use Exposure MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
       },
-      "confidence": "curated_default",
-      "default_applied": true,
-      "rationale": "Retention factor defaulted from the shared dermal screening defaults because the dermal adapter request did not carry an explicit value.",
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Retention factor was carried through the dermal adapter request.",
       "governance": {
-        "evidence_grade": "grade_3",
-        "evidence_basis": "curated_default",
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
         "default_visibility": "silent_traceable",
-        "applicability_status": "in_domain",
+        "applicability_status": "user_asserted",
         "uncertainty_types": [
-          "parameter_uncertainty",
           "scenario_uncertainty"
         ],
         "applicability_domain": {
@@ -377,24 +411,23 @@
       "name": "transfer_efficiency",
       "value": 0.5,
       "unit": "fraction",
-      "source_kind": "default_registry",
+      "source_kind": "user_input",
       "source": {
-        "source_id": "rivm_cleaning_wet_cloth_transfer_defaults_2018",
-        "title": "RIVM Cleaning Products Fact Sheet wet-cloth dermal-contact defaults mapped to screening transfer efficiency",
-        "locator": "https://www.rivm.nl/bibliotheek/rapporten/2016-0179.pdf",
-        "version": "RIVM report 2016-0179 / 2018",
-        "hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094"
+        "source_id": "worker_dermal_absorbed_dose_execution_v1",
+        "title": "Direct-Use Exposure MCP worker dermal absorbed-dose execution algorithm",
+        "locator": "docs://worker-dermal-execution-guide",
+        "version": "2026.04.07.v1",
+        "hash_sha256": null
       },
-      "confidence": "curated_default",
-      "default_applied": true,
-      "rationale": "Transfer efficiency defaulted from the shared dermal screening defaults because the dermal adapter request did not carry an explicit value.",
+      "confidence": "explicit_input",
+      "default_applied": false,
+      "rationale": "Transfer efficiency was carried through the dermal adapter request.",
       "governance": {
-        "evidence_grade": "grade_3",
-        "evidence_basis": "curated_default",
+        "evidence_grade": "grade_4",
+        "evidence_basis": "explicit_input",
         "default_visibility": "silent_traceable",
-        "applicability_status": "in_domain",
+        "applicability_status": "user_asserted",
         "uncertainty_types": [
-          "parameter_uncertainty",
           "scenario_uncertainty"
         ],
         "applicability_domain": {
@@ -522,7 +555,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal retained surface-loading caps",
         "locator": "docs://defaults-evidence-map#worker-dermal-surface-cap-heuristics-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094"
+        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -696,7 +729,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094"
+        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -731,7 +764,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094"
+        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -766,7 +799,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal contact-duration scaling defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-contact-duration-scaling-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094"
+        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -801,7 +834,7 @@
         "title": "Direct-Use Exposure MCP heuristic worker dermal absorption-fraction defaults",
         "locator": "docs://defaults-evidence-map#worker-dermal-absorption-fraction-heuristics-2026",
         "version": "2026.04.07.v1",
-        "hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094"
+        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
       },
       "confidence": "heuristic_default",
       "default_applied": true,
@@ -910,7 +943,7 @@
       },
       "confidence": "derived",
       "default_applied": false,
-      "rationale": "Absorbed dermal mass per day was derived by applying the effective dermal absorption fraction to the PPE-adjusted skin-boundary mass.",
+      "rationale": "Absorbed dermal mass per day was derived by applying the effective dermal absorption fraction to the PPE-adjusted skin-boundary mass, further constrained by the mechanistic permeation limit if chemical properties were available.",
       "governance": {
         "evidence_grade": null,
         "evidence_basis": "derived",
@@ -1056,7 +1089,7 @@
     "plugin_id": "worker_dermal_absorbed_dose_execution",
     "plugin_version": "0.1.0",
     "defaults_version": "2026.04.13.v33",
-    "defaults_hash_sha256": "2ebcc01173f72f1273463380f2c4cdc734311cedf0380c3b8a01bdb912b18094",
+    "defaults_hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Execution starts from screening-style skin-boundary mass semantics and then applies PPE penetration and generic dermal absorption factors.",

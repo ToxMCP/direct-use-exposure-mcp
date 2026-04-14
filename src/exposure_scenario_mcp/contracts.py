@@ -826,6 +826,13 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 description="Decision note for keeping the current repository slug through v0.1.x.",
             ),
             ContractResourceEntry(
+                uri="docs://red-team-review-memo",
+                description=(
+                    "Adversarial review memo describing the strongest credible attacks on "
+                    "the MCP and the current mitigation posture."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="docs://cross-mcp-contract-guide",
                 description=(
                     "Guide to the shared suite-facing contracts published for sibling MCPs."
@@ -1413,6 +1420,7 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://verification-summary",
             "docs://goldset-benchmark-guide",
             "docs://capability-maturity-matrix",
+            "docs://red-team-review-memo",
             "docs://herbal-medicinal-routing-guide",
             "docs://toxmcp-suite-index",
             "docs/releases/v0.1.0.md",

@@ -37,6 +37,7 @@ from exposure_scenario_mcp.guidance import (
     operator_guide,
     probability_bounds_guide,
     provenance_policy,
+    red_team_review_memo_guide,
     release_notes_markdown,
     release_readiness_markdown,
     repository_slug_decision_guide,
@@ -236,6 +237,12 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """Decision note explaining why the current repository slug remains in use."""
 
         return repository_slug_decision_guide()
+
+    @mcp.resource("docs://red-team-review-memo")
+    def docs_red_team_review_memo() -> str:
+        """Adversarial review memo describing the strongest credible attacks on the MCP."""
+
+        return red_team_review_memo_guide()
 
     @mcp.resource("docs://cross-mcp-contract-guide")
     def docs_cross_mcp_contract_guide() -> str:
