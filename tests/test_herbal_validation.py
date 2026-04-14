@@ -1,5 +1,6 @@
-
 import pytest
+
+from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
     ExposureScenarioRequest,
     PopulationProfile,
@@ -7,9 +8,9 @@ from exposure_scenario_mcp.models import (
     Route,
     ScenarioClass,
 )
-from exposure_scenario_mcp.runtime import ScenarioEngine, PluginRegistry
-from exposure_scenario_mcp.plugins import ScreeningScenarioPlugin, InhalationScreeningPlugin
-from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine
+
 
 def build_engine() -> ScenarioEngine:
     defaults_registry = DefaultsRegistry.load()
@@ -17,6 +18,7 @@ def build_engine() -> ScenarioEngine:
     plugins.register(ScreeningScenarioPlugin())
     plugins.register(InhalationScreeningPlugin())
     return ScenarioEngine(registry=plugins, defaults_registry=defaults_registry)
+
 
 def test_ema_herbal_ointment_validation_check() -> None:
     engine = build_engine()
@@ -44,13 +46,21 @@ def test_ema_herbal_ointment_validation_check() -> None:
 
     scenario = engine.build(request)
     checks = scenario.validation_summary.executed_validation_checks
-    
-    check = next((c for c in checks if c.check_id == "ema_hmpc_topical_ointment_loading_default"), None)
+
+    check = next(
+        (
+            c
+            for c in checks
+            if c.check_id == "ema_hmpc_topical_ointment_loading_default"
+        ),
+        None,
+    )
     assert check is not None
     assert check.status.value == "pass"
     assert check.observed_value == 1.5
     assert check.reference_lower == 1.0
     assert check.reference_upper == 2.0
+
 
 def test_sccs_cosmetic_balm_validation_check() -> None:
     engine = build_engine()
@@ -77,11 +87,19 @@ def test_sccs_cosmetic_balm_validation_check() -> None:
 
     scenario = engine.build(request)
     checks = scenario.validation_summary.executed_validation_checks
-    
-    check = next((c for c in checks if c.check_id == "sccs_cosmetic_balm_loading_category"), None)
+
+    check = next(
+        (
+            c
+            for c in checks
+            if c.check_id == "sccs_cosmetic_balm_loading_category"
+        ),
+        None,
+    )
     assert check is not None
     assert check.status.value == "pass"
     assert check.observed_value == pytest.approx(2.6, rel=1e-3)
+
 
 def test_ftu_dermatology_validation_check() -> None:
     engine = build_engine()
@@ -109,8 +127,15 @@ def test_ftu_dermatology_validation_check() -> None:
 
     scenario = engine.build(request)
     checks = scenario.validation_summary.executed_validation_checks
-    
-    check = next((c for c in checks if c.check_id == "dermatology_fingertip_unit_loading_anchor"), None)
+
+    check = next(
+        (
+            c
+            for c in checks
+            if c.check_id == "dermatology_fingertip_unit_loading_anchor"
+        ),
+        None,
+    )
     assert check is not None
     assert check.status.value == "pass"
     assert check.observed_value == pytest.approx(1.66666667, rel=1e-6)

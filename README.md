@@ -2,9 +2,11 @@
 
 [![CI](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
+[![Release](https://img.shields.io/github/v/release/ToxMCP/direct-use-exposure-mcp?sort=semver)](https://github.com/ToxMCP/direct-use-exposure-mcp/releases)
+[![Status](https://img.shields.io/badge/Status-Ready%20with%20Known%20Limitations-2E8B57)](#release-verification)
 [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
-> Part of **ToxMCP** Suite
+> Part of **ToxMCP** Suite → https://github.com/ToxMCP/toxmcp
 
 **Public MCP server for deterministic direct-use and near-field external exposure construction in exposure-led NGRA workflows.**
 It turns product-use assumptions into auditable dermal, direct-use/incidental oral,
@@ -80,44 +82,24 @@ For a suite-level map of sibling services and shared handoff contracts, see
 
 ## What's in v0.1.0
 
-- Deterministic dermal plus direct-use/incidental oral screening scenario construction
-- Deterministic inhalation screening with room-volume and ventilation semantics
-- Tier A uncertainty registers, deterministic sensitivity ranking, and dependency metadata
-- Tier B deterministic scenario envelopes from named archetypes
-- Packaged Tier B archetype-library sets for governed envelope construction
-- Tier B deterministic parameter-bounds propagation without probabilistic overclaiming
-- Packaged Tier C single-driver probability-bounds profiles with curated driver taxonomy
-- Packaged Tier C coupled-driver scenario-package probability profiles with curated package taxonomy
-- Machine-actionable Tier 1 inhalation upgrade advisories for spray scenarios
-- Packaged Tier 1 inhalation airflow, particle, and product-family screening profiles
-- Curated RIVM-backed dermal contact defaults plus product-family spray airborne-fraction defaults for personal-care and household-cleaner contexts
-- Evidence reconciliation across CompTox, SCCS, SCCS opinions, CosIng, ConsExpo, nano/micro guidance, and reviewed user-supplied product-use records
-- Particle-aware evidence lanes for EU cosmetic nanomaterials, synthetic polymer microparticles, and non-plastic micro/nanoparticles
-- Integrated evidence-to-scenario-to-PBPK workflow execution as one audited MCP response
-- External-dose aggregate summaries plus opt-in route-bioavailability-adjusted internal-equivalent screening totals
-- Scenario comparison and refinement deltas
-- ToxClaw evidence export and refinement-bundle export
-- PBPK scenario export plus exact external-import payload packaging, with optional transient inhalation concentration profiles
-- Published JSON schemas, examples, contract manifest, and release metadata
-- Published shared cross-MCP contracts for identity, scenario-definition, route-dose, and future
-  Fate handoffs
-- Release-readiness, result-status, troubleshooting, and provenance resources
-- Published architecture guidance for splitting exposure, fate, dietary, and worker domains
-- Published herbal/TCM/supplement routing guidance for keeping medicinal direct-use and dietary
-  intake semantics separate
-- Source-backed herbal/TCM/supplement route-semantics anchors for medicinal oral regimens,
-  product-centric supplement capsules, and topical herbal balms in the governed defaults and
-  validation surfaces, including narrow EMA herbal-medicinal oral executable bands, an
-  official DailyMed supplement-label executable band, an executable topical-herbal
-  application-geometry analogue band, an official topical-herbal delivered-amount anchor,
-  and official topical patch unit-mass anchors
-- Worker-task routing guidance plus a deterministic router for current MCP vs future occupational adapter paths
-- Worker inhalation Tier 2 bridge export for future ART-style occupational adapter handoff
-- Worker inhalation Tier 2 execution plus governed ART external exchange packages and imports
-- Worker dermal absorbed-dose and PPE bridge export, adapter-ingest boundary, and bounded execution kernel
-- Validation dossier, validation coverage report, executable reference bands, executable time-series packs, and showcase goldset resources
-- Consolidated verification summary surface for release, benchmark, validation, and trust-resource checks
-- Assumption-level evidence/applicability governance and explicit Tier-0 interpretation bounds
+- 🧪 Deterministic dermal plus direct-use/incidental oral screening scenario construction
+- 🌬️ Deterministic inhalation screening with room-volume, ventilation, saturation-cap, and deposition semantics
+- 📊 Tier A uncertainty registers, deterministic sensitivity ranking, and dependency metadata
+- 📦 Tier B deterministic scenario envelopes, archetype-library sets, and bounded parameter propagation
+- 📈 Tier C single-driver probability bounds plus coupled scenario-package probability profiles without Monte Carlo overclaiming
+- 🚨 Machine-actionable Tier 1 inhalation upgrade advisories plus packaged airflow, particle, and product-family screening profiles
+- 🧴 Curated RIVM-backed dermal contact defaults plus governed spray airborne-fraction defaults for personal-care and household-cleaner contexts
+- 🔬 Evidence reconciliation across CompTox, SCCS, SCCS opinions, CosIng, ConsExpo, nano/micro guidance, and reviewed user-supplied product-use records
+- 🧫 Particle-aware evidence lanes for EU cosmetic nanomaterials, synthetic polymer microparticles, and non-plastic micro/nanoparticles
+- 🔗 Integrated evidence-to-scenario-to-PBPK workflow execution as one audited MCP response
+- 🧮 External-dose aggregate summaries plus opt-in route-bioavailability-adjusted internal-equivalent screening totals
+- 🔄 Scenario comparison, refinement deltas, ToxClaw evidence export, and refinement-bundle export
+- 🧬 PBPK scenario export plus exact external-import payload packaging, with optional transient inhalation concentration profiles
+- 📚 Published JSON schemas, examples, contract manifest, shared cross-MCP contracts, and release metadata
+- 🛡️ Release-readiness, verification, result-status, troubleshooting, provenance, and scientific-boundary resources
+- 🌿 Source-backed herbal/TCM/supplement routing plus governed medicinal oral, supplement, topical spray, and topical patch anchors
+- 🏭 Worker-task routing, Tier 2 bridge/export support, governed ART external exchange, and bounded worker dermal execution
+- ✅ Validation dossier, validation coverage report, executable reference bands, executable time-series packs, and showcase goldset resources
 
 ## Why this project exists
 

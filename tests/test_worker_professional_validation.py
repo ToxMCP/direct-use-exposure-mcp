@@ -1,17 +1,18 @@
-
 import pytest
+
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.worker_tier2 import (
+    ExecuteWorkerInhalationTier2Request,
     ExportWorkerInhalationTier2BridgeRequest,
+    WorkerInhalationTier2ExecutionOverrides,
     build_worker_inhalation_tier2_bridge,
     execute_worker_inhalation_tier2_task,
-    ExecuteWorkerInhalationTier2Request,
-    WorkerInhalationTier2ExecutionOverrides,
 )
 
-def test_professional_cleaning_validation_check():
+
+def test_professional_cleaning_validation_check() -> None:
     registry = DefaultsRegistry.load()
-    
+
     bridge_request = {
         "schema_version": "exportWorkerInhalationTier2BridgeRequest.v1",
         "baseRequest": {
@@ -64,31 +65,41 @@ def test_professional_cleaning_validation_check():
     }
 
     bridge_package = build_worker_inhalation_tier2_bridge(
-        ExportWorkerInhalationTier2BridgeRequest(**bridge_request),
-        registry=registry,
+        ExportWorkerInhalationTier2BridgeRequest(**bridge_request), registry=registry
     )
-    
+
     execution = execute_worker_inhalation_tier2_task(
         ExecuteWorkerInhalationTier2Request(
             adapter_request=bridge_package.tool_call.arguments,
             execution_overrides=WorkerInhalationTier2ExecutionOverrides(
                 controlFactor=0.45,
-                respiratoryProtectionFactor=1.0
+                respiratoryProtectionFactor=1.0,
             ),
             context_of_use="worker-art-execution",
         ),
         registry=registry,
     )
-    
+
     summary = execution.validation_summary
-    assert "worker_inhalation_professional_surface_disinfectant_execution" in summary.benchmark_case_ids
-    
-    check = next((c for c in summary.executed_validation_checks if c.check_id == "worker_biocidal_professional_cleaning_concentration_2023"), None)
+    assert (
+        "worker_inhalation_professional_surface_disinfectant_execution"
+        in summary.benchmark_case_ids
+    )
+
+    check = next(
+        (
+            c
+            for c in summary.executed_validation_checks
+            if c.check_id == "worker_biocidal_professional_cleaning_concentration_2023"
+        ),
+        None,
+    )
     assert check is not None
     assert check.status.value == "pass"
     assert check.observed_value == pytest.approx(0.03337553, rel=1e-6)
     assert check.reference_lower == 0.015
     assert check.reference_upper == 0.045
+
 
 if __name__ == "__main__":
     test_professional_cleaning_validation_check()

@@ -2132,9 +2132,7 @@ def execute_worker_dermal_absorbed_dose_task(
     )
     physical_form = str(dermal_inputs.get("physicalForm") or "")
 
-    density_defaulted = False
     if density_g_per_ml is None:
-        density_defaulted = True
         density_g_per_ml, density_source = registry.default_density_g_per_ml(
             product_category or None,
             physical_form or None,

@@ -1,4 +1,6 @@
 import pytest
+
+from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.models import (
     ExposureScenarioRequest,
     PopulationProfile,
@@ -6,9 +8,8 @@ from exposure_scenario_mcp.models import (
     Route,
     ScenarioClass,
 )
-from exposure_scenario_mcp.runtime import ScenarioEngine, PluginRegistry
-from exposure_scenario_mcp.plugins import ScreeningScenarioPlugin, InhalationScreeningPlugin
-from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
+from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine
 
 
 def build_engine() -> ScenarioEngine:
@@ -43,7 +44,11 @@ def test_melatonin_gummy_validation_check() -> None:
     checks = scenario.validation_summary.executed_validation_checks
 
     check = next(
-        (c for c in checks if c.check_id == "dietary_supplement_melatonin_gummy_daily_mass_2026"),
+        (
+            c
+            for c in checks
+            if c.check_id == "dietary_supplement_melatonin_gummy_daily_mass_2026"
+        ),
         None,
     )
     assert check is not None
@@ -77,7 +82,12 @@ def test_echinacea_tincture_validation_check() -> None:
     checks = scenario.validation_summary.executed_validation_checks
 
     check = next(
-        (c for c in checks if c.check_id == "botanical_supplement_echinacea_tincture_daily_mass_2026"),
+        (
+            c
+            for c in checks
+            if c.check_id
+            == "botanical_supplement_echinacea_tincture_daily_mass_2026"
+        ),
         None,
     )
     assert check is not None
@@ -111,7 +121,12 @@ def test_vitaminc_effervescent_validation_check() -> None:
     checks = scenario.validation_summary.executed_validation_checks
 
     check = next(
-        (c for c in checks if c.check_id == "dietary_supplement_effervescent_vitaminc_daily_mass_2026"),
+        (
+            c
+            for c in checks
+            if c.check_id
+            == "dietary_supplement_effervescent_vitaminc_daily_mass_2026"
+        ),
         None,
     )
     assert check is not None
