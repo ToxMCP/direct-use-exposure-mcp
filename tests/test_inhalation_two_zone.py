@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import math
-
 import pytest
 
 from exposure_scenario_mcp.defaults import DefaultsRegistry
@@ -246,8 +244,8 @@ def test_two_zone_mass_balance_with_no_losses() -> None:
 
 def test_two_zone_pbpk_export_produces_transient_profile() -> None:
     """Two-zone scenarios must expose the metric keys required for PBPK transient export."""
-    from exposure_scenario_mcp.runtime import export_pbpk_input
     from exposure_scenario_mcp.models import ExportPbpkScenarioInputRequest
+    from exposure_scenario_mcp.runtime import export_pbpk_input
 
     request = _make_base_request(solver_variant="two_zone_v1")
     registry = DefaultsRegistry.load()
@@ -257,7 +255,9 @@ def test_two_zone_pbpk_export_produces_transient_profile() -> None:
     assert "air_concentration_at_event_end_mg_per_m3" in scenario.route_metrics
 
     pbpk = export_pbpk_input(
-        ExportPbpkScenarioInputRequest(scenario=scenario, include_transient_concentration_profile=True),
+        ExportPbpkScenarioInputRequest(
+            scenario=scenario, include_transient_concentration_profile=True
+        ),
         registry,
     )
     assert len(pbpk.transient_concentration_profile) == 3
@@ -276,11 +276,11 @@ def test_auto_fallback_emits_quality_flag() -> None:
 
 def test_main_engine_accepts_tier_1() -> None:
     """The main ScenarioEngine must no longer reject Tier 1 inhalation requests."""
+    from exposure_scenario_mcp.plugins.inhalation import InhalationScreeningPlugin
     from exposure_scenario_mcp.runtime import (
         PluginRegistry,
         ScenarioEngine,
     )
-    from exposure_scenario_mcp.plugins.inhalation import InhalationScreeningPlugin
 
     registry = DefaultsRegistry.load()
     plugin_registry = PluginRegistry()

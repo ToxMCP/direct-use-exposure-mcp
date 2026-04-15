@@ -217,8 +217,8 @@ def test_aggregate_rejects_duplicate_component_ids() -> None:
 
 
 def test_resolve_population_value_rejects_zero_body_weight() -> None:
-    from exposure_scenario_mcp.runtime import resolve_population_value
     from exposure_scenario_mcp.provenance import AssumptionTracker
+    from exposure_scenario_mcp.runtime import resolve_population_value
 
     tracker = AssumptionTracker(registry=DefaultsRegistry.load())
     with pytest.raises(ExposureScenarioError) as exc_info:
@@ -236,8 +236,8 @@ def test_resolve_population_value_rejects_zero_body_weight() -> None:
 
 
 def test_resolve_population_value_rejects_zero_surface_area() -> None:
-    from exposure_scenario_mcp.runtime import resolve_population_value
     from exposure_scenario_mcp.provenance import AssumptionTracker
+    from exposure_scenario_mcp.runtime import resolve_population_value
 
     tracker = AssumptionTracker(registry=DefaultsRegistry.load())
     with pytest.raises(ExposureScenarioError) as exc_info:

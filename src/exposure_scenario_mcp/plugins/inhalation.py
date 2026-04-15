@@ -33,7 +33,6 @@ from exposure_scenario_mcp.runtime import (
 )
 from exposure_scenario_mcp.solvers.two_zone import (
     TwoZoneParams,
-    TwoZoneState,
     solve_two_zone_piecewise_constant,
 )
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
@@ -821,7 +820,8 @@ def _build_inhalation_tier_1_two_zone_scenario(
             "interzonal_mixing_floor_applied",
             interzonal_mixing_floor_applied,
             None,
-            "Whether the bounded local entrainment floor exceeded the static Tier 1 interzonal rate.",
+            "Whether the bounded local entrainment floor exceeded the static Tier 1 "
+            "interzonal rate.",
         )
 
     tracker.add_derived(
@@ -833,7 +833,10 @@ def _build_inhalation_tier_1_two_zone_scenario(
 
     source_fraction_to_nf = request.source_allocation_to_near_field_fraction
     if source_fraction_to_nf is None:
-        if matched_profile is not None and matched_profile.source_fraction_to_nf_default is not None:
+        if (
+            matched_profile is not None
+            and matched_profile.source_fraction_to_nf_default is not None
+        ):
             source_fraction_to_nf = matched_profile.source_fraction_to_nf_default
             tracker.add_default(
                 "source_fraction_to_near_field",
@@ -849,7 +852,8 @@ def _build_inhalation_tier_1_two_zone_scenario(
                 1.0,
                 "fraction",
                 tier_1_registry.source_reference(airflow_profile.source_id),
-                "Default production simplification places the entire source in the near-field (eta = 1.0).",
+                "Default production simplification places the entire source in the "
+                "near-field (eta = 1.0).",
             )
     else:
         tracker.add_user(
@@ -1094,7 +1098,8 @@ def _build_inhalation_tier_1_two_zone_scenario(
         "mass_balance_residual_mg",
         tz_result.mass_balance_residual_mg,
         "mg",
-        "Algebraic mass-balance residual checked against emitted, final, ventilation, and deposition masses.",
+        "Algebraic mass-balance residual checked against emitted, final, ventilation, "
+        "and deposition masses.",
     )
     tracker.add_derived(
         "inhaled_mass_mg_per_event",
@@ -1118,7 +1123,8 @@ def _build_inhalation_tier_1_two_zone_scenario(
         "lower_respiratory_inhaled_mass_mg_per_day",
         lower_respiratory_inhaled_mass_mg_day,
         "mg/day",
-        "Lower-respiratory inhaled mass per day after subtracting the extrathoracic swallowed share.",
+        "Lower-respiratory inhaled mass per day after subtracting the extrathoractic "
+        "swallowed share.",
     )
     tracker.add_derived(
         "normalized_external_dose_mg_per_kg_day",

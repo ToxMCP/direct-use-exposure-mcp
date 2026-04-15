@@ -11,6 +11,7 @@ from pydantic import Field, ValidationError, model_validator
 
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import (
     ApplicabilityStatus,
     AssumptionGovernance,

@@ -261,7 +261,9 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 "external_mass_mg_per_day": round(external_mass_mg_day, 8),
                 "surface_loading_mg_per_cm2_day": round(external_mass_mg_day / surface_area_cm2, 8),
                 "product_loading_mg_per_cm2_per_event": round(product_mass_loading_mg_cm2_event, 8),
-                "product_mass_loading_mg_per_cm2_per_event": round(product_mass_loading_mg_cm2_event, 8),
+                "product_mass_loading_mg_per_cm2_per_event": round(
+                    product_mass_loading_mg_cm2_event, 8
+                ),
                 "chemical_loading_mg_per_cm2_per_event": round(chemical_loading_mg_cm2_event, 8),
             }
             if profile.application_strip_length_cm is not None:

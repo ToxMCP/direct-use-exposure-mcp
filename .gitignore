@@ -12,3 +12,18 @@ dist/*
 *_external_review*.txt
 repo_concat_external_review.txt
 repo_concat_full.txt
+repo_concat_*.txt
+
+# One-off fix and generate scripts
+fix_*.py
+generate_*.py
+
+# Generated output directories
+output/
+tmp/
+docs/reports/
+vhp4safety_assessments/
+
+# Untracked project-specific generated scripts
+scripts/generate_mcp_*.py
+scripts/generate_vhp4safety_*.py

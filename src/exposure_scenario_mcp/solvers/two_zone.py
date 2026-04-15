@@ -92,7 +92,9 @@ def _omega(r: float, t: float) -> float:
     return (psi - chi) / r
 
 
-def _mat_mul_2x2(A: tuple[float, float, float, float], v: tuple[float, float]) -> tuple[float, float]:
+def _mat_mul_2x2(
+    A: tuple[float, float, float, float], v: tuple[float, float]
+) -> tuple[float, float]:
     a11, a12, a21, a22 = A
     v1, v2 = v
     return (a11 * v1 + a12 * v2, a21 * v1 + a22 * v2)
@@ -331,7 +333,7 @@ def solve_two_zone_piecewise_constant(
     emission_rate_mg_per_hour: float,
     spray_duration_hours: float,
     total_duration_hours: float,
-    initial_state: TwoZoneState = TwoZoneState(),
+    initial_state: TwoZoneState | None = None,
     q_room_m3_per_hour: float | None = None,
     k_nf_per_hour: float | None = None,
     k_ff_per_hour: float | None = None,
@@ -379,6 +381,8 @@ def solve_two_zone_piecewise_constant(
         raise ValueError("beta_m3_per_hour must be non-negative")
     if not (0.0 <= params.source_fraction_to_nf <= 1.0):
         raise ValueError("source_fraction_to_nf must be between 0 and 1")
+    if initial_state is None:
+        initial_state = TwoZoneState()
 
     A = _build_A(params)
     u_on = _build_source_vector(params, emission_rate_mg_per_hour)
