@@ -720,6 +720,89 @@
         "particle_size_regime": {
           "$ref": "#/$defs/ParticleSizeRegime",
           "description": "Spray droplet or aerosol size regime used for screening semantics."
+        },
+        "solverVariant": {
+          "default": "auto",
+          "description": "Solver family to use for Tier 1 inhalation.",
+          "enum": [
+            "auto",
+            "heuristic_v1",
+            "two_zone_v1"
+          ],
+          "title": "Solvervariant",
+          "type": "string"
+        },
+        "interzonalFlowRateM3PerHour": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expert override for bidirectional interzonal airflow rate.",
+          "title": "Interzonalflowratem3Perhour"
+        },
+        "nearFieldLossRatePerHour": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expert override for near-field first-order loss rate.",
+          "title": "Nearfieldlossrateperhour"
+        },
+        "farFieldLossRatePerHour": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expert override for far-field first-order loss rate.",
+          "title": "Farfieldlossrateperhour"
+        },
+        "sourceAllocationToNearFieldFraction": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expert override for source fraction emitted directly into the NF.",
+          "title": "Sourceallocationtonearfieldfraction"
+        },
+        "ventilationAllocationToNearFieldFraction": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expert override for room ventilation fraction assigned to the NF.",
+          "title": "Ventilationallocationtonearfieldfraction"
         }
       },
       "required": [

@@ -866,7 +866,14 @@ def test_reconcile_product_use_evidence_prefers_consexpo_over_comptox_in_eu() ->
     )
 
     assert report.recommended_source_name == "RIVM ConsExpo"
-    assert report.recommendation == "apply"
+    # ConsExpo inhalation evidence now triggers a model-compatibility review flag
+    # because ConsExpo uses well-mixed room assumptions that may mismatch with
+    # direct inhalation scenario physics.
+    assert report.recommendation == "apply_with_review"
+    assert report.manual_review_required is True
+    assert any(
+        "well-mixed room" in note for note in report.rationale
+    )
     assert report.merged_request is not None
     assert report.merged_request.product_use_profile.density_g_per_ml == 1.08
 

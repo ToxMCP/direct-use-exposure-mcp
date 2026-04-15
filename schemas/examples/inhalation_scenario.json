@@ -1683,7 +1683,6 @@
         }
       ],
       "blockingGaps": [
-        "tier_1_solver_not_implemented",
         "tier_1_validation_evidence_incomplete"
       ],
       "guidanceResource": "docs://inhalation-tier-upgrade-guide",

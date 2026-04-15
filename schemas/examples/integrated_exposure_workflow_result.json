@@ -290,7 +290,8 @@
     "rationale": [
       "Selected `EU product-use dossier example` as the primary evidence source.",
       "Primary source matches the request region or jurisdiction context.",
-      "Primary source is marked as reviewed."
+      "Primary source is marked as reviewed.",
+      "Model-compatibility assessment found no obvious physics mismatch between the primary evidence source and the request."
     ],
     "fieldSources": {
       "product_use_profile.product_category": "EU product-use dossier example",
@@ -2333,7 +2334,6 @@
           }
         ],
         "blockingGaps": [
-          "tier_1_solver_not_implemented",
           "tier_1_validation_evidence_incomplete"
         ],
         "guidanceResource": "docs://inhalation-tier-upgrade-guide",
@@ -4189,7 +4189,6 @@
                 }
               ],
               "blockingGaps": [
-                "tier_1_solver_not_implemented",
                 "tier_1_validation_evidence_incomplete"
               ],
               "guidanceResource": "docs://inhalation-tier-upgrade-guide",
@@ -6265,7 +6264,6 @@
                 }
               ],
               "blockingGaps": [
-                "tier_1_solver_not_implemented",
                 "tier_1_validation_evidence_incomplete"
               ],
               "guidanceResource": "docs://inhalation-tier-upgrade-guide",

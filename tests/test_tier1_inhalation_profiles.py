@@ -10,7 +10,7 @@ def test_tier1_inhalation_profile_manifest_and_matching() -> None:
     registry = Tier1InhalationProfileRegistry.load()
     manifest = registry.manifest()
 
-    assert manifest.profile_version == "2026.04.07.v5"
+    assert manifest.profile_version == "2026.04.15.v6"
     assert manifest.directionality_profile_count == 5
     assert manifest.particle_profile_count == 3
     assert manifest.profile_count == 9

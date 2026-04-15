@@ -33,6 +33,7 @@ from exposure_scenario_mcp.models import (
     QualityFlag,
     Route,
     ScalarValue,
+    ScenarioClass,
     ScenarioComparisonRecord,
     Severity,
     StrictModel,
@@ -2333,6 +2334,60 @@ def apply_product_use_evidence(
     return report.suggested_request
 
 
+def _assess_model_compatibility(
+    request: ExposureScenarioRequest,
+    evidence: ProductUseEvidenceRecord,
+) -> tuple[str, list[str]]:
+    """Assess whether the physics/model assumed by the evidence source matches the request.
+
+    Returns a compatibility level ("HIGH", "MEDIUM", "LOW", "BLOCKING") and a list of
+    specific concerns.
+    """
+    concerns: list[str] = []
+    source_kind = evidence.source_kind
+    route = request.route
+
+    # Sources that provide no quantitative exposure model should not drive dose estimates
+    if source_kind in {"cosing", "nanomaterial_guidance", "microplastics_regulatory"}:
+        if route in {Route.DERMAL, Route.ORAL, Route.INHALATION}:
+            concerns.append(
+                f"{evidence.source_name} provides identity/context data, not a quantitative "
+                f"exposure model. Applying its overrides to a {route.value} dose estimate "
+                "may silently substitute context for physics."
+            )
+        return ("LOW", concerns) if concerns else ("HIGH", concerns)
+
+    # ConsExpo uses well-mixed room models; mismatches with spatial inhalation models
+    if source_kind == "consexpo" and route == Route.INHALATION:
+        if request.scenario_class == ScenarioClass.INHALATION:
+            concerns.append(
+                "ConsExpo evidence assumes well-mixed room inhalation physics, but the "
+                "request uses the direct inhalation scenario class. Near-field/far-field "
+                "or source-geometry terms may be inconsistent."
+            )
+            return "LOW", concerns
+
+    # SCCS is primarily dermal/oral guidance
+    if source_kind in {"sccs", "sccs_opinion"} and route == Route.INHALATION:
+        concerns.append(
+            "SCCS evidence is oriented toward dermal and oral cosmetics guidance. "
+            "Inhalation-specific parameters (airborne fraction, room volume, deposition) "
+            "are outside its scope."
+        )
+        return "LOW", concerns
+
+    if source_kind in {"sccs", "sccs_opinion"} and route == Route.DERMAL:
+        app_method = request.product_use_profile.application_method
+        if app_method not in {"hand_application", "direct_application", "rinse_off", "leave_on"}:
+            concerns.append(
+                f"SCCS assumptions are strongest for standard cosmetic application methods. "
+                f"The request uses '{app_method}', which may not align with SCCS defaults."
+            )
+            return "MEDIUM", concerns
+
+    return "HIGH", concerns
+
+
 def reconcile_product_use_evidence(
     request: ExposureScenarioRequest,
     evidence_records: list[ProductUseEvidenceRecord],
@@ -2510,7 +2565,16 @@ def reconcile_product_use_evidence(
     )
 
     conflicts = _build_product_use_conflicts(compatible_pairs)
-    manual_review_required = (not primary_report.auto_apply_safe) or bool(conflicts)
+
+    # Model-compatibility guard against silent semantic mismatches
+    compatibility_level, compatibility_concerns = _assess_model_compatibility(
+        request, primary_evidence
+    )
+    if compatibility_level in {"LOW", "BLOCKING"}:
+        manual_review_required = True
+    else:
+        manual_review_required = (not primary_report.auto_apply_safe) or bool(conflicts)
+
     if require_auto_apply_safe and manual_review_required:
         recommendation: Literal["apply", "apply_with_review", "manual_review", "reject"] = (
             "manual_review"
@@ -2530,6 +2594,17 @@ def reconcile_product_use_evidence(
     if secondary_sources:
         rationale.append(
             "Secondary compatible sources only filled missing additive fields."
+        )
+    if compatibility_concerns:
+        rationale.append(
+            f"Model-compatibility assessment for {primary_evidence.source_name} "
+            f"is `{compatibility_level}`."
+        )
+        rationale.extend(compatibility_concerns)
+    else:
+        rationale.append(
+            "Model-compatibility assessment found no obvious physics mismatch "
+            "between the primary evidence source and the request."
         )
 
     return ProductUseEvidenceReconciliationReport(

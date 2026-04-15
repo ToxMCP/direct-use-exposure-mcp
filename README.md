@@ -68,15 +68,41 @@ The core engine is intentionally narrow, even though the released MCP also publi
 bounded worker, exchange, and validation surfaces:
 
 - `Direct-Use Exposure MCP` owns external-dose construction only.
+- Current suite interoperability is with `CompTox MCP`, `ADMETlab MCP`, `AOP MCP`,
+  `O-QT MCP`, and `PBPK MCP`.
 - `PBPK MCP` owns kinetic translation and internal-dose interpretation.
 - Defaults, assumptions, provenance, and limitations are first-class outputs, not hidden internals.
-- Oral routing is explicit: medicinal or product-centric oral regimens stay here, while
-  food-mediated intake belongs in Dietary MCP.
+- Dietary and fate seams are still explicit: medicinal or product-centric oral regimens stay
+  here, while food-mediated intake and multimedia release/concentration workflows remain
+  separate future module boundaries.
 
 For a one-page maturity framing of the full released surface, see
 [docs/capability_maturity_matrix.md](./docs/capability_maturity_matrix.md).
 For a suite-level map of sibling services and shared handoff contracts, see
 [docs/toxmcp_suite_index.md](./docs/toxmcp_suite_index.md).
+
+## ToxMCP suite fit
+
+This repo is the exposure-construction module inside the broader
+[ToxMCP Suite](https://github.com/ToxMCP/toxmcp). The current public module map is:
+
+| Module | Role in the suite | Relationship to this repo |
+| --- | --- | --- |
+| `Direct-Use Exposure MCP` | Direct-use and near-field external-dose construction | This repo |
+| `CompTox MCP` | Identity, hazard, and EPA CompTox-backed enrichment | Upstream evidence/context source |
+| `ADMETlab MCP` | Rapid ADMET prediction utilities | Adjacent screening module |
+| `AOP MCP` | Mechanistic pathway and AOP workflows | Adjacent mechanistic module |
+| `O-QT MCP` | OECD QSAR Toolbox workflows and reporting | Adjacent modeling module |
+| `PBPK MCP` | Internal-dose and TK simulation | Downstream handoff target |
+
+Two additional seams are already documented here but are not current public modules in the
+umbrella repo:
+
+- `Fate MCP`: environmental release, multimedia transfer, and concentration surfaces
+- `Dietary MCP`: food-mediated intake, commodity residue, and dietary oral workflows
+
+That distinction matters for the README and contract story: this MCP should read as one
+module in a growing suite, not as the whole ToxMCP platform.
 
 ## What's in v0.1.0
 
@@ -164,20 +190,21 @@ The detailed maturity matrix is in
 ## Table of contents
 
 1. [Architecture](#architecture)
-2. [What's in v0.1.0](#whats-in-v010)
-3. [Why this project exists](#why-this-project-exists)
-4. [Capability maturity](#capability-maturity)
-5. [Feature snapshot](#feature-snapshot)
-6. [Tool catalog](#tool-catalog)
-7. [Resource catalog](#resource-catalog)
-8. [Quick start](#quick-start)
-9. [Release verification](#release-verification)
-10. [Repository layout](#repository-layout)
-11. [Current limitations](#current-limitations)
-12. [Scientific boundaries](#scientific-boundaries)
-13. [Contributing](#contributing)
-14. [Code of conduct](#code-of-conduct)
-15. [License](#license)
+2. [ToxMCP suite fit](#toxmcp-suite-fit)
+3. [What's in v0.1.0](#whats-in-v010)
+4. [Why this project exists](#why-this-project-exists)
+5. [Capability maturity](#capability-maturity)
+6. [Feature snapshot](#feature-snapshot)
+7. [Tool catalog](#tool-catalog)
+8. [Resource catalog](#resource-catalog)
+9. [Quick start](#quick-start)
+10. [Release verification](#release-verification)
+11. [Repository layout](#repository-layout)
+12. [Current limitations](#current-limitations)
+13. [Scientific boundaries](#scientific-boundaries)
+14. [Contributing](#contributing)
+15. [Code of conduct](#code-of-conduct)
+16. [License](#license)
 
 ## Tool catalog
 

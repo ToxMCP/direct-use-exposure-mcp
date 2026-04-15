@@ -1880,6 +1880,43 @@ class InhalationTier1ScenarioRequest(ExposureScenarioRequest):
         ...,
         description="Spray droplet or aerosol size regime used for screening semantics.",
     )
+    solver_variant: Literal["auto", "heuristic_v1", "two_zone_v1"] = Field(
+        default="auto",
+        alias="solverVariant",
+        description="Solver family to use for Tier 1 inhalation.",
+    )
+    interzonal_flow_rate_m3_per_hour: float | None = Field(
+        default=None,
+        alias="interzonalFlowRateM3PerHour",
+        gt=0.0,
+        description="Expert override for bidirectional interzonal airflow rate.",
+    )
+    near_field_loss_rate_per_hour: float | None = Field(
+        default=None,
+        alias="nearFieldLossRatePerHour",
+        ge=0.0,
+        description="Expert override for near-field first-order loss rate.",
+    )
+    far_field_loss_rate_per_hour: float | None = Field(
+        default=None,
+        alias="farFieldLossRatePerHour",
+        ge=0.0,
+        description="Expert override for far-field first-order loss rate.",
+    )
+    source_allocation_to_near_field_fraction: float | None = Field(
+        default=None,
+        alias="sourceAllocationToNearFieldFraction",
+        ge=0.0,
+        le=1.0,
+        description="Expert override for source fraction emitted directly into the NF.",
+    )
+    ventilation_allocation_to_near_field_fraction: float | None = Field(
+        default=None,
+        alias="ventilationAllocationToNearFieldFraction",
+        ge=0.0,
+        le=1.0,
+        description="Expert override for room ventilation fraction assigned to the NF.",
+    )
 
     @model_validator(mode="after")
     def validate_tier_1_inhalation_scope(self) -> InhalationTier1ScenarioRequest:
@@ -2052,6 +2089,52 @@ class Tier1InhalationProductProfile(StrictModel):
     )
     source_id: str = Field(..., alias="sourceId", description="Source backing this profile.")
     note: str = Field(..., description="Interpretation note for the profile.")
+    supports_two_zone: bool = Field(
+        default=False,
+        alias="supportsTwoZone",
+        description="Whether this product profile has been cleared for the two-zone solver.",
+    )
+    source_fraction_to_nf_default: float | None = Field(
+        default=None,
+        alias="sourceFractionToNfDefault",
+        ge=0.0,
+        le=1.0,
+        description="Default source allocation to the near-field for two-zone execution.",
+    )
+    ventilation_fraction_to_nf_default: float | None = Field(
+        default=None,
+        alias="ventilationFractionToNfDefault",
+        ge=0.0,
+        le=1.0,
+        description="Default ventilation allocation to the near-field for two-zone execution.",
+    )
+    nf_geometry_kind: str | None = Field(
+        default=None,
+        alias="nfGeometryKind",
+        description="Near-field geometry classification for two-zone parameterization.",
+    )
+    nf_equivalent_radius_m: float | None = Field(
+        default=None,
+        alias="nfEquivalentRadiusM",
+        gt=0.0,
+        description="Near-field equivalent radius used for free-surface-area estimates.",
+    )
+    nf_free_surface_area_m2: float | None = Field(
+        default=None,
+        alias="nfFreeSurfaceAreaM2",
+        gt=0.0,
+        description="Near-field free surface area used for entrainment estimates.",
+    )
+    two_zone_validation_status: str | None = Field(
+        default=None,
+        alias="twoZoneValidationStatus",
+        description="Migration status of this profile for two-zone benchmarking.",
+    )
+    deposition_mapping_version: str = Field(
+        default="v1",
+        alias="depositionMappingVersion",
+        description="Version of the deposition-mapping logic tied to this profile.",
+    )
 
 
 class Tier1InhalationParameterManifest(StrictModel):

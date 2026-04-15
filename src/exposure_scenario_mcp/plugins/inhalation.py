@@ -31,6 +31,11 @@ from exposure_scenario_mcp.runtime import (
     resolve_population_value,
     resolve_product_mass_g,
 )
+from exposure_scenario_mcp.solvers.two_zone import (
+    TwoZoneParams,
+    TwoZoneState,
+    solve_two_zone_piecewise_constant,
+)
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 from exposure_scenario_mcp.worker_routing import apply_worker_task_semantics
 
@@ -48,6 +53,10 @@ IDEAL_GAS_CONSTANT_J_PER_MOL_K = 8.314462618
 STANDARD_TEMPERATURE_K = 298.15
 STANDARD_PRESSURE_PA = 101325.0
 STANDARD_PRESSURE_MMHG = 760.0
+
+# Hard-coded gate for auto-routing to the two-zone solver.
+# Remains False until formal benchmark migration is signed off.
+TIER1_TWO_ZONE_AUTO_ENABLED = False
 
 
 def tier_1_input_requirements() -> list[TierUpgradeInputRequirement]:
@@ -428,12 +437,913 @@ def _tier_1_profile_alignment(
     return ("divergent" if divergences else "aligned"), divergences
 
 
+def _build_inhalation_tier_1_two_zone_scenario(
+    request: InhalationTier1ScenarioRequest,
+    registry: DefaultsRegistry,
+    *,
+    profile_registry: Tier1InhalationProfileRegistry | None = None,
+    generated_at: str | None = None,
+) -> ExposureScenario:
+    tracker = AssumptionTracker(registry=registry)
+    tracker.set_context(
+        route=request.route.value,
+        scenario_class=request.scenario_class.value,
+        product_category=request.product_use_profile.product_category,
+        product_subtype=request.product_use_profile.product_subtype,
+        physical_form=request.product_use_profile.physical_form,
+        application_method=request.product_use_profile.application_method,
+        retention_type=request.product_use_profile.retention_type,
+        population_group=request.population_profile.population_group,
+        demographic_tags=",".join(request.population_profile.demographic_tags),
+        region=request.population_profile.region,
+    )
+    profile = request.product_use_profile
+    population = request.population_profile
+    tier_1_registry = profile_registry or Tier1InhalationProfileRegistry.load()
+    airflow_profile = tier_1_registry.airflow_profile(request.airflow_directionality)
+    matched_profiles = tier_1_registry.matching_profiles(
+        product_family=profile.product_category,
+        application_method=profile.application_method,
+        product_subtype=profile.product_subtype,
+    )
+    matched_profile = matched_profiles[0] if matched_profiles else None
+    profile_alignment_status, profile_divergences = _tier_1_profile_alignment(
+        request,
+        matched_profile,
+    )
+
+    product_mass_g_event = resolve_product_mass_g(
+        profile,
+        registry,
+        tracker,
+        physchem_context=request.physchem_context,
+    )
+    chemical_mass_mg_event = grams_to_mg(product_mass_g_event) * profile.concentration_fraction
+    tracker.add_user(
+        "concentration_fraction",
+        profile.concentration_fraction,
+        "fraction",
+        "Chemical fraction in the product was supplied explicitly.",
+    )
+    tracker.add_user(
+        "use_events_per_day",
+        profile.use_events_per_day,
+        "events/day",
+        "Use frequency was supplied explicitly.",
+    )
+    tracker.add_derived(
+        "chemical_mass_mg_per_event",
+        chemical_mass_mg_event,
+        "mg/event",
+        "Product mass per event multiplied by concentration fraction.",
+    )
+
+    if profile.aerosolized_fraction is not None:
+        aerosolized_fraction = profile.aerosolized_fraction
+        tracker.add_user(
+            "aerosolized_fraction",
+            aerosolized_fraction,
+            "fraction",
+            "Aerosolized fraction was supplied explicitly.",
+        )
+    else:
+        aerosolized_fraction, source = registry.aerosolized_fraction(
+            profile.application_method,
+            profile.product_category,
+            profile.product_subtype,
+        )
+        tracker.add_default(
+            "aerosolized_fraction",
+            aerosolized_fraction,
+            "fraction",
+            source,
+            (
+                "Aerosolized fraction defaulted from "
+                f"application_method='{profile.application_method}' and "
+                f"product_category='{profile.product_category}'"
+                + (
+                    f" and product_subtype='{profile.product_subtype}'."
+                    if profile.product_subtype
+                    else "."
+                )
+            ),
+        )
+    _maybe_flag_missing_product_subtype(tracker, profile)
+
+    room_defaults, room_sources = registry.room_defaults(
+        population.region,
+        product_category=profile.product_category,
+        product_subtype=profile.product_subtype,
+        application_method=profile.application_method,
+    )
+    room_volume_m3 = profile.room_volume_m3
+    if room_volume_m3 is None:
+        room_volume_m3 = room_defaults["room_volume_m3"]
+        tracker.add_default(
+            "room_volume_m3",
+            room_volume_m3,
+            "m3",
+            room_sources["room_volume_m3"],
+            "Room volume defaulted from the shared inhalation defaults pack.",
+        )
+    else:
+        tracker.add_user(
+            "room_volume_m3", room_volume_m3, "m3", "Room volume was supplied explicitly."
+        )
+
+    air_exchange = profile.air_exchange_rate_per_hour
+    if air_exchange is None:
+        air_exchange = room_defaults["air_exchange_rate_per_hour"]
+        tracker.add_default(
+            "air_exchange_rate_per_hour",
+            air_exchange,
+            "1/h",
+            room_sources["air_exchange_rate_per_hour"],
+            "Air exchange rate defaulted from the shared inhalation defaults pack.",
+        )
+    else:
+        tracker.add_user(
+            "air_exchange_rate_per_hour",
+            air_exchange,
+            "1/h",
+            "Air exchange rate was supplied explicitly.",
+        )
+
+    exposure_duration_hours = profile.exposure_duration_hours
+    if exposure_duration_hours is None:
+        exposure_duration_hours = room_defaults["exposure_duration_hours"]
+        tracker.add_default(
+            "exposure_duration_hours",
+            exposure_duration_hours,
+            "h",
+            room_sources["exposure_duration_hours"],
+            "Exposure duration defaulted from the shared inhalation defaults pack.",
+        )
+    else:
+        tracker.add_user(
+            "exposure_duration_hours",
+            exposure_duration_hours,
+            "h",
+            "Exposure duration was supplied explicitly.",
+        )
+
+    inhalation_rate = resolve_population_value(
+        field_name="inhalation_rate_m3_per_hour",
+        supplied_value=population.inhalation_rate_m3_per_hour,
+        population_group=population.population_group,
+        registry=registry,
+        tracker=tracker,
+        unit="m3/h",
+        rationale="Inhalation rate was supplied explicitly.",
+        gt=0.0,
+    )
+    body_weight_kg = resolve_population_value(
+        field_name="body_weight_kg",
+        supplied_value=population.body_weight_kg,
+        population_group=population.population_group,
+        registry=registry,
+        tracker=tracker,
+        unit="kg",
+        rationale="Body weight was supplied explicitly for dose normalization.",
+        gt=0.0,
+    )
+    _record_physchem_context(tracker, request.physchem_context)
+
+    tracker.add_user(
+        "source_distance_m",
+        request.source_distance_m,
+        "m",
+        "Tier 1 source distance was supplied explicitly.",
+    )
+    tracker.add_user(
+        "spray_duration_seconds",
+        request.spray_duration_seconds,
+        "s",
+        "Tier 1 active spray duration was supplied explicitly.",
+    )
+    tracker.add_user(
+        "near_field_volume_m3",
+        request.near_field_volume_m3,
+        "m3",
+        "Tier 1 near-field volume was supplied explicitly.",
+    )
+    tracker.add_user(
+        "airflow_directionality",
+        request.airflow_directionality.value,
+        None,
+        "Tier 1 airflow directionality class was supplied explicitly.",
+    )
+    tracker.add_user(
+        "particle_size_regime",
+        request.particle_size_regime.value,
+        None,
+        "Tier 1 particle-size regime was supplied explicitly.",
+    )
+
+    spray_duration_hours = request.spray_duration_seconds / 3600.0
+    if spray_duration_hours > exposure_duration_hours:
+        raise ExposureScenarioError(
+            code="inhalation_tier_1_duration_inconsistent",
+            message=(
+                "Tier 1 spray_duration_seconds cannot exceed the resolved exposure duration."
+            ),
+            suggestion=(
+                "Shorten spray_duration_seconds or provide a longer exposure_duration_hours "
+                "for the inhalation event."
+            ),
+            details={
+                "sprayDurationSeconds": request.spray_duration_seconds,
+                "exposureDurationHours": exposure_duration_hours,
+            },
+        )
+    if request.near_field_volume_m3 >= room_volume_m3:
+        raise ExposureScenarioError(
+            code="inhalation_tier_1_near_field_volume_invalid",
+            message=(
+                "Tier 1 near_field_volume_m3 must be smaller than the resolved room volume."
+            ),
+            suggestion=(
+                "Provide a near-field compartment smaller than room_volume_m3 so a far-field "
+                "zone remains available."
+            ),
+            details={
+                "nearFieldVolumeM3": request.near_field_volume_m3,
+                "roomVolumeM3": room_volume_m3,
+            },
+        )
+
+    released_mass_mg_event = chemical_mass_mg_event * aerosolized_fraction
+    far_field_volume_m3 = room_volume_m3 - request.near_field_volume_m3
+
+    deposition_rate, deposition_source = registry.inhalation_deposition_rate_per_hour(
+        particle_size_regime=request.particle_size_regime.value,
+        application_method=profile.application_method,
+        physical_form=profile.physical_form,
+        product_subtype=profile.product_subtype,
+    )
+    tracker.add_default(
+        "deposition_rate_per_hour",
+        deposition_rate,
+        "1/h",
+        deposition_source,
+        "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+    )
+
+    if request.near_field_loss_rate_per_hour is not None:
+        k_nf = request.near_field_loss_rate_per_hour
+        tracker.add_user(
+            "near_field_loss_rate_per_hour",
+            k_nf,
+            "1/h",
+            "Near-field loss rate was supplied explicitly.",
+        )
+    else:
+        k_nf = deposition_rate
+        tracker.add_default(
+            "near_field_loss_rate_per_hour",
+            k_nf,
+            "1/h",
+            deposition_source,
+            "Near-field loss rate defaulted to the packaged deposition rate.",
+        )
+
+    if request.far_field_loss_rate_per_hour is not None:
+        k_ff = request.far_field_loss_rate_per_hour
+        tracker.add_user(
+            "far_field_loss_rate_per_hour",
+            k_ff,
+            "1/h",
+            "Far-field loss rate was supplied explicitly.",
+        )
+    else:
+        k_ff = deposition_rate
+        tracker.add_default(
+            "far_field_loss_rate_per_hour",
+            k_ff,
+            "1/h",
+            deposition_source,
+            "Far-field loss rate defaulted to the packaged deposition rate.",
+        )
+
+    q_room = air_exchange * room_volume_m3
+    tracker.add_derived(
+        "room_ventilation_flow_rate_m3_per_hour",
+        q_room,
+        "m3/h",
+        "Room ventilation flow = air_exchange_rate_per_hour x room_volume_m3.",
+    )
+
+    phi = request.ventilation_allocation_to_near_field_fraction
+    if phi is None:
+        phi = 0.0
+        tracker.add_default(
+            "ventilation_allocation_to_near_field_fraction",
+            phi,
+            "fraction",
+            tier_1_registry.source_reference(airflow_profile.source_id),
+            (
+                "Default production simplification assigns all room ventilation "
+                "to the far-field (phi = 0.0)."
+            ),
+        )
+    else:
+        tracker.add_user(
+            "ventilation_allocation_to_near_field_fraction",
+            phi,
+            "fraction",
+            "Ventilation allocation to the near-field was supplied explicitly.",
+        )
+
+    lambda_nf = k_nf + phi * q_room / request.near_field_volume_m3
+    lambda_ff = k_ff + (1.0 - phi) * q_room / far_field_volume_m3
+
+    near_field_exchange_turnover = airflow_profile.exchange_turnover_per_hour
+    local_entrainment_rates, local_entrainment_sources = registry.tier1_local_entrainment_rates(
+        application_method=profile.application_method
+    )
+    thermal_plume_rate = local_entrainment_rates["thermal_plume_rate_m3_per_hour"]
+    spray_jet_rate = local_entrainment_rates["spray_jet_rate_m3_per_hour"]
+    local_entrainment_rate = local_entrainment_rates["local_entrainment_rate_m3_per_hour"]
+
+    if request.interzonal_flow_rate_m3_per_hour is not None:
+        beta = request.interzonal_flow_rate_m3_per_hour
+        tracker.add_user(
+            "interzonal_flow_rate_m3_per_hour",
+            beta,
+            "m3/h",
+            "Interzonal flow rate was supplied explicitly.",
+        )
+        interzonal_mixing_floor_applied = False
+    else:
+        static_interzonal_mixing_rate = request.near_field_volume_m3 * near_field_exchange_turnover
+        interzonal_mixing_floor_applied = static_interzonal_mixing_rate < local_entrainment_rate
+        beta = max(static_interzonal_mixing_rate, local_entrainment_rate)
+        tracker.add_default(
+            "near_field_exchange_turnover_per_hour",
+            near_field_exchange_turnover,
+            "1/h",
+            tier_1_registry.source_reference(airflow_profile.source_id),
+            "Tier 1 screening turnover resolved from the packaged airflow-directionality profile.",
+        )
+        tracker.add_default(
+            "thermal_plume_rate_m3_per_hour",
+            thermal_plume_rate,
+            "m3/h",
+            local_entrainment_sources["thermal_plume_rate_m3_per_hour"],
+            "Tier 1 local entrainment floor includes a bounded thermal-plume entrainment term.",
+        )
+        tracker.add_default(
+            "spray_jet_rate_m3_per_hour",
+            spray_jet_rate,
+            "m3/h",
+            local_entrainment_sources["spray_jet_rate_m3_per_hour"],
+            (
+                "Tier 1 local entrainment floor includes a bounded spray-jet entrainment term "
+                "resolved from application method."
+            ),
+        )
+        tracker.add_derived(
+            "static_interzonal_mixing_rate_m3_per_hour",
+            static_interzonal_mixing_rate,
+            "m3/h",
+            "Static interzonal mixing rate = near-field volume x screening exchange turnover.",
+        )
+        tracker.add_derived(
+            "local_entrainment_rate_m3_per_hour",
+            local_entrainment_rate,
+            "m3/h",
+            (
+                "Bounded local entrainment floor = thermal-plume entrainment + "
+                "application-method spray-jet entrainment."
+            ),
+        )
+        tracker.add_derived(
+            "interzonal_mixing_floor_applied",
+            interzonal_mixing_floor_applied,
+            None,
+            "Whether the bounded local entrainment floor exceeded the static Tier 1 interzonal rate.",
+        )
+
+    tracker.add_derived(
+        "interzonal_flow_rate_m3_per_hour",
+        beta,
+        "m3/h",
+        "Resolved bidirectional interzonal airflow for the two-zone model.",
+    )
+
+    source_fraction_to_nf = request.source_allocation_to_near_field_fraction
+    if source_fraction_to_nf is None:
+        if matched_profile is not None and matched_profile.source_fraction_to_nf_default is not None:
+            source_fraction_to_nf = matched_profile.source_fraction_to_nf_default
+            tracker.add_default(
+                "source_fraction_to_near_field",
+                source_fraction_to_nf,
+                "fraction",
+                tier_1_registry.source_reference(matched_profile.source_id),
+                "Default source-to-NF fraction from the matched product profile.",
+            )
+        else:
+            source_fraction_to_nf = 1.0
+            tracker.add_default(
+                "source_fraction_to_near_field",
+                1.0,
+                "fraction",
+                tier_1_registry.source_reference(airflow_profile.source_id),
+                "Default production simplification places the entire source in the near-field (eta = 1.0).",
+            )
+    else:
+        tracker.add_user(
+            "source_fraction_to_near_field",
+            source_fraction_to_nf,
+            "fraction",
+            "Source allocation to the near-field was supplied explicitly.",
+        )
+
+    saturation_cap_mg_per_m3 = _inhalation_saturation_cap_mg_per_m3(
+        physchem_context=request.physchem_context,
+        profile=profile,
+        registry=registry,
+        tracker=tracker,
+    )
+    saturation_cap_applied = False
+
+    emission_rate_mg_per_hour = released_mass_mg_event / spray_duration_hours
+    tz_params = TwoZoneParams(
+        v_nf_m3=request.near_field_volume_m3,
+        v_ff_m3=far_field_volume_m3,
+        beta_m3_per_hour=beta,
+        lambda_nf_per_hour=lambda_nf,
+        lambda_ff_per_hour=lambda_ff,
+        source_fraction_to_nf=source_fraction_to_nf,
+    )
+    tz_result = solve_two_zone_piecewise_constant(
+        params=tz_params,
+        emission_rate_mg_per_hour=emission_rate_mg_per_hour,
+        spray_duration_hours=spray_duration_hours,
+        total_duration_hours=exposure_duration_hours,
+        q_room_m3_per_hour=q_room,
+        k_nf_per_hour=k_nf,
+        k_ff_per_hour=k_ff,
+        ventilation_allocation_to_near_field_fraction=phi,
+    )
+
+    if (
+        saturation_cap_mg_per_m3 is not None
+        and tz_result.near_field_peak_concentration_mg_per_m3 > saturation_cap_mg_per_m3
+    ):
+        tracker.add_quality_flag(
+            "two_zone_volatility_consistency_warning",
+            (
+                f"The uncapped near-field peak concentration "
+                f"({tz_result.near_field_peak_concentration_mg_per_m3:.4f} mg/m3) exceeds the "
+                f"thermodynamic saturation ceiling ({saturation_cap_mg_per_m3:.4f} mg/m3)."
+            ),
+            severity=Severity.WARNING,
+        )
+
+    inhaled_mass_mg_per_event = inhalation_rate * tz_result.near_field_time_integral_mg_h_per_m3
+    inhaled_mass_mg_day = inhaled_mass_mg_per_event * profile.use_events_per_day
+    extrathoracic_swallow_fraction = _extrathoracic_swallow_fraction(
+        profile=profile,
+        registry=registry,
+        tracker=tracker,
+        particle_size_regime=request.particle_size_regime.value,
+    )
+    swallowed_extrathoracic_mass_mg_day = inhaled_mass_mg_day * extrathoracic_swallow_fraction
+    lower_respiratory_inhaled_mass_mg_day = (
+        inhaled_mass_mg_day - swallowed_extrathoracic_mass_mg_day
+    )
+    normalized_dose = inhaled_mass_mg_day / body_weight_kg
+
+    if far_field_volume_m3 / room_volume_m3 < 0.01:
+        tracker.add_quality_flag(
+            "two_zone_far_field_volume_small",
+            (
+                "The far-field control volume is less than 1% of the room volume, "
+                "which can make the two-zone partitioning numerically sensitive."
+            ),
+            severity=Severity.WARNING,
+        )
+
+    route_metrics: dict[str, float | str | bool | None] = {
+        "chemical_mass_mg_per_event": round(chemical_mass_mg_event, 8),
+        "released_mass_mg_per_event": round(released_mass_mg_event, 8),
+        "far_field_volume_m3": round(far_field_volume_m3, 8),
+        "room_ventilation_flow_rate_m3_per_hour": round(q_room, 8),
+        "interzonal_flow_rate_m3_per_hour": round(beta, 8),
+        "near_field_loss_rate_per_hour": round(k_nf, 8),
+        "far_field_loss_rate_per_hour": round(k_ff, 8),
+        "source_fraction_to_near_field": round(source_fraction_to_nf, 8),
+        "ventilation_fraction_to_near_field": round(phi, 8),
+        "deposition_rate_per_hour": round(deposition_rate, 8),
+        "saturation_cap_mg_per_m3": (
+            round(saturation_cap_mg_per_m3, 8) if saturation_cap_mg_per_m3 is not None else None
+        ),
+        "saturation_cap_applied": saturation_cap_applied,
+        "far_field_average_air_concentration_mg_per_m3": round(
+            tz_result.far_field_average_concentration_mg_per_m3, 8
+        ),
+        "uncapped_far_field_average_air_concentration_mg_per_m3": round(
+            tz_result.far_field_average_concentration_mg_per_m3, 8
+        ),
+        "near_field_average_concentration_mg_per_m3": round(
+            tz_result.near_field_average_concentration_mg_per_m3, 8
+        ),
+        "near_field_peak_concentration_mg_per_m3": round(
+            tz_result.near_field_peak_concentration_mg_per_m3, 8
+        ),
+        "near_field_end_concentration_mg_per_m3": round(
+            tz_result.near_field_end_concentration_mg_per_m3, 8
+        ),
+        "far_field_peak_concentration_mg_per_m3": round(
+            tz_result.far_field_peak_concentration_mg_per_m3, 8
+        ),
+        "far_field_end_concentration_mg_per_m3": round(
+            tz_result.far_field_end_concentration_mg_per_m3, 8
+        ),
+        "initial_air_concentration_mg_per_m3": 0.0,
+        "air_concentration_at_event_end_mg_per_m3": round(
+            tz_result.near_field_end_concentration_mg_per_m3, 8
+        ),
+        "near_field_time_integral_mg_h_per_m3": round(
+            tz_result.near_field_time_integral_mg_h_per_m3, 8
+        ),
+        "far_field_time_integral_mg_h_per_m3": round(
+            tz_result.far_field_time_integral_mg_h_per_m3, 8
+        ),
+        "average_air_concentration_mg_per_m3": round(
+            tz_result.near_field_average_concentration_mg_per_m3, 8
+        ),
+        "uncapped_average_air_concentration_mg_per_m3": round(
+            tz_result.near_field_average_concentration_mg_per_m3, 8
+        ),
+        "breathing_zone_time_weighted_average_mg_per_m3": round(
+            tz_result.near_field_average_concentration_mg_per_m3, 8
+        ),
+        "mass_balance_residual_mg": round(tz_result.mass_balance_residual_mg, 8),
+        "inhaled_mass_mg_per_event": round(inhaled_mass_mg_per_event, 8),
+        "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
+        "extrathoracic_swallow_fraction": round(extrathoracic_swallow_fraction, 8),
+        "swallowed_extrathoracic_mass_mg_per_day": round(
+            swallowed_extrathoracic_mass_mg_day, 8
+        ),
+        "lower_respiratory_inhaled_mass_mg_per_day": round(
+            lower_respiratory_inhaled_mass_mg_day, 8
+        ),
+        "tier1_product_profile_id": matched_profile.profile_id if matched_profile else None,
+        "tier1_profile_alignment_status": profile_alignment_status,
+        "tier1_profile_divergence_count": len(profile_divergences),
+        "two_zone_solver_active": True,
+        "solver_variant": "two_zone_v1",
+    }
+    if request.physchem_context is not None:
+        if request.physchem_context.vapor_pressure_mmhg is not None:
+            route_metrics["vapor_pressure_mmhg"] = round(
+                request.physchem_context.vapor_pressure_mmhg, 8
+            )
+        if request.physchem_context.molecular_weight_g_per_mol is not None:
+            route_metrics["molecular_weight_g_per_mol"] = round(
+                request.physchem_context.molecular_weight_g_per_mol, 8
+            )
+
+    tracker.add_derived(
+        "released_mass_mg_per_event",
+        released_mass_mg_event,
+        "mg/event",
+        "Released mass = chemical mass per event x aerosolized fraction.",
+    )
+    tracker.add_derived(
+        "spray_duration_hours",
+        spray_duration_hours,
+        "h",
+        "Converted Tier 1 spray duration from seconds into hours.",
+    )
+    tracker.add_derived(
+        "far_field_volume_m3",
+        far_field_volume_m3,
+        "m3",
+        "Far-field volume = room volume minus near-field volume.",
+    )
+    tracker.add_derived(
+        "emission_rate_mg_per_hour",
+        emission_rate_mg_per_hour,
+        "mg/h",
+        "Constant mass emission rate into air during the active spray phase.",
+    )
+    tracker.add_derived(
+        "lambda_nf_per_hour",
+        lambda_nf,
+        "1/h",
+        "Near-field total loss rate = deposition + allocated ventilation.",
+    )
+    tracker.add_derived(
+        "lambda_ff_per_hour",
+        lambda_ff,
+        "1/h",
+        "Far-field total loss rate = deposition + allocated ventilation.",
+    )
+    tracker.add_derived(
+        "far_field_average_air_concentration_mg_per_m3",
+        tz_result.far_field_average_concentration_mg_per_m3,
+        "mg/m3",
+        "Far-field time-average concentration from the two-zone solver.",
+    )
+    tracker.add_derived(
+        "near_field_average_concentration_mg_per_m3",
+        tz_result.near_field_average_concentration_mg_per_m3,
+        "mg/m3",
+        "Near-field time-average concentration from the two-zone solver.",
+    )
+    tracker.add_derived(
+        "near_field_peak_concentration_mg_per_m3",
+        tz_result.near_field_peak_concentration_mg_per_m3,
+        "mg/m3",
+        "Near-field peak concentration at end-of-spray from the two-zone solver.",
+    )
+    tracker.add_derived(
+        "near_field_end_concentration_mg_per_m3",
+        tz_result.near_field_end_concentration_mg_per_m3,
+        "mg/m3",
+        "Near-field concentration at end-of-event from the two-zone solver.",
+    )
+    tracker.add_derived(
+        "far_field_peak_concentration_mg_per_m3",
+        tz_result.far_field_peak_concentration_mg_per_m3,
+        "mg/m3",
+        "Far-field peak concentration at end-of-spray from the two-zone solver.",
+    )
+    tracker.add_derived(
+        "far_field_end_concentration_mg_per_m3",
+        tz_result.far_field_end_concentration_mg_per_m3,
+        "mg/m3",
+        "Far-field concentration at end-of-event from the two-zone solver.",
+    )
+    tracker.add_derived(
+        "near_field_time_integral_mg_h_per_m3",
+        tz_result.near_field_time_integral_mg_h_per_m3,
+        "mg*h/m3",
+        "Time-integrated near-field concentration from the two-zone solver.",
+    )
+    tracker.add_derived(
+        "far_field_time_integral_mg_h_per_m3",
+        tz_result.far_field_time_integral_mg_h_per_m3,
+        "mg*h/m3",
+        "Time-integrated far-field concentration from the two-zone solver.",
+    )
+    tracker.add_derived(
+        "mass_balance_residual_mg",
+        tz_result.mass_balance_residual_mg,
+        "mg",
+        "Algebraic mass-balance residual checked against emitted, final, ventilation, and deposition masses.",
+    )
+    tracker.add_derived(
+        "inhaled_mass_mg_per_event",
+        inhaled_mass_mg_per_event,
+        "mg/event",
+        "Inhaled mass per event = inhalation rate x near-field time integral.",
+    )
+    tracker.add_derived(
+        "inhaled_mass_mg_per_day",
+        inhaled_mass_mg_day,
+        "mg/day",
+        "Daily inhaled mass equals inhaled mass per event multiplied by events/day.",
+    )
+    tracker.add_derived(
+        "swallowed_extrathoracic_mass_mg_per_day",
+        swallowed_extrathoracic_mass_mg_day,
+        "mg/day",
+        "Extrathoracic swallowed mass per day derived from the bounded swallowed fraction.",
+    )
+    tracker.add_derived(
+        "lower_respiratory_inhaled_mass_mg_per_day",
+        lower_respiratory_inhaled_mass_mg_day,
+        "mg/day",
+        "Lower-respiratory inhaled mass per day after subtracting the extrathoracic swallowed share.",
+    )
+    tracker.add_derived(
+        "normalized_external_dose_mg_per_kg_day",
+        normalized_dose,
+        "mg/kg-day",
+        "Normalized external dose = inhaled mass per day / body weight.",
+    )
+
+    tracker.add_quality_flag(
+        "two_zone_mass_balance_active",
+        "Tier 1 inhalation was executed with a deterministic two-zone mass-balance solver.",
+        severity=Severity.INFO,
+    )
+    if request.interzonal_flow_rate_m3_per_hour is not None:
+        tracker.add_quality_flag(
+            "two_zone_user_beta_override",
+            "The user supplied an explicit interzonal_flow_rate_m3_per_hour override.",
+            severity=Severity.INFO,
+        )
+    if source_fraction_to_nf < 1.0:
+        tracker.add_quality_flag(
+            "two_zone_source_outside_nf_volume",
+            "A fraction of the source was allocated to the far-field (eta < 1.0).",
+            severity=Severity.INFO,
+        )
+    if matched_profile is not None and profile_divergences:
+        tracker.add_quality_flag(
+            "tier1_profile_anchor_divergence",
+            (
+                "Caller-supplied Tier 1 inputs diverge materially from the matched packaged "
+                f"profile `{matched_profile.profile_id}`: " + "; ".join(profile_divergences) + "."
+            ),
+            severity=Severity.WARNING,
+        )
+    if matched_profile is None:
+        tracker.add_quality_flag(
+            "tier1_profile_no_packaged_match",
+            (
+                "No packaged Tier 1 profile matched the current product family and application "
+                "method"
+                + (
+                    f" for product_subtype='{profile.product_subtype}'"
+                    if profile.product_subtype
+                    else ""
+                )
+                + "; screening geometry and regime inputs remain fully caller-defined."
+            ),
+            severity=Severity.INFO,
+        )
+
+    tracker.add_limitation(
+        "two_zone_deterministic_solver",
+        (
+            "Tier 1 two-zone uses an exact analytical solution to a deterministic 2x2 linear "
+            "ODE system. It does not resolve droplet evaporation, polydisperse aerosol dynamics, "
+            "or directional jet geometry."
+        ),
+    )
+    if interzonal_mixing_floor_applied:
+        tracker.add_limitation(
+            "tier1_local_entrainment_floor_screening",
+            (
+                "Tier 1 NF/FF applied a bounded local entrainment floor from thermal-plume and "
+                "spray-jet heuristics because the static interzonal rate was weaker. This is a "
+                "screening lower bound on local mixing, not a measured plume or jet-resolved "
+                "airflow profile."
+            ),
+        )
+    tracker.add_limitation(
+        "particle_regime_screening",
+        (
+            "Particle-size effects use bounded screening persistence and deposition terms and "
+            "do not model droplet evaporation or full aerosol dynamics."
+        ),
+    )
+
+    scenario = ExposureScenario(
+        scenario_id=f"inh-tier1-2z-{uuid4().hex[:10]}",
+        chemical_id=request.chemical_id,
+        chemical_name=request.chemical_name,
+        route=Route.INHALATION,
+        scenario_class=ScenarioClass.INHALATION,
+        external_dose=ScenarioDose(
+            metric="normalized_external_dose",
+            value=round(normalized_dose, 8),
+            unit=DoseUnit.MG_PER_KG_DAY,
+        ),
+        product_use_profile=profile.model_copy(
+            update={"exposure_duration_hours": exposure_duration_hours}
+        ),
+        population_profile=population.model_copy(
+            update={
+                "body_weight_kg": body_weight_kg,
+                "inhalation_rate_m3_per_hour": inhalation_rate,
+            }
+        ),
+        route_metrics=route_metrics,
+        assumptions=tracker.assumptions,
+        provenance=tracker.provenance(
+            plugin_id="inhalation_tier_1_two_zone_service",
+            algorithm_id="inhalation.two_zone.v1",
+            generated_at=generated_at,
+        ),
+        limitations=tracker.limitations,
+        quality_flags=tracker.quality_flags,
+        fit_for_purpose=tracker.fit_for_purpose("inhalation_tier_1_two_zone"),
+        tier_semantics=tracker.tier_semantics(
+            tier_claimed=TierLevel.TIER_1,
+            tier_rationale=(
+                "Inhalation output uses a deterministic mass-conserving two-zone "
+                "near-field/far-field solver for spray events with explicit geometry and "
+                "airflow-class inputs."
+            ),
+            required_caveats=[
+                "Interpret the near-field compartment as a governed screening construct rather "
+                "than a measured CFD domain.",
+                "The airflow directionality and particle regime terms remain screening "
+                "classifications, not measured aerosol dynamics.",
+                "Very weak static interzonal mixing can be bounded upward by a local "
+                "entrainment floor from thermal-plume and spray-jet heuristics.",
+                "The two-zone solver assumes a well-mixed near-field control volume and does "
+                "not resolve directional jet cones or body wakes.",
+            ],
+            forbidden_interpretations=[
+                "Do not interpret this result as deposited dose, absorbed dose, or a PBPK state.",
+                "Do not treat the screening exchange mapping as a validated transient aerosol "
+                "dispersion model.",
+                "Do not treat the result as a final risk conclusion.",
+            ],
+        ),
+        interpretation_notes=[
+            "Deterministic Tier 1 inhalation scenario with a mass-conserving two-zone "
+            "near-field/far-field model.",
+            "The breathing-zone concentration equals the near-field concentration for the full "
+            "event duration.",
+            *(
+                [
+                    "Matched packaged Tier 1 screening profile "
+                    f"`{matched_profile.profile_id}`; caller-supplied Tier 1 geometry and "
+                    "regime inputs remain authoritative."
+                ]
+                if matched_profile is not None
+                else []
+            ),
+            *(
+                [
+                    "Tier 1 profile alignment warning: " + "; ".join(profile_divergences) + "."
+                ]
+                if profile_divergences
+                else []
+            ),
+            *(
+                [
+                    "No packaged Tier 1 profile matched this product family/application "
+                    "method combination."
+                ]
+                if matched_profile is None
+                else []
+            ),
+        ],
+        tierUpgradeAdvisories=[],
+    )
+    return apply_worker_task_semantics(scenario, request, registry=registry)
+
+
+def _can_auto_select_two_zone(
+    request: InhalationTier1ScenarioRequest,
+    matched_profile,
+    saturation_cap_applied: bool,
+) -> bool:
+    """Return True only when all migration gating conditions are satisfied."""
+    if request.product_use_profile.application_method not in TIER_1_SPRAY_METHODS:
+        return False
+    if saturation_cap_applied:
+        return False
+    if matched_profile is None or not matched_profile.supports_two_zone:
+        return False
+    # Migration lock stub – reserved for future benchmark-family locking.
+    return True
+
+
 def build_inhalation_tier_1_screening_scenario(
     request: InhalationTier1ScenarioRequest,
     registry: DefaultsRegistry,
     *,
     profile_registry: Tier1InhalationProfileRegistry | None = None,
     generated_at: str | None = None,
+) -> ExposureScenario:
+    variant = request.solver_variant
+    if variant == "auto":
+        tier_1_registry = profile_registry or Tier1InhalationProfileRegistry.load()
+        matched_profiles = tier_1_registry.matching_profiles(
+            product_family=request.product_use_profile.product_category,
+            application_method=request.product_use_profile.application_method,
+            product_subtype=request.product_use_profile.product_subtype,
+        )
+        matched_profile = matched_profiles[0] if matched_profiles else None
+        # Note: saturation_cap_applied is not known yet here; we conservatively
+        # assume False for the auto gate. The two-zone builder will re-evaluate.
+        if TIER1_TWO_ZONE_AUTO_ENABLED and _can_auto_select_two_zone(
+            request, matched_profile, saturation_cap_applied=False
+        ):
+            variant = "two_zone_v1"
+        else:
+            variant = "heuristic_v1"
+    if variant == "two_zone_v1":
+        return _build_inhalation_tier_1_two_zone_scenario(
+            request, registry, profile_registry=profile_registry, generated_at=generated_at
+        )
+    return _build_inhalation_tier_1_heuristic_scenario(
+        request,
+        registry,
+        profile_registry=profile_registry,
+        generated_at=generated_at,
+        fallback_variant="auto" if request.solver_variant == "auto" else None,
+    )
+
+
+def _build_inhalation_tier_1_heuristic_scenario(
+    request: InhalationTier1ScenarioRequest,
+    registry: DefaultsRegistry,
+    *,
+    profile_registry: Tier1InhalationProfileRegistry | None = None,
+    generated_at: str | None = None,
+    fallback_variant: str | None = None,
 ) -> ExposureScenario:
     tracker = AssumptionTracker(registry=registry)
     tracker.set_context(
@@ -1021,6 +1931,15 @@ def build_inhalation_tier_1_screening_scenario(
                     else ""
                 )
                 + "; screening geometry and regime inputs remain fully caller-defined."
+            ),
+            severity=Severity.INFO,
+        )
+    if fallback_variant == "auto":
+        tracker.add_quality_flag(
+            "two_zone_legacy_fallback_applied",
+            (
+                "Auto routing fell back to heuristic_v1 because two-zone auto-enable "
+                "conditions were not met."
             ),
             severity=Severity.INFO,
         )
@@ -1982,7 +2901,6 @@ class InhalationScreeningPlugin(ScenarioPlugin):
                 triggerCodes=trigger_codes,
                 requiredInputs=tier_1_input_requirements(),
                 blockingGaps=[
-                    "tier_1_solver_not_implemented",
                     "tier_1_validation_evidence_incomplete",
                 ],
                 guidanceResource=TIER_1_GUIDANCE_RESOURCE,
@@ -2000,24 +2918,22 @@ class InhalationScreeningPlugin(ScenarioPlugin):
         registry = context.registry
 
         if request.requested_tier == TierLevel.TIER_1:
-            raise ExposureScenarioError(
-                code="inhalation_tier_1_not_implemented",
-                message=(
-                    "Tier 1 inhalation was requested, but v0.1.0 only implements the Tier-0 "
-                    "well-mixed room model."
-                ),
-                suggestion=(
-                    "Use requestedTier=`tier_0` for the current screening model and inspect "
-                    "`docs://inhalation-tier-upgrade-guide`, any emitted "
-                    "`tierUpgradeAdvisories`, or call "
-                    "`exposure_build_inhalation_tier1_screening_scenario` with the "
-                    "governed Tier 1 request fields."
-                ),
-                details={
-                    "requestedTier": request.requested_tier.value,
-                    "guidanceResource": TIER_1_GUIDANCE_RESOURCE,
-                    "stubTool": "exposure_build_inhalation_tier1_screening_scenario",
-                },
+            if not isinstance(request, InhalationTier1ScenarioRequest):
+                raise ExposureScenarioError(
+                    code="inhalation_tier_1_requires_specialized_request",
+                    message=(
+                        "Tier 1 inhalation screening requires an InhalationTier1ScenarioRequest."
+                    ),
+                    suggestion=(
+                        "Construct an InhalationTier1ScenarioRequest with the required "
+                        "Tier-1 fields (source_distance_m, near_field_volume_m3, etc.), or "
+                        "use the dedicated exposure_build_inhalation_tier1_screening_scenario tool."
+                    ),
+                )
+            return build_inhalation_tier_1_screening_scenario(
+                request,
+                registry,
+                generated_at=None,
             )
 
         product_mass_g_event = resolve_product_mass_g(

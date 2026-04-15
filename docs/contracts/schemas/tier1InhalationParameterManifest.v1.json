@@ -169,6 +169,102 @@
           "description": "Interpretation note for the profile.",
           "title": "Note",
           "type": "string"
+        },
+        "supportsTwoZone": {
+          "default": false,
+          "description": "Whether this product profile has been cleared for the two-zone solver.",
+          "title": "Supportstwozone",
+          "type": "boolean"
+        },
+        "sourceFractionToNfDefault": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default source allocation to the near-field for two-zone execution.",
+          "title": "Sourcefractiontonfdefault"
+        },
+        "ventilationFractionToNfDefault": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default ventilation allocation to the near-field for two-zone execution.",
+          "title": "Ventilationfractiontonfdefault"
+        },
+        "nfGeometryKind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Near-field geometry classification for two-zone parameterization.",
+          "title": "Nfgeometrykind"
+        },
+        "nfEquivalentRadiusM": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Near-field equivalent radius used for free-surface-area estimates.",
+          "title": "Nfequivalentradiusm"
+        },
+        "nfFreeSurfaceAreaM2": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Near-field free surface area used for entrainment estimates.",
+          "title": "Nffreesurfaceaream2"
+        },
+        "twoZoneValidationStatus": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Migration status of this profile for two-zone benchmarking.",
+          "title": "Twozonevalidationstatus"
+        },
+        "depositionMappingVersion": {
+          "default": "v1",
+          "description": "Version of the deposition-mapping logic tied to this profile.",
+          "title": "Depositionmappingversion",
+          "type": "string"
         }
       },
       "required": [

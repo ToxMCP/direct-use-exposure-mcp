@@ -886,7 +886,7 @@
               "title": "Direct-Use Exposure MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "b0d661f9634a7cf8281f43e20190d33a038131c7f836c9110ba7aa93488ab931"
+              "hash_sha256": "5a69e0995fb59528a963c2df05c4aa38232d2835ab165dc1435957521f635499"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -988,7 +988,7 @@
               "title": "Direct-Use Exposure MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "b0d661f9634a7cf8281f43e20190d33a038131c7f836c9110ba7aa93488ab931"
+              "hash_sha256": "5a69e0995fb59528a963c2df05c4aa38232d2835ab165dc1435957521f635499"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1672,6 +1672,11 @@
             "code": "tier_1_nf_ff_screening",
             "severity": "info",
             "message": "Tier 1 inhalation resolves a screening near-field/far-field split, but remains a deterministic external-dose model rather than a calibrated aerosol simulator."
+          },
+          {
+            "code": "two_zone_legacy_fallback_applied",
+            "severity": "info",
+            "message": "Auto routing fell back to heuristic_v1 because two-zone auto-enable conditions were not met."
           }
         ],
         "fit_for_purpose": {
@@ -2940,7 +2945,7 @@
               "title": "Direct-Use Exposure MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "b0d661f9634a7cf8281f43e20190d33a038131c7f836c9110ba7aa93488ab931"
+              "hash_sha256": "5a69e0995fb59528a963c2df05c4aa38232d2835ab165dc1435957521f635499"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3042,7 +3047,7 @@
               "title": "Direct-Use Exposure MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "b0d661f9634a7cf8281f43e20190d33a038131c7f836c9110ba7aa93488ab931"
+              "hash_sha256": "5a69e0995fb59528a963c2df05c4aa38232d2835ab165dc1435957521f635499"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3726,6 +3731,11 @@
             "code": "tier_1_nf_ff_screening",
             "severity": "info",
             "message": "Tier 1 inhalation resolves a screening near-field/far-field split, but remains a deterministic external-dose model rather than a calibrated aerosol simulator."
+          },
+          {
+            "code": "two_zone_legacy_fallback_applied",
+            "severity": "info",
+            "message": "Auto routing fell back to heuristic_v1 because two-zone auto-enable conditions were not met."
           }
         ],
         "fit_for_purpose": {
@@ -4994,7 +5004,7 @@
               "title": "Direct-Use Exposure MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "b0d661f9634a7cf8281f43e20190d33a038131c7f836c9110ba7aa93488ab931"
+              "hash_sha256": "5a69e0995fb59528a963c2df05c4aa38232d2835ab165dc1435957521f635499"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -5096,7 +5106,7 @@
               "title": "Direct-Use Exposure MCP Tier 1 NF/FF screening parameter pack",
               "locator": "docs://tier1-inhalation-parameter-guide#parameter-pack",
               "version": "2026.03.25.v1",
-              "hash_sha256": "b0d661f9634a7cf8281f43e20190d33a038131c7f836c9110ba7aa93488ab931"
+              "hash_sha256": "5a69e0995fb59528a963c2df05c4aa38232d2835ab165dc1435957521f635499"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -5780,6 +5790,11 @@
             "code": "tier_1_nf_ff_screening",
             "severity": "info",
             "message": "Tier 1 inhalation resolves a screening near-field/far-field split, but remains a deterministic external-dose model rather than a calibrated aerosol simulator."
+          },
+          {
+            "code": "two_zone_legacy_fallback_applied",
+            "severity": "info",
+            "message": "Auto routing fell back to heuristic_v1 because two-zone auto-enable conditions were not met."
           }
         ],
         "fit_for_purpose": {

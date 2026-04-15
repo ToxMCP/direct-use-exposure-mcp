@@ -114,7 +114,13 @@
         "spray_duration_seconds": 10.0,
         "near_field_volume_m3": 2.0,
         "airflow_directionality": "cross_draft",
-        "particle_size_regime": "coarse_spray"
+        "particle_size_regime": "coarse_spray",
+        "solverVariant": "auto",
+        "interzonalFlowRateM3PerHour": null,
+        "nearFieldLossRatePerHour": null,
+        "farFieldLossRatePerHour": null,
+        "sourceAllocationToNearFieldFraction": null,
+        "ventilationAllocationToNearFieldFraction": null
       },
       "workerRoutingDecision": {
         "schema_version": "workerTaskRoutingDecision.v1",
@@ -568,7 +574,13 @@
             "spray_duration_seconds": 10.0,
             "near_field_volume_m3": 2.0,
             "airflow_directionality": "cross_draft",
-            "particle_size_regime": "coarse_spray"
+            "particle_size_regime": "coarse_spray",
+            "solverVariant": "auto",
+            "interzonalFlowRateM3PerHour": null,
+            "nearFieldLossRatePerHour": null,
+            "farFieldLossRatePerHour": null,
+            "sourceAllocationToNearFieldFraction": null,
+            "ventilationAllocationToNearFieldFraction": null
           },
           "workerRoutingDecision": {
             "schema_version": "workerTaskRoutingDecision.v1",

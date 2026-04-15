@@ -435,6 +435,8 @@ def apply_worker_task_semantics(
     request,
     registry: DefaultsRegistry | None = None,
 ) -> ExposureScenario:
+    if scenario.route_metrics.get("worker_context_detected") is True:
+        return scenario
     routing = route_worker_task(
         WorkerTaskRoutingInput(
             chemical_id=getattr(request, "chemical_id", None),

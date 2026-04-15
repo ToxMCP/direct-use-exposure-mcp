@@ -120,12 +120,7 @@ def test_inhalation_requested_tier_1_fails_loudly() -> None:
     with pytest.raises(ExposureScenarioError) as exc_info:
         engine.build(request)
 
-    assert exc_info.value.code == "inhalation_tier_1_not_implemented"
-    assert exc_info.value.details["guidanceResource"] == "docs://inhalation-tier-upgrade-guide"
-    assert (
-        exc_info.value.details["stubTool"]
-        == "exposure_build_inhalation_tier1_screening_scenario"
-    )
+    assert exc_info.value.code == "inhalation_tier_1_requires_specialized_request"
 
 
 def test_inhalation_tier_1_request_rejects_non_spray_scope() -> None:
