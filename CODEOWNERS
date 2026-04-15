@@ -1,0 +1,22 @@
+# Default owners for everything in the repo.
+* @ToxMCP/maintainers
+
+# Core engine, runtime, and plugins.
+src/exposure_scenario_mcp/runtime.py @ToxMCP/maintainers
+src/exposure_scenario_mcp/plugins/ @ToxMCP/maintainers
+src/exposure_scenario_mcp/server*.py @ToxMCP/maintainers
+
+# Contracts, schemas, and validation.
+schemas/ @ToxMCP/maintainers
+src/exposure_scenario_mcp/contracts.py @ToxMCP/maintainers
+src/exposure_scenario_mcp/validation*.py @ToxMCP/maintainers
+
+# Defaults and archetypes (scientific curation).
+defaults/ @ToxMCP/maintainers
+archetypes/ @ToxMCP/maintainers
+probability_bounds/ @ToxMCP/maintainers
+tier1_inhalation/ @ToxMCP/maintainers
+
+# CI and release automation.
+.github/workflows/ @ToxMCP/maintainers
+scripts/ @ToxMCP/maintainers

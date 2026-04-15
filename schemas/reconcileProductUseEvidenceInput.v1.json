@@ -1227,6 +1227,7 @@
       "items": {
         "$ref": "#/$defs/ProductUseEvidenceRecord"
       },
+      "maxItems": 100,
       "minItems": 1,
       "title": "Evidencerecords",
       "type": "array"

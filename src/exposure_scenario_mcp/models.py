@@ -1803,7 +1803,7 @@ class InhalationResidualAirReentryScenarioRequest(InhalationScenarioRequest):
             "Optional first-order treated-surface emission rate used only for native "
             "treated-surface reentry mode."
         ),
-        ge=0.0,
+        gt=0.0,
     )
     additional_decay_rate_per_hour: float | None = Field(
         default=None,
@@ -2340,7 +2340,7 @@ class BuildAggregateExposureScenarioInput(StrictModel):
         ),
     )
     component_scenarios: list[ExposureScenario] = Field(
-        ..., min_length=1, description="Component scenarios to aggregate."
+        ..., min_length=1, max_length=50, description="Component scenarios to aggregate."
     )
 
 

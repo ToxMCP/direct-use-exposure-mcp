@@ -896,6 +896,7 @@ class ReconcileProductUseEvidenceInput(StrictModel):
     evidence_records: list[ProductUseEvidenceRecord] = Field(
         ...,
         min_length=1,
+        max_length=100,
         description="Evidence records to compare and reconcile.",
         alias="evidenceRecords",
     )

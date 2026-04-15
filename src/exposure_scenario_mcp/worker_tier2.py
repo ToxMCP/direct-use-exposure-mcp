@@ -10,7 +10,7 @@ from enum import StrEnum
 from io import StringIO
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field, ValidationError, model_validator
 
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest
 from exposure_scenario_mcp.defaults import DefaultsRegistry
@@ -1768,11 +1768,11 @@ def _base_request_from_supporting_handoffs(
     if "sourceDistanceM" in payload or "source_distance_m" in payload:
         try:
             return InhalationTier1ScenarioRequest.model_validate(payload)
-        except Exception:
+        except ValidationError:
             return None
     try:
         return InhalationScenarioRequest.model_validate(payload)
-    except Exception:
+    except ValidationError:
         return None
 
 

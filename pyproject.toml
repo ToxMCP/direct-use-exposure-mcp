@@ -20,6 +20,7 @@ dev = [
 exposure-scenario-mcp = "exposure_scenario_mcp.__main__:main"
 generate-exposure-contracts = "scripts.generate_contract_assets:main"
 check-exposure-release-artifacts = "scripts.check_release_artifacts:main"
+validate-evals = "scripts.validate_evals:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -45,6 +46,14 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+extend-exclude = [
+  "fix_*.py",
+  "generate_parkinson_pbpk.py",
+  "generate_thyroid_bounds.py",
+  "scripts/generate_mcp_technical_reference_pdf.py",
+  "scripts/generate_vhp4safety_*_pdf.py",
+  "scripts/generate_vhp4safety_suite_pdfs.py",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from mcp.server.fastmcp import FastMCP
 from mcp.types import CallToolResult, TextContent
 
@@ -22,6 +24,8 @@ from exposure_scenario_mcp.server_tools_integration import register_integration_
 from exposure_scenario_mcp.server_tools_worker import register_worker_tools
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 
+_logger = logging.getLogger("exposure_scenario_mcp.server")
+
 
 def _success_result(message: str, payload_model) -> CallToolResult:
     return CallToolResult(
@@ -32,6 +36,7 @@ def _success_result(message: str, payload_model) -> CallToolResult:
 
 
 def _error_result(error: ExposureScenarioError) -> CallToolResult:
+    _logger.warning("Tool error: %s - %s", error.code, error.message)
     return CallToolResult(
         _meta=build_tool_result_meta(result_status="failed", error=error),
         isError=True,
@@ -62,10 +67,19 @@ def create_mcp_server() -> FastMCP:
         engine=engine,
     )
 
+    _logger.info(
+        "Loading registries: defaults=%s archetypes=%s profiles=%s packages=%s tier1=%s",
+        defaults_registry.version,
+        archetype_library.version,
+        probability_profiles.version,
+        scenario_probability_packages.version,
+        tier1_inhalation_profiles.version,
+    )
     mcp = FastMCP("exposure_scenario_mcp")
     register_core_tools(mcp, context, _success_result, _error_result)
     register_integration_tools(mcp, context, _success_result, _error_result)
-    register_worker_tools(mcp, context, _success_result)
+    register_worker_tools(mcp, context, _success_result, _error_result)
     register_resources(mcp, context)
     register_prompts(mcp)
+    _logger.info("MCP server initialized")
     return mcp

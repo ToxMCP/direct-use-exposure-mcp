@@ -16,8 +16,15 @@ This MCP is safest over `stdio`. If you expose `streamable-http`, harden the dep
 - Terminate TLS at a gateway or reverse proxy
 - Enforce bearer-token or equivalent upstream authentication
 - Restrict allowed origins to trusted clients only
-- Set request-size limits appropriate for the schema surface
+- Set request-size limits appropriate for the schema surface (suggest ≤10 MB)
+- Set gateway-level request timeouts (suggest 30–60 s for screening tools, 120 s for envelope or probability-bound builds)
 - Capture structured access logs with timestamps and client identity
+
+## Request and execution guardrails
+
+- Input schemas enforce `max_length` on the highest-volume list fields (e.g. aggregate component scenarios, evidence reconciliation records).
+- Very large payloads should be rejected at the gateway or reverse-proxy layer before they reach the deterministic engine.
+- Long-running calculations (Tier B envelopes, Tier C probability bounds, integrated workflows) are bounded but not internally timed-out. Set upstream timeouts based on your latency requirements.
 
 ## Operator expectations
 
@@ -33,5 +40,6 @@ This MCP does not ship:
 - built-in identity management
 - built-in API gateway policy enforcement
 - turnkey public SaaS deployment controls
+- internal execution timeouts or request-size middleware (these belong at the deployment boundary)
 
 Those controls belong to the deployment environment, not the deterministic exposure engine.

@@ -2041,6 +2041,7 @@
       "items": {
         "$ref": "#/$defs/ExposureScenario"
       },
+      "maxItems": 50,
       "minItems": 1,
       "title": "Component Scenarios",
       "type": "array"

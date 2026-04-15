@@ -495,6 +495,11 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """JSON Schema for a public request or response model."""
 
         payload = schema_payloads()
+        if schema_name not in payload:
+            return json.dumps(
+                {"error": f"Schema '{schema_name}' not found."},
+                indent=2,
+            )
         return json.dumps(payload[schema_name], indent=2)
 
     @mcp.resource("examples://{example_name}")
@@ -502,6 +507,11 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """Generated example request or output payload."""
 
         payload = build_examples()
+        if example_name not in payload:
+            return json.dumps(
+                {"error": f"Example '{example_name}' not found."},
+                indent=2,
+            )
         return json.dumps(payload[example_name], indent=2)
 
 
