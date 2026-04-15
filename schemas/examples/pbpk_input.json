@@ -28,7 +28,8 @@
     "transfer_efficiency",
     "external_mass_mg_per_day",
     "exposed_surface_area_cm2",
-    "product_loading_mg_per_cm2_per_event",
+    "product_mass_loading_mg_per_cm2_per_event",
+    "chemical_loading_mg_per_cm2_per_event",
     "normalized_external_dose_mg_per_kg_day"
   ],
   "provenance": {

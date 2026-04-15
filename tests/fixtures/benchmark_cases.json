@@ -1625,6 +1625,7 @@
         "absolute_delta": 0.5,
         "percent_delta": null,
         "changed_assumptions": [
+          "chemical_loading_mg_per_cm2_per_event",
           "chemical_mass_mg_per_event",
           "concentration_fraction",
           "external_mass_mg_per_day",
@@ -1677,7 +1678,7 @@
           "body_weight_kg": 80.0,
           "region": "EU"
         },
-        "supporting_assumption_count": 12
+        "supporting_assumption_count": 13
       }
     },
     {

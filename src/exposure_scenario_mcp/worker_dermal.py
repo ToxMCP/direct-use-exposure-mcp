@@ -2614,6 +2614,19 @@ def execute_worker_dermal_absorbed_dose_task(
                 )
             )
 
+    if body_zone_area_cm2 <= 0.0:
+        raise ExposureScenarioError(
+            code="worker_dermal_body_zone_area_not_positive",
+            message=(
+                f"body_zone_area_cm2 must be positive but received {body_zone_area_cm2}."
+            ),
+            suggestion=(
+                "Provide a positive exposedSurfaceAreaCm2 override or select a body-zone "
+                "profile with a positive surface area default."
+            ),
+            details={"body_zone_area_cm2": body_zone_area_cm2},
+        )
+
     gross_external_mass_mg_day = external_mass_mg_day
     retained_external_mass_mg_day = external_mass_mg_day
     runoff_mass_mg_day = 0.0

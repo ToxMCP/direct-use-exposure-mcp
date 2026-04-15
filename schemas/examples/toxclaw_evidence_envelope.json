@@ -41,6 +41,11 @@
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'exposed_surface_area_cm2'."
+    },
+    {
+      "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
+      "severity": "warning",
+      "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
     }
   ],
   "provenance": {
@@ -115,7 +120,9 @@
       "chemical_mass_mg_per_event": 30.0,
       "external_mass_mg_per_day": 90.0,
       "surface_loading_mg_per_cm2_day": 0.01578947,
-      "product_loading_mg_per_cm2_per_event": 0.26315789
+      "product_loading_mg_per_cm2_per_event": 0.26315789,
+      "product_mass_loading_mg_per_cm2_per_event": 0.26315789,
+      "chemical_loading_mg_per_cm2_per_event": 0.00526316
     },
     "assumptions": [
       {
@@ -453,7 +460,7 @@
       },
       {
         "schema_version": "exposureAssumptionRecord.v1",
-        "name": "product_loading_mg_per_cm2_per_event",
+        "name": "product_mass_loading_mg_per_cm2_per_event",
         "value": 0.2631578947368421,
         "unit": "mg/cm2/event",
         "source_kind": "derived",
@@ -466,7 +473,42 @@
         },
         "confidence": "deterministic_derived",
         "default_applied": false,
-        "rationale": "Product loading = product mass per event / exposed surface area.",
+        "rationale": "Product mass loading = product mass per event / exposed surface area.",
+        "governance": {
+          "evidence_grade": null,
+          "evidence_basis": "derived",
+          "default_visibility": "silent_traceable",
+          "applicability_status": "derived",
+          "uncertainty_types": [],
+          "applicability_domain": {
+            "route": "dermal",
+            "scenario_class": "screening",
+            "product_category": "personal_care",
+            "physical_form": "cream",
+            "application_method": "hand_application",
+            "retention_type": "leave_on",
+            "population_group": "adult",
+            "demographic_tags": "consumer,general_population",
+            "region": "EU"
+          }
+        }
+      },
+      {
+        "schema_version": "exposureAssumptionRecord.v1",
+        "name": "chemical_loading_mg_per_cm2_per_event",
+        "value": 0.005263157894736842,
+        "unit": "mg/cm2/event",
+        "source_kind": "derived",
+        "source": {
+          "source_id": "exposure_scenario_mcp",
+          "title": "Direct-Use Exposure MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
+        },
+        "confidence": "deterministic_derived",
+        "default_applied": false,
+        "rationale": "Chemical loading = chemical mass per event / exposed surface area.",
         "governance": {
           "evidence_grade": null,
           "evidence_basis": "derived",
@@ -559,6 +601,11 @@
         "code": "default_applied",
         "severity": "info",
         "message": "Default value applied for 'exposed_surface_area_cm2'."
+      },
+      {
+        "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
+        "severity": "warning",
+        "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
       }
     ],
     "fit_for_purpose": {

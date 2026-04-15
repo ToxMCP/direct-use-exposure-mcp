@@ -749,6 +749,13 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert report["contractSchemaCount"] >= 1
 
 
+def test_defaults_manifest_hash_matches_live_file() -> None:
+    """The static defaults manifest hash must match the actual defaults file on disk."""
+    manifest = json.loads((REPO_ROOT / "defaults" / "manifest.json").read_text(encoding="utf-8"))
+    registry = DefaultsRegistry.load()
+    assert manifest["defaults_hash_sha256"] == registry.sha256
+
+
 def test_verification_summary_report_matches_schema_and_surface() -> None:
     generate_contract_assets()
     schema = json.loads(

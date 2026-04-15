@@ -587,6 +587,7 @@ def build_inhalation_tier_1_screening_scenario(
         tracker=tracker,
         unit="m3/h",
         rationale="Inhalation rate was supplied explicitly.",
+        gt=0.0,
     )
     body_weight_kg = resolve_population_value(
         field_name="body_weight_kg",
@@ -596,6 +597,7 @@ def build_inhalation_tier_1_screening_scenario(
         tracker=tracker,
         unit="kg",
         rationale="Body weight was supplied explicitly for dose normalization.",
+        gt=0.0,
     )
     _record_physchem_context(tracker, request.physchem_context)
 
@@ -1291,6 +1293,7 @@ def build_inhalation_residual_air_reentry_scenario(
         tracker=tracker,
         unit="m3/h",
         rationale="Inhalation rate was supplied explicitly.",
+        gt=0.0,
     )
     body_weight_kg = resolve_population_value(
         field_name="body_weight_kg",
@@ -1300,6 +1303,7 @@ def build_inhalation_residual_air_reentry_scenario(
         tracker=tracker,
         unit="kg",
         rationale="Body weight was supplied explicitly for dose normalization.",
+        gt=0.0,
     )
 
     tracker.add_user(
@@ -2139,6 +2143,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             tracker=tracker,
             unit="m3/h",
             rationale="Inhalation rate was supplied explicitly.",
+            gt=0.0,
         )
         body_weight_kg = resolve_population_value(
             field_name="body_weight_kg",
@@ -2148,6 +2153,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             tracker=tracker,
             unit="kg",
             rationale="Body weight was supplied explicitly for dose normalization.",
+            gt=0.0,
         )
         _record_physchem_context(tracker, request.physchem_context)
 

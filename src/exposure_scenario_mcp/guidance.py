@@ -654,22 +654,31 @@ def toxmcp_suite_index_guide() -> str:
 
 Use this guide as the one-page orientation layer for the current ToxMCP family.
 
-## Current Service Map
+## Current Public Modules
 
 - `Direct-Use Exposure MCP`
   owns deterministic direct-use and near-field external-dose construction, evidence
   reconciliation, bounded worker screening, and PBPK-ready external handoff packaging.
+- `CompTox MCP`
+  owns EPA CompTox-backed identity, hazard, and exposure-context enrichment workflows.
+- `ADMETlab MCP`
+  owns rapid ADMET prediction and utility workflows.
+- `AOP MCP`
+  owns mechanistic pathway and AOP-centered workflows.
+- `O-QT MCP`
+  owns OECD QSAR Toolbox workflows and reporting.
 - `PBPK MCP`
   owns toxicokinetic simulation, internal-dose translation, and downstream TK-facing outputs.
-- `Bioactivity-PoD MCP`
-  owns bioactivity normalization, PoD/BER interpretation support, and curated downstream
-  qualification.
-- `ToxClaw`
-  owns orchestration, evidence handling, refinement policy, and final NGRA-facing reporting.
+
+## Planned Boundary Modules
+
 - `Fate MCP` (planned sibling)
   should own environmental release, multimedia transfer, and compartment concentration surfaces.
 - `Dietary MCP` (planned sibling)
   should own commodity residues, food-consumption mappings, and dietary oral intake.
+- `ToxClaw` (planned orchestrator seam)
+  should own orchestration, evidence handling, refinement policy, and final NGRA-facing
+  reporting.
 - `Literature MCP` (optional future sibling)
   should own source normalization, extraction review, and evidence-pack curation rather than
   dose math.
@@ -692,10 +701,13 @@ across domain boundaries.
 - Product-use, direct-use oral, residual-air reentry, indoor aerosol, and near-field worker
   screening -> `Direct-Use Exposure MCP`
 - Herbal medicinal products, TCM regimens, and topical herbal products -> `Direct-Use Exposure MCP`
+- Identity, hazard, or EPA CompTox-backed enrichment question -> `CompTox MCP`
+- Rapid ADMET prediction or utility question -> `ADMETlab MCP`
+- Mechanistic pathway or AOP question -> `AOP MCP`
+- OECD QSAR Toolbox workflow question -> `O-QT MCP`
 - Environmental source term or multimedia concentration question -> `Fate MCP`
 - Dietary oral intake, food-mediated herbal intake, or food-residue question -> `Dietary MCP`
 - Internal dose or TK simulation question -> `PBPK MCP`
-- Bioactivity/PoD interpretation question -> `Bioactivity-PoD MCP`
 - Cross-service case assembly, refinement choice, or reporting question -> `ToxClaw`
 
 ## How To Read This Repo In The Suite
@@ -1043,11 +1055,13 @@ converts it into an ART-aligned intake envelope. It still does not execute ART i
 
 
 def worker_art_execution_guide() -> str:
-    return """# Worker ART Execution Guide
+    return """# Worker Inhalation Heuristic Surrogate Guide
 
-The worker inhalation execution tool runs the current ART-aligned surrogate screening kernel.
-It preserves the strongest available inhalation screening baseline, then applies explicit worker
-control and respiratory-protection modifiers with a transparent assumptions ledger.
+The worker inhalation execution tool runs a **heuristic screening surrogate**, not a validated
+occupational exposure model. It wraps the consumer inhalation kernel (Tier 0 room-average or
+Tier 1 near-field/far-field spray) with bounded worker-oriented scaling factors for controls,
+respiratory protection, and task intensity. The result is useful for coarse screening only and
+must not be presented as a Tier 2 occupational assessment or an ART execution.
 
 ## Tool Surface
 
@@ -1074,9 +1088,10 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 
 ## Current Support Boundary
 
-- The executable path currently supports `targetModelFamily=art`
-- The execution kernel is intentionally bounded and transparent, not a real ART solver
-- Control and respiratory-protection effects are represented by heuristic adjustment factors
+- The executable path currently supports `targetModelFamily=art` as a labeling convention only
+- The execution kernel is **intentionally bounded and transparent; it is not a real ART solver**
+- Control and respiratory-protection effects are represented by **heuristic adjustment factors**,
+  not engineering equations (e.g., no hood face-area or capture-velocity physics)
 - Explicit `levFamily` and `hoodFaceVelocityMPerS` inputs refine those control factors, but
   still remain bounded screening semantics rather than measured LEV performance modeling,
   even when supported LEV-family measured-profile bands are applied
@@ -1091,7 +1106,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
 
 ## Current Guardrails
 
-- Do not treat the result as a real ART execution or measured workplace concentration
+- **Do not treat the result as a real ART execution, measured workplace concentration, or
+  regulatory Tier 2 occupational exposure assessment**
 - Do not treat the respiratory-protection factor as a compliance-assured assigned protection
   factor
 - Do not treat the result as a final occupational compliance determination
@@ -1104,8 +1120,8 @@ control and respiratory-protection modifiers with a transparent assumptions ledg
   provenance need to stay attached to the execution request
 - Use `worker_ingest_inhalation_tier2_task` first if you want to inspect the normalized
   determinant-template match before execution
-- Use `worker_execute_inhalation_tier2_task` when you need a bounded worker inhalation estimate
-  with explicit control and respiratory-protection modifiers
+- Use `worker_execute_inhalation_tier2_task` when you need a **bounded heuristic worker
+  inhalation estimate** with explicit control and respiratory-protection modifiers
 - Use `worker_export_inhalation_art_execution_package` and
   `worker_import_inhalation_art_execution_result` when you have access to a real external
   ART-side execution path and want to bring the result back into the governed MCP contract

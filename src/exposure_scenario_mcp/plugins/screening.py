@@ -142,6 +142,7 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
             tracker=tracker,
             unit="kg",
             rationale="Body weight was supplied explicitly for dose normalization.",
+            gt=0.0,
         )
 
         if request.route == Route.DERMAL:
@@ -220,6 +221,7 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                     "events/day x retention x transfer efficiency."
                 ),
             )
+            surface_area_supplied = population.exposed_surface_area_cm2 is not None
             surface_area_cm2 = resolve_population_value(
                 field_name="exposed_surface_area_cm2",
                 supplied_value=population.exposed_surface_area_cm2,
@@ -228,19 +230,39 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 tracker=tracker,
                 unit="cm2",
                 rationale="Exposed surface area was supplied explicitly for route metrics.",
+                gt=0.0,
             )
-            product_loading_mg_cm2_event = (product_mass_g_event * 1000.0) / surface_area_cm2
+            if not surface_area_supplied:
+                tracker.add_quality_flag(
+                    "dermal_surface_area_defaulted_hands_forearms_anchor",
+                    (
+                        "The defaulted exposed_surface_area_cm2 (5700 cm² for adult) is a "
+                        "hands/forearms screening anchor, not total body surface area. "
+                        "For whole-body products (e.g., body lotion), override this value."
+                    ),
+                    severity=Severity.WARNING,
+                )
+            product_mass_loading_mg_cm2_event = (product_mass_g_event * 1000.0) / surface_area_cm2
+            chemical_loading_mg_cm2_event = chemical_mass_mg_event / surface_area_cm2
             tracker.add_derived(
-                "product_loading_mg_per_cm2_per_event",
-                product_loading_mg_cm2_event,
+                "product_mass_loading_mg_per_cm2_per_event",
+                product_mass_loading_mg_cm2_event,
                 "mg/cm2/event",
-                "Product loading = product mass per event / exposed surface area.",
+                "Product mass loading = product mass per event / exposed surface area.",
+            )
+            tracker.add_derived(
+                "chemical_loading_mg_per_cm2_per_event",
+                chemical_loading_mg_cm2_event,
+                "mg/cm2/event",
+                "Chemical loading = chemical mass per event / exposed surface area.",
             )
             route_metrics = {
                 "chemical_mass_mg_per_event": round(chemical_mass_mg_event, 8),
                 "external_mass_mg_per_day": round(external_mass_mg_day, 8),
                 "surface_loading_mg_per_cm2_day": round(external_mass_mg_day / surface_area_cm2, 8),
-                "product_loading_mg_per_cm2_per_event": round(product_loading_mg_cm2_event, 8),
+                "product_loading_mg_per_cm2_per_event": round(product_mass_loading_mg_cm2_event, 8),
+                "product_mass_loading_mg_per_cm2_per_event": round(product_mass_loading_mg_cm2_event, 8),
+                "chemical_loading_mg_per_cm2_per_event": round(chemical_loading_mg_cm2_event, 8),
             }
             if profile.application_strip_length_cm is not None:
                 route_metrics["application_strip_length_cm"] = round(

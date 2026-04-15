@@ -285,19 +285,38 @@ def resolve_population_value(
     tracker: AssumptionTracker,
     unit: str,
     rationale: str,
+    *,
+    gt: float | None = None,
 ) -> float:
     if supplied_value is not None:
-        tracker.add_user(field_name, supplied_value, unit, rationale)
-        return supplied_value
-    defaults, source = registry.population_defaults(population_group)
-    resolved = float(defaults[field_name])
-    tracker.add_default(
-        field_name,
-        resolved,
-        unit,
-        source,
-        f"Resolved from population defaults for '{population_group}'.",
-    )
+        resolved = supplied_value
+    else:
+        defaults, source = registry.population_defaults(population_group)
+        resolved = float(defaults[field_name])
+        rationale = f"Resolved from population defaults for '{population_group}'."
+    if gt is not None and resolved <= gt:
+        source_detail = "user-supplied" if supplied_value is not None else "population-default"
+        raise ExposureScenarioError(
+            code="population_value_not_positive",
+            message=(
+                f"{field_name} must be greater than {gt} {unit} "
+                f"but received {resolved} ({source_detail})."
+            ),
+            suggestion=(
+                "Provide a positive value for this field or select a population group "
+                "with a positive default."
+            ),
+            details={
+                "field_name": field_name,
+                "resolved": resolved,
+                "unit": unit,
+                "source": source_detail,
+            },
+        )
+    if supplied_value is not None:
+        tracker.add_user(field_name, resolved, unit, rationale)
+    else:
+        tracker.add_default(field_name, resolved, unit, source, rationale)
     return resolved
 
 

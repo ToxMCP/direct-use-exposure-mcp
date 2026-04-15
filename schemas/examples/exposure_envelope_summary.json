@@ -72,7 +72,9 @@
           "chemical_mass_mg_per_event": 20.0,
           "external_mass_mg_per_day": 40.0,
           "surface_loading_mg_per_cm2_day": 0.00701754,
-          "product_loading_mg_per_cm2_per_event": 0.1754386
+          "product_loading_mg_per_cm2_per_event": 0.1754386,
+          "product_mass_loading_mg_per_cm2_per_event": 0.1754386,
+          "chemical_loading_mg_per_cm2_per_event": 0.00350877
         },
         "assumptions": [
           {
@@ -410,7 +412,7 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
-            "name": "product_loading_mg_per_cm2_per_event",
+            "name": "product_mass_loading_mg_per_cm2_per_event",
             "value": 0.17543859649122806,
             "unit": "mg/cm2/event",
             "source_kind": "derived",
@@ -423,7 +425,42 @@
             },
             "confidence": "deterministic_derived",
             "default_applied": false,
-            "rationale": "Product loading = product mass per event / exposed surface area.",
+            "rationale": "Product mass loading = product mass per event / exposed surface area.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "dermal",
+                "scenario_class": "screening",
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on",
+                "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "chemical_loading_mg_per_cm2_per_event",
+            "value": 0.0035087719298245615,
+            "unit": "mg/cm2/event",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Chemical loading = chemical mass per event / exposed surface area.",
             "governance": {
               "evidence_grade": null,
               "evidence_basis": "derived",
@@ -516,6 +553,11 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'exposed_surface_area_cm2'."
+          },
+          {
+            "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
+            "severity": "warning",
+            "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
           }
         ],
         "fit_for_purpose": {
@@ -768,7 +810,9 @@
           "chemical_mass_mg_per_event": 40.0,
           "external_mass_mg_per_day": 83.2,
           "surface_loading_mg_per_cm2_day": 0.01459649,
-          "product_loading_mg_per_cm2_per_event": 0.35087719
+          "product_loading_mg_per_cm2_per_event": 0.35087719,
+          "product_mass_loading_mg_per_cm2_per_event": 0.35087719,
+          "chemical_loading_mg_per_cm2_per_event": 0.00701754
         },
         "assumptions": [
           {
@@ -1106,7 +1150,7 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
-            "name": "product_loading_mg_per_cm2_per_event",
+            "name": "product_mass_loading_mg_per_cm2_per_event",
             "value": 0.3508771929824561,
             "unit": "mg/cm2/event",
             "source_kind": "derived",
@@ -1119,7 +1163,42 @@
             },
             "confidence": "deterministic_derived",
             "default_applied": false,
-            "rationale": "Product loading = product mass per event / exposed surface area.",
+            "rationale": "Product mass loading = product mass per event / exposed surface area.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "dermal",
+                "scenario_class": "screening",
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on",
+                "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "chemical_loading_mg_per_cm2_per_event",
+            "value": 0.007017543859649123,
+            "unit": "mg/cm2/event",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Chemical loading = chemical mass per event / exposed surface area.",
             "governance": {
               "evidence_grade": null,
               "evidence_basis": "derived",
@@ -1202,6 +1281,11 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'exposed_surface_area_cm2'."
+          },
+          {
+            "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
+            "severity": "warning",
+            "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
           }
         ],
         "fit_for_purpose": {
@@ -1454,7 +1538,9 @@
           "chemical_mass_mg_per_event": 30.0,
           "external_mass_mg_per_day": 90.0,
           "surface_loading_mg_per_cm2_day": 0.01578947,
-          "product_loading_mg_per_cm2_per_event": 0.26315789
+          "product_loading_mg_per_cm2_per_event": 0.26315789,
+          "product_mass_loading_mg_per_cm2_per_event": 0.26315789,
+          "chemical_loading_mg_per_cm2_per_event": 0.00526316
         },
         "assumptions": [
           {
@@ -1792,7 +1878,7 @@
           },
           {
             "schema_version": "exposureAssumptionRecord.v1",
-            "name": "product_loading_mg_per_cm2_per_event",
+            "name": "product_mass_loading_mg_per_cm2_per_event",
             "value": 0.2631578947368421,
             "unit": "mg/cm2/event",
             "source_kind": "derived",
@@ -1805,7 +1891,42 @@
             },
             "confidence": "deterministic_derived",
             "default_applied": false,
-            "rationale": "Product loading = product mass per event / exposed surface area.",
+            "rationale": "Product mass loading = product mass per event / exposed surface area.",
+            "governance": {
+              "evidence_grade": null,
+              "evidence_basis": "derived",
+              "default_visibility": "silent_traceable",
+              "applicability_status": "derived",
+              "uncertainty_types": [],
+              "applicability_domain": {
+                "route": "dermal",
+                "scenario_class": "screening",
+                "product_category": "personal_care",
+                "physical_form": "cream",
+                "application_method": "hand_application",
+                "retention_type": "leave_on",
+                "population_group": "adult",
+                "demographic_tags": "consumer,general_population",
+                "region": "EU"
+              }
+            }
+          },
+          {
+            "schema_version": "exposureAssumptionRecord.v1",
+            "name": "chemical_loading_mg_per_cm2_per_event",
+            "value": 0.005263157894736842,
+            "unit": "mg/cm2/event",
+            "source_kind": "derived",
+            "source": {
+              "source_id": "exposure_scenario_mcp",
+              "title": "Direct-Use Exposure MCP runtime",
+              "locator": "docs://algorithm-notes",
+              "version": "0.1.0",
+              "hash_sha256": null
+            },
+            "confidence": "deterministic_derived",
+            "default_applied": false,
+            "rationale": "Chemical loading = chemical mass per event / exposed surface area.",
             "governance": {
               "evidence_grade": null,
               "evidence_basis": "derived",
@@ -1898,6 +2019,11 @@
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'exposed_surface_area_cm2'."
+          },
+          {
+            "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
+            "severity": "warning",
+            "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
           }
         ],
         "fit_for_purpose": {
@@ -2106,6 +2232,17 @@
   "spanRatio": 2.25,
   "driverAttribution": [
     {
+      "parameterName": "chemical_loading_mg_per_cm2_per_event",
+      "unit": "mg/cm2/event",
+      "minValue": 0.0035087719298245615,
+      "maxValue": 0.005263157894736842,
+      "scenarioLabels": [
+        "Lower plausible use",
+        "Typical use"
+      ],
+      "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
+    },
+    {
       "parameterName": "chemical_mass_mg_per_event",
       "unit": "mg/event",
       "minValue": 20.0,
@@ -2139,10 +2276,10 @@
       "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
     },
     {
-      "parameterName": "product_loading_mg_per_cm2_per_event",
-      "unit": "mg/cm2/event",
-      "minValue": 0.17543859649122806,
-      "maxValue": 0.2631578947368421,
+      "parameterName": "product_mass_g_per_event",
+      "unit": "g",
+      "minValue": 1.0,
+      "maxValue": 1.5,
       "scenarioLabels": [
         "Lower plausible use",
         "Typical use"
@@ -2150,10 +2287,10 @@
       "attributionNote": "Driver attribution is based on explicit differences between the minimum and maximum deterministic archetypes, not on probabilistic decomposition."
     },
     {
-      "parameterName": "product_mass_g_per_event",
-      "unit": "g",
-      "minValue": 1.0,
-      "maxValue": 1.5,
+      "parameterName": "product_mass_loading_mg_per_cm2_per_event",
+      "unit": "mg/cm2/event",
+      "minValue": 0.17543859649122806,
+      "maxValue": 0.2631578947368421,
       "scenarioLabels": [
         "Lower plausible use",
         "Typical use"
@@ -2192,10 +2329,10 @@
         "parameter_uncertainty"
       ],
       "relatedAssumptions": [
+        "chemical_loading_mg_per_cm2_per_event",
         "chemical_mass_mg_per_event",
         "external_mass_mg_per_day",
         "normalized_external_dose_mg_per_kg_day",
-        "product_loading_mg_per_cm2_per_event",
         "product_mass_g_per_event"
       ],
       "quantificationStatus": "bounded",

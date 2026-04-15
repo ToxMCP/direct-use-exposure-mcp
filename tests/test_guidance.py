@@ -294,7 +294,10 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Exposure Platform Architecture" in architecture
     assert "Fate MCP" in architecture
     assert "Dietary MCP" in architecture
-    assert "Bioactivity-PoD MCP" in suite_index
+    assert "CompTox MCP" in suite_index
+    assert "ADMETlab MCP" in suite_index
+    assert "AOP MCP" in suite_index
+    assert "O-QT MCP" in suite_index
     assert "docs://cross-mcp-contract-guide" in suite_index
     assert "docs/toxmcp_suite_index.md" in suite_index
     assert "Worker Exposure Mode" in architecture
@@ -356,7 +359,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "open mixing/blending" in worker_art
     assert "enclosed transfer vapor tasks" in worker_art
     assert "outdoor or enhanced-ventilation" in worker_art
-    assert "Worker ART Execution Guide" in worker_art_execution
+    assert "Worker Inhalation Heuristic Surrogate Guide" in worker_art_execution
     assert "worker_execute_inhalation_tier2_task" in worker_art_execution
     assert "executeWorkerInhalationTier2Request.v1" in worker_art_execution
     assert "workerInhalationTier2ExecutionResult.v1" in worker_art_execution

@@ -84,6 +84,11 @@
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'exposed_surface_area_cm2'."
+    },
+    {
+      "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
+      "severity": "warning",
+      "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
     }
   ],
   "notes": [

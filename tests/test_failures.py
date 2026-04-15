@@ -221,6 +221,44 @@ def test_aggregate_rejects_duplicate_component_ids() -> None:
     assert exc_info.value.code == "aggregate_duplicate_component"
 
 
+def test_resolve_population_value_rejects_zero_body_weight() -> None:
+    from exposure_scenario_mcp.runtime import resolve_population_value
+    from exposure_scenario_mcp.provenance import AssumptionTracker
+
+    tracker = AssumptionTracker(registry=DefaultsRegistry.load())
+    with pytest.raises(ExposureScenarioError) as exc_info:
+        resolve_population_value(
+            field_name="body_weight_kg",
+            supplied_value=0.0,
+            population_group="adult",
+            registry=DefaultsRegistry.load(),
+            tracker=tracker,
+            unit="kg",
+            rationale="Test zero body weight.",
+            gt=0.0,
+        )
+    assert exc_info.value.code == "population_value_not_positive"
+
+
+def test_resolve_population_value_rejects_zero_surface_area() -> None:
+    from exposure_scenario_mcp.runtime import resolve_population_value
+    from exposure_scenario_mcp.provenance import AssumptionTracker
+
+    tracker = AssumptionTracker(registry=DefaultsRegistry.load())
+    with pytest.raises(ExposureScenarioError) as exc_info:
+        resolve_population_value(
+            field_name="exposed_surface_area_cm2",
+            supplied_value=-10.0,
+            population_group="adult",
+            registry=DefaultsRegistry.load(),
+            tracker=tracker,
+            unit="cm2",
+            rationale="Test negative surface area.",
+            gt=0.0,
+        )
+    assert exc_info.value.code == "population_value_not_positive"
+
+
 def test_unknown_population_group_fails_loudly() -> None:
     engine = build_engine()
     request = ExposureScenarioRequest(
