@@ -3511,7 +3511,9 @@ def execute_worker_inhalation_tier2_task(
                     )
                 )
             if inhalation_rate is None and population_profile is not None:
-                defaults, source = registry.population_defaults(population_profile.population_group)
+                defaults, source = registry.population_defaults(
+                    population_profile.population_group, region=population_profile.region
+                )
                 inhalation_rate = defaults["inhalation_rate_m3_per_hour"]
                 assumptions.append(
                     _assumption_record(
@@ -3542,7 +3544,9 @@ def execute_worker_inhalation_tier2_task(
                     )
                 )
             if body_weight is None and population_profile is not None:
-                defaults, source = registry.population_defaults(population_profile.population_group)
+                defaults, source = registry.population_defaults(
+                    population_profile.population_group, region=population_profile.region
+                )
                 body_weight = defaults["body_weight_kg"]
                 assumptions.append(
                     _assumption_record(
@@ -5188,7 +5192,8 @@ def import_worker_inhalation_art_execution_result(
                     _execution_algorithm_source()
                     if _float_or_none(art_inputs.get("bodyWeightKg")) is not None
                     else registry.population_defaults(
-                        population_profile.population_group if population_profile else "adult"
+                        population_profile.population_group if population_profile else "adult",
+                        region=population_profile.region if population_profile else "global",
                     )[1]
                 ),
                 rationale=(
@@ -5219,7 +5224,8 @@ def import_worker_inhalation_art_execution_result(
                     _execution_algorithm_source()
                     if _float_or_none(art_inputs.get("inhalationRateM3PerHour")) is not None
                     else registry.population_defaults(
-                        population_profile.population_group if population_profile else "adult"
+                        population_profile.population_group if population_profile else "adult",
+                        region=population_profile.region if population_profile else "global",
                     )[1]
                 ),
                 rationale=(

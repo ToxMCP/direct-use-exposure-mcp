@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.15.v34",
+  "defaults_version": "2026.04.15.v35",
   "sources": [
     {
       "source_id": "epa_exposure_factors_handbook_2011",
@@ -324,6 +324,30 @@
       "title": "Direct-Use Exposure MCP bounded worker inhalation capture-velocity heuristics",
       "locator": "docs://defaults-evidence-map#worker-inhalation-capture-velocity-heuristics-2026",
       "version": "2026.04.12.v1"
+    },
+    {
+      "source_id": "china_exposure_factors_handbook_adults_2013",
+      "title": "Exposure Factors Handbook of Chinese Population (Adults)",
+      "locator": "https://www.researchgate.net/publication/294646021",
+      "version": "Ministry of Environmental Protection, 2013"
+    },
+    {
+      "source_id": "china_exposure_factors_handbook_children_2016",
+      "title": "Exposure Factors Handbook of Chinese Population (Children)",
+      "locator": "https://www.researchgate.net/publication/294646021",
+      "version": "Ministry of Environmental Protection, 2016"
+    },
+    {
+      "source_id": "chinese_pharmacopoeia_2020_heavy_metals",
+      "title": "Chinese Pharmacopoeia 2020 — Guidelines for Establishment of Limit for Harmful Residue",
+      "locator": "https://www.chp.org.cn",
+      "version": "2020 Edition"
+    },
+    {
+      "source_id": "nmpa_tcm_heavy_metals_risk_guideline_2023",
+      "title": "NMPA Technical Guidelines for Risk Assessment of Heavy Metals in Traditional Chinese Medicines",
+      "locator": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10245643/",
+      "version": "Chinese Medicine 18:69, 2023"
     }
   ],
   "conversion_defaults": {
@@ -631,23 +655,47 @@
     }
   },
   "population_defaults": {
-    "adult": {
-      "body_weight_kg": 80.0,
-      "inhalation_rate_m3_per_hour": 0.83,
-      "exposed_surface_area_cm2": 5700.0,
-      "source_id": "epa_exposure_factors_handbook_2011"
+    "global": {
+      "adult": {
+        "body_weight_kg": 80.0,
+        "inhalation_rate_m3_per_hour": 0.83,
+        "exposed_surface_area_cm2": 5700.0,
+        "source_id": "epa_exposure_factors_handbook_2011"
+      },
+      "child": {
+        "body_weight_kg": 15.0,
+        "inhalation_rate_m3_per_hour": 0.5,
+        "exposed_surface_area_cm2": 2800.0,
+        "source_id": "epa_exposure_factors_handbook_2011"
+      },
+      "infant": {
+        "body_weight_kg": 7.5,
+        "inhalation_rate_m3_per_hour": 0.25,
+        "exposed_surface_area_cm2": 1800.0,
+        "source_id": "epa_exposure_factors_handbook_2011"
+      }
     },
-    "child": {
-      "body_weight_kg": 15.0,
-      "inhalation_rate_m3_per_hour": 0.5,
-      "exposed_surface_area_cm2": 2800.0,
-      "source_id": "epa_exposure_factors_handbook_2011"
-    },
-    "infant": {
-      "body_weight_kg": 7.5,
-      "inhalation_rate_m3_per_hour": 0.25,
-      "exposed_surface_area_cm2": 1800.0,
-      "source_id": "epa_exposure_factors_handbook_2011"
+    "regional_overrides": {
+      "china": {
+        "adult": {
+          "body_weight_kg": 63.0,
+          "inhalation_rate_m3_per_hour": 0.67,
+          "exposed_surface_area_cm2": 16500.0,
+          "source_id": "china_exposure_factors_handbook_adults_2013"
+        },
+        "child": {
+          "body_weight_kg": 21.0,
+          "inhalation_rate_m3_per_hour": 0.35,
+          "exposed_surface_area_cm2": 7200.0,
+          "source_id": "china_exposure_factors_handbook_children_2016"
+        },
+        "infant": {
+          "body_weight_kg": 7.5,
+          "inhalation_rate_m3_per_hour": 0.25,
+          "exposed_surface_area_cm2": 1800.0,
+          "source_id": "china_exposure_factors_handbook_children_2016"
+        }
+      }
     }
   },
   "retention_factor_defaults": {
@@ -2048,6 +2096,14 @@
         "air_exchange_rate_per_hour": 2.0,
         "exposure_duration_hours": 0.5,
         "source_id": "echa_consumer_inhalation_room_defaults"
+      },
+      "china": {
+        "room_volume_m3": 25.0,
+        "room_volume_source_id": "china_exposure_factors_handbook_adults_2013",
+        "air_exchange_rate_per_hour": 1.0,
+        "air_exchange_rate_source_id": "china_exposure_factors_handbook_adults_2013",
+        "exposure_duration_hours": 0.5,
+        "exposure_duration_source_id": "china_exposure_factors_handbook_adults_2013"
       }
     },
     "product_subtype_overrides": {
@@ -2239,5 +2295,5 @@
       }
     }
   },
-  "defaults_hash_sha256": "87aabca7e40c50b1b5711ecb5df59705bfea60b68c5cf0c7c34d4486adf66505"
+  "defaults_hash_sha256": "f83ec0b6bb42dc9373f2e9458196e63b0a94d3ed6b27e6c1f02f4ef17880aac3"
 }

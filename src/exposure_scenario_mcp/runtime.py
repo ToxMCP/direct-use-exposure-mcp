@@ -287,13 +287,23 @@ def resolve_population_value(
     rationale: str,
     *,
     gt: float | None = None,
+    region: str = "global",
 ) -> float:
     if supplied_value is not None:
         resolved = supplied_value
     else:
-        defaults, source = registry.population_defaults(population_group)
+        defaults, source = registry.population_defaults(population_group, region=region)
         resolved = float(defaults[field_name])
         rationale = f"Resolved from population defaults for '{population_group}'."
+        if region != "global":
+            tracker.add_quality_flag(
+                code="regional_population_override_active",
+                severity=Severity.INFO,
+                message=(
+                    f"Population default '{field_name}' uses region='{region}' override "
+                    f"({resolved} {unit}). Global default would differ."
+                ),
+            )
     if gt is not None and resolved <= gt:
         source_detail = "user-supplied" if supplied_value is not None else "population-default"
         raise ExposureScenarioError(

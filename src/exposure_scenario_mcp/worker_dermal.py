@@ -2083,7 +2083,9 @@ def execute_worker_dermal_absorbed_dose_task(
             )
         )
     elif population_profile is not None:
-        defaults, source = registry.population_defaults(population_profile.population_group)
+        defaults, source = registry.population_defaults(
+            population_profile.population_group, region=population_profile.region
+        )
         body_weight = defaults["body_weight_kg"]
         assumptions.append(
             _assumption_record(

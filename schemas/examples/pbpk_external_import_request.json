@@ -54,7 +54,7 @@
   "uncertainty": {
     "status": "declared",
     "source": "exposure-scenario-mcp",
-    "issueCount": 5,
+    "issueCount": 7,
     "hasResidualUncertainty": true,
     "summary": "Exposure-scenario assumptions, limitations, and quality flags remain upstream and must be preserved during PBPK interpretation.",
     "sources": [

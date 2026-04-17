@@ -1,8 +1,9 @@
 {
-  "defaults_version": "2026.04.15.v34",
-  "defaults_hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30",
-  "source_count": 54,
+  "defaults_version": "2026.04.15.v35",
+  "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+  "source_count": 58,
   "supported_regions": [
+    "china",
     "eu",
     "global"
   ],

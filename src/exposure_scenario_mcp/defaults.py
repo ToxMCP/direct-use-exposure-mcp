@@ -66,12 +66,14 @@ class DefaultsRegistry:
 
     def manifest(self) -> dict[str, Any]:
         room_defaults = self.payload.get("room_defaults", {})
-        regional_overrides = room_defaults.get("regional_overrides", {})
+        room_regions = set(room_defaults.get("regional_overrides", {}).keys())
+        population_defaults = self.payload.get("population_defaults", {})
+        pop_regions = set(population_defaults.get("regional_overrides", {}).keys())
         return {
             "defaults_version": self.version,
             "defaults_hash_sha256": self.sha256,
             "source_count": len(self.payload.get("sources", [])),
-            "supported_regions": sorted(["global", *regional_overrides.keys()]),
+            "supported_regions": sorted({"global", *room_regions, *pop_regions}),
             "path": self.location,
         }
 
@@ -261,17 +263,24 @@ class DefaultsRegistry:
         return profile_key, float(global_entry["value"]), self._source(global_entry["source_id"])
 
     def population_defaults(
-        self, population_group: str
+        self, population_group: str, region: str = "global"
     ) -> tuple[dict[str, float], AssumptionSourceReference]:
         population_group = population_group.lower()
+        region_key = region.lower()
         populations = self.payload["population_defaults"]
+        global_pop = populations.get("global", populations)
         ensure(
-            population_group in populations,
+            population_group in global_pop,
             "population_group_unsupported",
             f"Population group '{population_group}' is not supported by the defaults registry.",
-            suggestion=f"Use one of: {', '.join(sorted(populations))}.",
+            suggestion=f"Use one of: {', '.join(sorted(global_pop))}.",
         )
-        entry = populations[population_group]
+        entry = global_pop[population_group]
+        regional_overrides = populations.get("regional_overrides", {})
+        if region_key != "global" and region_key in regional_overrides:
+            regional_pop = regional_overrides[region_key]
+            if population_group in regional_pop:
+                entry = regional_pop[population_group]
         return {
             "body_weight_kg": float(entry["body_weight_kg"]),
             "inhalation_rate_m3_per_hour": float(entry["inhalation_rate_m3_per_hour"]),
@@ -1632,7 +1641,9 @@ def build_defaults_curation_report(
     payload = active_registry.payload
     entries: list[DefaultsCurationEntry] = []
 
-    for population_group, entry in payload.get("population_defaults", {}).items():
+    population_defaults = payload.get("population_defaults", {})
+    global_pop = population_defaults.get("global", population_defaults)
+    for population_group, entry in global_pop.items():
         for parameter_name in (
             "body_weight_kg",
             "inhalation_rate_m3_per_hour",
@@ -1646,6 +1657,21 @@ def build_defaults_curation_report(
                 source_id=entry["source_id"],
                 applicability={"population_group": population_group},
             )
+    for region, regional_pop in population_defaults.get("regional_overrides", {}).items():
+        for population_group, entry in regional_pop.items():
+            for parameter_name in (
+                "body_weight_kg",
+                "inhalation_rate_m3_per_hour",
+                "exposed_surface_area_cm2",
+            ):
+                _append_entry(
+                    entries,
+                    active_registry,
+                    parameter_name=parameter_name,
+                    value=entry[parameter_name],
+                    source_id=entry["source_id"],
+                    applicability={"population_group": population_group, "region": region},
+                )
 
     conversion_defaults = payload.get("conversion_defaults", {})
     global_density = conversion_defaults.get("global")

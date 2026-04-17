@@ -143,6 +143,7 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
             unit="kg",
             rationale="Body weight was supplied explicitly for dose normalization.",
             gt=0.0,
+            region=population.region,
         )
 
         if request.route == Route.DERMAL:
@@ -231,6 +232,7 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 unit="cm2",
                 rationale="Exposed surface area was supplied explicitly for route metrics.",
                 gt=0.0,
+                region=population.region,
             )
             if not surface_area_supplied:
                 tracker.add_quality_flag(
