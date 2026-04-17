@@ -15,7 +15,7 @@ def _write_bytes(path: Path, payload: bytes) -> None:
     path.write_bytes(payload)
 
 
-def test_distribution_artifacts_include_hashes_and_sizes_when_present(tmp_path: Path) -> None:
+def test_distribution_artifacts_pin_only_reproducible_hashes_and_sizes(tmp_path: Path) -> None:
     dist_dir = tmp_path / "dist"
     _write_bytes(
         dist_dir / f"exposure_scenario_mcp-{CURRENT_VERSION}-py3-none-any.whl",
@@ -32,8 +32,10 @@ def test_distribution_artifacts_include_hashes_and_sizes_when_present(tmp_path: 
 
     assert [artifact.kind for artifact in artifacts] == ["wheel", "sdist"]
     assert all(artifact.present for artifact in artifacts)
-    assert all(artifact.sha256 is not None for artifact in artifacts)
-    assert [artifact.size_bytes for artifact in artifacts] == [11, 11]
+    assert artifacts[0].sha256 is not None
+    assert artifacts[0].size_bytes == 11
+    assert artifacts[1].sha256 is None
+    assert artifacts[1].size_bytes is None
 
 
 def test_validate_release_metadata_report_detects_integrity_mismatch(tmp_path: Path) -> None:

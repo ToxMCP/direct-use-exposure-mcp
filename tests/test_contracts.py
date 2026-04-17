@@ -737,8 +737,12 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert "docs://test-evidence-summary" in artifact["publishedDocs"]
     for item in artifact["distributionArtifacts"]:
         if item["present"]:
-            assert item["sha256"] is not None
-            assert item["sizeBytes"] is not None
+            if item["kind"] == "wheel":
+                assert item["sha256"] is not None
+                assert item["sizeBytes"] is not None
+            else:
+                assert item["sha256"] is None
+                assert item["sizeBytes"] is None
         else:
             assert item["sha256"] is None
             assert item["sizeBytes"] is None

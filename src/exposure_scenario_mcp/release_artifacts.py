@@ -30,14 +30,15 @@ def distribution_artifacts_for_release(
     for kind, filename in expected:
         artifact_path = None if dist_dir is None else dist_dir / filename
         if artifact_path is not None and artifact_path.exists():
+            pin_integrity = kind == "wheel"
             artifacts.append(
                 ReleaseDistributionArtifact(
                     kind=kind,
                     filename=filename,
                     relativePath=f"{dist_label}/{filename}",
                     present=True,
-                    sha256=sha256_path(artifact_path),
-                    sizeBytes=artifact_path.stat().st_size,
+                    sha256=sha256_path(artifact_path) if pin_integrity else None,
+                    sizeBytes=artifact_path.stat().st_size if pin_integrity else None,
                 )
             )
             continue
@@ -95,12 +96,12 @@ def validate_release_metadata_report(metadata_path: Path, repo_root: Path) -> li
 
         actual_sha = sha256_path(artifact_path)
         actual_size = artifact_path.stat().st_size
-        if declared_sha != actual_sha:
+        if declared_sha is not None and declared_sha != actual_sha:
             errors.append(
                 f"artifact `{kind}` sha256 mismatch for `{relative_path}`: "
                 f"expected `{actual_sha}`, found `{declared_sha}`"
             )
-        if declared_size != actual_size:
+        if declared_size is not None and declared_size != actual_size:
             errors.append(
                 f"artifact `{kind}` size mismatch for `{relative_path}`: "
                 f"expected `{actual_size}`, found `{declared_size}`"
