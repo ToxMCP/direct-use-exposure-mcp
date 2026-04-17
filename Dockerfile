@@ -23,7 +23,7 @@ COPY tests/fixtures/ ./tests/fixtures/
 RUN uv sync --no-dev && uv build
 
 # Install the built wheel into the system environment.
-RUN pip install dist/exposure_scenario_mcp-0.1.0-py3-none-any.whl
+RUN pip install dist/exposure_scenario_mcp-*.whl
 
 # Expose the default HTTP port.
 EXPOSE 8000

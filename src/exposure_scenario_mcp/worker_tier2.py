@@ -51,6 +51,7 @@ from exposure_scenario_mcp.models import (
     ValidationSummary,
     WorkerTaskRoutingInput,
 )
+from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin
 from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
 from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine
@@ -418,7 +419,7 @@ class WorkerInhalationArtTaskEnvelope(StrictModel):
         description="Bounded ART-side adapter identity for worker inhalation intake.",
     )
     adapter_version: str = Field(
-        default="0.1.0",
+        default=CURRENT_VERSION,
         alias="adapterVersion",
         description="Version of the ART-side adapter boundary implemented here.",
     )
@@ -645,16 +646,20 @@ class WorkerArtExternalExecutionResult(StrictModel):
     def validate_metric_presence(self) -> WorkerArtExternalExecutionResult:
         if self.result_status == "failed":
             return self
-        if all(
-            value is None
-            for value in (
-                self.breathing_zone_concentration_mg_per_m3,
-                self.inhaled_mass_mg_per_day,
-                self.normalized_external_dose_mg_per_kg_day,
+        if (
+            all(
+                value is None
+                for value in (
+                    self.breathing_zone_concentration_mg_per_m3,
+                    self.inhaled_mass_mg_per_day,
+                    self.normalized_external_dose_mg_per_kg_day,
+                )
             )
-        ) and not self.result_payload and not any(
-            artifact.content_json or (artifact.content_text and artifact.content_text.strip())
-            for artifact in self.raw_artifacts
+            and not self.result_payload
+            and not any(
+                artifact.content_json or (artifact.content_text and artifact.content_text.strip())
+                for artifact in self.raw_artifacts
+            )
         ):
             raise ValueError(
                 "External ART execution results must include at least one concentration, "
@@ -956,9 +961,7 @@ def _artifact_csv_payload_and_adapter(
         )
     if explicit_hint == WorkerArtArtifactAdapterId.RESULT_SUMMARY_CSV_WIDE_V1:
         payload = _artifact_csv_wide_content_dict(text)
-        return payload, (
-            WorkerArtArtifactAdapterId.RESULT_SUMMARY_CSV_WIDE_V1 if payload else None
-        )
+        return payload, (WorkerArtArtifactAdapterId.RESULT_SUMMARY_CSV_WIDE_V1 if payload else None)
     if explicit_hint == WorkerArtArtifactAdapterId.RESULT_SUMMARY_CSV_SEMICOLON_V1:
         payload = _artifact_csv_semicolon_content_dict(text)
         return payload, (
@@ -1437,8 +1440,7 @@ def _append_worker_inhalation_benchmark_checks(
             ExecutedValidationCheck(
                 checkId=f"{case_id}_control_adjusted_concentration_benchmark_2026",
                 title=(
-                    "Worker inhalation control-adjusted concentration vs benchmark "
-                    f"`{case_id}`"
+                    f"Worker inhalation control-adjusted concentration vs benchmark `{case_id}`"
                 ),
                 referenceDatasetId=case_id,
                 status=_benchmark_status(
@@ -1466,10 +1468,7 @@ def _build_worker_inhalation_validation_summary(
     heuristic_assumption_names = sorted(
         item.name
         for item in result.assumptions
-        if (
-            "heuristic" in item.source.source_id
-            or item.source.source_id.startswith("benchmark_")
-        )
+        if ("heuristic" in item.source.source_id or item.source.source_id.startswith("benchmark_"))
     )
     benchmark_case_ids: list[str] = []
     executed_validation_checks: list[ExecutedValidationCheck] = []
@@ -1499,9 +1498,7 @@ def _build_worker_inhalation_validation_summary(
             case_id=WORKER_INHALATION_HANDHELD_BENCHMARK_CASE_ID,
             executed_validation_checks=executed_validation_checks,
         )
-        control_adjusted = result.route_metrics.get(
-            "controlAdjustedAverageAirConcentrationMgPerM3"
-        )
+        control_adjusted = result.route_metrics.get("controlAdjustedAverageAirConcentrationMgPerM3")
         if isinstance(control_adjusted, int | float):
             reference_band = ValidationReferenceBandRegistry.load().band_for_check(
                 WORKER_INHALATION_HANDHELD_EXTERNAL_CHECK_ID
@@ -1544,9 +1541,7 @@ def _build_worker_inhalation_validation_summary(
             case_id=WORKER_INHALATION_PROFESSIONAL_CLEANING_BENCHMARK_CASE_ID,
             executed_validation_checks=executed_validation_checks,
         )
-        control_adjusted = result.route_metrics.get(
-            "controlAdjustedAverageAirConcentrationMgPerM3"
-        )
+        control_adjusted = result.route_metrics.get("controlAdjustedAverageAirConcentrationMgPerM3")
         if isinstance(control_adjusted, int | float):
             reference_band = ValidationReferenceBandRegistry.load().band_for_check(
                 WORKER_INHALATION_PROFESSIONAL_CLEANING_EXTERNAL_CHECK_ID
@@ -1626,10 +1621,7 @@ def _build_worker_inhalation_external_import_validation_summary(
     heuristic_assumption_names = sorted(
         item.name
         for item in result.assumptions
-        if (
-            "heuristic" in item.source.source_id
-            or item.source.source_id.startswith("benchmark_")
-        )
+        if ("heuristic" in item.source.source_id or item.source.source_id.startswith("benchmark_"))
     )
     dataset_id = (
         f"{external_result.source_system}:{external_result.source_run_id}"
@@ -1836,22 +1828,14 @@ def _art_control_profile(
         base = "local_exhaust_control_profile"
     elif task_context.ventilation_context == WorkerVentilationContext.OUTDOOR:
         base = "outdoor_dilution_control_profile"
-    elif (
-        task_context.ventilation_context == WorkerVentilationContext.PROFESSIONAL_CLEANING
-        or any(
-            token in control
-            for control in controls
-            for token in ("professional_cleaning", "janitorial")
-        )
+    elif task_context.ventilation_context == WorkerVentilationContext.PROFESSIONAL_CLEANING or any(
+        token in control
+        for control in controls
+        for token in ("professional_cleaning", "janitorial")
     ):
         base = "professional_cleaning_control_profile"
-    elif (
-        task_context.ventilation_context == WorkerVentilationContext.SURFACE_DISINFECTION
-        or any(
-            token in control
-            for control in controls
-            for token in ("surface_disinfection", "sanitizing")
-        )
+    elif task_context.ventilation_context == WorkerVentilationContext.SURFACE_DISINFECTION or any(
+        token in control for control in controls for token in ("surface_disinfection", "sanitizing")
     ):
         base = "surface_disinfection_control_profile"
     elif task_context.ventilation_context == WorkerVentilationContext.ENHANCED_GENERAL_VENTILATION:
@@ -2527,7 +2511,7 @@ def _bridge_provenance(
     return ProvenanceBundle(
         algorithm_id="worker.inhalation_tier2_bridge.v1",
         plugin_id="worker_inhalation_tier2_bridge_export",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -2547,7 +2531,7 @@ def _adapter_ingest_provenance(
     return ProvenanceBundle(
         algorithm_id="worker.inhalation_art_adapter_ingest.v1",
         plugin_id="worker_inhalation_art_adapter_ingest",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -2567,7 +2551,7 @@ def _execution_provenance(
     return ProvenanceBundle(
         algorithm_id="worker.inhalation_art_execution_surrogate.v1",
         plugin_id="worker_inhalation_art_execution_surrogate",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -2588,7 +2572,7 @@ def _external_exchange_provenance(
     return ProvenanceBundle(
         algorithm_id="worker.inhalation_art_external_exchange.v1",
         plugin_id="worker_inhalation_art_external_exchange",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -2607,7 +2591,7 @@ def _external_import_provenance(
     return ProvenanceBundle(
         algorithm_id="worker.inhalation_art_external_import.v1",
         plugin_id="worker_inhalation_art_external_result_import",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -2650,8 +2634,7 @@ def build_worker_inhalation_tier2_bridge(
             code="worker_tier2_bridge_export",
             severity=Severity.INFO,
             message=(
-                "Worker Tier 2 bridge package was exported for a future occupational "
-                "adapter path."
+                "Worker Tier 2 bridge package was exported for a future occupational adapter path."
             ),
         )
     ]
@@ -3138,8 +3121,7 @@ def ingest_worker_inhalation_tier2_task(
     else:
         recommended_next_steps.extend(
             [
-                "Fill every entry in `missingAdapterFields` before attempting ART-side "
-                "execution.",
+                "Fill every entry in `missingAdapterFields` before attempting ART-side execution.",
                 "Use docs://worker-art-adapter-guide to keep the intake bounded as a "
                 "normalized handoff rather than a solved worker exposure estimate.",
             ]
@@ -3489,9 +3471,8 @@ def execute_worker_inhalation_tier2_task(
             use_events_per_day = _float_or_none(art_inputs.get("useEventsPerDay")) or 1.0
             room_volume_m3 = _float_or_none(art_inputs.get("roomVolumeM3"))
             air_exchange_rate = _float_or_none(art_inputs.get("airExchangeRatePerHour"))
-            task_duration_hours = (
-                task_context.task_duration_hours
-                or _float_or_none(art_inputs.get("eventDurationHours"))
+            task_duration_hours = task_context.task_duration_hours or _float_or_none(
+                art_inputs.get("eventDurationHours")
             )
             inhalation_rate = _float_or_none(art_inputs.get("inhalationRateM3PerHour"))
             body_weight = _float_or_none(art_inputs.get("bodyWeightKg"))
@@ -3570,9 +3551,7 @@ def execute_worker_inhalation_tier2_task(
                         unit="kg",
                         source_kind=SourceKind.USER_INPUT,
                         source=_execution_algorithm_source(),
-                        rationale=(
-                            "Body weight was carried through the worker adapter request."
-                        ),
+                        rationale=("Body weight was carried through the worker adapter request."),
                         applicability_domain=applicability_domain,
                     )
                 )
@@ -3637,9 +3616,7 @@ def execute_worker_inhalation_tier2_task(
                             unit="g/mL",
                             source_kind=SourceKind.USER_INPUT,
                             source=_execution_algorithm_source(),
-                            rationale=(
-                                "Density was carried through the preserved base request."
-                            ),
+                            rationale=("Density was carried through the preserved base request."),
                             applicability_domain=applicability_domain,
                         )
                     )
@@ -3664,9 +3641,7 @@ def execute_worker_inhalation_tier2_task(
                             product_subtype or None,
                             None
                             if base_request is None or base_request.physchem_context is None
-                            else _float_or_none(
-                                base_request.physchem_context.vapor_pressure_mmhg
-                            ),
+                            else _float_or_none(base_request.physchem_context.vapor_pressure_mmhg),
                             None
                             if base_request is None or base_request.physchem_context is None
                             else _float_or_none(
@@ -3833,9 +3808,7 @@ def execute_worker_inhalation_tier2_task(
                 product_mass_g_event = (
                     None
                     if use_amount_per_event is None or density_g_per_ml is None
-                    else use_amount_per_event
-                    * density_g_per_ml
-                    * pressurized_aerosol_volume_factor
+                    else use_amount_per_event * density_g_per_ml * pressurized_aerosol_volume_factor
                 )
                 if use_amount_per_event is not None:
                     assumptions.append(
@@ -3862,8 +3835,7 @@ def execute_worker_inhalation_tier2_task(
                         source_kind=SourceKind.USER_INPUT,
                         source=_execution_algorithm_source(),
                         rationale=(
-                            "Concentration fraction was carried through the worker adapter "
-                            "request."
+                            "Concentration fraction was carried through the worker adapter request."
                         ),
                         applicability_domain=applicability_domain,
                     )
@@ -3913,9 +3885,7 @@ def execute_worker_inhalation_tier2_task(
                         unit="h",
                         source_kind=SourceKind.USER_INPUT,
                         source=_execution_algorithm_source(),
-                        rationale=(
-                            "Task duration was carried through the worker task context."
-                        ),
+                        rationale=("Task duration was carried through the worker task context."),
                         applicability_domain=applicability_domain,
                     )
                 )
@@ -3930,9 +3900,7 @@ def execute_worker_inhalation_tier2_task(
                         unit="fraction",
                         source_kind=SourceKind.USER_INPUT,
                         source=_execution_algorithm_source(),
-                        rationale=(
-                            "Vapor release fraction was supplied as an execution override."
-                        ),
+                        rationale=("Vapor release fraction was supplied as an execution override."),
                         applicability_domain=applicability_domain,
                     )
                 )
@@ -3940,9 +3908,7 @@ def execute_worker_inhalation_tier2_task(
                 (
                     vapor_release_fraction,
                     release_source,
-                ) = registry.worker_inhalation_vapor_release_fraction(
-                    envelope.emission_profile
-                )
+                ) = registry.worker_inhalation_vapor_release_fraction(envelope.emission_profile)
                 assumptions.append(
                     _assumption_record(
                         name="vapor_release_fraction",
@@ -4429,9 +4395,7 @@ def execute_worker_inhalation_tier2_task(
                 unit="fraction",
                 source_kind=SourceKind.USER_INPUT,
                 source=_execution_algorithm_source(),
-                rationale=(
-                    "Respiratory protection factor was supplied as an execution override."
-                ),
+                rationale=("Respiratory protection factor was supplied as an execution override."),
                 applicability_domain=applicability_domain,
             )
         )
@@ -4499,9 +4463,7 @@ def execute_worker_inhalation_tier2_task(
             pressurized_aerosol_physchem_factor,
             8,
         )
-        route_metrics["pressurizedAerosolPhyschemProfile"] = (
-            pressurized_aerosol_physchem_label
-        )
+        route_metrics["pressurizedAerosolPhyschemProfile"] = pressurized_aerosol_physchem_label
     if pressurized_aerosol_carrier_factor != 1.0:
         route_metrics["pressurizedAerosolCarrierFamilyAdjustmentFactor"] = round(
             pressurized_aerosol_carrier_factor,
@@ -4517,9 +4479,7 @@ def execute_worker_inhalation_tier2_task(
             pressurized_aerosol_formulation_label
         )
     assumption_lookup = {item.name: item for item in assumptions}
-    aerosol_assumption = assumption_lookup.get(
-        "pressurized_aerosol_volume_interpretation_factor"
-    )
+    aerosol_assumption = assumption_lookup.get("pressurized_aerosol_volume_interpretation_factor")
     if (
         "pressurizedAerosolVolumeInterpretationFactor" not in route_metrics
         and aerosol_assumption is not None
@@ -4688,9 +4648,7 @@ def execute_worker_inhalation_tier2_task(
         )
     if baseline_inhaled_mass_mg_day is not None:
         adjusted_inhaled_mass_mg_day = (
-            baseline_inhaled_mass_mg_day
-            * effective_control_factor
-            * respiratory_protection_factor
+            baseline_inhaled_mass_mg_day * effective_control_factor * respiratory_protection_factor
         )
         route_metrics["baselineInhaledMassMgPerDay"] = round(baseline_inhaled_mass_mg_day, 8)
         route_metrics["adjustedInhaledMassMgPerDay"] = round(adjusted_inhaled_mass_mg_day, 8)
@@ -4809,7 +4767,7 @@ def execute_worker_inhalation_tier2_task(
             "Interpret the result as a worker control-aware screening estimate rather than a "
             "validated occupational model output.",
             "Keep the determinant template match, quality flags, and limitations attached to "
-            "any downstream use."
+            "any downstream use.",
         ],
         forbidden_interpretations=[
             "Do not treat the result as a real ART or Stoffenmanager execution.",
@@ -4824,7 +4782,7 @@ def execute_worker_inhalation_tier2_task(
         "Worker control and respiratory-protection modifiers are then applied transparently as "
         "bounded factors.",
         "When the task is vapor-generating and no direct spray kernel applies, execution falls "
-        "back to a labeled room-average vapor-release surrogate."
+        "back to a labeled room-average vapor-release surrogate.",
     ]
 
     result = WorkerInhalationTier2ExecutionResult(

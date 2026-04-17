@@ -83,7 +83,11 @@ class ValidationTimeSeriesReferenceRegistry:
 
 
 def validation_time_series_reference_manifest() -> dict[str, Any]:
-    return ValidationTimeSeriesReferenceRegistry.load().manifest().model_dump(
-        mode="json",
-        by_alias=True,
+    return (
+        ValidationTimeSeriesReferenceRegistry.load()
+        .manifest()
+        .model_dump(
+            mode="json",
+            by_alias=True,
+        )
     )

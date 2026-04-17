@@ -21,8 +21,10 @@ from exposure_scenario_mcp.models import (
     DoseRange,
     DoseUnit,
     ExportPbpkScenarioInputRequest,
+    ExposureAssumptionRecord,
     ExposureScenario,
     ExposureScenarioRequest,
+    FitForPurpose,
     JurisdictionalComparisonResult,
     PbpkConcentrationProfilePoint,
     PbpkPopulationContext,
@@ -30,11 +32,11 @@ from exposure_scenario_mcp.models import (
     PhyschemContext,
     Route,
     RouteDoseTotal,
-    ScalarValue,
     ScenarioClass,
     ScenarioComparisonRecord,
     ScenarioDose,
     Severity,
+    SourceKind,
     UncertaintyRegisterEntry,
     VarianceDriver,
 )
@@ -153,14 +155,10 @@ def resolve_product_mass_g(
             product_category=profile.product_category,
             product_subtype=profile.product_subtype,
             vapor_pressure_mmhg=(
-                None
-                if physchem_context is None
-                else physchem_context.vapor_pressure_mmhg
+                None if physchem_context is None else physchem_context.vapor_pressure_mmhg
             ),
             molecular_weight_g_per_mol=(
-                None
-                if physchem_context is None
-                else physchem_context.molecular_weight_g_per_mol
+                None if physchem_context is None else physchem_context.molecular_weight_g_per_mol
             ),
         )
         aerosol_physchem_factor = 1.0
@@ -197,12 +195,10 @@ def resolve_product_mass_g(
                 ),
             )
             aerosol_volume_factor *= aerosol_carrier_factor
-        formulation_adjustment = (
-            registry.pressurized_aerosol_formulation_profile_adjustment_factor(
-                product_category=profile.product_category,
-                product_subtype=profile.product_subtype,
-                aerosol_formulation_profile=profile.aerosol_formulation_profile,
-            )
+        formulation_adjustment = registry.pressurized_aerosol_formulation_profile_adjustment_factor(
+            product_category=profile.product_category,
+            product_subtype=profile.product_subtype,
+            aerosol_formulation_profile=profile.aerosol_formulation_profile,
         )
         aerosol_formulation_factor = 1.0
         if formulation_adjustment is not None:
@@ -596,9 +592,7 @@ def _pbpk_transient_concentration_profile(
         return [
             PbpkConcentrationProfilePoint(
                 timeHours=0.0,
-                concentrationMgPerM3=float(
-                    metrics["air_concentration_at_reentry_start_mg_per_m3"]
-                ),
+                concentrationMgPerM3=float(metrics["air_concentration_at_reentry_start_mg_per_m3"]),
             ),
             PbpkConcentrationProfilePoint(
                 timeHours=round(duration / 2.0, 8),
@@ -849,13 +843,15 @@ def compare_jurisdictional_scenarios(
     input_data: CompareJurisdictionalScenariosInput,
     *,
     engine: ScenarioEngine | None = None,
+    generated_at: str | None = None,
 ) -> JurisdictionalComparisonResult:
     """Build the same scenario across multiple jurisdictions and compare results.
 
     This helps regulators understand inter-jurisdictional variance drivers
     and identify harmonization opportunities.
     """
-    defaults_registry = DefaultsRegistry.load()
+    defaults_registry = engine.defaults_registry if engine is not None else DefaultsRegistry.load()
+    tracker = AssumptionTracker(registry=defaults_registry)
     active_engine = engine or ScenarioEngine(
         registry=PluginRegistry(),
         defaults_registry=defaults_registry,
@@ -866,24 +862,81 @@ def compare_jurisdictional_scenarios(
     ):
         from exposure_scenario_mcp.plugins.inhalation import InhalationScreeningPlugin
         from exposure_scenario_mcp.plugins.screening import ScreeningScenarioPlugin
+
         active_engine.registry.register(ScreeningScenarioPlugin())
         active_engine.registry.register(InhalationScreeningPlugin())
 
-    supported = set(defaults_registry.manifest()["supported_regions"])
-    jurisdictions = [j for j in input_data.jurisdictions if j in supported]
-    if not jurisdictions:
-        raise ExposureScenarioError(
-            code="jurisdiction_not_supported",
-            message=(
-                f"None of the requested jurisdictions {input_data.jurisdictions} "
-                "are supported."
-            ),
-            suggestion=f"Use one of: {', '.join(sorted(supported))}.",
-        )
-
     base_request = input_data.request
+    tracker.set_context(
+        route=base_request.route.value,
+        scenario_class=base_request.scenario_class.value,
+        product_category=base_request.product_use_profile.product_category,
+        product_subtype=base_request.product_use_profile.product_subtype,
+        physical_form=base_request.product_use_profile.physical_form,
+        application_method=base_request.product_use_profile.application_method,
+        retention_type=base_request.product_use_profile.retention_type,
+        population_group=base_request.population_profile.population_group,
+        demographic_tags=",".join(base_request.population_profile.demographic_tags),
+        region="multi_jurisdiction",
+    )
+
+    requested_jurisdictions = [jurisdiction.casefold() for jurisdiction in input_data.jurisdictions]
+    ensure(
+        bool(requested_jurisdictions),
+        "jurisdiction_required",
+        "At least one jurisdiction must be provided for comparison.",
+        suggestion="Supply one or more supported jurisdictions such as global or china.",
+    )
+    duplicate_jurisdictions = sorted(
+        {
+            jurisdiction
+            for jurisdiction in requested_jurisdictions
+            if requested_jurisdictions.count(jurisdiction) > 1
+        }
+    )
+    ensure(
+        not duplicate_jurisdictions,
+        "jurisdiction_duplicate_requested",
+        "Jurisdiction comparison requests cannot contain duplicates.",
+        suggestion="Deduplicate the jurisdictions list before retrying the comparison.",
+        duplicate_jurisdictions=duplicate_jurisdictions,
+    )
+
+    supported = set(defaults_registry.manifest()["supported_regions"])
+    unsupported_jurisdictions = sorted(
+        jurisdiction for jurisdiction in requested_jurisdictions if jurisdiction not in supported
+    )
+    ensure(
+        not unsupported_jurisdictions,
+        "jurisdiction_not_supported",
+        "Jurisdiction comparison requests must use only supported jurisdictions.",
+        suggestion=f"Use one of: {', '.join(sorted(supported))}.",
+        unsupported_jurisdictions=unsupported_jurisdictions,
+        supported_jurisdictions=sorted(supported),
+    )
+
+    jurisdictions = requested_jurisdictions
     external_dose_by_jurisdiction: dict[str, ScenarioDose] = {}
-    all_assumptions: dict[str, dict[str, ScalarValue]] = {}
+    all_assumptions: dict[str, dict[str, ExposureAssumptionRecord]] = {}
+    comparison_fit = FitForPurpose(
+        label="jurisdictional_comparison_screening",
+        suitable_for=[
+            "auditable screening comparison across supported jurisdiction defaults",
+            "harmonization triage for jurisdiction-sensitive determinants",
+            "review of population-default sensitivity before downstream refinement",
+        ],
+        not_suitable_for=[
+            "automatic jurisdictional equivalence claims",
+            "final risk characterization",
+            "replacement for jurisdiction-specific regulatory guidance review",
+        ],
+    )
+    tracker.add_derived(
+        "compared_jurisdiction_count",
+        len(jurisdictions),
+        None,
+        "Jurisdiction comparison count derived from the supplied jurisdictions list.",
+    )
 
     for jurisdiction in jurisdictions:
         regional_request = base_request.model_copy(
@@ -895,9 +948,24 @@ def compare_jurisdictional_scenarios(
         )
         scenario = active_engine.build(regional_request)
         external_dose_by_jurisdiction[jurisdiction] = scenario.external_dose
-        all_assumptions[jurisdiction] = {
-            item.name: item.value for item in scenario.assumptions
-        }
+        all_assumptions[jurisdiction] = {item.name: item for item in scenario.assumptions}
+        for quality_flag in scenario.quality_flags:
+            if quality_flag.severity == Severity.INFO and quality_flag.code not in {
+                "regional_population_override_active",
+                "heuristic_default_source",
+            }:
+                continue
+            tracker.add_quality_flag(
+                code=f"{jurisdiction}_{quality_flag.code}",
+                severity=quality_flag.severity,
+                message=f"Jurisdiction '{jurisdiction}': {quality_flag.message}",
+            )
+        for limitation in scenario.limitations:
+            tracker.add_limitation(
+                code=f"{jurisdiction}_{limitation.code}",
+                severity=limitation.severity,
+                message=f"Jurisdiction '{jurisdiction}': {limitation.message}",
+            )
 
     doses = [d.value for d in external_dose_by_jurisdiction.values()]
     min_dose = min(doses)
@@ -920,30 +988,37 @@ def compare_jurisdictional_scenarios(
     # Identify variance drivers: assumptions that change across jurisdictions
     variance_drivers: list[VarianceDriver] = []
     global_assumptions = all_assumptions.get("global", {})
-    assumption_names = set()
-    for ass in all_assumptions.values():
-        assumption_names.update(ass.keys())
+    assumption_names = sorted(
+        {
+            name
+            for jurisdiction_assumptions in all_assumptions.values()
+            for name in jurisdiction_assumptions
+        }
+    )
 
     # Exclude derived output metrics from variance-driver analysis.
     _DERIVED_METRIC_PREFIXES = ("normalized_", "external_mass_", "chemical_mass_", "product_mass_")
     for name in assumption_names:
         if name.startswith(_DERIVED_METRIC_PREFIXES):
             continue
-        values = {
-            j: all_assumptions[j].get(name)
-            for j in jurisdictions
-            if name in all_assumptions[j]
+        records = {
+            jurisdiction: all_assumptions[jurisdiction][name]
+            for jurisdiction in jurisdictions
+            if name in all_assumptions[jurisdiction]
         }
-        if len(values) < 2:
+        if len(records) < 2:
             continue
-        numeric_values = [v for v in values.values() if isinstance(v, (int, float))]
+        if any(record.source_kind == SourceKind.DERIVED for record in records.values()):
+            continue
+        values = {jurisdiction: record.value for jurisdiction, record in records.items()}
+        numeric_values = [value for value in values.values() if isinstance(value, (int, float))]
         if len(numeric_values) < 2:
             continue
         if len(set(numeric_values)) == 1:
             continue
         variance_ratio = max(numeric_values) / min(numeric_values) if min(numeric_values) else 1.0
         if variance_ratio > 1.01:  # Only flag meaningful variance (>1%)
-            global_value = global_assumptions.get(name)
+            global_value = global_assumptions[name].value if name in global_assumptions else None
             variance_drivers.append(
                 VarianceDriver(
                     assumptionName=name,
@@ -953,16 +1028,49 @@ def compare_jurisdictional_scenarios(
                     description=f"'{name}' varies by {variance_ratio:.2f}x across jurisdictions.",
                 )
             )
+    variance_drivers.sort(key=lambda driver: (-driver.variance_ratio, driver.assumption_name))
+    tracker.add_derived(
+        "variance_driver_count",
+        len(variance_drivers),
+        None,
+        "Variance-driver count derived after filtering unsupported or derived assumptions.",
+    )
 
     # Generate harmonization opportunity narrative
     harmonization_opportunity: str | None = None
     if variance_drivers:
-        top_driver = max(variance_drivers, key=lambda d: d.variance_ratio)
+        top_driver = variance_drivers[0]
         harmonization_opportunity = (
             f"Inter-jurisdictional variance is driven primarily by '{top_driver.assumption_name}' "
             f"({top_driver.variance_ratio:.2f}x range). Harmonization opportunity: agree on a "
             f"reference value for international assessments."
         )
+        tracker.add_quality_flag(
+            "jurisdictional_variance_detected",
+            (
+                "Jurisdiction comparison identified materially different assumption values across "
+                "the compared defaults regions."
+            ),
+            severity=Severity.INFO,
+        )
+    else:
+        tracker.add_quality_flag(
+            "jurisdictional_variance_not_detected",
+            (
+                "Jurisdiction comparison did not identify materially different non-derived "
+                "assumptions across the compared defaults regions."
+            ),
+            severity=Severity.INFO,
+        )
+
+    tracker.add_limitation(
+        "jurisdictional_comparison_screening",
+        (
+            "Jurisdictional comparison replays the same scenario definition against the current "
+            "supported defaults regions. It does not reconcile jurisdiction-specific policy "
+            "requirements or replace jurisdiction-specific expert review."
+        ),
+    )
 
     uncertainty_register: list[UncertaintyRegisterEntry] = []
     if input_data.include_uncertainty_register:
@@ -971,6 +1079,7 @@ def compare_jurisdictional_scenarios(
             UncertaintyQuantificationStatus,
             UncertaintyType,
         )
+
         uncertainty_register.append(
             UncertaintyRegisterEntry(
                 entryId="inter-jurisdictional-population-variance",
@@ -999,5 +1108,13 @@ def compare_jurisdictional_scenarios(
         doseRange=dose_range,
         varianceDrivers=variance_drivers,
         harmonizationOpportunity=harmonization_opportunity,
+        limitations=tracker.limitations,
+        qualityFlags=tracker.quality_flags,
+        fitForPurpose=comparison_fit,
         uncertaintyRegister=uncertainty_register,
+        provenance=tracker.provenance(
+            plugin_id="jurisdictional_comparison_service",
+            algorithm_id="scenario.compare_jurisdictional.v1",
+            generated_at=generated_at,
+        ),
     )

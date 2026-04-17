@@ -109,7 +109,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -171,7 +171,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -208,7 +208,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -239,7 +239,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -270,7 +270,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -340,7 +340,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -372,7 +372,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -404,7 +404,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -436,7 +436,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -466,7 +466,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -496,7 +496,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -527,7 +527,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -558,7 +558,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -590,7 +590,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -622,7 +622,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -723,7 +723,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -761,7 +761,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -796,7 +796,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -831,7 +831,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -999,7 +999,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1034,7 +1034,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1069,7 +1069,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1107,7 +1107,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1142,7 +1142,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1180,7 +1180,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1215,7 +1215,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1253,7 +1253,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1288,7 +1288,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1326,7 +1326,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1361,7 +1361,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1396,7 +1396,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1431,7 +1431,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1469,7 +1469,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1504,7 +1504,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1539,7 +1539,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -1572,12 +1572,12 @@
           "schema_version": "provenanceBundle.v1",
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
-          "plugin_version": "0.1.0",
+          "plugin_version": "0.2.0",
           "defaults_version": "2026.04.15.v35",
           "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
-            "Deterministic-first v0.1 engine.",
+            "Deterministic-first exposure engine.",
             "All defaults are surfaced through exposureAssumptionRecord entries."
           ]
         },
@@ -2143,7 +2143,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2205,7 +2205,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -2242,7 +2242,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2273,7 +2273,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2304,7 +2304,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -2374,7 +2374,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2406,7 +2406,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2438,7 +2438,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2470,7 +2470,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2500,7 +2500,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2530,7 +2530,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2561,7 +2561,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2592,7 +2592,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2624,7 +2624,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2656,7 +2656,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -2757,7 +2757,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -2795,7 +2795,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -2830,7 +2830,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -2865,7 +2865,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3033,7 +3033,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3068,7 +3068,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3103,7 +3103,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3141,7 +3141,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3176,7 +3176,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3214,7 +3214,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3249,7 +3249,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3287,7 +3287,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3322,7 +3322,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3360,7 +3360,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3395,7 +3395,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3430,7 +3430,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3465,7 +3465,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3503,7 +3503,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3538,7 +3538,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3573,7 +3573,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -3606,12 +3606,12 @@
           "schema_version": "provenanceBundle.v1",
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
-          "plugin_version": "0.1.0",
+          "plugin_version": "0.2.0",
           "defaults_version": "2026.04.15.v35",
           "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
-            "Deterministic-first v0.1 engine.",
+            "Deterministic-first exposure engine.",
             "All defaults are surfaced through exposureAssumptionRecord entries."
           ]
         },
@@ -4177,7 +4177,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4239,7 +4239,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -4276,7 +4276,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4307,7 +4307,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4338,7 +4338,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -4408,7 +4408,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4440,7 +4440,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4472,7 +4472,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4504,7 +4504,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4534,7 +4534,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4564,7 +4564,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4595,7 +4595,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4626,7 +4626,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4658,7 +4658,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4690,7 +4690,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "explicit_user_input",
@@ -4791,7 +4791,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -4829,7 +4829,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -4864,7 +4864,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -4899,7 +4899,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5067,7 +5067,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5102,7 +5102,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5137,7 +5137,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5175,7 +5175,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5210,7 +5210,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5248,7 +5248,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5283,7 +5283,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5321,7 +5321,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5356,7 +5356,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5394,7 +5394,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5429,7 +5429,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5464,7 +5464,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5499,7 +5499,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5537,7 +5537,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5572,7 +5572,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5607,7 +5607,7 @@
               "source_id": "exposure_scenario_mcp",
               "title": "Direct-Use Exposure MCP runtime",
               "locator": "docs://algorithm-notes",
-              "version": "0.1.0",
+              "version": "0.2.0",
               "hash_sha256": null
             },
             "confidence": "deterministic_derived",
@@ -5640,12 +5640,12 @@
           "schema_version": "provenanceBundle.v1",
           "algorithm_id": "inhalation.near_field_far_field.v1",
           "plugin_id": "inhalation_tier_1_nf_ff_service",
-          "plugin_version": "0.1.0",
+          "plugin_version": "0.2.0",
           "defaults_version": "2026.04.15.v35",
           "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
-            "Deterministic-first v0.1 engine.",
+            "Deterministic-first exposure engine.",
             "All defaults are surfaced through exposureAssumptionRecord entries."
           ]
         },
@@ -6354,12 +6354,12 @@
     "schema_version": "provenanceBundle.v1",
     "algorithm_id": "uncertainty.envelope.v1",
     "plugin_id": "deterministic_envelope_service",
-    "plugin_version": "0.1.0",
+    "plugin_version": "0.2.0",
     "defaults_version": "2026.04.15.v35",
     "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
-      "Deterministic-first v0.1 engine.",
+      "Deterministic-first exposure engine.",
       "All defaults are surfaced through exposureAssumptionRecord entries.",
       "Archetype library set: adult_personal_care_pump_spray_tier1",
       "Archetype library version: 2026.04.10.v3"

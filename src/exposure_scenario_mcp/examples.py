@@ -87,6 +87,7 @@ from exposure_scenario_mcp.models import (
     TierLevel,
     WorkerTaskRoutingInput,
 )
+from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.plugins.inhalation import (
     build_inhalation_residual_air_reentry_scenario,
@@ -221,6 +222,16 @@ def _freeze_comparison(record):
     )
 
 
+def _freeze_jurisdictional_comparison(record):
+    return record.model_copy(
+        update={
+            "comparison_id": "jurisdictional-comparison-example-001",
+            "provenance": _freeze_provenance(record.provenance),
+        },
+        deep=True,
+    )
+
+
 def _freeze_pbpk_input(pbpk_input):
     return pbpk_input.model_copy(
         update={"provenance": _freeze_provenance(pbpk_input.provenance)},
@@ -231,8 +242,7 @@ def _freeze_pbpk_input(pbpk_input):
 def _replace_nested_string(value, target: str, replacement: str):
     if isinstance(value, dict):
         return {
-            key: _replace_nested_string(item, target, replacement)
-            for key, item in value.items()
+            key: _replace_nested_string(item, target, replacement) for key, item in value.items()
         }
     if isinstance(value, list):
         return [_replace_nested_string(item, target, replacement) for item in value]
@@ -742,7 +752,7 @@ def build_examples() -> dict[str, dict]:
         provenance=ProvenanceBundle(
             algorithm_id="example.future_fate_handoff.v1",
             plugin_id="shared_contract_example_generator",
-            plugin_version="0.1.0",
+            plugin_version=CURRENT_VERSION,
             defaults_version=defaults_registry.version,
             defaults_hash_sha256=defaults_registry.sha256,
             generated_at=EXAMPLE_GENERATED_AT,
@@ -764,9 +774,7 @@ def build_examples() -> dict[str, dict]:
             QualityFlag(
                 code="external_normalized_future_surface",
                 severity=Severity.INFO,
-                message=(
-                    "This example shows the future concentration-surface handoff shape only."
-                ),
+                message=("This example shows the future concentration-surface handoff shape only."),
             )
         ],
         notes=[
@@ -1042,15 +1050,9 @@ def build_examples() -> dict[str, dict]:
         ),
         summary_id=EXAMPLE_IDS["tier1_library_envelope_summary"],
         label_ids={
-            "Lower plausible near-face use": EXAMPLE_IDS[
-                "tier1_library_envelope_low_scenario"
-            ],
-            "Typical near-face use": EXAMPLE_IDS[
-                "tier1_library_envelope_typical_scenario"
-            ],
-            "Upper plausible near-face use": EXAMPLE_IDS[
-                "tier1_library_envelope_high_scenario"
-            ],
+            "Lower plausible near-face use": EXAMPLE_IDS["tier1_library_envelope_low_scenario"],
+            "Typical near-face use": EXAMPLE_IDS["tier1_library_envelope_typical_scenario"],
+            "Upper plausible near-face use": EXAMPLE_IDS["tier1_library_envelope_high_scenario"],
         },
     )
     parameter_bounds_summary = _freeze_bounds_summary(
@@ -1064,8 +1066,7 @@ def build_examples() -> dict[str, dict]:
                         lowerValue=0.01,
                         upperValue=0.03,
                         rationale=(
-                            "Bound ingredient concentration between low and high plausible "
-                            "values."
+                            "Bound ingredient concentration between low and high plausible values."
                         ),
                     ),
                     ParameterBoundInput(
@@ -1195,9 +1196,11 @@ def build_examples() -> dict[str, dict]:
         request=dermal_request,
         jurisdictions=["global", "china"],
     )
-    jurisdictional_comparison = compare_jurisdictional_scenarios(
-        jurisdictional_comparison_input,
-    ).model_copy(update={"comparison_id": "jurisdictional-comparison-example-001"})
+    jurisdictional_comparison = _freeze_jurisdictional_comparison(
+        compare_jurisdictional_scenarios(
+            jurisdictional_comparison_input,
+        )
+    )
     comp_tox_record = CompToxChemicalRecord(
         chemical_id="DTXSID7020182",
         preferred_name="Example Solvent A",
@@ -1263,9 +1266,7 @@ def build_examples() -> dict[str, dict]:
             "region": "EU",
         },
         evidence_sources=["SCCS:NotesOfGuidance:12thRevision:FaceCream"],
-        notes=[
-            "Illustrative SCCS cosmetics guidance evidence mapped into the generic contract."
-        ],
+        notes=["Illustrative SCCS cosmetics guidance evidence mapped into the generic contract."],
     )
     sccs_product_use_evidence = build_product_use_evidence_from_sccs(sccs_evidence_record)
     nano_particle_material_context = ParticleMaterialContext(
@@ -1309,9 +1310,7 @@ def build_examples() -> dict[str, dict]:
         dermalPenetrationConcern=False,
         article16NotificationRelevant=False,
         echaSpmRestrictionRelevant=True,
-        notes=[
-            "Illustrative synthetic polymer microparticle context for direct-use cosmetics."
-        ],
+        notes=["Illustrative synthetic polymer microparticle context for direct-use cosmetics."],
     )
     non_plastic_particle_material_context = ParticleMaterialContext(
         materialClass=ParticleMaterialClass.NON_PLASTIC_MICRO_NANO_PARTICLE,
@@ -1331,9 +1330,7 @@ def build_examples() -> dict[str, dict]:
         dermalPenetrationConcern=False,
         article16NotificationRelevant=False,
         echaSpmRestrictionRelevant=False,
-        notes=[
-            "Illustrative non-plastic particle context such as silica or pigment particles."
-        ],
+        notes=["Illustrative non-plastic particle context such as silica or pigment particles."],
     )
     sccs_opinion_evidence_record = SccsOpinionEvidenceRecord(
         chemical_id="DTXSID7020182",
@@ -1367,9 +1364,7 @@ def build_examples() -> dict[str, dict]:
         particleMaterialContext=nano_particle_material_context,
         notes=["Illustrative CosIng identity/function record for a cosmetic UV filter."],
     )
-    cosing_product_use_evidence = build_product_use_evidence_from_cosing(
-        cosing_ingredient_record
-    )
+    cosing_product_use_evidence = build_product_use_evidence_from_cosing(cosing_ingredient_record)
     nanomaterial_evidence_record = NanoMaterialEvidenceRecord(
         chemical_id="DTXSID7020182",
         preferred_name="Example Nano UV Filter",
@@ -1391,23 +1386,21 @@ def build_examples() -> dict[str, dict]:
     nanomaterial_product_use_evidence = build_product_use_evidence_from_nanomaterial(
         nanomaterial_evidence_record
     )
-    synthetic_polymer_microparticle_evidence_record = (
-        SyntheticPolymerMicroparticleEvidenceRecord(
-            chemical_id="DTXSID7020182",
-            preferred_name="Example Polymeric Glitter Particle",
-            sourceRecordId="echa_microplastics_personal_care_mock_2026",
-            sourceTitle="ECHA microplastics restriction and reporting context",
-            sourceVersion="2026 guidance context",
-            sourceLocator="https://echa.europa.eu/hot-topics/microplastics",
-            restrictionScope="Synthetic polymer microparticles in direct-use cosmetic products",
-            productUseCategories=["personal_care"],
-            supportedRoutes=[Route.DERMAL, Route.ORAL],
-            physical_forms=["gel", "cream"],
-            application_methods=["hand_application"],
-            retention_types=["leave_on", "rinse_off"],
-            particleMaterialContext=microplastic_particle_material_context,
-            notes=["Illustrative synthetic polymer microparticle regulatory context."],
-        )
+    synthetic_polymer_microparticle_evidence_record = SyntheticPolymerMicroparticleEvidenceRecord(
+        chemical_id="DTXSID7020182",
+        preferred_name="Example Polymeric Glitter Particle",
+        sourceRecordId="echa_microplastics_personal_care_mock_2026",
+        sourceTitle="ECHA microplastics restriction and reporting context",
+        sourceVersion="2026 guidance context",
+        sourceLocator="https://echa.europa.eu/hot-topics/microplastics",
+        restrictionScope="Synthetic polymer microparticles in direct-use cosmetic products",
+        productUseCategories=["personal_care"],
+        supportedRoutes=[Route.DERMAL, Route.ORAL],
+        physical_forms=["gel", "cream"],
+        application_methods=["hand_application"],
+        retention_types=["leave_on", "rinse_off"],
+        particleMaterialContext=microplastic_particle_material_context,
+        notes=["Illustrative synthetic polymer microparticle regulatory context."],
     )
     synthetic_polymer_microparticle_product_use_evidence = (
         build_product_use_evidence_from_synthetic_polymer_microparticle(
@@ -1609,25 +1602,20 @@ def build_examples() -> dict[str, dict]:
                 adapter_hint=WorkerArtArtifactAdapterId.EXECUTION_REPORT_JSON_V1,
                 content_json={
                     "schemaVersion": "artWorkerExecutionReport.v1",
-                    "run": {
-                        "id": "art-run-001",
-                        "modelVersion": "ART-1.5.0"
-                    },
-                    "task": {
-                        "durationHours": 0.5
-                    },
+                    "run": {"id": "art-run-001", "modelVersion": "ART-1.5.0"},
+                    "task": {"durationHours": 0.5},
                     "results": {
                         "status": "completed",
                         "taskDurationHours": 0.5,
                         "breathingZoneConcentrationMgPerM3": 0.72,
                         "inhaledMassMgPerDay": 1.575,
-                        "normalizedExternalDoseMgPerKgDay": 0.021
+                        "normalizedExternalDoseMgPerKgDay": 0.021,
                     },
                     "determinants": {
                         "workplaceSettingType": "janitorial_closet_or_small_room",
                         "ventilationDeterminant": "general_ventilation",
-                        "taskFamily": "janitorial_disinfectant_trigger_spray"
-                    }
+                        "taskFamily": "janitorial_disinfectant_trigger_spray",
+                    },
                 },
                 note="Illustrative nested external ART runner report artifact.",
             )
@@ -1696,9 +1684,7 @@ def build_examples() -> dict[str, dict]:
     )
     worker_dermal_absorbed_dose_execution_request = ExecuteWorkerDermalAbsorbedDoseRequest(
         adapter_request=worker_dermal_absorbed_dose_adapter_request,
-        execution_overrides=WorkerDermalAbsorbedDoseExecutionOverrides(
-            ppe_penetration_factor=0.3
-        ),
+        execution_overrides=WorkerDermalAbsorbedDoseExecutionOverrides(ppe_penetration_factor=0.3),
         context_of_use="worker-dermal-execution",
     )
     worker_dermal_absorbed_dose_execution_result = execute_worker_dermal_absorbed_dose_task(
@@ -1764,9 +1750,7 @@ def build_examples() -> dict[str, dict]:
         "herbal_medicinal_infusion_request": herbal_medicinal_infusion_request.model_dump(
             mode="json", by_alias=True
         ),
-        "tcm_topical_balm_request": tcm_topical_balm_request.model_dump(
-            mode="json", by_alias=True
-        ),
+        "tcm_topical_balm_request": tcm_topical_balm_request.model_dump(mode="json", by_alias=True),
         "herbal_topical_spray_request": herbal_topical_spray_request.model_dump(
             mode="json", by_alias=True
         ),
@@ -1797,9 +1781,7 @@ def build_examples() -> dict[str, dict]:
         "inhalation_residual_reentry_native_scenario": (
             inhalation_residual_reentry_native_scenario.model_dump(mode="json", by_alias=True)
         ),
-        "inhalation_tier1_request": inhalation_tier1_request.model_dump(
-            mode="json", by_alias=True
-        ),
+        "inhalation_tier1_request": inhalation_tier1_request.model_dump(mode="json", by_alias=True),
         "inhalation_tier1_request_two_zone": inhalation_tier1_request_two_zone.model_dump(
             mode="json", by_alias=True
         ),
@@ -1820,9 +1802,7 @@ def build_examples() -> dict[str, dict]:
         "inhalation_tier1_envelope_from_library_summary": (
             tier1_library_envelope_summary.model_dump(mode="json", by_alias=True)
         ),
-        "parameter_bounds_summary": parameter_bounds_summary.model_dump(
-            mode="json", by_alias=True
-        ),
+        "parameter_bounds_summary": parameter_bounds_summary.model_dump(mode="json", by_alias=True),
         "probability_bounds_from_profile_request": probability_bounds_request.model_dump(
             mode="json", by_alias=True
         ),
@@ -1889,9 +1869,7 @@ def build_examples() -> dict[str, dict]:
         "sccs_opinion_product_use_evidence": sccs_opinion_product_use_evidence.model_dump(
             mode="json", by_alias=True
         ),
-        "cosing_ingredient_record": cosing_ingredient_record.model_dump(
-            mode="json", by_alias=True
-        ),
+        "cosing_ingredient_record": cosing_ingredient_record.model_dump(mode="json", by_alias=True),
         "cosing_product_use_evidence": cosing_product_use_evidence.model_dump(
             mode="json", by_alias=True
         ),
@@ -1902,9 +1880,7 @@ def build_examples() -> dict[str, dict]:
             mode="json", by_alias=True
         ),
         "synthetic_polymer_microparticle_evidence_record": (
-            synthetic_polymer_microparticle_evidence_record.model_dump(
-                mode="json", by_alias=True
-            )
+            synthetic_polymer_microparticle_evidence_record.model_dump(mode="json", by_alias=True)
         ),
         "synthetic_polymer_microparticle_product_use_evidence": (
             synthetic_polymer_microparticle_product_use_evidence.model_dump(
@@ -1912,9 +1888,7 @@ def build_examples() -> dict[str, dict]:
             )
         ),
         "non_plastic_particle_product_use_evidence_record": (
-            non_plastic_particle_product_use_evidence_record.model_dump(
-                mode="json", by_alias=True
-            )
+            non_plastic_particle_product_use_evidence_record.model_dump(mode="json", by_alias=True)
         ),
         "non_plastic_particle_product_use_evidence": (
             non_plastic_particle_product_use_evidence.model_dump(mode="json", by_alias=True)
@@ -1953,9 +1927,7 @@ def build_examples() -> dict[str, dict]:
             worker_inhalation_tier2_adapter_request.model_dump(mode="json", by_alias=True)
         ),
         "worker_inhalation_tier2_adapter_ingest_result": (
-            worker_inhalation_tier2_adapter_ingest_result.model_dump(
-                mode="json", by_alias=True
-            )
+            worker_inhalation_tier2_adapter_ingest_result.model_dump(mode="json", by_alias=True)
         ),
         "worker_inhalation_tier2_execution_request": (
             worker_inhalation_tier2_execution_request.model_dump(
@@ -1995,9 +1967,7 @@ def build_examples() -> dict[str, dict]:
             worker_dermal_absorbed_dose_adapter_request.model_dump(mode="json", by_alias=True)
         ),
         "worker_dermal_absorbed_dose_adapter_ingest_result": (
-            worker_dermal_absorbed_dose_adapter_ingest_result.model_dump(
-                mode="json", by_alias=True
-            )
+            worker_dermal_absorbed_dose_adapter_ingest_result.model_dump(mode="json", by_alias=True)
         ),
         "worker_dermal_absorbed_dose_execution_request": (
             worker_dermal_absorbed_dose_execution_request.model_dump(
@@ -2012,9 +1982,7 @@ def build_examples() -> dict[str, dict]:
             )
         ),
         "toxclaw_evidence_envelope": toxclaw_evidence.model_dump(mode="json", by_alias=True),
-        "toxclaw_evidence_bundle": toxclaw_evidence_bundle.model_dump(
-            mode="json", by_alias=True
-        ),
+        "toxclaw_evidence_bundle": toxclaw_evidence_bundle.model_dump(mode="json", by_alias=True),
         "toxclaw_refinement_bundle": toxclaw_refinement_bundle.model_dump(
             mode="json", by_alias=True
         ),

@@ -34,9 +34,6 @@ def build_tool_result_meta(
                 "Synchronous v0.1 response using a status vocabulary "
                 "reserved for future async engines."
             ),
-            (
-                "No queue or polling step is required for the current "
-                "deterministic implementation."
-            ),
+            ("No queue or polling step is required for the current deterministic implementation."),
         ],
     ).model_dump(mode="json", by_alias=True)

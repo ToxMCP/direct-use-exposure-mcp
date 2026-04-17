@@ -79,9 +79,10 @@ def test_worker_dermal_bridge_builds_ready_package() -> None:
     assert package.adapter_request.task_context.contact_pattern == (
         WorkerDermalContactPattern.SURFACE_TRANSFER
     )
-    assert package.adapter_request.supporting_handoffs["workerRoutingDecision"][
-        "support_status"
-    ] == "future_adapter_recommended"
+    assert (
+        package.adapter_request.supporting_handoffs["workerRoutingDecision"]["support_status"]
+        == "future_adapter_recommended"
+    )
     assert any(flag.code == "worker_dermal_bridge_export" for flag in package.quality_flags)
 
 
@@ -223,9 +224,7 @@ def test_worker_dermal_adapter_ingest_matches_solvent_transfer_template() -> Non
         "aligned"
     )
     assert result.dermal_task_envelope.contact_profile == "direct_handling_contact_profile"
-    assert result.dermal_task_envelope.ppe_profile == (
-        "chemical_resistant_glove_barrier_profile"
-    )
+    assert result.dermal_task_envelope.ppe_profile == ("chemical_resistant_glove_barrier_profile")
 
 
 def test_worker_dermal_adapter_ingest_uses_generic_ungloved_template() -> None:
@@ -294,8 +293,7 @@ def test_worker_dermal_adapter_ingest_rejects_unsupported_family() -> None:
     assert result.resolved_adapter is None
     assert result.dermal_task_envelope is None
     assert any(
-        flag.code == "worker_dermal_adapter_family_unsupported"
-        for flag in result.quality_flags
+        flag.code == "worker_dermal_adapter_family_unsupported" for flag in result.quality_flags
     )
 
 
@@ -577,9 +575,10 @@ def test_worker_dermal_execution_applies_explicit_carrier_family_adjustment() ->
     assert assumption_map[
         "pressurized_aerosol_carrier_family_adjustment_factor"
     ].value == pytest.approx(0.82, rel=1e-6)
-    assert assumption_map[
-        "pressurized_aerosol_carrier_family_adjustment_factor"
-    ].source.source_id == "pressurized_aerosol_carrier_family_heuristics_2026"
+    assert (
+        assumption_map["pressurized_aerosol_carrier_family_adjustment_factor"].source.source_id
+        == "pressurized_aerosol_carrier_family_heuristics_2026"
+    )
     assert assumption_map[
         "pressurized_aerosol_volume_interpretation_factor"
     ].value == pytest.approx(0.41, rel=1e-6)
@@ -587,9 +586,9 @@ def test_worker_dermal_execution_applies_explicit_carrier_family_adjustment() ->
         0.41,
         rel=1e-6,
     )
-    assert result.route_metrics[
-        "pressurizedAerosolCarrierFamilyAdjustmentFactor"
-    ] == pytest.approx(0.82, rel=1e-6)
+    assert result.route_metrics["pressurizedAerosolCarrierFamilyAdjustmentFactor"] == pytest.approx(
+        0.82, rel=1e-6
+    )
     assert result.route_metrics["pressurizedAerosolCarrierFamily"] == (
         "hydrocarbon_propellant_solvent"
     )
@@ -647,9 +646,10 @@ def test_worker_dermal_execution_applies_explicit_formulation_profile_adjustment
     assert assumption_map[
         "pressurized_aerosol_formulation_profile_adjustment_factor"
     ].value == pytest.approx(0.88, rel=1e-6)
-    assert assumption_map[
-        "pressurized_aerosol_formulation_profile_adjustment_factor"
-    ].source.source_id == "pressurized_aerosol_formulation_profile_heuristics_2026"
+    assert (
+        assumption_map["pressurized_aerosol_formulation_profile_adjustment_factor"].source.source_id
+        == "pressurized_aerosol_formulation_profile_heuristics_2026"
+    )
     assert assumption_map[
         "pressurized_aerosol_volume_interpretation_factor"
     ].value == pytest.approx(0.3608, rel=1e-6)
@@ -950,8 +950,7 @@ def test_worker_dermal_execution_caps_surface_loading_and_reports_runoff() -> No
     assert result.route_metrics["runoffFraction"] == 0.16
     assert result.route_metrics["surfaceLoadingCapApplied"] is True
     assert any(
-        flag.code == "worker_dermal_surface_loading_cap_applied"
-        for flag in result.quality_flags
+        flag.code == "worker_dermal_surface_loading_cap_applied" for flag in result.quality_flags
     )
     assert any(
         limitation.code == "worker_dermal_execution_surface_loading_cap"
@@ -1003,8 +1002,7 @@ def test_worker_dermal_execution_applies_breakthrough_lag_for_short_contact() ->
     assert result.route_metrics["barrierBreakthroughFraction"] == 0.0
     assert result.route_metrics["ppePenetrationFactor"] == 0.0
     assert any(
-        flag.code == "worker_dermal_breakthrough_lag_applied"
-        for flag in result.quality_flags
+        flag.code == "worker_dermal_breakthrough_lag_applied" for flag in result.quality_flags
     )
     assert any(
         limitation.code == "worker_dermal_execution_bounded_breakthrough_timing"

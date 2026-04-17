@@ -33,6 +33,25 @@ def _build_request(region: str = "global") -> ExposureScenarioRequest:
     )
 
 
+def _build_dermal_request(region: str = "global") -> ExposureScenarioRequest:
+    return ExposureScenarioRequest(
+        chemical_id="TCM-COMPARE-DERMAL-001",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region=region),
+    )
+
+
 def test_compare_global_and_china() -> None:
     request = _build_request()
     input_data = CompareJurisdictionalScenariosInput(
@@ -63,9 +82,17 @@ def test_compare_global_and_china() -> None:
     assert result.harmonization_opportunity is not None
     assert "body_weight_kg" in result.harmonization_opportunity
 
+    assert result.provenance.algorithm_id == "scenario.compare_jurisdictional.v1"
+    assert result.fit_for_purpose.label == "jurisdictional_comparison_screening"
+    assert "jurisdictional_comparison_screening" in {item.code for item in result.limitations}
+
     # Uncertainty register
     assert len(result.uncertainty_register) == 1
     assert result.uncertainty_register[0].entry_id == "inter-jurisdictional-population-variance"
+
+    flag_codes = {item.code for item in result.quality_flags}
+    assert "china_regional_population_override_active" in flag_codes
+    assert "jurisdictional_variance_detected" in flag_codes
 
 
 def test_compare_three_jurisdictions() -> None:
@@ -97,6 +124,43 @@ def test_unsupported_jurisdiction_raises_error() -> None:
     with pytest.raises(ExposureScenarioError) as exc_info:
         compare_jurisdictional_scenarios(input_data)
     assert exc_info.value.code == "jurisdiction_not_supported"
+
+
+def test_mixed_supported_and_unsupported_jurisdiction_raises_error() -> None:
+    request = _build_request()
+    input_data = CompareJurisdictionalScenariosInput(
+        request=request,
+        jurisdictions=["global", "china", "chnia"],
+    )
+    with pytest.raises(ExposureScenarioError) as exc_info:
+        compare_jurisdictional_scenarios(input_data)
+    assert exc_info.value.code == "jurisdiction_not_supported"
+
+
+def test_duplicate_jurisdiction_raises_error() -> None:
+    request = _build_request()
+    input_data = CompareJurisdictionalScenariosInput(
+        request=request,
+        jurisdictions=["global", "china", "global"],
+    )
+    with pytest.raises(ExposureScenarioError) as exc_info:
+        compare_jurisdictional_scenarios(input_data)
+    assert exc_info.value.code == "jurisdiction_duplicate_requested"
+
+
+def test_variance_driver_ranking_is_deterministic_and_excludes_derived_values() -> None:
+    request = _build_dermal_request()
+    input_data = CompareJurisdictionalScenariosInput(
+        request=request,
+        jurisdictions=["global", "china"],
+    )
+    result = compare_jurisdictional_scenarios(input_data)
+
+    driver_names = [driver.assumption_name for driver in result.variance_drivers]
+    assert "chemical_loading_mg_per_cm2_per_event" not in driver_names
+    assert driver_names[0] == "exposed_surface_area_cm2"
+    assert result.harmonization_opportunity is not None
+    assert "exposed_surface_area_cm2" in result.harmonization_opportunity
 
 
 def test_comparison_id_is_present() -> None:

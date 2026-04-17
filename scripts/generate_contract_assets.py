@@ -14,6 +14,10 @@ from exposure_scenario_mcp.contracts import (
 )
 from exposure_scenario_mcp.defaults import DEFAULTS_REPO_RELATIVE_PATH, DefaultsRegistry
 from exposure_scenario_mcp.guidance import release_notes_markdown
+from exposure_scenario_mcp.package_metadata import (
+    CURRENT_RELEASE_METADATA_RELATIVE_PATH,
+    CURRENT_RELEASE_NOTES_RELATIVE_PATH,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = REPO_ROOT / "schemas"
@@ -21,8 +25,8 @@ EXAMPLES_DIR = SCHEMA_DIR / "examples"
 DOC_SCHEMA_DIR = REPO_ROOT / "docs" / "contracts" / "schemas"
 CONTRACT_MANIFEST_PATH = REPO_ROOT / "docs" / "contracts" / "contract_manifest.json"
 DEFAULTS_MANIFEST_PATH = REPO_ROOT / "defaults" / "manifest.json"
-RELEASE_METADATA_PATH = REPO_ROOT / "docs" / "releases" / "v0.1.0.release_metadata.json"
-RELEASE_NOTES_PATH = REPO_ROOT / "docs" / "releases" / "v0.1.0.md"
+RELEASE_METADATA_PATH = REPO_ROOT / CURRENT_RELEASE_METADATA_RELATIVE_PATH
+RELEASE_NOTES_PATH = REPO_ROOT / CURRENT_RELEASE_NOTES_RELATIVE_PATH
 READONLY_EVAL_PATH = REPO_ROOT / "evals" / "exposure_scenario_mcp_readonly.xml"
 
 

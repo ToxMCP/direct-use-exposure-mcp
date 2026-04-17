@@ -88,6 +88,37 @@ def test_china_population_dose_is_higher_than_global() -> None:
     assert "regional_population_override_active" not in global_flag_codes
 
 
+def test_china_dermal_surface_area_warning_uses_regional_value() -> None:
+    engine = _build_engine()
+    request = ExposureScenarioRequest(
+        chemical_id="TCM-CHINA-DERMAL",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=3,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="china"),
+    )
+
+    scenario = engine.build(request)
+    warning_messages = [
+        qf.message
+        for qf in scenario.quality_flags
+        if qf.code == "dermal_surface_area_defaulted_hands_forearms_anchor"
+    ]
+
+    assert warning_messages
+    assert "16500 cm" in warning_messages[0]
+    assert "region='china'" in warning_messages[0]
+
+
 def test_supported_regions_includes_china() -> None:
     registry = DefaultsRegistry.load()
     manifest = registry.manifest()

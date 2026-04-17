@@ -7,6 +7,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
+
 ScalarValue = str | float | int | bool | None
 
 
@@ -382,9 +384,7 @@ class AssumptionGovernance(StrictModel):
 
 
 class TierSemantics(StrictModel):
-    tier_claimed: TierLevel = Field(
-        ..., description="Tier family implemented by the active model."
-    )
+    tier_claimed: TierLevel = Field(..., description="Tier family implemented by the active model.")
     tier_earned: TierLevel = Field(
         ..., description="Tier earned after the current checks and defaults."
     )
@@ -427,9 +427,7 @@ class TierUpgradeAdvisory(StrictModel):
 class UncertaintyRegisterEntry(StrictModel):
     entry_id: str = Field(..., alias="entryId")
     title: str
-    uncertainty_types: list[UncertaintyType] = Field(
-        default_factory=list, alias="uncertaintyTypes"
-    )
+    uncertainty_types: list[UncertaintyType] = Field(default_factory=list, alias="uncertaintyTypes")
     related_assumptions: list[str] = Field(default_factory=list, alias="relatedAssumptions")
     quantification_status: UncertaintyQuantificationStatus = Field(
         ..., alias="quantificationStatus"
@@ -640,9 +638,7 @@ class ValidationCoverageDomainSummary(StrictModel):
     goldset_case_ids: list[str] = Field(default_factory=list, alias="goldsetCaseIds")
     external_dataset_count: int = Field(..., alias="externalDatasetCount", ge=0)
     external_dataset_ids: list[str] = Field(default_factory=list, alias="externalDatasetIds")
-    executable_reference_band_count: int = Field(
-        ..., alias="executableReferenceBandCount", ge=0
-    )
+    executable_reference_band_count: int = Field(..., alias="executableReferenceBandCount", ge=0)
     executable_reference_band_ids: list[str] = Field(
         default_factory=list, alias="executableReferenceBandIds"
     )
@@ -711,9 +707,7 @@ class ValidationSummary(StrictModel):
     route_mechanism: str = Field(..., alias="routeMechanism")
     benchmark_case_ids: list[str] = Field(default_factory=list, alias="benchmarkCaseIds")
     external_dataset_ids: list[str] = Field(default_factory=list, alias="externalDatasetIds")
-    evidence_readiness: ValidationEvidenceReadiness = Field(
-        ..., alias="evidenceReadiness"
-    )
+    evidence_readiness: ValidationEvidenceReadiness = Field(..., alias="evidenceReadiness")
     heuristic_assumption_names: list[str] = Field(
         default_factory=list, alias="heuristicAssumptionNames"
     )
@@ -1293,9 +1287,7 @@ class ChemicalIdentity(StrictModel):
 
 
 class ExposureScenarioDefinition(StrictModel):
-    schema_version: Literal["exposureScenarioDefinition.v1"] = (
-        "exposureScenarioDefinition.v1"
-    )
+    schema_version: Literal["exposureScenarioDefinition.v1"] = "exposureScenarioDefinition.v1"
     scenario_definition_id: str = Field(
         ...,
         alias="scenarioDefinitionId",
@@ -1451,9 +1443,7 @@ class ReleaseMediumFraction(StrictModel):
 
 
 class EnvironmentalReleaseScenario(StrictModel):
-    schema_version: Literal["environmentalReleaseScenario.v1"] = (
-        "environmentalReleaseScenario.v1"
-    )
+    schema_version: Literal["environmentalReleaseScenario.v1"] = "environmentalReleaseScenario.v1"
     release_scenario_id: str = Field(
         ...,
         alias="releaseScenarioId",
@@ -1692,8 +1682,7 @@ class ExposureScenarioRequest(StrictModel):
 
         if oral_context == OralExposureContext.FOOD_MEDIATED:
             raise ValueError(
-                "food_mediated oral intake belongs in Dietary MCP, not "
-                "exposureScenarioRequest.v1."
+                "food_mediated oral intake belongs in Dietary MCP, not exposureScenarioRequest.v1."
             )
         if oral_context == OralExposureContext.ENVIRONMENTAL_MEDIA:
             raise ValueError(
@@ -1712,10 +1701,14 @@ class ExposureScenarioRequest(StrictModel):
                 "oralExposureContext=incidental_non_dietary requires "
                 "application_method='incidental_oral'."
             )
-        if oral_context in {
-            OralExposureContext.DIRECT_USE_MEDICINAL,
-            OralExposureContext.DIRECT_USE_SUPPLEMENT,
-        } and application_method != "direct_oral":
+        if (
+            oral_context
+            in {
+                OralExposureContext.DIRECT_USE_MEDICINAL,
+                OralExposureContext.DIRECT_USE_SUPPLEMENT,
+            }
+            and application_method != "direct_oral"
+        ):
             raise ValueError(
                 "Direct-use medicinal or supplement oral contexts require "
                 "application_method='direct_oral'."
@@ -1725,10 +1718,7 @@ class ExposureScenarioRequest(StrictModel):
                 "Food intended-use oral workflows should be routed through Dietary MCP, not "
                 "a direct-use scenario request."
             )
-        if (
-            intended_use_family == IntendedUseFamily.SUPPLEMENT
-            and oral_context is None
-        ):
+        if intended_use_family == IntendedUseFamily.SUPPLEMENT and oral_context is None:
             raise ValueError(
                 "Oral supplement workflows must declare oralExposureContext so reviewers can "
                 "distinguish direct-use supplement regimens from dietary intake."
@@ -2339,9 +2329,7 @@ class AggregateExposureSummary(StrictModel):
     dependency_metadata: list[DependencyDescriptor] = Field(
         default_factory=list, alias="dependencyMetadata"
     )
-    validation_summary: ValidationSummary | None = Field(
-        default=None, alias="validationSummary"
-    )
+    validation_summary: ValidationSummary | None = Field(default=None, alias="validationSummary")
     provenance: ProvenanceBundle = Field(..., description="Aggregate provenance.")
 
 
@@ -2443,8 +2431,7 @@ class BuildAggregateExposureScenarioInput(StrictModel):
         default_factory=list,
         alias="routeBioavailabilityAdjustments",
         description=(
-            "Optional route-level bioavailability fractions required for "
-            "internal-equivalent mode."
+            "Optional route-level bioavailability fractions required for internal-equivalent mode."
         ),
     )
     component_scenarios: list[ExposureScenario] = Field(
@@ -2542,9 +2529,7 @@ class ArchetypeLibrarySet(StrictModel):
 
     @model_validator(mode="after")
     def validate_archetype_tier_scope(self) -> ArchetypeLibrarySet:
-        has_tier1 = any(
-            item.tier1_inhalation_parameters is not None for item in self.archetypes
-        )
+        has_tier1 = any(item.tier1_inhalation_parameters is not None for item in self.archetypes)
         if has_tier1:
             if self.route != Route.INHALATION:
                 raise ValueError(
@@ -2684,9 +2669,7 @@ class ExposureEnvelopeSummary(StrictModel):
     dependency_metadata: list[DependencyDescriptor] = Field(
         default_factory=list, alias="dependencyMetadata"
     )
-    validation_summary: ValidationSummary | None = Field(
-        default=None, alias="validationSummary"
-    )
+    validation_summary: ValidationSummary | None = Field(default=None, alias="validationSummary")
     provenance: ProvenanceBundle = Field(..., description="Envelope provenance.")
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable interpretation notes."
@@ -2720,9 +2703,7 @@ class ParameterBoundsSummary(StrictModel):
     dependency_metadata: list[DependencyDescriptor] = Field(
         default_factory=list, alias="dependencyMetadata"
     )
-    validation_summary: ValidationSummary | None = Field(
-        default=None, alias="validationSummary"
-    )
+    validation_summary: ValidationSummary | None = Field(default=None, alias="validationSummary")
     provenance: ProvenanceBundle = Field(..., description="Bounds-summary provenance.")
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable interpretation notes."
@@ -2791,9 +2772,7 @@ class ProbabilityBoundsProfileSummary(StrictModel):
     dependency_metadata: list[DependencyDescriptor] = Field(
         default_factory=list, alias="dependencyMetadata"
     )
-    validation_summary: ValidationSummary | None = Field(
-        default=None, alias="validationSummary"
-    )
+    validation_summary: ValidationSummary | None = Field(default=None, alias="validationSummary")
     provenance: ProvenanceBundle = Field(..., description="Probability-bounds provenance.")
     interpretation_notes: list[str] = Field(
         default_factory=list, description="Human-readable interpretation notes."
@@ -2861,9 +2840,7 @@ class ScenarioPackageProbabilitySummary(StrictModel):
     dependency_metadata: list[DependencyDescriptor] = Field(
         default_factory=list, alias="dependencyMetadata"
     )
-    validation_summary: ValidationSummary | None = Field(
-        default=None, alias="validationSummary"
-    )
+    validation_summary: ValidationSummary | None = Field(default=None, alias="validationSummary")
     provenance: ProvenanceBundle = Field(
         ...,
         description="Scenario-package probability-bounds provenance.",
@@ -2917,7 +2894,7 @@ class ExportPbpkExternalImportBundleRequest(StrictModel):
         description="Source platform name written into the PBPK import request.",
     )
     source_version: str = Field(
-        default="0.1.0",
+        default=CURRENT_VERSION,
         description="Source platform version written into the PBPK import request.",
     )
     model_name: str | None = Field(
@@ -2954,9 +2931,7 @@ class ExportToxClawEvidenceBundleRequest(StrictModel):
         default="internal",
         description="ToxClaw data-classification tag for the evidence record.",
     )
-    trust_label: Literal[
-        "module-output", "untrusted-document", "untrusted-external-data"
-    ] = Field(
+    trust_label: Literal["module-output", "untrusted-document", "untrusted-external-data"] = Field(
         default="module-output",
         description="ToxClaw evidence trust label.",
     )
@@ -2974,14 +2949,14 @@ class ExportToxClawRefinementBundleRequest(StrictModel):
     )
     case_id: str = Field(..., description="Target ToxClaw case identifier.")
     report_id: str = Field(..., description="Target ToxClaw report identifier.")
-    workflow_action: Literal[
-        "scenario_comparison", "route_recalculation", "aggregate_variant"
-    ] = Field(
-        default="scenario_comparison",
-        description=(
-            "Why the comparison is being emitted: a simple comparison, a route-specific "
-            "recalculation, or an aggregate-variant refinement."
-        ),
+    workflow_action: Literal["scenario_comparison", "route_recalculation", "aggregate_variant"] = (
+        Field(
+            default="scenario_comparison",
+            description=(
+                "Why the comparison is being emitted: a simple comparison, a route-specific "
+                "recalculation, or an aggregate-variant refinement."
+            ),
+        )
     )
     context_of_use: str = Field(
         default="screening-refinement",
@@ -2999,9 +2974,7 @@ class ExportToxClawRefinementBundleRequest(StrictModel):
         default="internal",
         description="ToxClaw data-classification tag for the refinement evidence record.",
     )
-    trust_label: Literal[
-        "module-output", "untrusted-document", "untrusted-external-data"
-    ] = Field(
+    trust_label: Literal["module-output", "untrusted-document", "untrusted-external-data"] = Field(
         default="module-output",
         description="ToxClaw evidence trust label.",
     )
@@ -3234,9 +3207,24 @@ class JurisdictionalComparisonResult(StrictModel):
     dose_range: DoseRange = Field(..., alias="doseRange")
     variance_drivers: list[VarianceDriver] = Field(default_factory=list, alias="varianceDrivers")
     harmonization_opportunity: str | None = Field(default=None, alias="harmonizationOpportunity")
+    limitations: list[LimitationNote] = Field(
+        default_factory=list,
+        description="Known limitations that should remain visible downstream.",
+    )
+    quality_flags: list[QualityFlag] = Field(
+        default_factory=list,
+        alias="qualityFlags",
+        description="Quality flags that should remain visible downstream.",
+    )
+    fit_for_purpose: FitForPurpose = Field(
+        ...,
+        alias="fitForPurpose",
+        description="Fit-for-purpose statement for downstream reviewers.",
+    )
     uncertainty_register: list[UncertaintyRegisterEntry] = Field(
         default_factory=list, alias="uncertaintyRegister"
     )
+    provenance: ProvenanceBundle = Field(..., description="Comparison provenance.")
 
 
 class CompareJurisdictionalScenariosInput(StrictModel):
@@ -3246,10 +3234,9 @@ class CompareJurisdictionalScenariosInput(StrictModel):
     request: ExposureScenarioRequest
     jurisdictions: list[str] = Field(
         default_factory=lambda: ["global"],
-        description="Jurisdictions to compare. Must be a subset of supported_regions.")
-    include_uncertainty_register: bool = Field(
-        default=True, alias="includeUncertaintyRegister"
+        description="Jurisdictions to compare. Must be a subset of supported_regions.",
     )
+    include_uncertainty_register: bool = Field(default=True, alias="includeUncertaintyRegister")
 
 
 class ContractManifest(StrictModel):

@@ -74,9 +74,7 @@ SENSITIVITY_FIELD_MAP = {
     "spray_duration_seconds": ("request", "spray_duration_seconds"),
     "near_field_volume_m3": ("request", "near_field_volume_m3"),
 }
-BOUNDS_PARAMETER_CONFIG: dict[
-    str, dict[str, set[Route] | MonotonicDirection | bool]
-] = {
+BOUNDS_PARAMETER_CONFIG: dict[str, dict[str, set[Route] | MonotonicDirection | bool]] = {
     "concentration_fraction": {
         "direction": MonotonicDirection.INCREASE_INCREASES_DOSE,
         "routes": {Route.DERMAL, Route.ORAL, Route.INHALATION},
@@ -592,34 +590,34 @@ def _mechanistic_constraint_entries(
         and float(deposition_rate) > 0.0
     ):
         entries.append(
-                UncertaintyRegisterEntry(
-                    entry_id="mechanistic-constraint-deposition-sink",
-                    title="Bounded aerosol deposition sink constrains inhalation persistence",
-                    uncertainty_types=[
-                        UncertaintyType.MODEL_UNCERTAINTY,
-                        UncertaintyType.PARAMETER_UNCERTAINTY,
-                    ],
-                    related_assumptions=_related(
-                        "particle_size_regime",
-                        "air_exchange_rate_per_hour",
-                        "exposure_duration_hours",
-                    ),
-                    quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
-                    bias_direction=BiasDirection.BIDIRECTIONAL,
-                    impact_level=_impact_from_sensitivity(
-                        "air_exchange_rate_per_hour", sensitivity_ranking
-                    ),
-                    summary=(
-                        "Inhalation persistence is reduced with a bounded first-order "
-                        "deposition sink rather than a full aerosol deposition and "
-                        "evaporation solver."
-                    ),
-                    recommendation=(
-                        "Treat deposition-sensitive spray outputs as physically bounded "
-                        "screening estimates and prefer benchmarked particle families."
-                    ),
-                )
+            UncertaintyRegisterEntry(
+                entry_id="mechanistic-constraint-deposition-sink",
+                title="Bounded aerosol deposition sink constrains inhalation persistence",
+                uncertainty_types=[
+                    UncertaintyType.MODEL_UNCERTAINTY,
+                    UncertaintyType.PARAMETER_UNCERTAINTY,
+                ],
+                related_assumptions=_related(
+                    "particle_size_regime",
+                    "air_exchange_rate_per_hour",
+                    "exposure_duration_hours",
+                ),
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level=_impact_from_sensitivity(
+                    "air_exchange_rate_per_hour", sensitivity_ranking
+                ),
+                summary=(
+                    "Inhalation persistence is reduced with a bounded first-order "
+                    "deposition sink rather than a full aerosol deposition and "
+                    "evaporation solver."
+                ),
+                recommendation=(
+                    "Treat deposition-sensitive spray outputs as physically bounded "
+                    "screening estimates and prefer benchmarked particle families."
+                ),
             )
+        )
 
     if bool(route_metrics.get("saturation_cap_applied")):
         entries.append(
@@ -764,32 +762,29 @@ def _mechanistic_constraint_entries(
         and float(swallowed_mass) > 0.0
     ):
         entries.append(
-                UncertaintyRegisterEntry(
-                    entry_id="mechanistic-constraint-extrathoracic-handoff",
-                    title=(
-                        "Coarse-spray extrathoracic swallowing is represented as a bounded "
-                        "handoff"
-                    ),
-                    uncertainty_types=[
-                        UncertaintyType.MODEL_UNCERTAINTY,
-                        UncertaintyType.PARAMETER_UNCERTAINTY,
-                    ],
-                    related_assumptions=_related("particle_size_regime"),
-                    quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
-                    bias_direction=BiasDirection.BIDIRECTIONAL,
-                    impact_level=_impact_from_sensitivity(
-                        "inhalation_rate_m3_per_hour", sensitivity_ranking
-                    ),
-                    summary=(
-                        "A portion of spray mass is routed to extrathoracic swallowing with a "
-                        "bounded regime-dependent screening fraction."
-                    ),
-                    recommendation=(
-                        "Keep inhalation and incidental-oral interpretation linked for coarse "
-                        "sprays and avoid treating the handoff as a deposition dosimetry model."
-                    ),
-                )
+            UncertaintyRegisterEntry(
+                entry_id="mechanistic-constraint-extrathoracic-handoff",
+                title=("Coarse-spray extrathoracic swallowing is represented as a bounded handoff"),
+                uncertainty_types=[
+                    UncertaintyType.MODEL_UNCERTAINTY,
+                    UncertaintyType.PARAMETER_UNCERTAINTY,
+                ],
+                related_assumptions=_related("particle_size_regime"),
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level=_impact_from_sensitivity(
+                    "inhalation_rate_m3_per_hour", sensitivity_ranking
+                ),
+                summary=(
+                    "A portion of spray mass is routed to extrathoracic swallowing with a "
+                    "bounded regime-dependent screening fraction."
+                ),
+                recommendation=(
+                    "Keep inhalation and incidental-oral interpretation linked for coarse "
+                    "sprays and avoid treating the handoff as a deposition dosimetry model."
+                ),
             )
+        )
 
     if bool(route_metrics.get("interzonal_mixing_floor_applied")):
         entries.append(
@@ -808,9 +803,7 @@ def _mechanistic_constraint_entries(
                 ),
                 quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
                 bias_direction=BiasDirection.BIDIRECTIONAL,
-                impact_level=_impact_from_sensitivity(
-                    "near_field_volume_m3", sensitivity_ranking
-                ),
+                impact_level=_impact_from_sensitivity("near_field_volume_m3", sensitivity_ranking),
                 summary=(
                     "The Tier 1 near-field/far-field solver bounded weak static interzonal "
                     "mixing upward with a local entrainment floor from thermal-plume and "
@@ -1126,9 +1119,7 @@ def build_exposure_envelope(
         None,
         "Tier B envelope count derived from the supplied archetypes.",
     )
-    template_ids = {
-        (item.label, item.description): item.template_id for item in params.archetypes
-    }
+    template_ids = {(item.label, item.description): item.template_id for item in params.archetypes}
     return ExposureEnvelopeSummary(
         envelope_id=f"env-{uuid4().hex[:12]}",
         chemical_id=params.chemical_id,
@@ -1277,9 +1268,7 @@ def build_parameter_bounds_summary(
                 UncertaintyType.PARAMETER_UNCERTAINTY,
                 UncertaintyType.SCENARIO_UNCERTAINTY,
             ],
-            related_assumptions=[
-                item.parameter_name for item in params.bounded_parameters
-            ],
+            related_assumptions=[item.parameter_name for item in params.bounded_parameters],
             quantification_status=UncertaintyQuantificationStatus.BOUNDED,
             bias_direction=BiasDirection.BIDIRECTIONAL,
             impact_level="high",
@@ -1320,9 +1309,7 @@ def build_parameter_bounds_summary(
                 title="At least one monotonicity check failed",
                 uncertainty_types=[UncertaintyType.MODEL_UNCERTAINTY],
                 related_assumptions=[
-                    item.parameter_name
-                    for item in monotonicity_checks
-                    if item.status != "pass"
+                    item.parameter_name for item in monotonicity_checks if item.status != "pass"
                 ],
                 quantification_status=UncertaintyQuantificationStatus.BOUNDED,
                 bias_direction=BiasDirection.UNKNOWN,

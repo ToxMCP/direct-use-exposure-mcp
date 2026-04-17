@@ -146,7 +146,12 @@ from exposure_scenario_mcp.models import (
     WorkerTaskRoutingDecision,
     WorkerTaskRoutingInput,
 )
-from exposure_scenario_mcp.package_metadata import PACKAGE_NAME, __version__
+from exposure_scenario_mcp.package_metadata import (
+    CURRENT_RELEASE_NOTES_RELATIVE_PATH,
+    CURRENT_RELEASE_TAG,
+    CURRENT_VERSION,
+    PACKAGE_NAME,
+)
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
@@ -241,9 +246,7 @@ SCHEMA_MODELS = {
     "workerArtDeterminantTemplateMatch.v1": WorkerArtDeterminantTemplateMatch,
     "workerInhalationArtTaskEnvelope.v1": WorkerInhalationArtTaskEnvelope,
     "workerInhalationTier2AdapterIngestResult.v1": WorkerInhalationTier2AdapterIngestResult,
-    "workerInhalationTier2ExecutionOverrides.v1": (
-        WorkerInhalationTier2ExecutionOverrides
-    ),
+    "workerInhalationTier2ExecutionOverrides.v1": (WorkerInhalationTier2ExecutionOverrides),
     "executeWorkerInhalationTier2Request.v1": ExecuteWorkerInhalationTier2Request,
     "workerArtExternalArtifact.v1": WorkerArtExternalArtifact,
     "workerArtExternalExecutionResult.v1": WorkerArtExternalExecutionResult,
@@ -257,17 +260,11 @@ SCHEMA_MODELS = {
     "workerDermalAbsorbedDoseAdapterRequest.v1": WorkerDermalAbsorbedDoseAdapterRequest,
     "workerDermalAbsorbedDoseAdapterToolCall.v1": WorkerDermalAbsorbedDoseAdapterToolCall,
     "workerDermalAbsorbedDoseBridgePackage.v1": WorkerDermalAbsorbedDoseBridgePackage,
-    "exportWorkerDermalAbsorbedDoseBridgeRequest.v1": (
-        ExportWorkerDermalAbsorbedDoseBridgeRequest
-    ),
+    "exportWorkerDermalAbsorbedDoseBridgeRequest.v1": (ExportWorkerDermalAbsorbedDoseBridgeRequest),
     "workerDermalDeterminantTemplateMatch.v1": WorkerDermalDeterminantTemplateMatch,
     "workerDermalAbsorbedDoseTaskEnvelope.v1": WorkerDermalAbsorbedDoseTaskEnvelope,
-    "workerDermalAbsorbedDoseAdapterIngestResult.v1": (
-        WorkerDermalAbsorbedDoseAdapterIngestResult
-    ),
-    "workerDermalAbsorbedDoseExecutionOverrides.v1": (
-        WorkerDermalAbsorbedDoseExecutionOverrides
-    ),
+    "workerDermalAbsorbedDoseAdapterIngestResult.v1": (WorkerDermalAbsorbedDoseAdapterIngestResult),
+    "workerDermalAbsorbedDoseExecutionOverrides.v1": (WorkerDermalAbsorbedDoseExecutionOverrides),
     "executeWorkerDermalAbsorbedDoseRequest.v1": ExecuteWorkerDermalAbsorbedDoseRequest,
     "workerDermalAbsorbedDoseExecutionResult.v1": WorkerDermalAbsorbedDoseExecutionResult,
     "buildExposureEnvelopeFromLibraryInput.v1": BuildExposureEnvelopeFromLibraryInput,
@@ -317,14 +314,10 @@ SCHEMA_MODELS = {
     "sccsOpinionEvidenceRecord.v1": SccsOpinionEvidenceRecord,
     "cosIngIngredientRecord.v1": CosIngIngredientRecord,
     "nanoMaterialEvidenceRecord.v1": NanoMaterialEvidenceRecord,
-    "syntheticPolymerMicroparticleEvidenceRecord.v1": (
-        SyntheticPolymerMicroparticleEvidenceRecord
-    ),
+    "syntheticPolymerMicroparticleEvidenceRecord.v1": (SyntheticPolymerMicroparticleEvidenceRecord),
     "buildProductUseEvidenceFromConsExpoInput.v1": BuildProductUseEvidenceFromConsExpoInput,
     "buildProductUseEvidenceFromSccsInput.v1": BuildProductUseEvidenceFromSccsInput,
-    "buildProductUseEvidenceFromSccsOpinionInput.v1": (
-        BuildProductUseEvidenceFromSccsOpinionInput
-    ),
+    "buildProductUseEvidenceFromSccsOpinionInput.v1": (BuildProductUseEvidenceFromSccsOpinionInput),
     "buildProductUseEvidenceFromCosIngInput.v1": BuildProductUseEvidenceFromCosIngInput,
     "buildProductUseEvidenceFromNanoMaterialInput.v1": (
         BuildProductUseEvidenceFromNanoMaterialInput
@@ -363,6 +356,7 @@ SCHEMA_MODELS = {
     "securityProvenanceReviewReport.v1": SecurityProvenanceReviewReport,
 }
 
+
 def schema_payloads() -> dict[str, dict]:
     return {name: model.model_json_schema() for name, model in SCHEMA_MODELS.items()}
 
@@ -371,7 +365,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
     examples = build_examples()
     return ContractManifest(
         server_name="exposure_scenario_mcp",
-        server_version="0.1.0",
+        server_version=CURRENT_VERSION,
         defaults_version=defaults_registry.version,
         tools=[
             ContractToolEntry(
@@ -519,8 +513,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 request_schema="runIntegratedExposureWorkflowInput.v1",
                 response_schema="integratedExposureWorkflowResult.v1",
                 description=(
-                    "Run the local evidence-to-scenario-to-PBPK workflow in one audited "
-                    "response."
+                    "Run the local evidence-to-scenario-to-PBPK workflow in one audited response."
                 ),
             ),
             ContractToolEntry(
@@ -718,8 +711,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="scenario-probability://manifest",
                 description=(
-                    "Machine-readable packaged Tier C coupled-driver "
-                    "scenario package manifest."
+                    "Machine-readable packaged Tier C coupled-driver scenario package manifest."
                 ),
             ),
             ContractResourceEntry(
@@ -752,8 +744,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="docs://operator-guide",
                 description=(
-                    "Operator guide for validation, transports, "
-                    "and interpretation boundaries."
+                    "Operator guide for validation, transports, and interpretation boundaries."
                 ),
             ),
             ContractResourceEntry(
@@ -909,9 +900,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ),
             ContractResourceEntry(
                 uri="docs://worker-dermal-adapter-guide",
-                description=(
-                    "Guide to the dermal absorbed-dose and PPE adapter ingest boundary."
-                ),
+                description=("Guide to the dermal absorbed-dose and PPE adapter ingest boundary."),
             ),
             ContractResourceEntry(
                 uri="docs://worker-dermal-execution-guide",
@@ -920,8 +909,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="docs://troubleshooting",
                 description=(
-                    "Troubleshooting guide for common scenario, aggregation, "
-                    "and export failures."
+                    "Troubleshooting guide for common scenario, aggregation, and export failures."
                 ),
             ),
             ContractResourceEntry(
@@ -980,8 +968,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="validation://dossier-report",
                 description=(
-                    "Machine-readable validation dossier with external references and "
-                    "open gaps."
+                    "Machine-readable validation dossier with external references and open gaps."
                 ),
             ),
             ContractResourceEntry(
@@ -993,9 +980,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ),
             ContractResourceEntry(
                 uri="validation://reference-bands",
-                description=(
-                    "Machine-readable executable validation reference-band manifest."
-                ),
+                description=("Machine-readable executable validation reference-band manifest."),
             ),
             ContractResourceEntry(
                 uri="validation://time-series-packs",
@@ -1013,8 +998,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ContractResourceEntry(
                 uri="release://readiness-report",
                 description=(
-                    "Machine-readable release-readiness report with "
-                    "validation and security checks."
+                    "Machine-readable release-readiness report with validation and security checks."
                 ),
             ),
             ContractResourceEntry(
@@ -1158,23 +1142,35 @@ def archetype_library_manifest() -> dict:
 
 
 def tier1_inhalation_parameter_manifest() -> dict:
-    return Tier1InhalationProfileRegistry.load().manifest().model_dump(
-        mode="json",
-        by_alias=True,
+    return (
+        Tier1InhalationProfileRegistry.load()
+        .manifest()
+        .model_dump(
+            mode="json",
+            by_alias=True,
+        )
     )
 
 
 def probability_bounds_profile_manifest() -> dict:
-    return ProbabilityBoundsProfileRegistry.load().manifest().model_dump(
-        mode="json",
-        by_alias=True,
+    return (
+        ProbabilityBoundsProfileRegistry.load()
+        .manifest()
+        .model_dump(
+            mode="json",
+            by_alias=True,
+        )
     )
 
 
 def scenario_probability_package_manifest() -> dict:
-    return ScenarioProbabilityPackageRegistry.load().manifest().model_dump(
-        mode="json",
-        by_alias=True,
+    return (
+        ScenarioProbabilityPackageRegistry.load()
+        .manifest()
+        .model_dump(
+            mode="json",
+            by_alias=True,
+        )
     )
 
 
@@ -1184,7 +1180,7 @@ def _project_metadata() -> tuple[str, str]:
         payload = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
         project = payload["project"]
         return str(project["name"]), str(project["version"])
-    return PACKAGE_NAME, __version__
+    return PACKAGE_NAME, CURRENT_VERSION
 
 
 def _distribution_artifacts(package_name: str, version: str) -> list[ReleaseDistributionArtifact]:
@@ -1220,6 +1216,7 @@ def build_security_provenance_review_report(
         "inhalation_scenario",
         "aggregate_summary",
         "comparison_record",
+        "jurisdictional_comparison_result",
         "pbpk_input",
     ]
     provenance_examples_ok = all(
@@ -1276,10 +1273,11 @@ def build_security_provenance_review_report(
             status=provenance_status,
             applies_to=reviewed_surface.tool_names,
             evidence=(
-                "Generated scenario, aggregate, comparison, and PBPK input examples all carry "
-                "explicit `provenance`; PBPK external-import output preserves auditable "
-                "handoff context through supporting handoffs and compatibility reporting; "
-                "ToxClaw-facing exports carry deterministic evidence records."
+                "Generated scenario, aggregate, both comparison outputs, and PBPK input "
+                "examples all carry explicit `provenance`; PBPK external-import output "
+                "preserves auditable handoff context through supporting handoffs and "
+                "compatibility reporting; ToxClaw-facing exports carry deterministic "
+                "evidence records."
             ),
             recommendation=(
                 None
@@ -1461,14 +1459,19 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://red-team-review-memo",
             "docs://herbal-medicinal-routing-guide",
             "docs://toxmcp-suite-index",
-            "docs/releases/v0.1.0.md",
+            CURRENT_RELEASE_NOTES_RELATIVE_PATH,
         ],
         validation_commands=readiness.validation_commands,
         migration_notes=[
-            "This is the first public v0.1.0 release, so no prior stable migration path applies.",
             (
-                "Pre-release PBPK wrappers that nested requests under `toolCall.arguments.bundle` "
-                "are superseded by the published v0.1.0 top-level request payload."
+                f"{CURRENT_RELEASE_TAG} supersedes the prior public `v0.1.0` baseline; "
+                "update any pinned release-note or release-metadata references to the new "
+                "versioned docs path."
+            ),
+            (
+                "Jurisdictional comparison clients should preserve the new audit fields "
+                "(`provenance`, `limitations`, `qualityFlags`, `fitForPurpose`) and treat "
+                "unsupported or duplicate jurisdictions as request-validation errors."
             ),
         ],
         known_limitations=readiness.known_limitations,
@@ -1496,10 +1499,9 @@ def build_verification_summary_report(
 
     checks: list[VerificationCheck] = []
 
-    contract_surface_aligned = (
-        metadata.contract_schema_count == len(manifest.schemas)
-        and metadata.contract_example_count == len(example_payloads)
-    )
+    contract_surface_aligned = metadata.contract_schema_count == len(
+        manifest.schemas
+    ) and metadata.contract_example_count == len(example_payloads)
     checks.append(
         VerificationCheck(
             checkId="contract-surface-alignment",
@@ -1650,8 +1652,7 @@ def build_verification_summary_report(
                 None
                 if security_status == "pass"
                 else (
-                    "Review `release://security-provenance-review-report` before "
-                    "remote deployment."
+                    "Review `release://security-provenance-review-report` before remote deployment."
                 )
             ),
             relatedResources=[
@@ -1914,7 +1915,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
         else "ready"
     )
     return ReleaseReadinessReport(
-        release_candidate="0.1.0",
+        release_candidate=CURRENT_VERSION,
         server_name=manifest.server_name,
         server_version=manifest.server_version,
         defaults_version=manifest.defaults_version,
@@ -1935,12 +1936,13 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             "uv run pytest",
             "uv build",
             "uv run generate-exposure-contracts",
+            "uv run validate-evals",
             "uv run check-exposure-release-artifacts",
         ],
         checks=checks,
         known_limitations=[
             (
-                "This is a deterministic-first v0.1.0 server; "
+                "This is a deterministic-first public server; "
                 "no probabilistic population engine is shipped."
             ),
             (

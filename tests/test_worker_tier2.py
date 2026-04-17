@@ -118,9 +118,10 @@ def test_worker_tier2_bridge_builds_ready_package() -> None:
     assert package.adapter_request.task_context.ventilation_context == (
         WorkerVentilationContext.GENERAL_VENTILATION
     )
-    assert package.adapter_request.supporting_handoffs["workerRoutingDecision"][
-        "support_status"
-    ] == "future_adapter_recommended"
+    assert (
+        package.adapter_request.supporting_handoffs["workerRoutingDecision"]["support_status"]
+        == "future_adapter_recommended"
+    )
     assert any(flag.code == "worker_tier2_bridge_export" for flag in package.quality_flags)
 
 
@@ -416,8 +417,7 @@ def test_worker_art_adapter_ingest_matches_open_mixing_vapor_template() -> None:
     assert result.art_task_envelope.emission_profile == "vapor_release_profile"
 
 
-def test_worker_art_adapter_ingest_falls_back_to_broader_paint_template_without_control_context(
-) -> None:
+def test_worker_art_adapter_ingest_falls_back_to_paint_template_without_control_context() -> None:
     bridge_package = build_worker_inhalation_tier2_bridge(
         ExportWorkerInhalationTier2BridgeRequest(
             base_request=_base_request().model_copy(
@@ -454,8 +454,7 @@ def test_worker_art_adapter_ingest_falls_back_to_broader_paint_template_without_
     assert result.art_task_envelope.determinant_template_match.alignment_status.value == "aligned"
 
 
-def test_worker_art_adapter_ingest_falls_back_to_broader_mixing_template_without_control_context(
-) -> None:
+def test_worker_art_adapter_ingest_falls_back_to_mixing_template_without_control_context() -> None:
     bridge_package = build_worker_inhalation_tier2_bridge(
         ExportWorkerInhalationTier2BridgeRequest(
             base_request=_base_inhalation_request().model_copy(
@@ -537,8 +536,7 @@ def test_worker_art_adapter_ingest_matches_enclosed_pour_transfer_template() -> 
     assert result.art_task_envelope.emission_profile == "vapor_release_profile"
 
 
-def test_worker_art_adapter_ingest_falls_back_from_enclosed_transfer_template_without_enclosure(
-) -> None:
+def test_worker_art_adapter_ingest_falls_back_from_enclosed_transfer_without_enclosure() -> None:
     bridge_package = build_worker_inhalation_tier2_bridge(
         ExportWorkerInhalationTier2BridgeRequest(
             base_request=_base_inhalation_request().model_copy(
@@ -754,9 +752,7 @@ def test_worker_art_execution_applies_task_intensity_factor_to_inhalation_rate()
     assert base_result.external_dose is not None
     assert high_result.route_metrics["taskIntensity"] == "high"
     assert high_result.route_metrics["taskIntensityFactor"] == pytest.approx(1.35, rel=1e-6)
-    assert high_result.route_metrics["baseInhalationRateM3PerHour"] == pytest.approx(
-        1.1, rel=1e-6
-    )
+    assert high_result.route_metrics["baseInhalationRateM3PerHour"] == pytest.approx(1.1, rel=1e-6)
     assert high_result.route_metrics["effectiveInhalationRateM3PerHour"] == pytest.approx(
         1.485, rel=1e-6
     )
@@ -820,12 +816,8 @@ def test_worker_art_execution_applies_control_context_factor_for_capture_hood() 
     assert capture_result.baseline_dose is not None
     assert base_result.external_dose is not None
     assert capture_result.external_dose is not None
-    assert capture_result.route_metrics["baseControlProfileFactor"] == pytest.approx(
-        0.4, rel=1e-6
-    )
-    assert capture_result.route_metrics["controlContextFactor"] == pytest.approx(
-        0.85, rel=1e-6
-    )
+    assert capture_result.route_metrics["baseControlProfileFactor"] == pytest.approx(0.4, rel=1e-6)
+    assert capture_result.route_metrics["controlContextFactor"] == pytest.approx(0.85, rel=1e-6)
     assert capture_result.route_metrics["captureZoneAlignmentFactor"] == pytest.approx(
         0.9, rel=1e-6
     )
@@ -839,9 +831,7 @@ def test_worker_art_execution_applies_control_context_factor_for_capture_hood() 
     assert capture_result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
         0.282744, rel=1e-6
     )
-    assert capture_result.route_metrics["workerControlFactor"] == pytest.approx(
-        0.282744, rel=1e-6
-    )
+    assert capture_result.route_metrics["workerControlFactor"] == pytest.approx(0.282744, rel=1e-6)
     assert capture_result.route_metrics["controlContextProfile"] == "capture_hood_or_slot_hood"
     assert capture_result.route_metrics["captureZoneProfile"] == (
         "direct_capture_zone_or_downdraft"
@@ -855,13 +845,9 @@ def test_worker_art_execution_applies_control_context_factor_for_capture_hood() 
         rel=1e-6,
     )
     assert any(
-        item.code == "worker_control_context_screening"
-        for item in capture_result.limitations
+        item.code == "worker_control_context_screening" for item in capture_result.limitations
     )
-    assert any(
-        item.code == "worker_capture_zone_screening"
-        for item in capture_result.limitations
-    )
+    assert any(item.code == "worker_capture_zone_screening" for item in capture_result.limitations)
 
 
 def test_worker_art_execution_applies_capture_distance_factor_for_far_source() -> None:
@@ -889,9 +875,7 @@ def test_worker_art_execution_applies_capture_distance_factor_for_far_source() -
 
     assert far_result.route_metrics["baseControlProfileFactor"] == pytest.approx(0.4, rel=1e-6)
     assert far_result.route_metrics["controlContextFactor"] == pytest.approx(0.85, rel=1e-6)
-    assert far_result.route_metrics["captureZoneAlignmentFactor"] == pytest.approx(
-        0.9, rel=1e-6
-    )
+    assert far_result.route_metrics["captureZoneAlignmentFactor"] == pytest.approx(0.9, rel=1e-6)
     assert far_result.route_metrics["captureDistanceAlignmentFactor"] == pytest.approx(
         1.22, rel=1e-6
     )
@@ -902,10 +886,7 @@ def test_worker_art_execution_applies_capture_distance_factor_for_far_source() -
     assert far_result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
         0.37332, rel=1e-6
     )
-    assert any(
-        item.code == "worker_capture_distance_screening"
-        for item in far_result.limitations
-    )
+    assert any(item.code == "worker_capture_distance_screening" for item in far_result.limitations)
 
 
 def test_worker_art_execution_applies_smaller_far_distance_penalty_for_spray_booth() -> None:
@@ -951,8 +932,7 @@ def test_worker_art_execution_applies_smaller_far_distance_penalty_for_spray_boo
     )
     assert booth_result.route_metrics["captureDistanceAlignmentFactor"] < 1.22
     assert any(
-        item.code == "worker_capture_distance_screening"
-        for item in booth_result.limitations
+        item.code == "worker_capture_distance_screening" for item in booth_result.limitations
     )
 
 
@@ -984,20 +964,13 @@ def test_worker_art_execution_applies_slot_hood_capture_velocity_factor() -> Non
     )
 
     assert result.route_metrics["captureVelocityFactor"] == pytest.approx(0.92, rel=1e-6)
-    assert result.route_metrics["captureVelocityProfile"] == (
-        "slot_hood_or_high_face_velocity"
-    )
-    assert result.route_metrics["captureVelocityContextProfile"] == (
-        "capture_hood_or_slot_hood"
-    )
+    assert result.route_metrics["captureVelocityProfile"] == ("slot_hood_or_high_face_velocity")
+    assert result.route_metrics["captureVelocityContextProfile"] == ("capture_hood_or_slot_hood")
     assert result.route_metrics["effectiveWorkerControlFactor"] == pytest.approx(
         0.26012448,
         rel=1e-6,
     )
-    assert any(
-        item.code == "worker_capture_velocity_screening"
-        for item in result.limitations
-    )
+    assert any(item.code == "worker_capture_velocity_screening" for item in result.limitations)
 
 
 def test_worker_art_execution_applies_explicit_lev_family_and_face_velocity() -> None:
@@ -1026,22 +999,15 @@ def test_worker_art_execution_applies_explicit_lev_family_and_face_velocity() ->
     )
 
     assert result.route_metrics["captureVelocityFactor"] == pytest.approx(0.8372, rel=1e-6)
-    assert result.route_metrics["captureVelocityProfile"] == (
-        "slot_hood_or_high_face_velocity"
-    )
-    assert result.route_metrics["captureVelocityContextProfile"] == (
-        "capture_hood_or_slot_hood"
-    )
+    assert result.route_metrics["captureVelocityProfile"] == ("slot_hood_or_high_face_velocity")
+    assert result.route_metrics["captureVelocityContextProfile"] == ("capture_hood_or_slot_hood")
     assert result.route_metrics["captureVelocityMeasuredProfileBand"] == (
         "measured_high_capture_band"
     )
     assert result.route_metrics["levFamily"] == "slot_hood"
     assert result.route_metrics["hoodFaceVelocityMPerS"] == pytest.approx(0.9, rel=1e-6)
     assert any(item.code == "worker_lev_family_screening" for item in result.limitations)
-    assert any(
-        item.code == "worker_capture_velocity_screening"
-        for item in result.limitations
-    )
+    assert any(item.code == "worker_capture_velocity_screening" for item in result.limitations)
 
 
 def test_worker_art_execution_applies_downdraft_booth_capture_velocity_factor() -> None:
@@ -1093,10 +1059,7 @@ def test_worker_art_execution_applies_downdraft_booth_capture_velocity_factor() 
         0.2543625,
         rel=1e-6,
     )
-    assert any(
-        item.code == "worker_capture_velocity_screening"
-        for item in result.limitations
-    )
+    assert any(item.code == "worker_capture_velocity_screening" for item in result.limitations)
 
 
 def test_worker_art_execution_applies_physchem_aerosol_adjustment() -> None:
@@ -1247,15 +1210,16 @@ def test_worker_art_execution_applies_explicit_carrier_family_adjustment() -> No
     assert assumption_map[
         "pressurized_aerosol_carrier_family_adjustment_factor"
     ].value == pytest.approx(0.82, rel=1e-6)
-    assert assumption_map[
-        "pressurized_aerosol_carrier_family_adjustment_factor"
-    ].source.source_id == "pressurized_aerosol_carrier_family_heuristics_2026"
+    assert (
+        assumption_map["pressurized_aerosol_carrier_family_adjustment_factor"].source.source_id
+        == "pressurized_aerosol_carrier_family_heuristics_2026"
+    )
     assert result.route_metrics["pressurizedAerosolVolumeInterpretationFactor"] == pytest.approx(
         0.41, rel=1e-6
     )
-    assert result.route_metrics[
-        "pressurizedAerosolCarrierFamilyAdjustmentFactor"
-    ] == pytest.approx(0.82, rel=1e-6)
+    assert result.route_metrics["pressurizedAerosolCarrierFamilyAdjustmentFactor"] == pytest.approx(
+        0.82, rel=1e-6
+    )
     assert result.route_metrics["pressurizedAerosolCarrierFamily"] == (
         "hydrocarbon_propellant_solvent"
     )
@@ -1306,9 +1270,10 @@ def test_worker_art_execution_applies_explicit_formulation_profile_adjustment() 
     assert assumption_map[
         "pressurized_aerosol_formulation_profile_adjustment_factor"
     ].value == pytest.approx(0.88, rel=1e-6)
-    assert assumption_map[
-        "pressurized_aerosol_formulation_profile_adjustment_factor"
-    ].source.source_id == "pressurized_aerosol_formulation_profile_heuristics_2026"
+    assert (
+        assumption_map["pressurized_aerosol_formulation_profile_adjustment_factor"].source.source_id
+        == "pressurized_aerosol_formulation_profile_heuristics_2026"
+    )
     assert result.route_metrics["pressurizedAerosolVolumeInterpretationFactor"] == pytest.approx(
         0.3608, rel=1e-6
     )
@@ -1422,9 +1387,7 @@ def test_worker_art_execution_uses_room_average_vapor_surrogate_for_non_spray_ta
     assert result.external_dose.value == round(result.baseline_dose.value * 0.4, 8)
     assert result.validation_summary is not None
     assert result.validation_summary.executed_validation_checks == []
-    assert any(
-        item.code == "worker_art_execution_vapor_surrogate" for item in result.limitations
-    )
+    assert any(item.code == "worker_art_execution_vapor_surrogate" for item in result.limitations)
 
 
 def test_worker_art_external_execution_package_exports_ready_payload() -> None:
@@ -1573,8 +1536,7 @@ def test_worker_art_external_result_import_uses_structured_result_payload() -> N
         "explicit_normalized_external_dose"
     )
     assert any(
-        flag.code == "worker_art_external_result_payload_present"
-        for flag in result.quality_flags
+        flag.code == "worker_art_external_result_payload_present" for flag in result.quality_flags
     )
     assert any(
         flag.code == "worker_art_external_result_payload_without_raw_artifacts"

@@ -367,12 +367,8 @@ def test_inhalation_screening_defaults_and_dose() -> None:
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         3.69207438, rel=1e-6
     )
-    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
-        1.66143347, rel=1e-6
-    )
-    assert scenario.route_metrics["extrathoracic_swallow_fraction"] == pytest.approx(
-        0.25, rel=1e-6
-    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(1.66143347, rel=1e-6)
+    assert scenario.route_metrics["extrathoracic_swallow_fraction"] == pytest.approx(0.25, rel=1e-6)
     assert scenario.route_metrics["swallowed_extrathoracic_mass_mg_per_day"] == pytest.approx(
         0.41535837, rel=1e-6
     )
@@ -483,9 +479,10 @@ def test_tier0_deposition_lowers_trigger_spray_against_zero_deposition_baseline(
 
     assert baseline.route_metrics["deposition_rate_per_hour"] == pytest.approx(0.0, rel=1e-6)
     assert bounded.route_metrics["deposition_rate_per_hour"] == pytest.approx(0.5, rel=1e-6)
-    assert bounded.route_metrics["average_air_concentration_mg_per_m3"] < baseline.route_metrics[
-        "average_air_concentration_mg_per_m3"
-    ]
+    assert (
+        bounded.route_metrics["average_air_concentration_mg_per_m3"]
+        < baseline.route_metrics["average_air_concentration_mg_per_m3"]
+    )
     assert bounded.external_dose.value < baseline.external_dose.value
 
 
@@ -529,12 +526,14 @@ def test_tier1_deposition_is_stronger_for_coarse_than_fine_aerosol() -> None:
     assert fine.route_metrics["deposition_rate_per_hour"] == pytest.approx(0.1, rel=1e-6)
     assert coarse.route_metrics["extrathoracic_swallow_fraction"] == pytest.approx(0.4, rel=1e-6)
     assert fine.route_metrics["extrathoracic_swallow_fraction"] == pytest.approx(0.05, rel=1e-6)
-    assert coarse.route_metrics["swallowed_extrathoracic_mass_mg_per_day"] > fine.route_metrics[
-        "swallowed_extrathoracic_mass_mg_per_day"
-    ]
-    assert coarse.route_metrics["average_air_concentration_mg_per_m3"] < fine.route_metrics[
-        "average_air_concentration_mg_per_m3"
-    ]
+    assert (
+        coarse.route_metrics["swallowed_extrathoracic_mass_mg_per_day"]
+        > fine.route_metrics["swallowed_extrathoracic_mass_mg_per_day"]
+    )
+    assert (
+        coarse.route_metrics["average_air_concentration_mg_per_m3"]
+        < fine.route_metrics["average_air_concentration_mg_per_m3"]
+    )
     assert coarse.external_dose.value < fine.external_dose.value
 
 
@@ -1565,9 +1564,7 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         8.91455492, rel=1e-6
     )
-    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
-        4.01154971, rel=1e-6
-    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(4.01154971, rel=1e-6)
     assert scenario.route_metrics["interzonal_mixing_rate_m3_per_hour"] == pytest.approx(
         68.0, rel=1e-6
     )
@@ -1593,8 +1590,7 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
         "benchmark_tier1_nf_ff_parameter_pack_v1"
     )
     assert any(
-        "household_cleaner_trigger_spray_tier1" in note
-        for note in scenario.interpretation_notes
+        "household_cleaner_trigger_spray_tier1" in note for note in scenario.interpretation_notes
     )
 
     enriched = enrich_scenario_uncertainty(engine, scenario)
@@ -1605,8 +1601,7 @@ def test_inhalation_tier_1_nf_ff_screening_builds_scenario() -> None:
         enriched.validation_summary.validation_gap_ids
     )
     assert any(
-        item.dependency_id == "near-field-geometry-cluster"
-        for item in enriched.dependency_metadata
+        item.dependency_id == "near-field-geometry-cluster" for item in enriched.dependency_metadata
     )
     assert any(item.parameter_name == "source_distance_m" for item in enriched.sensitivity_ranking)
 
@@ -1651,12 +1646,8 @@ def test_inhalation_tier_1_applies_local_entrainment_floor_when_static_mixing_is
     assert bounded.route_metrics["static_interzonal_mixing_rate_m3_per_hour"] == pytest.approx(
         10.25, rel=1e-6
     )
-    assert bounded.route_metrics["thermal_plume_rate_m3_per_hour"] == pytest.approx(
-        36.0, rel=1e-6
-    )
-    assert bounded.route_metrics["spray_jet_rate_m3_per_hour"] == pytest.approx(
-        8.0, rel=1e-6
-    )
+    assert bounded.route_metrics["thermal_plume_rate_m3_per_hour"] == pytest.approx(36.0, rel=1e-6)
+    assert bounded.route_metrics["spray_jet_rate_m3_per_hour"] == pytest.approx(8.0, rel=1e-6)
     assert bounded.route_metrics["local_entrainment_rate_m3_per_hour"] == pytest.approx(
         44.0, rel=1e-6
     )
@@ -1670,8 +1661,7 @@ def test_inhalation_tier_1_applies_local_entrainment_floor_when_static_mixing_is
     )
     assert bounded.external_dose.value < baseline.external_dose.value
     assert any(
-        item.code == "tier1_local_entrainment_floor_screening"
-        for item in bounded.limitations
+        item.code == "tier1_local_entrainment_floor_screening" for item in bounded.limitations
     )
     assert any(
         item.entry_id == "mechanistic-constraint-tier1-local-entrainment-floor"
@@ -1957,8 +1947,7 @@ def test_pesticide_trigger_spray_subtype_uses_subtype_branch_without_gap_warning
         "application_method": "trigger_spray",
     }
     assert not any(
-        item.code == "product_subtype_missing_for_spray_family"
-        for item in scenario.quality_flags
+        item.code == "product_subtype_missing_for_spray_family" for item in scenario.quality_flags
     )
 
 
@@ -2019,8 +2008,7 @@ def test_air_space_pesticide_aerosol_subtype_uses_consexpo_branches() -> None:
         "application_method": "aerosol_spray",
     }
     assert not any(
-        item.code == "product_subtype_missing_for_spray_family"
-        for item in scenario.quality_flags
+        item.code == "product_subtype_missing_for_spray_family" for item in scenario.quality_flags
     )
     assert not any(
         item.code == "pressurized_aerosol_volume_interpretation_defaulted"
@@ -2275,9 +2263,10 @@ def test_personal_care_deodorant_aerosol_uses_explicit_carrier_family_adjustment
     assert assumptions[
         "pressurized_aerosol_carrier_family_adjustment_factor"
     ].value == pytest.approx(0.82, rel=1e-6)
-    assert assumptions[
-        "pressurized_aerosol_carrier_family_adjustment_factor"
-    ].source.source_id == "pressurized_aerosol_carrier_family_heuristics_2026"
+    assert (
+        assumptions["pressurized_aerosol_carrier_family_adjustment_factor"].source.source_id
+        == "pressurized_aerosol_carrier_family_heuristics_2026"
+    )
     assert assumptions["pressurized_aerosol_volume_interpretation_factor"].value == pytest.approx(
         0.41, rel=1e-6
     )
@@ -2515,8 +2504,7 @@ def test_household_cleaner_wipe_uses_product_category_transfer_override() -> Non
 
     assert retention_factor.value == pytest.approx(0.2, rel=1e-6)
     assert (
-        retention_factor.source.source_id
-        == "rivm_cleaning_surface_contact_retention_defaults_2018"
+        retention_factor.source.source_id == "rivm_cleaning_surface_contact_retention_defaults_2018"
     )
     assert transfer_efficiency.value == pytest.approx(0.5, rel=1e-6)
     assert transfer_efficiency.source.source_id == "rivm_cleaning_wet_cloth_transfer_defaults_2018"
@@ -2605,9 +2593,7 @@ def test_household_cleaner_pump_spray_uses_product_category_aerosol_override() -
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         5.38145026, rel=1e-6
     )
-    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
-        5.38145026, rel=1e-6
-    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(5.38145026, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(0.07687786, rel=1e-6)
 
 
@@ -2653,9 +2639,7 @@ def test_personal_care_pump_spray_uses_curated_rivm_cosmetics_override() -> None
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         5.38145026, rel=1e-6
     )
-    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
-        5.38145026, rel=1e-6
-    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(5.38145026, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(0.07687786, rel=1e-6)
 
 
@@ -2701,9 +2685,7 @@ def test_personal_care_aerosol_spray_uses_curated_rivm_cosmetics_override() -> N
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         28.09192891, rel=1e-6
     )
-    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(
-        28.09192891, rel=1e-6
-    )
+    assert scenario.route_metrics["inhaled_mass_mg_per_day"] == pytest.approx(28.09192891, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(0.40131327, rel=1e-6)
 
 
@@ -3039,9 +3021,7 @@ def test_packaged_archetype_library_builds_tier_b_envelope() -> None:
     assert any(
         item.entry_id == "library-governed-archetypes" for item in summary.uncertainty_register
     )
-    assert any(
-        "packaged archetype-library set" in item for item in summary.interpretation_notes
-    )
+    assert any("packaged archetype-library set" in item for item in summary.interpretation_notes)
 
 
 def test_packaged_archetype_library_builds_tier1_personal_care_envelope() -> None:

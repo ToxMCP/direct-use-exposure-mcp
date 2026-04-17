@@ -77,9 +77,7 @@ def test_potts_guy_permeation_constraint_is_applied() -> None:
     # 1. Verify Kp calculation
     # log_kp = -2.72 + 0.71*0.5 - 0.0061*500 = -5.415
     # kp = 10^-5.415 = 0.0000038459
-    assert execution.route_metrics["pottsGuyKpCmPerHour"] == pytest.approx(
-        0.0000038459, rel=1e-4
-    )
+    assert execution.route_metrics["pottsGuyKpCmPerHour"] == pytest.approx(0.0000038459, rel=1e-4)
 
     # 2. Verify Permeation Limited Mass
     # Cv = Density (1.0) * 1000 * 0.1 = 100 mg/cm3
@@ -100,10 +98,7 @@ def test_potts_guy_permeation_constraint_is_applied() -> None:
     )
 
     # 4. Verify Quality Flag
-    assert any(
-        q.code == "worker_dermal_permeation_limit_active"
-        for q in execution.quality_flags
-    )
+    assert any(q.code == "worker_dermal_permeation_limit_active" for q in execution.quality_flags)
 
     # 5. Verify Rationale
     abs_mass_assumption = next(
@@ -178,10 +173,9 @@ def test_fraction_based_limit_is_applied_when_lower() -> None:
     # Base absorption fraction for liquid is 0.1
     # Total factor = 0.1 * 1.0 * 1.0 * 1.0 * 0.8415 = 0.08415
     # Absorbed mass (fraction) = 1 * 0.08415 = 0.08415 mg
-    
+
     # Since 0.08415 < 165.96, the fraction-based limit should be active
     assert execution.route_metrics["absorbedMassMgPerDay"] == pytest.approx(0.08415, rel=1e-4)
     assert not any(
-        q.code == "worker_dermal_permeation_limit_active"
-        for q in execution.quality_flags
+        q.code == "worker_dermal_permeation_limit_active" for q in execution.quality_flags
     )

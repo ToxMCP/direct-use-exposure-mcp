@@ -235,12 +235,19 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                 region=population.region,
             )
             if not surface_area_supplied:
+                region_note = (
+                    f", region='{population.region}'"
+                    if population.region and population.region != "global"
+                    else ""
+                )
                 tracker.add_quality_flag(
                     "dermal_surface_area_defaulted_hands_forearms_anchor",
                     (
-                        "The defaulted exposed_surface_area_cm2 (5700 cm² for adult) is a "
-                        "hands/forearms screening anchor, not total body surface area. "
-                        "For whole-body products (e.g., body lotion), override this value."
+                        "The defaulted exposed_surface_area_cm2 "
+                        f"({surface_area_cm2:.0f} cm² for {population.population_group}"
+                        f"{region_note}) is a hands/forearms screening anchor, not total "
+                        "body surface area. For whole-body products (e.g., body lotion), "
+                        "override this value."
                     ),
                     severity=Severity.WARNING,
                 )
@@ -328,9 +335,7 @@ class ScreeningScenarioPlugin(ScenarioPlugin):
                     product_mass_from_units_g_event, 8
                 )
             if chemical_mass_mg_per_unit is not None:
-                route_metrics["chemical_mass_mg_per_unit"] = round(
-                    chemical_mass_mg_per_unit, 8
-                )
+                route_metrics["chemical_mass_mg_per_unit"] = round(chemical_mass_mg_per_unit, 8)
             notes = ["Deterministic oral screening scenario using explicit ingestion semantics."]
 
         normalized_dose = external_mass_mg_day / body_weight_kg

@@ -106,9 +106,7 @@ class Tier1InhalationProfileRegistry:
         )
         raise ExposureScenarioError(
             code="tier1_airflow_directionality_missing",
-            message=(
-                f"Tier 1 airflow directionality `{directionality.value}` is not registered."
-            ),
+            message=(f"Tier 1 airflow directionality `{directionality.value}` is not registered."),
             suggestion=(
                 "Use one of the packaged Tier 1 airflow classes"
                 + (f": {available}." if available else ".")

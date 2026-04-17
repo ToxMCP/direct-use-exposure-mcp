@@ -51,12 +51,8 @@ BENCHMARK_CASE_DOMAINS = {
     "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001": (
         "inhalation_well_mixed_spray"
     ),
-    "inhalation_air_space_insecticide_aerosol_time_series_6h_2001": (
-        "inhalation_well_mixed_spray"
-    ),
-    "inhalation_residual_air_reentry_chlorpyrifos_screening": (
-        "inhalation_residual_air_reentry"
-    ),
+    "inhalation_air_space_insecticide_aerosol_time_series_6h_2001": ("inhalation_well_mixed_spray"),
+    "inhalation_residual_air_reentry_chlorpyrifos_screening": ("inhalation_residual_air_reentry"),
     "inhalation_residual_air_reentry_chlorpyrifos_time_series_1990": (
         "inhalation_residual_air_reentry"
     ),
@@ -263,9 +259,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         datasetId="consumer_disinfectant_trigger_spray_inhalation_2015",
         domain="inhalation_near_field_far_field",
         status=ExternalValidationDatasetStatus.PARTIAL,
-        observable=(
-            "total inhalation exposure during a consumer disinfectant trigger-spray task"
-        ),
+        observable=("total inhalation exposure during a consumer disinfectant trigger-spray task"),
         targetMetrics=[
             "normalized_external_dose",
             "inhaled_mass_mg_per_day",
@@ -319,8 +313,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         applicableTierClaims=[TierLevel.TIER_2],
         productFamilies=["disinfectant", "pest_control"],
         referenceTitle=(
-            "Inhalation and dermal exposure to biocidal products during foam and spray "
-            "applications"
+            "Inhalation and dermal exposure to biocidal products during foam and spray applications"
         ),
         referenceLocator=(
             "https://www.baua.de/EN/Service/Publications/Essays/article3676.pdf"
@@ -392,8 +385,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         domain="inhalation_residual_air_reentry",
         status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
         observable=(
-            "post-application indoor air concentrations after commercial office surface "
-            "treatment"
+            "post-application indoor air concentrations after commercial office surface treatment"
         ),
         targetMetrics=[
             "air_concentration_at_reentry_start_mg_per_m3",
@@ -402,8 +394,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         applicableTierClaims=[TierLevel.TIER_0],
         productFamilies=["indoor_surface_insecticide"],
         referenceTitle=(
-            "Concentrations of diazinon, chlorpyrifos, and bendiocarb after application "
-            "in offices"
+            "Concentrations of diazinon, chlorpyrifos, and bendiocarb after application in offices"
         ),
         referenceLocator="https://pubmed.ncbi.nlm.nih.gov/1689096/",
         note=(
@@ -468,8 +459,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         applicableTierClaims=[TierLevel.TIER_2],
         productFamilies=["disinfectant", "pest_control"],
         referenceTitle=(
-            "Inhalation and dermal exposure to biocidal products during foam and spray "
-            "applications"
+            "Inhalation and dermal exposure to biocidal products during foam and spray applications"
         ),
         referenceLocator=(
             "https://www.baua.de/EN/Service/Publications/Essays/article3676.pdf"
@@ -556,8 +546,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         domain="oral_direct_intake",
         status=ExternalValidationDatasetStatus.CANDIDATE_ONLY,
         observable=(
-            "regulated medicinal oral-product context for traditional herbal medicinal "
-            "products"
+            "regulated medicinal oral-product context for traditional herbal medicinal products"
         ),
         targetMetrics=[
             "application_method",
@@ -599,8 +588,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         productFamilies=["botanical_supplement"],
         referenceTitle="Food supplements",
         referenceLocator=(
-            "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/"
-            "food-supplements_en"
+            "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-supplements_en"
         ),
         note=(
             "The European Commission overview does not provide quantitative supplement-dose "
@@ -722,8 +710,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         applicableTierClaims=[TierLevel.TIER_0],
         productFamilies=["herbal_topical_product"],
         referenceTitle=(
-            "Overview of comments received on Community herbal monograph on Arnica "
-            "montana L., flos"
+            "Overview of comments received on Community herbal monograph on Arnica montana L., flos"
         ),
         referenceLocator=(
             "https://www.ema.europa.eu/en/documents/herbal-comments/"
@@ -765,8 +752,7 @@ EXTERNAL_VALIDATION_DATASETS = [
         domain="dermal_direct_application",
         status=ExternalValidationDatasetStatus.PARTIAL,
         observable=(
-            "official per-application unit mass for a product-centric herbal recovery "
-            "patch regimen"
+            "official per-application unit mass for a product-centric herbal recovery patch regimen"
         ),
         targetMetrics=["use_amount_per_event"],
         applicableTierClaims=[TierLevel.TIER_0],
@@ -962,8 +948,7 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
         ValidationGap(
             gapId="worker_inhalation_external_validation_partial_only",
             title=(
-                "Worker inhalation surrogate execution is benchmarked but not externally "
-                "validated"
+                "Worker inhalation surrogate execution is benchmarked but not externally validated"
             ),
             severity=ValidationGapSeverity.HIGH,
             appliesToDomains=["worker_inhalation_control_aware_screening"],
@@ -985,9 +970,7 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
         ),
         ValidationGap(
             gapId="worker_dermal_external_validation_partial_only",
-            title=(
-                "Worker dermal absorbed-dose execution has only narrow external support"
-            ),
+            title=("Worker dermal absorbed-dose execution has only narrow external support"),
             severity=ValidationGapSeverity.HIGH,
             appliesToDomains=["worker_dermal_absorbed_dose_screening"],
             relatedSourceIds=[
@@ -1112,9 +1095,13 @@ def validation_reference_band_manifest() -> dict:
 
 
 def validation_time_series_reference_manifest() -> dict:
-    return ValidationTimeSeriesReferenceRegistry.load().manifest().model_dump(
-        mode="json",
-        by_alias=True,
+    return (
+        ValidationTimeSeriesReferenceRegistry.load()
+        .manifest()
+        .model_dump(
+            mode="json",
+            by_alias=True,
+        )
     )
 
 
@@ -1143,9 +1130,7 @@ def build_validation_coverage_report() -> ValidationCoverageReport:
     reference_manifest = ValidationReferenceBandRegistry.load().manifest()
     time_series_manifest = ValidationTimeSeriesReferenceRegistry.load().manifest()
 
-    benchmark_domains = {
-        item.domain: item for item in dossier.benchmark_domains
-    }
+    benchmark_domains = {item.domain: item for item in dossier.benchmark_domains}
     benchmark_case_ids_by_domain: dict[str, list[str]] = {}
     for case in benchmark_fixture.get("cases", []):
         domain = BENCHMARK_CASE_DOMAINS.get(str(case["id"]))
@@ -1548,9 +1533,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
             observed = (product_mass_g_event * 1000.0) / exposed_area
             status = (
                 ValidationCheckStatus.PASS
-                if reference_band.reference_lower
-                <= observed
-                <= reference_band.reference_upper
+                if reference_band.reference_lower <= observed <= reference_band.reference_upper
                 else ValidationCheckStatus.WARNING
             )
             checks.append(
@@ -1608,9 +1591,9 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
                         "application instruction captured in the EMA arnica comment overview. "
                         "This is an application-geometry realism check, not a mass-per-use "
                         "calibration set."
-                ),
+                    ),
+                )
             )
-        )
 
     if (
         scenario.route == Route.DERMAL
@@ -1732,14 +1715,10 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         and profile.use_amount_unit == ProductAmountUnit.ML
     ):
         observed = float(profile.use_amount_per_event)
-        reference_band = reference_registry.band_for_check(
-            "herbal_topical_spray_label_amount_2026"
-        )
+        reference_band = reference_registry.band_for_check("herbal_topical_spray_label_amount_2026")
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -1776,9 +1755,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -1814,9 +1791,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -1853,9 +1828,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -1888,9 +1861,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -1924,9 +1895,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -1961,9 +1930,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -1998,9 +1965,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -2035,9 +2000,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -2071,9 +2034,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -2107,9 +2068,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -2144,9 +2103,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
             )
             status = (
                 ValidationCheckStatus.PASS
-                if reference_band.reference_lower
-                <= observed
-                <= reference_band.reference_upper
+                if reference_band.reference_lower <= observed <= reference_band.reference_upper
                 else ValidationCheckStatus.WARNING
             )
             checks.append(
@@ -2186,9 +2143,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
             checks.append(
                 ExecutedValidationCheck(
                     checkId="trigger_spray_aerosol_decay_half_life_2023",
-                    title=(
-                        "Trigger-spray aerosol decay half-life vs climate-chamber spray study"
-                    ),
+                    title=("Trigger-spray aerosol decay half-life vs climate-chamber spray study"),
                     referenceDatasetId="spray_cleaning_disinfection_decay_half_life_2023",
                     status=status,
                     comparedMetric="room_air_decay_half_life_hours",
@@ -2212,17 +2167,13 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
             observed = float(scenario.external_dose.value)
             status = (
                 ValidationCheckStatus.PASS
-                if reference_band.reference_lower
-                <= observed
-                <= reference_band.reference_upper
+                if reference_band.reference_lower <= observed <= reference_band.reference_upper
                 else ValidationCheckStatus.WARNING
             )
             checks.append(
                 ExecutedValidationCheck(
                     checkId="consumer_disinfectant_trigger_spray_inhaled_dose_2015",
-                    title=(
-                        "Tier 1 disinfectant trigger-spray dose vs consumer inhalation study"
-                    ),
+                    title=("Tier 1 disinfectant trigger-spray dose vs consumer inhalation study"),
                     referenceDatasetId="consumer_disinfectant_trigger_spray_inhalation_2015",
                     status=status,
                     comparedMetric="normalized_external_dose",
@@ -2252,9 +2203,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
         )
         status = (
             ValidationCheckStatus.PASS
-            if reference_band.reference_lower
-            <= observed
-            <= reference_band.reference_upper
+            if reference_band.reference_lower <= observed <= reference_band.reference_upper
             else ValidationCheckStatus.WARNING
         )
         checks.append(
@@ -2320,9 +2269,7 @@ def _executed_validation_checks(scenario: ExposureScenario) -> list[ExecutedVali
             )
             status = (
                 ValidationCheckStatus.PASS
-                if reference_band.reference_lower
-                <= observed
-                <= reference_band.reference_upper
+                if reference_band.reference_lower <= observed <= reference_band.reference_upper
                 else ValidationCheckStatus.WARNING
             )
             checks.append(
@@ -2361,15 +2308,11 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
             highest_supported_tier = item.highest_supported_uncertainty_tier
             break
     matched_datasets = [
-        item
-        for item in dossier.external_datasets
-        if _dataset_matches_scenario(scenario, item)
+        item for item in dossier.external_datasets if _dataset_matches_scenario(scenario, item)
     ]
     external_dataset_ids = [item.dataset_id for item in matched_datasets]
     heuristic_assumption_names = sorted(
-        item.name
-        for item in scenario.assumptions
-        if item.source.source_id.startswith("heuristic_")
+        item.name for item in scenario.assumptions if item.source.source_id.startswith("heuristic_")
     )
     executed_validation_checks = _executed_validation_checks(scenario)
     validation_status = (

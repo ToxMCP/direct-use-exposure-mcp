@@ -1,7 +1,7 @@
 {
   "schema_version": "contractManifest.v1",
   "server_name": "exposure_scenario_mcp",
-  "server_version": "0.1.0",
+  "server_version": "0.2.0",
   "defaults_version": "2026.04.15.v35",
   "tools": [
     {

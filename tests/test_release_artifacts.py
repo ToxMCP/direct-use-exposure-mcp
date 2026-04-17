@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 from exposure_scenario_mcp.release_artifacts import (
     distribution_artifacts_for_release,
     validate_release_metadata_report,
@@ -17,15 +18,17 @@ def _write_bytes(path: Path, payload: bytes) -> None:
 def test_distribution_artifacts_include_hashes_and_sizes_when_present(tmp_path: Path) -> None:
     dist_dir = tmp_path / "dist"
     _write_bytes(
-        dist_dir / "exposure_scenario_mcp-0.1.0-py3-none-any.whl",
+        dist_dir / f"exposure_scenario_mcp-{CURRENT_VERSION}-py3-none-any.whl",
         b"wheel-bytes",
     )
     _write_bytes(
-        dist_dir / "exposure_scenario_mcp-0.1.0.tar.gz",
+        dist_dir / f"exposure_scenario_mcp-{CURRENT_VERSION}.tar.gz",
         b"sdist-bytes",
     )
 
-    artifacts = distribution_artifacts_for_release("exposure-scenario-mcp", "0.1.0", dist_dir)
+    artifacts = distribution_artifacts_for_release(
+        "exposure-scenario-mcp", CURRENT_VERSION, dist_dir
+    )
 
     assert [artifact.kind for artifact in artifacts] == ["wheel", "sdist"]
     assert all(artifact.present for artifact in artifacts)
@@ -36,17 +39,19 @@ def test_distribution_artifacts_include_hashes_and_sizes_when_present(tmp_path: 
 def test_validate_release_metadata_report_detects_integrity_mismatch(tmp_path: Path) -> None:
     dist_dir = tmp_path / "dist"
     _write_bytes(
-        dist_dir / "exposure_scenario_mcp-0.1.0-py3-none-any.whl",
+        dist_dir / f"exposure_scenario_mcp-{CURRENT_VERSION}-py3-none-any.whl",
         b"wheel-bytes",
     )
     _write_bytes(
-        dist_dir / "exposure_scenario_mcp-0.1.0.tar.gz",
+        dist_dir / f"exposure_scenario_mcp-{CURRENT_VERSION}.tar.gz",
         b"sdist-bytes",
     )
-    artifacts = distribution_artifacts_for_release("exposure-scenario-mcp", "0.1.0", dist_dir)
+    artifacts = distribution_artifacts_for_release(
+        "exposure-scenario-mcp", CURRENT_VERSION, dist_dir
+    )
     payload = {
-        "releaseVersion": "0.1.0",
-        "packageVersion": "0.1.0",
+        "releaseVersion": CURRENT_VERSION,
+        "packageVersion": CURRENT_VERSION,
         "distributionArtifacts": [
             {
                 **artifact.model_dump(mode="json", by_alias=True),

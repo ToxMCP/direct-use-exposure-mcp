@@ -47,17 +47,13 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
         "inhalation_residual_air_reentry_chlorpyrifos_time_series_1990",
     } <= set(chlorpyrifos_case["benchmark_case_ids"])
     diazinon_case = next(
-        case
-        for case in goldset["cases"]
-        if case["id"] == "diazinon_office_postapplication_reentry"
+        case for case in goldset["cases"] if case["id"] == "diazinon_office_postapplication_reentry"
     )
     assert diazinon_case["benchmark_case_ids"] == [
         "inhalation_residual_air_reentry_diazinon_time_series_1990"
     ]
     diazinon_workflow_case = next(
-        case
-        for case in goldset["cases"]
-        if case["id"] == "eu_diazinon_indoor_surface_insecticide"
+        case for case in goldset["cases"] if case["id"] == "eu_diazinon_indoor_surface_insecticide"
     )
     assert set(diazinon_workflow_case["benchmark_case_ids"]) == {
         "inhalation_residual_air_reentry_diazinon_home_use_native_screening",
@@ -81,9 +77,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
         "inhalation_tier1_disinfectant_trigger_spray_external_2015"
     ]
     dermal_worker_case = next(
-        case
-        for case in goldset["cases"]
-        if case["id"] == "worker_biocidal_spray_dermal_contact"
+        case for case in goldset["cases"] if case["id"] == "worker_biocidal_spray_dermal_contact"
     )
     assert dermal_worker_case["benchmark_case_ids"] == [
         "worker_dermal_handheld_biocidal_trigger_spray_execution"
@@ -97,13 +91,9 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
     tcm_oral_case = next(
         case for case in goldset["cases"] if case["id"] == "tcm_medicinal_oral_regimen"
     )
-    assert tcm_oral_case["benchmark_case_ids"] == [
-        "oral_tcm_medicinal_direct_use_screening"
-    ]
+    assert tcm_oral_case["benchmark_case_ids"] == ["oral_tcm_medicinal_direct_use_screening"]
     supplement_case = next(
-        case
-        for case in goldset["cases"]
-        if case["id"] == "botanical_supplement_direct_use_capsule"
+        case for case in goldset["cases"] if case["id"] == "botanical_supplement_direct_use_capsule"
     )
     assert supplement_case["benchmark_case_ids"] == [
         "oral_botanical_supplement_direct_use_screening"
@@ -133,9 +123,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
         "oral_herbal_medicinal_valerian_infusion_posology_screening"
     ]
     tcm_balm_case = next(
-        case
-        for case in goldset["cases"]
-        if case["id"] == "tcm_topical_balm_direct_application"
+        case for case in goldset["cases"] if case["id"] == "tcm_topical_balm_direct_application"
     )
     assert tcm_balm_case["benchmark_case_ids"] == ["dermal_tcm_topical_balm_screening"]
     topical_spray_case = next(
@@ -173,9 +161,7 @@ def test_goldset_manifest_is_source_backed_and_links_to_real_benchmarks() -> Non
         "inhalation_air_space_insecticide_aerosol_time_series_6h_2001",
     }
     aerosol_challenge_case = next(
-        case
-        for case in goldset["cases"]
-        if case["id"] == "consumer_air_space_insecticide_aerosol"
+        case for case in goldset["cases"] if case["id"] == "consumer_air_space_insecticide_aerosol"
     )
     assert set(aerosol_challenge_case["benchmark_case_ids"]) >= {
         "inhalation_air_space_insecticide_aerosol_screening",

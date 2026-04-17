@@ -40,9 +40,7 @@ def test_tier1_inhalation_profile_manifest_and_matching() -> None:
         product_family="personal_care",
         application_method="pump_spray",
     )
-    assert [item.profile_id for item in personal_care_matches] == [
-        "personal_care_pump_spray_tier1"
-    ]
+    assert [item.profile_id for item in personal_care_matches] == ["personal_care_pump_spray_tier1"]
 
     subtype_matches = registry.matching_profiles(
         product_family="pesticide",

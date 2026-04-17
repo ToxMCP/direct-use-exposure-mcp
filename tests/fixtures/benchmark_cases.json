@@ -1775,7 +1775,7 @@
       "expected": {
         "ingest_tool_name": "ingest_external_pbpk_bundle",
         "source_platform": "exposure-scenario-mcp",
-        "source_version": "0.1.0",
+        "source_version": "0.2.0",
         "model_type": "exposure-scenario-context",
         "context_of_use": "screening-brief",
         "body_weight_kg": 80.0,

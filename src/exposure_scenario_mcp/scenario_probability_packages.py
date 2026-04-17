@@ -55,8 +55,7 @@ class ScenarioProbabilityPackageRegistry:
 
     def manifest(self) -> ScenarioPackageProbabilityManifest:
         profiles = [
-            ScenarioPackageProbabilityProfile(**item)
-            for item in self.payload.get("profiles", [])
+            ScenarioPackageProbabilityProfile(**item) for item in self.payload.get("profiles", [])
         ]
         return ScenarioPackageProbabilityManifest(
             profileVersion=self.version,

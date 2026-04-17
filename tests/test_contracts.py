@@ -13,6 +13,10 @@ from exposure_scenario_mcp.contracts import (
     build_verification_summary_report,
 )
 from exposure_scenario_mcp.defaults import DefaultsRegistry, build_defaults_curation_report
+from exposure_scenario_mcp.package_metadata import (
+    CURRENT_RELEASE_METADATA_RELATIVE_PATH,
+    CURRENT_VERSION,
+)
 from exposure_scenario_mcp.server import create_mcp_server
 from exposure_scenario_mcp.validation import (
     build_validation_coverage_report,
@@ -26,7 +30,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = REPO_ROOT / "schemas"
 EXAMPLES_DIR = SCHEMA_DIR / "examples"
 MANIFEST_PATH = REPO_ROOT / "docs" / "contracts" / "contract_manifest.json"
-RELEASE_METADATA_PATH = REPO_ROOT / "docs" / "releases" / "v0.1.0.release_metadata.json"
+RELEASE_METADATA_PATH = REPO_ROOT / CURRENT_RELEASE_METADATA_RELATIVE_PATH
 
 
 EXAMPLE_SCHEMA_MAP = {
@@ -66,6 +70,8 @@ EXAMPLE_SCHEMA_MAP = {
     "toxclaw_pbpk_module_params": "toxclawPbpkModuleParams.v1",
     "pbpk_external_import_package": "pbpkExternalImportPackage.v1",
     "comparison_record": "scenarioComparisonRecord.v1",
+    "compare_jurisdictional_scenarios_request": "compareJurisdictionalScenariosInput.v1",
+    "jurisdictional_comparison_result": "jurisdictionalComparisonResult.v1",
     "comp_tox_record": "compToxChemicalRecord.v1",
     "comp_tox_enriched_request": "exposureScenarioRequest.v1",
     "cons_expo_evidence_record": "consExpoEvidenceRecord.v1",
@@ -81,9 +87,7 @@ EXAMPLE_SCHEMA_MAP = {
     "synthetic_polymer_microparticle_evidence_record": (
         "syntheticPolymerMicroparticleEvidenceRecord.v1"
     ),
-    "synthetic_polymer_microparticle_product_use_evidence": (
-        "productUseEvidenceRecord.v1"
-    ),
+    "synthetic_polymer_microparticle_product_use_evidence": ("productUseEvidenceRecord.v1"),
     "non_plastic_particle_product_use_evidence_record": "nanoMaterialEvidenceRecord.v1",
     "non_plastic_particle_product_use_evidence": "productUseEvidenceRecord.v1",
     "product_use_evidence_record": "productUseEvidenceRecord.v1",
@@ -111,18 +115,12 @@ EXAMPLE_SCHEMA_MAP = {
         "exportWorkerDermalAbsorbedDoseBridgeRequest.v1"
     ),
     "worker_dermal_absorbed_dose_bridge_package": "workerDermalAbsorbedDoseBridgePackage.v1",
-    "worker_dermal_absorbed_dose_adapter_request": (
-        "workerDermalAbsorbedDoseAdapterRequest.v1"
-    ),
+    "worker_dermal_absorbed_dose_adapter_request": ("workerDermalAbsorbedDoseAdapterRequest.v1"),
     "worker_dermal_absorbed_dose_adapter_ingest_result": (
         "workerDermalAbsorbedDoseAdapterIngestResult.v1"
     ),
-    "worker_dermal_absorbed_dose_execution_request": (
-        "executeWorkerDermalAbsorbedDoseRequest.v1"
-    ),
-    "worker_dermal_absorbed_dose_execution_result": (
-        "workerDermalAbsorbedDoseExecutionResult.v1"
-    ),
+    "worker_dermal_absorbed_dose_execution_request": ("executeWorkerDermalAbsorbedDoseRequest.v1"),
+    "worker_dermal_absorbed_dose_execution_result": ("workerDermalAbsorbedDoseExecutionResult.v1"),
     "toxclaw_evidence_envelope": "toxclawEvidenceEnvelope.v1",
     "toxclaw_evidence_bundle": "toxclawEvidenceBundle.v1",
     "toxclaw_refinement_bundle": "toxclawExposureRefinementBundle.v1",
@@ -166,8 +164,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "buildProductUseEvidenceFromSccsOpinionInput.v1" in manifest["schemas"]
     assert "buildProductUseEvidenceFromCosIngInput.v1" in manifest["schemas"]
     assert "buildProductUseEvidenceFromNanoMaterialInput.v1" in manifest["schemas"]
-    assert "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1" in (
-        manifest["schemas"]
+    assert (
+        "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1" in (manifest["schemas"])
     )
     assert "productUseEvidenceRecord.v1" in manifest["schemas"]
     assert "productUseEvidenceFitReport.v1" in manifest["schemas"]
@@ -237,6 +235,7 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "buildExposureEnvelopeFromLibraryInput.v1" in manifest["schemas"]
     assert "buildProbabilityBoundsFromProfileInput.v1" in manifest["schemas"]
     assert "buildProbabilityBoundsFromScenarioPackageInput.v1" in manifest["schemas"]
+    assert "compareJurisdictionalScenariosInput.v1" in manifest["schemas"]
     assert "buildExposureEnvelopeInput.v1" in manifest["schemas"]
     assert "exposureEnvelopeSummary.v1" in manifest["schemas"]
     assert "buildParameterBoundsInput.v1" in manifest["schemas"]
@@ -245,6 +244,7 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "scenarioPackageProbabilitySummary.v1" in manifest["schemas"]
     assert "pbpkExternalImportPackage.v1" in manifest["schemas"]
     assert "pbpkExternalImportRequest.v1" in manifest["schemas"]
+    assert "jurisdictionalComparisonResult.v1" in manifest["schemas"]
     assert "releaseMetadataReport.v1" in manifest["schemas"]
     assert "verificationCheck.v1" in manifest["schemas"]
     assert "verificationSummaryReport.v1" in manifest["schemas"]
@@ -279,6 +279,8 @@ def test_contract_manifest_and_server_boot() -> None:
     assert "scenario_package_probability_summary" in manifest["examples"]
     assert "inhalation_tier1_scenario_package_probability_request" in manifest["examples"]
     assert "inhalation_tier1_scenario_package_probability_summary" in manifest["examples"]
+    assert "compare_jurisdictional_scenarios_request" in manifest["examples"]
+    assert "jurisdictional_comparison_result" in manifest["examples"]
     assert "cons_expo_evidence_record" in manifest["examples"]
     assert "cons_expo_product_use_evidence" in manifest["examples"]
     assert "sccs_evidence_record" in manifest["examples"]
@@ -446,15 +448,11 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
     }
     assert report["unmappedGoldsetCaseIds"] == []
 
-    domain_summaries = {
-        item["domain"]: item for item in report["domainSummaries"]
-    }
+    domain_summaries = {item["domain"]: item for item in report["domainSummaries"]}
     assert domain_summaries["inhalation_residual_air_reentry"]["coverageLevel"] == (
         "benchmark_time_resolved"
     )
-    assert set(
-        domain_summaries["inhalation_residual_air_reentry"]["timeSeriesPackIds"]
-    ) == {
+    assert set(domain_summaries["inhalation_residual_air_reentry"]["timeSeriesPackIds"]) == {
         "chlorpyrifos_residual_air_reentry_room_air_series_1990",
         "diazinon_office_residual_air_series_1990",
     }
@@ -467,9 +465,10 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
         "trigger_spray_aerosol_decay_half_life_2023",
         "worker_biocidal_professional_cleaning_concentration_2023",
     }
-    assert domain_summaries["worker_inhalation_control_aware_screening"][
-        "coverageLevel"
-    ] == "benchmark_plus_executable_references"
+    assert (
+        domain_summaries["worker_inhalation_control_aware_screening"]["coverageLevel"]
+        == "benchmark_plus_executable_references"
+    )
     assert domain_summaries["worker_dermal_absorbed_dose_screening"]["coverageLevel"] == (
         "benchmark_plus_executable_references"
     )
@@ -499,9 +498,7 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
         "nlm_dailymed_ahealon_topical_spray_label_2026",
         "nlm_dailymed_activmend_patch_label_2025",
         "nlm_dailymed_upup_capsicum_patch_label_2025",
-    } <= set(
-        domain_summaries["dermal_direct_application"]["externalDatasetIds"]
-    )
+    } <= set(domain_summaries["dermal_direct_application"]["externalDatasetIds"])
     assert {
         "hand_cream_application_loading_2012",
         "herbal_topical_application_strip_length_2014",
@@ -510,8 +507,7 @@ def test_validation_coverage_report_matches_schema_and_surface() -> None:
         "capsicum_hydrogel_patch_label_amount_2025",
     } <= set(domain_summaries["dermal_direct_application"]["executableReferenceBandIds"])
     assert any(
-        "Coverage levels describe current trust posture by domain"
-        in note
+        "Coverage levels describe current trust posture by domain" in note
         for note in report["overallNotes"]
     )
 
@@ -521,8 +517,8 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
     schema = json.loads(
         (SCHEMA_DIR / "validationReferenceBandManifest.v1.json").read_text(encoding="utf-8")
     )
-    report = ValidationReferenceBandRegistry.load().manifest().model_dump(
-        mode="json", by_alias=True
+    report = (
+        ValidationReferenceBandRegistry.load().manifest().model_dump(mode="json", by_alias=True)
     )
 
     validate(instance=report, schema=schema)
@@ -560,13 +556,15 @@ def test_validation_reference_band_manifest_matches_schema_and_surface() -> None
 def test_validation_time_series_manifest_matches_schema_and_surface() -> None:
     generate_contract_assets()
     schema = json.loads(
-        (SCHEMA_DIR / "validationTimeSeriesReferenceManifest.v1.json").read_text(
-            encoding="utf-8"
-        )
+        (SCHEMA_DIR / "validationTimeSeriesReferenceManifest.v1.json").read_text(encoding="utf-8")
     )
-    report = ValidationTimeSeriesReferenceRegistry.load().manifest().model_dump(
-        mode="json",
-        by_alias=True,
+    report = (
+        ValidationTimeSeriesReferenceRegistry.load()
+        .manifest()
+        .model_dump(
+            mode="json",
+            by_alias=True,
+        )
     )
 
     validate(instance=report, schema=schema)
@@ -727,7 +725,7 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
 
     validate(instance=artifact, schema=schema)
     validate(instance=report, schema=schema)
-    assert artifact["releaseVersion"] == "0.1.0"
+    assert artifact["releaseVersion"] == CURRENT_VERSION
     assert artifact["benchmarkCaseCount"] == len(load_benchmark_manifest()["cases"])
     assert {"wheel", "sdist"} == {item["kind"] for item in artifact["distributionArtifacts"]}
     assert "docs://release-notes" in artifact["publishedDocs"]

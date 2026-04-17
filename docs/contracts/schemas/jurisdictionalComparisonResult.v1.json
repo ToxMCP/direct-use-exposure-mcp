@@ -150,6 +150,37 @@
       "title": "ExposureScenarioRequest",
       "type": "object"
     },
+    "FitForPurpose": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "High-level fit-for-purpose label.",
+          "title": "Label",
+          "type": "string"
+        },
+        "suitable_for": {
+          "description": "Appropriate use cases.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Suitable For",
+          "type": "array"
+        },
+        "not_suitable_for": {
+          "description": "Known exclusions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Not Suitable For",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "FitForPurpose",
+      "type": "object"
+    },
     "IntendedUseFamily": {
       "enum": [
         "medicinal",
@@ -163,6 +194,32 @@
       ],
       "title": "IntendedUseFamily",
       "type": "string"
+    },
+    "LimitationNote": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable limitation code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "warning",
+          "description": "Limitation severity."
+        },
+        "message": {
+          "description": "Human-readable limitation text.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "LimitationNote",
+      "type": "object"
     },
     "OralExposureContext": {
       "enum": [
@@ -967,6 +1024,91 @@
       "title": "ProductUseProfile",
       "type": "object"
     },
+    "ProvenanceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "provenanceBundle.v1",
+          "default": "provenanceBundle.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_id": {
+          "description": "Stable algorithm identifier.",
+          "title": "Algorithm Id",
+          "type": "string"
+        },
+        "plugin_id": {
+          "description": "Plugin that generated the result.",
+          "title": "Plugin Id",
+          "type": "string"
+        },
+        "plugin_version": {
+          "description": "Plugin version.",
+          "title": "Plugin Version",
+          "type": "string"
+        },
+        "defaults_version": {
+          "description": "Defaults pack version.",
+          "title": "Defaults Version",
+          "type": "string"
+        },
+        "defaults_hash_sha256": {
+          "description": "Hash for the defaults pack in use.",
+          "title": "Defaults Hash Sha256",
+          "type": "string"
+        },
+        "generated_at": {
+          "description": "ISO-8601 UTC timestamp.",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Additional provenance notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at"
+      ],
+      "title": "ProvenanceBundle",
+      "type": "object"
+    },
+    "QualityFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "Stable machine-readable quality flag code.",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "default": "info",
+          "description": "Quality signal severity."
+        },
+        "message": {
+          "description": "Human-readable quality message.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "QualityFlag",
+      "type": "object"
+    },
     "Route": {
       "enum": [
         "dermal",
@@ -1012,6 +1154,15 @@
       ],
       "title": "ScenarioDose",
       "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
     },
     "UncertaintyQuantificationStatus": {
       "enum": [
@@ -1228,12 +1379,36 @@
       "default": null,
       "title": "Harmonizationopportunity"
     },
+    "limitations": {
+      "description": "Known limitations that should remain visible downstream.",
+      "items": {
+        "$ref": "#/$defs/LimitationNote"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "qualityFlags": {
+      "description": "Quality flags that should remain visible downstream.",
+      "items": {
+        "$ref": "#/$defs/QualityFlag"
+      },
+      "title": "Qualityflags",
+      "type": "array"
+    },
+    "fitForPurpose": {
+      "$ref": "#/$defs/FitForPurpose",
+      "description": "Fit-for-purpose statement for downstream reviewers."
+    },
     "uncertaintyRegister": {
       "items": {
         "$ref": "#/$defs/UncertaintyRegisterEntry"
       },
       "title": "Uncertaintyregister",
       "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceBundle",
+      "description": "Comparison provenance."
     }
   },
   "required": [
@@ -1241,7 +1416,9 @@
     "baseRequest",
     "comparedJurisdictions",
     "externalDoseByJurisdiction",
-    "doseRange"
+    "doseRange",
+    "fitForPurpose",
+    "provenance"
   ],
   "title": "JurisdictionalComparisonResult",
   "type": "object"

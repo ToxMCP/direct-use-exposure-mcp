@@ -99,20 +99,56 @@
       },
       "varianceRatio": 1.2698,
       "description": "'body_weight_kg' varies by 1.27x across jurisdictions."
-    },
-    {
-      "schema_version": "varianceDriver.v1",
-      "assumptionName": "chemical_loading_mg_per_cm2_per_event",
-      "globalValue": 0.005263157894736842,
-      "jurisdictionValues": {
-        "global": 0.005263157894736842,
-        "china": 0.0018181818181818182
-      },
-      "varianceRatio": 2.8947,
-      "description": "'chemical_loading_mg_per_cm2_per_event' varies by 2.89x across jurisdictions."
     }
   ],
   "harmonizationOpportunity": "Inter-jurisdictional variance is driven primarily by 'exposed_surface_area_cm2' (2.89x range). Harmonization opportunity: agree on a reference value for international assessments.",
+  "limitations": [
+    {
+      "code": "jurisdictional_comparison_screening",
+      "severity": "warning",
+      "message": "Jurisdictional comparison replays the same scenario definition against the current supported defaults regions. It does not reconcile jurisdiction-specific policy requirements or replace jurisdiction-specific expert review."
+    }
+  ],
+  "qualityFlags": [
+    {
+      "code": "global_dermal_surface_area_defaulted_hands_forearms_anchor",
+      "severity": "warning",
+      "message": "Jurisdiction 'global': The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
+    },
+    {
+      "code": "china_regional_population_override_active",
+      "severity": "info",
+      "message": "Jurisdiction 'china': Population default 'body_weight_kg' uses region='china' override (63.0 kg). Global default would differ."
+    },
+    {
+      "code": "china_regional_population_override_active",
+      "severity": "info",
+      "message": "Jurisdiction 'china': Population default 'exposed_surface_area_cm2' uses region='china' override (16500.0 cm2). Global default would differ."
+    },
+    {
+      "code": "china_dermal_surface_area_defaulted_hands_forearms_anchor",
+      "severity": "warning",
+      "message": "Jurisdiction 'china': The defaulted exposed_surface_area_cm2 (16500 cm\u00b2 for adult, region='china') is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
+    },
+    {
+      "code": "jurisdictional_variance_detected",
+      "severity": "info",
+      "message": "Jurisdiction comparison identified materially different assumption values across the compared defaults regions."
+    }
+  ],
+  "fitForPurpose": {
+    "label": "jurisdictional_comparison_screening",
+    "suitable_for": [
+      "auditable screening comparison across supported jurisdiction defaults",
+      "harmonization triage for jurisdiction-sensitive determinants",
+      "review of population-default sensitivity before downstream refinement"
+    ],
+    "not_suitable_for": [
+      "automatic jurisdictional equivalence claims",
+      "final risk characterization",
+      "replacement for jurisdiction-specific regulatory guidance review"
+    ]
+  },
   "uncertaintyRegister": [
     {
       "entryId": "inter-jurisdictional-population-variance",
@@ -130,5 +166,18 @@
       "summary": "Normalized dose varies with population exposure factors. Cross-jurisdictional comparison reveals the magnitude of this variance.",
       "recommendation": "Consider whether a harmonized reference population is appropriate for the regulatory context."
     }
-  ]
+  ],
+  "provenance": {
+    "schema_version": "provenanceBundle.v1",
+    "algorithm_id": "scenario.compare_jurisdictional.v1",
+    "plugin_id": "jurisdictional_comparison_service",
+    "plugin_version": "0.2.0",
+    "defaults_version": "2026.04.15.v35",
+    "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Deterministic-first exposure engine.",
+      "All defaults are surfaced through exposureAssumptionRecord entries."
+    ]
+  }
 }

@@ -38,6 +38,7 @@ from exposure_scenario_mcp.models import (
     Severity,
     StrictModel,
 )
+from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
 from exposure_scenario_mcp.runtime import (
@@ -158,7 +159,7 @@ def _workflow_provenance(
     return ProvenanceBundle(
         algorithm_id="workflow.integrated_exposure_pbpk.v1",
         plugin_id="integrated_exposure_workflow_service",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -379,9 +380,7 @@ class ConsExpoEvidenceRecord(StrictModel):
 
 
 class SccsCosmeticsEvidenceRecord(StrictModel):
-    schema_version: Literal["sccsCosmeticsEvidenceRecord.v1"] = (
-        "sccsCosmeticsEvidenceRecord.v1"
-    )
+    schema_version: Literal["sccsCosmeticsEvidenceRecord.v1"] = "sccsCosmeticsEvidenceRecord.v1"
     chemical_id: str = Field(..., description="Stable chemical identifier shared with the request.")
     preferred_name: str | None = Field(
         default=None,
@@ -436,8 +435,7 @@ class SccsCosmeticsEvidenceRecord(StrictModel):
         default_factory=dict,
         alias="populationProfileOverrides",
         description=(
-            "Reviewed population-profile fields such as exposed_surface_area_cm2 or "
-            "body_weight_kg."
+            "Reviewed population-profile fields such as exposed_surface_area_cm2 or body_weight_kg."
         ),
     )
     region_scopes: list[str] = Field(
@@ -671,16 +669,12 @@ class ProductUseEvidenceRecord(StrictModel):
     product_use_profile_overrides: dict[str, ScalarValue] = Field(
         default_factory=dict,
         alias="productUseProfileOverrides",
-        description=(
-            "Reviewed product-use profile fields suggested by the evidence source."
-        ),
+        description=("Reviewed product-use profile fields suggested by the evidence source."),
     )
     population_profile_overrides: dict[str, ScalarValue] = Field(
         default_factory=dict,
         alias="populationProfileOverrides",
-        description=(
-            "Reviewed population-profile fields suggested by the evidence source."
-        ),
+        description=("Reviewed population-profile fields suggested by the evidence source."),
     )
     evidence_sources: list[str] = Field(
         default_factory=list,
@@ -774,8 +768,7 @@ class BuildProductUseEvidenceFromSccsInput(StrictModel):
     evidence: SccsCosmeticsEvidenceRecord = Field(
         ...,
         description=(
-            "Typed SCCS cosmetics evidence record to map into the generic "
-            "evidence contract."
+            "Typed SCCS cosmetics evidence record to map into the generic evidence contract."
         ),
     )
 
@@ -811,9 +804,9 @@ class BuildProductUseEvidenceFromNanoMaterialInput(StrictModel):
 
 
 class BuildProductUseEvidenceFromSyntheticPolymerMicroparticleInput(StrictModel):
-    schema_version: Literal[
+    schema_version: Literal["buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1"] = (
         "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1"
-    ] = "buildProductUseEvidenceFromSyntheticPolymerMicroparticleInput.v1"
+    )
     evidence: SyntheticPolymerMicroparticleEvidenceRecord = Field(
         ...,
         description=(
@@ -957,9 +950,9 @@ class ToxClawEvidenceRecord(StrictModel):
     source_ref: str = Field(..., alias="sourceRef")
     summary: str = Field(..., description="Human-readable evidence summary.")
     tags: list[str] = Field(default_factory=list)
-    trust_label: Literal[
-        "module-output", "untrusted-document", "untrusted-external-data"
-    ] = Field(..., alias="trustLabel")
+    trust_label: Literal["module-output", "untrusted-document", "untrusted-external-data"] = Field(
+        ..., alias="trustLabel"
+    )
     type: str = Field(..., description="ToxClaw evidence type label.")
 
 
@@ -977,9 +970,9 @@ class ToxClawReportEvidenceReference(StrictModel):
     source_ref: str = Field(..., alias="sourceRef")
     summary: str
     tags: list[str] = Field(default_factory=list)
-    trust_label: Literal[
-        "module-output", "untrusted-document", "untrusted-external-data"
-    ] = Field(..., alias="trustLabel")
+    trust_label: Literal["module-output", "untrusted-document", "untrusted-external-data"] = Field(
+        ..., alias="trustLabel"
+    )
     type: str
 
 
@@ -1054,9 +1047,9 @@ class ToxClawExposureRefinementSignal(StrictModel):
         default_factory=lambda: ["exposure_context"],
         alias="loeCandidateKeys",
     )
-    workflow_action: Literal[
-        "scenario_comparison", "route_recalculation", "aggregate_variant"
-    ] = Field(..., alias="workflowAction")
+    workflow_action: Literal["scenario_comparison", "route_recalculation", "aggregate_variant"] = (
+        Field(..., alias="workflowAction")
+    )
     route_changed: bool = Field(..., alias="routeChanged")
     changed_assumption_names: list[str] = Field(
         default_factory=list, alias="changedAssumptionNames"
@@ -1068,9 +1061,7 @@ class ToxClawExposureRefinementSignal(StrictModel):
     percent_delta: float | None = Field(default=None, alias="percentDelta")
     material_change: bool = Field(..., alias="materialChange")
     boundary_note: str = Field(..., alias="boundaryNote")
-    workflow_hooks: list[ExposureWorkflowHook] = Field(
-        default_factory=list, alias="workflowHooks"
-    )
+    workflow_hooks: list[ExposureWorkflowHook] = Field(default_factory=list, alias="workflowHooks")
 
 
 class ToxClawExposureRefinementBundle(StrictModel):
@@ -1083,9 +1074,9 @@ class ToxClawExposureRefinementBundle(StrictModel):
     source_module: Literal["exposure-scenario-mcp"] = Field(
         default="exposure-scenario-mcp", alias="sourceModule"
     )
-    workflow_action: Literal[
-        "scenario_comparison", "route_recalculation", "aggregate_variant"
-    ] = Field(..., alias="workflowAction")
+    workflow_action: Literal["scenario_comparison", "route_recalculation", "aggregate_variant"] = (
+        Field(..., alias="workflowAction")
+    )
     summary: str
     baseline_scenario: ExposureScenario = Field(..., alias="baselineScenario")
     comparison_scenario: ExposureScenario = Field(..., alias="comparisonScenario")
@@ -1095,9 +1086,7 @@ class ToxClawExposureRefinementBundle(StrictModel):
         ..., alias="reportEvidenceReference"
     )
     report_section: ToxClawReportSection = Field(..., alias="reportSection")
-    refinement_signal: ToxClawExposureRefinementSignal = Field(
-        ..., alias="refinementSignal"
-    )
+    refinement_signal: ToxClawExposureRefinementSignal = Field(..., alias="refinementSignal")
 
 
 class PbpkExternalArtifact(StrictModel):
@@ -1266,15 +1255,15 @@ class RunIntegratedExposureWorkflowInput(StrictModel):
             "Optional nanomaterial evidence records to normalize into product-use evidence."
         ),
     )
-    synthetic_polymer_microparticle_records: list[
-        SyntheticPolymerMicroparticleEvidenceRecord
-    ] = Field(
-        default_factory=list,
-        alias="syntheticPolymerMicroparticleRecords",
-        description=(
-            "Optional synthetic polymer microparticle records to normalize into product-use "
-            "evidence."
-        ),
+    synthetic_polymer_microparticle_records: list[SyntheticPolymerMicroparticleEvidenceRecord] = (
+        Field(
+            default_factory=list,
+            alias="syntheticPolymerMicroparticleRecords",
+            description=(
+                "Optional synthetic polymer microparticle records to normalize into product-use "
+                "evidence."
+            ),
+        )
     )
     evidence_records: list[ProductUseEvidenceRecord] = Field(
         default_factory=list,
@@ -1582,9 +1571,7 @@ def build_product_use_evidence_from_sccs(
     """Map an SCCS cosmetics guidance record into the generic product-use evidence contract."""
 
     normalized_type = _normalize_sccs_product_type(record.cosmetic_product_type)
-    mapped_categories = list(
-        SCCS_PRODUCT_TYPE_CATEGORY_MAP.get(normalized_type, ["personal_care"])
-    )
+    mapped_categories = list(SCCS_PRODUCT_TYPE_CATEGORY_MAP.get(normalized_type, ["personal_care"]))
     notes = list(record.notes)
     notes.append(
         "Mapped from SCCS cosmetics guidance product type "
@@ -1593,9 +1580,7 @@ def build_product_use_evidence_from_sccs(
     if record.product_family:
         notes.append(f"SCCS product_family: {record.product_family}.")
     if record.table_references:
-        notes.append(
-            "SCCS table references: " + ", ".join(record.table_references) + "."
-        )
+        notes.append("SCCS table references: " + ", ".join(record.table_references) + ".")
     if record.supported_routes:
         notes.append(
             "SCCS supported routes: "
@@ -1649,9 +1634,7 @@ def build_product_use_evidence_from_sccs_opinion(
     notes.append(f"SCCS opinion title: {record.opinion_title}.")
     if record.cosmetic_product_types:
         notes.append(
-            "SCCS opinion cosmetic product types: "
-            + ", ".join(record.cosmetic_product_types)
-            + "."
+            "SCCS opinion cosmetic product types: " + ", ".join(record.cosmetic_product_types) + "."
         )
     evidence_sources = list(record.evidence_sources) or [f"SCCS:{record.opinion_id}"]
 
@@ -1728,9 +1711,7 @@ def build_product_use_evidence_from_nanomaterial(
     notes.append(f"Nanomaterial source program: {record.source_program}.")
     if record.cosmetic_product_types:
         notes.append(
-            "Nanomaterial cosmetic product types: "
-            + ", ".join(record.cosmetic_product_types)
-            + "."
+            "Nanomaterial cosmetic product types: " + ", ".join(record.cosmetic_product_types) + "."
         )
     evidence_sources = list(record.evidence_sources) or [
         f"{record.source_program}:{record.source_record_id}"
@@ -2413,9 +2394,7 @@ def reconcile_product_use_evidence(
         (evidence, assess_product_use_evidence_fit(request, evidence))
         for evidence in evidence_records
     ]
-    compatible_pairs = [
-        (evidence, report) for evidence, report in fit_pairs if report.compatible
-    ]
+    compatible_pairs = [(evidence, report) for evidence, report in fit_pairs if report.compatible]
     considered_sources = [evidence.source_name for evidence, _ in fit_pairs]
     compatible_sources = [evidence.source_name for evidence, _ in compatible_pairs]
 
@@ -2452,14 +2431,10 @@ def reconcile_product_use_evidence(
 
     if updated_request_name != request.chemical_name and updated_request_name is not None:
         field_sources["chemical_name"] = primary_evidence.source_name
-    if (
-        updated_product_profile.product_category
-        != request.product_use_profile.product_category
-    ):
+    if updated_product_profile.product_category != request.product_use_profile.product_category:
         field_sources["product_use_profile.product_category"] = primary_evidence.source_name
     if (
-        updated_product_profile.product_subtype
-        != request.product_use_profile.product_subtype
+        updated_product_profile.product_subtype != request.product_use_profile.product_subtype
         and updated_product_profile.product_subtype is not None
     ):
         field_sources["product_use_profile.product_subtype"] = primary_evidence.source_name
@@ -2485,9 +2460,7 @@ def reconcile_product_use_evidence(
     ):
         if getattr(request.product_use_profile, field_name) != override_value:
             field_sources[f"product_use_profile.{field_name}"] = primary_evidence.source_name
-    for field_name, override_value in sorted(
-        primary_evidence.population_profile_overrides.items()
-    ):
+    for field_name, override_value in sorted(primary_evidence.population_profile_overrides.items()):
         if getattr(request.population_profile, field_name) != override_value:
             field_sources[f"population_profile.{field_name}"] = primary_evidence.source_name
 
@@ -2556,9 +2529,7 @@ def reconcile_product_use_evidence(
     if secondary_sources:
         overrides["external_product_use_secondary_sources"] = ",".join(secondary_sources)
     for field_name, source_name in sorted(field_sources.items()):
-        overrides[f"external_product_use_field_source_{field_name.replace('.', '_')}"] = (
-            source_name
-        )
+        overrides[f"external_product_use_field_source_{field_name.replace('.', '_')}"] = source_name
 
     merged_request = _coerce_base_request(
         merged_request.model_copy(
@@ -2599,9 +2570,7 @@ def reconcile_product_use_evidence(
     if primary_evidence.review_status == "reviewed":
         rationale.append("Primary source is marked as reviewed.")
     if secondary_sources:
-        rationale.append(
-            "Secondary compatible sources only filled missing additive fields."
-        )
+        rationale.append("Secondary compatible sources only filled missing additive fields.")
     if compatibility_concerns:
         rationale.append(
             f"Model-compatibility assessment for {primary_evidence.source_name} "
@@ -2765,17 +2734,13 @@ def build_toxclaw_evidence_bundle(
     ]
     if scenario.limitations:
         claim_texts.append(
-            
-                f"The scenario includes {len(scenario.limitations)} explicit limitation(s) "
-                "that require review."
-            
+            f"The scenario includes {len(scenario.limitations)} explicit limitation(s) "
+            "that require review."
         )
     else:
         claim_texts.append(
-            
-                f"The scenario is labeled {scenario.fit_for_purpose.label} for "
-                "external-dose screening use."
-            
+            f"The scenario is labeled {scenario.fit_for_purpose.label} for "
+            "external-dose screening use."
         )
 
     section_key = _normalize_section_key(params.section_key)
@@ -2856,9 +2821,7 @@ def build_toxclaw_refinement_bundle(
             *(["route-changed"] if params.baseline.route != params.comparison.route else []),
         }
     )
-    source_ref = (
-        f"{params.baseline.scenario_id}::{params.comparison.scenario_id}"
-    )
+    source_ref = f"{params.baseline.scenario_id}::{params.comparison.scenario_id}"
     evidence_record = ToxClawEvidenceRecord(
         case_id=params.case_id,
         content_hash=content_hash,

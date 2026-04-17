@@ -181,16 +181,8 @@ def _affine_matrices_at_time(
     else:
         # Distinct eigenvalues — numerically stable spectral formulas.
         # Safe exp that returns 0.0 on underflow instead of raising.
-        exp_big = (
-            math.exp(r_big * t)
-            if r_big * t > -745
-            else 0.0
-        )
-        exp_small = (
-            math.exp(r_small * t)
-            if r_small * t > -745
-            else 0.0
-        )
+        exp_big = math.exp(r_big * t) if r_big * t > -745 else 0.0
+        exp_small = math.exp(r_small * t) if r_small * t > -745 else 0.0
 
         # M(t) using the stable identity:
         # exp(r_small*t) * expm1(delta_r*t) = exp(r_big*t) - exp(r_small*t)
@@ -415,11 +407,7 @@ def solve_two_zone_piecewise_constant(
 
     # Mass-balance residual
     mass_balance_residual: float
-    if (
-        q_room_m3_per_hour is not None
-        and k_nf_per_hour is not None
-        and k_ff_per_hour is not None
-    ):
+    if q_room_m3_per_hour is not None and k_nf_per_hour is not None and k_ff_per_hour is not None:
         emitted_mass = emission_rate_mg_per_hour * spray_duration_hours
         final_mass = (
             params.v_nf_m3 * off.end_state.c_nf_mg_per_m3
@@ -435,10 +423,7 @@ def solve_two_zone_piecewise_constant(
             + k_ff_per_hour * params.v_ff_m3 * c_ff_integral
         )
         mass_balance_residual = (
-            emitted_mass
-            - (final_mass - initial_mass)
-            - ventilation_removed
-            - deposition_removed
+            emitted_mass - (final_mass - initial_mass) - ventilation_removed - deposition_removed
         )
     else:
         mass_balance_residual = float("nan")

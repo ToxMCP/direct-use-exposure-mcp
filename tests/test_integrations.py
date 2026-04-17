@@ -60,12 +60,7 @@ from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine
 
 WORKSPACE_ROOT = Path(__file__).resolve().parents[1]
 PBPK_TOOL_PATH = (
-    WORKSPACE_ROOT.parent
-    / "PBPK_MCP"
-    / "src"
-    / "mcp"
-    / "tools"
-    / "ingest_external_pbpk_bundle.py"
+    WORKSPACE_ROOT.parent / "PBPK_MCP" / "src" / "mcp" / "tools" / "ingest_external_pbpk_bundle.py"
 )
 
 
@@ -663,12 +658,10 @@ def test_sccs_product_use_evidence_applies_quantitative_profile_overrides() -> N
     assert report.suggested_request.population_profile.body_weight_kg == 63.79453
     assert report.suggested_request.population_profile.exposed_surface_area_cm2 == 565.0
     assert any(
-        item == "product_use_profile.use_amount_per_event"
-        for item in report.suggested_updates
+        item == "product_use_profile.use_amount_per_event" for item in report.suggested_updates
     )
     assert any(
-        item == "population_profile.exposed_surface_area_cm2"
-        for item in report.suggested_updates
+        item == "population_profile.exposed_surface_area_cm2" for item in report.suggested_updates
     )
 
     enriched = apply_product_use_evidence(request, evidence)
@@ -871,9 +864,7 @@ def test_reconcile_product_use_evidence_prefers_consexpo_over_comptox_in_eu() ->
     # direct inhalation scenario physics.
     assert report.recommendation == "apply_with_review"
     assert report.manual_review_required is True
-    assert any(
-        "well-mixed room" in note for note in report.rationale
-    )
+    assert any("well-mixed room" in note for note in report.rationale)
     assert report.merged_request is not None
     assert report.merged_request.product_use_profile.density_g_per_ml == 1.08
 
@@ -1094,12 +1085,11 @@ def test_toxclaw_refinement_bundle_signals_refine_exposure_and_preserves_deltas(
     assert "exposure-refinement" in exported["evidenceRecord"]["tags"]
     assert "refinement" in exported["evidenceRecord"]["tags"]
     assert exported["reportSection"]["evidenceIds"] == [exported["evidenceRecord"]["evidenceId"]]
-    assert {
-        delta["name"] for delta in exported["comparisonRecord"]["changed_assumptions"]
-    } >= {"retention_factor", "transfer_efficiency"}
-    assert {
-        hook["toolName"] for hook in exported["refinementSignal"]["workflowHooks"]
-    } == {
+    assert {delta["name"] for delta in exported["comparisonRecord"]["changed_assumptions"]} >= {
+        "retention_factor",
+        "transfer_efficiency",
+    }
+    assert {hook["toolName"] for hook in exported["refinementSignal"]["workflowHooks"]} == {
         "exposure_compare_exposure_scenarios",
         "exposure_build_screening_exposure_scenario",
         "exposure_build_aggregate_exposure_scenario",
@@ -1155,9 +1145,7 @@ def test_pbpk_external_import_package_prefills_real_request_shape() -> None:
     )
     assert exported["toxclawModuleParams"]["supportingHandoffs"]["pbpkScenarioInput"][
         "schema_version"
-    ] == (
-        "pbpkScenarioInput.v1"
-    )
+    ] == ("pbpkScenarioInput.v1")
     assert exported["compatibilityReport"]["ready_for_external_pbpk_import"] is True
     assert exported["compatibilityReport"]["missing_external_bundle_fields"] == []
 
@@ -1303,9 +1291,7 @@ def test_integrated_workflow_normalizes_sccs_records_for_eu_cosmetics() -> None:
     assert result.selected_evidence_source_kind == "sccs"
     assert result.effective_request.product_use_profile.use_amount_per_event == 0.71962617
     assert result.effective_request.population_profile.exposed_surface_area_cm2 == 565.0
-    assert any(
-        flag.code == "integrated_workflow_sccs_normalized" for flag in result.quality_flags
-    )
+    assert any(flag.code == "integrated_workflow_sccs_normalized" for flag in result.quality_flags)
 
 
 def test_integrated_workflow_normalizes_particle_aware_records_for_eu_cosmetics() -> None:
@@ -1389,12 +1375,10 @@ def test_integrated_workflow_normalizes_particle_aware_records_for_eu_cosmetics(
         particle_context
     )
     assert any(
-        flag.code == "integrated_workflow_nanomaterial_normalized"
-        for flag in result.quality_flags
+        flag.code == "integrated_workflow_nanomaterial_normalized" for flag in result.quality_flags
     )
     assert any(
-        flag.code == "integrated_workflow_cosing_normalized"
-        for flag in result.quality_flags
+        flag.code == "integrated_workflow_cosing_normalized" for flag in result.quality_flags
     )
 
 
@@ -1511,8 +1495,9 @@ def test_integrated_workflow_can_continue_when_all_evidence_is_rejected() -> Non
     )
 
 
-def test_pbpk_external_import_package_validates_against_sibling_pbpk_request_when_available(
-) -> None:
+def test_pbpk_external_import_package_validates_against_sibling_pbpk_request_when_available() -> (
+    None
+):
     if not PBPK_TOOL_PATH.exists():
         return
 
@@ -1558,6 +1543,7 @@ def test_pbpk_external_import_package_validates_against_sibling_pbpk_request_whe
     assert response["tool"] == "ingest_external_pbpk_bundle"
     assert response["contractVersion"] == "pbpk-mcp.v1"
     assert response["externalRun"]["sourcePlatform"] == arguments["sourcePlatform"]
-    assert response["ngraObjects"]["assessmentContext"]["sourcePlatform"] == (
-        arguments["sourcePlatform"]
+    assert (
+        response["ngraObjects"]["assessmentContext"]["sourcePlatform"]
+        == (arguments["sourcePlatform"])
     )

@@ -191,8 +191,10 @@ def test_independent_inhalation_room_average_trigger_spray() -> None:
     body_weight_kg = 80.0
 
     c0 = released_mass_mg / room_volume_m3
-    c_avg = c0 * (1.0 - math.exp(-total_loss_rate * exposure_duration_hours)) / (
-        total_loss_rate * exposure_duration_hours
+    c_avg = (
+        c0
+        * (1.0 - math.exp(-total_loss_rate * exposure_duration_hours))
+        / (total_loss_rate * exposure_duration_hours)
     )
     inhaled_mass_mg = c_avg * inhalation_rate_m3_per_hour * exposure_duration_hours
     expected_dose = inhaled_mass_mg / body_weight_kg
@@ -459,8 +461,10 @@ def test_independent_worker_art_capture_hood_adjustment() -> None:
     control_factor = 0.5
 
     c0 = released_mass_mg / room_volume_m3
-    c_avg = c0 * (1.0 - math.exp(-total_loss_rate * exposure_duration_hours)) / (
-        total_loss_rate * exposure_duration_hours
+    c_avg = (
+        c0
+        * (1.0 - math.exp(-total_loss_rate * exposure_duration_hours))
+        / (total_loss_rate * exposure_duration_hours)
     )
     baseline_inhaled_mass = c_avg * base_inhalation_rate * exposure_duration_hours
     expected_baseline_dose = baseline_inhaled_mass / body_weight_kg

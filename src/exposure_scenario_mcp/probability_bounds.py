@@ -340,9 +340,7 @@ def build_probability_bounds_from_profile(
                 "Only the packaged driver varies across support points; all other "
                 "scenario inputs remain fixed."
             ),
-            (
-                f"Fixed axes for this profile: {', '.join(profile.fixed_axes) or 'none declared'}."
-            ),
+            (f"Fixed axes for this profile: {', '.join(profile.fixed_axes) or 'none declared'}."),
         ]
         + [f"Profile limitation: {item}" for item in profile.limitations],
     )

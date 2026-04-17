@@ -45,8 +45,7 @@ def main() -> int:
     expected_defaults = _answer_for_keyword(answers, "defaults pack version")
     if expected_defaults != registry.version:
         errors.append(
-            f"Eval defaults version mismatch: eval={expected_defaults} "
-            f"current={registry.version}"
+            f"Eval defaults version mismatch: eval={expected_defaults} current={registry.version}"
         )
 
     # 2. Tool count drift.
@@ -54,9 +53,7 @@ def main() -> int:
     actual_tools = len(manifest["tools"])
     expected_tools = _answer_for_keyword(answers, "Count the public tools")
     if expected_tools is not None and int(expected_tools) != actual_tools:
-        errors.append(
-            f"Eval tool count mismatch: eval={expected_tools} current={actual_tools}"
-        )
+        errors.append(f"Eval tool count mismatch: eval={expected_tools} current={actual_tools}")
 
     # 3. Server boot and verification check.
     server = create_mcp_server()

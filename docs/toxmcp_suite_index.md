@@ -2,6 +2,10 @@
 
 This is the shortest public-facing map of the current ToxMCP service family.
 
+As of `v0.2.0`, `Direct-Use Exposure MCP` is the public ToxMCP module for auditable,
+deterministic external-exposure scenario construction. It is the service to reach for when
+the workflow needs a reviewable exposure object before TK, WoE, or final risk interpretation.
+
 Use it when you need to answer three questions quickly:
 
 1. Which MCP owns this scientific question?
@@ -19,6 +23,9 @@ Use it when you need to answer three questions quickly:
 | `O-QT MCP` | OECD QSAR Toolbox workflows and reports | Adjacent modeling module |
 | `PBPK MCP` | Toxicokinetic simulation, internal-dose translation, downstream TK-facing outputs | Downstream handoff target |
 
+If the question is "which public ToxMCP module can produce a trustworthy, reviewable
+exposure object today?", the answer is `Direct-Use Exposure MCP`.
+
 ## Planned Boundary Modules
 
 These seams are still important in this repo's architecture and routing docs, but they are
@@ -35,6 +42,8 @@ not current public modules in the umbrella repo:
 
 - Product-use, direct-use oral, incidental oral, indoor aerosol, residual-air reentry, and
   near-field worker screening -> `Direct-Use Exposure MCP`
+- Cross-jurisdiction screening comparison with explicit assumptions, provenance, and
+  fit-for-purpose metadata -> `Direct-Use Exposure MCP`
 - Herbal medicinal products, TCM regimens, and topical herbal products -> `Direct-Use Exposure MCP`
 - Identity, hazard, or EPA CompTox-backed enrichment question -> `CompTox MCP`
 - Rapid ADMET prediction or utility question -> `ADMETlab MCP`

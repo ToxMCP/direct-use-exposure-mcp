@@ -49,6 +49,7 @@ from exposure_scenario_mcp.guidance import (
 from exposure_scenario_mcp.guidance import (
     test_evidence_summary_guide as build_test_evidence_summary_guide,
 )
+from exposure_scenario_mcp.package_metadata import CURRENT_RELEASE_NOTES_RELATIVE_PATH
 
 
 def test_release_guidance_mentions_current_benchmark_matrix() -> None:
@@ -72,7 +73,7 @@ def test_release_guidance_mentions_current_benchmark_matrix() -> None:
 def test_published_release_notes_match_generated_markdown() -> None:
     registry = DefaultsRegistry.load()
     metadata = build_release_metadata_report(registry)
-    published_path = Path(__file__).resolve().parents[1] / "docs" / "releases" / "v0.1.0.md"
+    published_path = Path(__file__).resolve().parents[1] / CURRENT_RELEASE_NOTES_RELATIVE_PATH
     published = published_path.read_text()
     expected = release_notes_markdown(metadata).rstrip() + "\n"
     assert published == expected
@@ -161,9 +162,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "wet-cloth contact mass realism" in validation
     assert "Validation Reference Bands" in validation_bands
     assert "`air_space_insecticide_aerosol_concentration_2001_band`" in validation_bands
-    assert "`chlorpyrifos_residual_air_reentry_start_concentration_1990_band`" in (
-        validation_bands
-    )
+    assert "`chlorpyrifos_residual_air_reentry_start_concentration_1990_band`" in (validation_bands)
     assert "`cleaning_trigger_spray_airborne_fraction_2019_band`" in validation_bands
     assert "`hand_cream_application_loading_2012_band`" in validation_bands
     assert "`dietary_supplement_iron_capsule_daily_mass_2025_band`" in validation_bands
@@ -182,12 +181,8 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "`medicinal_liquid_direct_oral_delivered_mass_2025_band`" in validation_bands
     assert "`consumer_disinfectant_trigger_spray_inhaled_dose_2015_band`" in validation_bands
     assert "`trigger_spray_aerosol_decay_half_life_2023_band`" in validation_bands
-    assert "`worker_biocidal_handheld_trigger_spray_concentration_2023_band`" in (
-        validation_bands
-    )
-    assert "`worker_biocidal_handheld_trigger_spray_dermal_mass_2023_band`" in (
-        validation_bands
-    )
+    assert "`worker_biocidal_handheld_trigger_spray_concentration_2023_band`" in (validation_bands)
+    assert "`worker_biocidal_handheld_trigger_spray_dermal_mass_2023_band`" in (validation_bands)
     assert "`wet_cloth_contact_mass_2018_band`" in validation_bands
     assert "selectors:" in validation_bands
     assert "Validation Time-Series Packs" in validation_time_series

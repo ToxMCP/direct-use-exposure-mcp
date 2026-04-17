@@ -10,24 +10,14 @@ BENCHMARK_FIXTURE_PATH = REPO_ROOT / "tests" / "fixtures" / "benchmark_cases.jso
 SOURCE_REPLACEMENTS = {
     "benchmark_population_defaults_v1": "epa_exposure_factors_handbook_2011",
     "heuristic_density_defaults_v1": "epa_exposure_factors_handbook_2011",
-    "heuristic_retention_defaults_v1": (
-        "rivm_cleaning_surface_contact_retention_defaults_2018"
-    ),
-    "heuristic_transfer_efficiency_defaults_v1": (
-        "rivm_cleaning_wet_cloth_transfer_defaults_2018"
-    ),
-    "heuristic_incidental_oral_defaults_v1": (
-        "sccs_notes_of_guidance_12th_revision_2023"
-    ),
+    "heuristic_retention_defaults_v1": ("rivm_cleaning_surface_contact_retention_defaults_2018"),
+    "heuristic_transfer_efficiency_defaults_v1": ("rivm_cleaning_wet_cloth_transfer_defaults_2018"),
+    "heuristic_incidental_oral_defaults_v1": ("sccs_notes_of_guidance_12th_revision_2023"),
     "heuristic_residual_spray_airborne_fraction_defaults_v1": (
         "rivm_disinfectant_trigger_spray_airborne_fraction_defaults_2006"
     ),
-    "heuristic_time_limited_release_duration_defaults_v1": (
-        "epa_exposure_factors_handbook_2011"
-    ),
-    "inhalation_deposition_sink_heuristics_2026": (
-        "echa_consumer_inhalation_room_defaults"
-    ),
+    "heuristic_time_limited_release_duration_defaults_v1": ("epa_exposure_factors_handbook_2011"),
+    "inhalation_deposition_sink_heuristics_2026": ("echa_consumer_inhalation_room_defaults"),
     "native_residual_air_reentry_emission_heuristics_2026": (
         "rivm_general_fact_sheet_unspecified_room_defaults_2014"
     ),

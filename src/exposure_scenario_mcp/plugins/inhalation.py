@@ -308,13 +308,19 @@ def _surface_emission_air_concentration(
         rel_tol=1e-9,
         abs_tol=1e-12,
     ):
-        return source_strength * elapsed_hours * math.exp(
-            -surface_emission_rate_per_hour * elapsed_hours
+        return (
+            source_strength
+            * elapsed_hours
+            * math.exp(-surface_emission_rate_per_hour * elapsed_hours)
         )
 
-    return source_strength / (total_loss_rate_per_hour - surface_emission_rate_per_hour) * (
-        math.exp(-surface_emission_rate_per_hour * elapsed_hours)
-        - math.exp(-total_loss_rate_per_hour * elapsed_hours)
+    return (
+        source_strength
+        / (total_loss_rate_per_hour - surface_emission_rate_per_hour)
+        * (
+            math.exp(-surface_emission_rate_per_hour * elapsed_hours)
+            - math.exp(-total_loss_rate_per_hour * elapsed_hours)
+        )
     )
 
 
@@ -346,13 +352,17 @@ def _surface_emission_average_concentration(
     source_strength = surface_emission_rate_per_hour * initial_surface_mass_mg / room_volume_m3
 
     if math.isclose(total_loss_rate_per_hour, 0.0, abs_tol=1e-12):
-        integral = initial_surface_mass_mg / room_volume_m3 * (
-            duration_hours
-            + (
-                math.exp(-surface_emission_rate_per_hour * end_hours)
-                - math.exp(-surface_emission_rate_per_hour * start_hours)
+        integral = (
+            initial_surface_mass_mg
+            / room_volume_m3
+            * (
+                duration_hours
+                + (
+                    math.exp(-surface_emission_rate_per_hour * end_hours)
+                    - math.exp(-surface_emission_rate_per_hour * start_hours)
+                )
+                / surface_emission_rate_per_hour
             )
-            / surface_emission_rate_per_hour
         )
         return integral / duration_hours
 
@@ -362,25 +372,34 @@ def _surface_emission_average_concentration(
         rel_tol=1e-9,
         abs_tol=1e-12,
     ):
+
         def _primitive(time_hours: float) -> float:
-            return -source_strength * (
-                time_hours / surface_emission_rate_per_hour
-                + 1.0 / (surface_emission_rate_per_hour**2)
-            ) * math.exp(-surface_emission_rate_per_hour * time_hours)
+            return (
+                -source_strength
+                * (
+                    time_hours / surface_emission_rate_per_hour
+                    + 1.0 / (surface_emission_rate_per_hour**2)
+                )
+                * math.exp(-surface_emission_rate_per_hour * time_hours)
+            )
 
         return (_primitive(end_hours) - _primitive(start_hours)) / duration_hours
 
-    integral = source_strength / (total_loss_rate_per_hour - surface_emission_rate_per_hour) * (
-        (
-            math.exp(-surface_emission_rate_per_hour * start_hours)
-            - math.exp(-surface_emission_rate_per_hour * end_hours)
+    integral = (
+        source_strength
+        / (total_loss_rate_per_hour - surface_emission_rate_per_hour)
+        * (
+            (
+                math.exp(-surface_emission_rate_per_hour * start_hours)
+                - math.exp(-surface_emission_rate_per_hour * end_hours)
+            )
+            / surface_emission_rate_per_hour
+            - (
+                math.exp(-total_loss_rate_per_hour * start_hours)
+                - math.exp(-total_loss_rate_per_hour * end_hours)
+            )
+            / total_loss_rate_per_hour
         )
-        / surface_emission_rate_per_hour
-        - (
-            math.exp(-total_loss_rate_per_hour * start_hours)
-            - math.exp(-total_loss_rate_per_hour * end_hours)
-        )
-        / total_loss_rate_per_hour
     )
     return integral / duration_hours
 
@@ -647,9 +666,7 @@ def _build_inhalation_tier_1_two_zone_scenario(
     if spray_duration_hours > exposure_duration_hours:
         raise ExposureScenarioError(
             code="inhalation_tier_1_duration_inconsistent",
-            message=(
-                "Tier 1 spray_duration_seconds cannot exceed the resolved exposure duration."
-            ),
+            message=("Tier 1 spray_duration_seconds cannot exceed the resolved exposure duration."),
             suggestion=(
                 "Shorten spray_duration_seconds or provide a longer exposure_duration_hours "
                 "for the inhalation event."
@@ -662,9 +679,7 @@ def _build_inhalation_tier_1_two_zone_scenario(
     if request.near_field_volume_m3 >= room_volume_m3:
         raise ExposureScenarioError(
             code="inhalation_tier_1_near_field_volume_invalid",
-            message=(
-                "Tier 1 near_field_volume_m3 must be smaller than the resolved room volume."
-            ),
+            message=("Tier 1 near_field_volume_m3 must be smaller than the resolved room volume."),
             suggestion=(
                 "Provide a near-field compartment smaller than room_volume_m3 so a far-field "
                 "zone remains available."
@@ -992,9 +1007,7 @@ def _build_inhalation_tier_1_two_zone_scenario(
         "inhaled_mass_mg_per_event": round(inhaled_mass_mg_per_event, 8),
         "inhaled_mass_mg_per_day": round(inhaled_mass_mg_day, 8),
         "extrathoracic_swallow_fraction": round(extrathoracic_swallow_fraction, 8),
-        "swallowed_extrathoracic_mass_mg_per_day": round(
-            swallowed_extrathoracic_mass_mg_day, 8
-        ),
+        "swallowed_extrathoracic_mass_mg_per_day": round(swallowed_extrathoracic_mass_mg_day, 8),
         "lower_respiratory_inhaled_mass_mg_per_day": round(
             lower_respiratory_inhaled_mass_mg_day, 8
         ),
@@ -1274,9 +1287,7 @@ def _build_inhalation_tier_1_two_zone_scenario(
                 else []
             ),
             *(
-                [
-                    "Tier 1 profile alignment warning: " + "; ".join(profile_divergences) + "."
-                ]
+                ["Tier 1 profile alignment warning: " + "; ".join(profile_divergences) + "."]
                 if profile_divergences
                 else []
             ),
@@ -1555,9 +1566,7 @@ def _build_inhalation_tier_1_heuristic_scenario(
     if spray_duration_hours > exposure_duration_hours:
         raise ExposureScenarioError(
             code="inhalation_tier_1_duration_inconsistent",
-            message=(
-                "Tier 1 spray_duration_seconds cannot exceed the resolved exposure duration."
-            ),
+            message=("Tier 1 spray_duration_seconds cannot exceed the resolved exposure duration."),
             suggestion=(
                 "Shorten spray_duration_seconds or provide a longer exposure_duration_hours "
                 "for the inhalation event."
@@ -1570,9 +1579,7 @@ def _build_inhalation_tier_1_heuristic_scenario(
     if request.near_field_volume_m3 >= room_volume_m3:
         raise ExposureScenarioError(
             code="inhalation_tier_1_near_field_volume_invalid",
-            message=(
-                "Tier 1 near_field_volume_m3 must be smaller than the resolved room volume."
-            ),
+            message=("Tier 1 near_field_volume_m3 must be smaller than the resolved room volume."),
             suggestion=(
                 "Provide a near-field compartment smaller than room_volume_m3 so a far-field "
                 "zone remains available."
@@ -1670,9 +1677,7 @@ def _build_inhalation_tier_1_heuristic_scenario(
         inhalation_rate * exposure_duration_hours
     )
     breathing_zone_time_weighted_average_uncapped = (
-        (
-            near_field_active_concentration_uncapped * inhalation_rate * spray_duration_hours
-        )
+        (near_field_active_concentration_uncapped * inhalation_rate * spray_duration_hours)
         + (
             far_field_average_concentration_uncapped
             * inhalation_rate
@@ -1683,9 +1688,7 @@ def _build_inhalation_tier_1_heuristic_scenario(
     room_air_decay_half_life_hours = (
         math.log(2.0) / total_loss_rate if total_loss_rate > 0.0 else None
     )
-    saturation_cap_applied = (
-        initial_cap_applied or far_field_cap_applied or near_field_cap_applied
-    )
+    saturation_cap_applied = initial_cap_applied or far_field_cap_applied or near_field_cap_applied
 
     tracker.add_derived(
         "released_mass_mg_per_event",
@@ -1992,18 +1995,14 @@ def _build_inhalation_tier_1_heuristic_scenario(
             "uncapped_near_field_active_spray_concentration_mg_per_m3": round(
                 near_field_active_concentration_uncapped, 8
             ),
-            "average_air_concentration_mg_per_m3": round(
-                breathing_zone_time_weighted_average, 8
-            ),
+            "average_air_concentration_mg_per_m3": round(breathing_zone_time_weighted_average, 8),
             "uncapped_average_air_concentration_mg_per_m3": round(
                 breathing_zone_time_weighted_average_uncapped, 8
             ),
             "breathing_zone_time_weighted_average_mg_per_m3": round(
                 breathing_zone_time_weighted_average, 8
             ),
-            "static_interzonal_mixing_rate_m3_per_hour": round(
-                static_interzonal_mixing_rate, 8
-            ),
+            "static_interzonal_mixing_rate_m3_per_hour": round(static_interzonal_mixing_rate, 8),
             "thermal_plume_rate_m3_per_hour": round(thermal_plume_rate, 8),
             "spray_jet_rate_m3_per_hour": round(spray_jet_rate, 8),
             "local_entrainment_rate_m3_per_hour": round(local_entrainment_rate, 8),
@@ -2017,9 +2016,7 @@ def _build_inhalation_tier_1_heuristic_scenario(
                 else None
             ),
             "saturation_cap_mg_per_m3": (
-                round(saturation_cap_mg_per_m3, 8)
-                if saturation_cap_mg_per_m3 is not None
-                else None
+                round(saturation_cap_mg_per_m3, 8) if saturation_cap_mg_per_m3 is not None else None
             ),
             "saturation_cap_applied": saturation_cap_applied,
             "vapor_pressure_mmhg": (
@@ -2094,9 +2091,7 @@ def _build_inhalation_tier_1_heuristic_scenario(
                 else []
             ),
             *(
-                [
-                    "Tier 1 profile alignment warning: " + "; ".join(profile_divergences) + "."
-                ]
+                ["Tier 1 profile alignment warning: " + "; ".join(profile_divergences) + "."]
                 if profile_divergences
                 else []
             ),
@@ -3141,9 +3136,7 @@ class InhalationScreeningPlugin(ScenarioPlugin):
             registry=registry,
             tracker=tracker,
         )
-        swallowed_extrathoracic_mass_mg_day = (
-            inhaled_mass_mg_day * extrathoracic_swallow_fraction
-        )
+        swallowed_extrathoracic_mass_mg_day = inhaled_mass_mg_day * extrathoracic_swallow_fraction
         lower_respiratory_inhaled_mass_mg_day = (
             inhaled_mass_mg_day - swallowed_extrathoracic_mass_mg_day
         )

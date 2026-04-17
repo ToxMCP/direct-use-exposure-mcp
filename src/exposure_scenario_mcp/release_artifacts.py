@@ -60,9 +60,7 @@ def validate_release_metadata_report(metadata_path: Path, repo_root: Path) -> li
         return ["release metadata is missing a distributionArtifacts list"]
 
     if payload.get("releaseVersion") != payload.get("packageVersion"):
-        errors.append(
-            "releaseVersion and packageVersion must match for published release metadata"
-        )
+        errors.append("releaseVersion and packageVersion must match for published release metadata")
 
     seen_kinds: set[str] = set()
     for artifact in artifacts:

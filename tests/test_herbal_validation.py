@@ -48,11 +48,7 @@ def test_ema_herbal_ointment_validation_check() -> None:
     checks = scenario.validation_summary.executed_validation_checks
 
     check = next(
-        (
-            c
-            for c in checks
-            if c.check_id == "ema_hmpc_topical_ointment_loading_default"
-        ),
+        (c for c in checks if c.check_id == "ema_hmpc_topical_ointment_loading_default"),
         None,
     )
     assert check is not None
@@ -89,11 +85,7 @@ def test_sccs_cosmetic_balm_validation_check() -> None:
     checks = scenario.validation_summary.executed_validation_checks
 
     check = next(
-        (
-            c
-            for c in checks
-            if c.check_id == "sccs_cosmetic_balm_loading_category"
-        ),
+        (c for c in checks if c.check_id == "sccs_cosmetic_balm_loading_category"),
         None,
     )
     assert check is not None
@@ -129,11 +121,7 @@ def test_ftu_dermatology_validation_check() -> None:
     checks = scenario.validation_summary.executed_validation_checks
 
     check = next(
-        (
-            c
-            for c in checks
-            if c.check_id == "dermatology_fingertip_unit_loading_anchor"
-        ),
+        (c for c in checks if c.check_id == "dermatology_fingertip_unit_loading_anchor"),
         None,
     )
     assert check is not None

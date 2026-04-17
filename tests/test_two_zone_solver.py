@@ -17,6 +17,7 @@ from exposure_scenario_mcp.solvers.two_zone import (
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _rel_err(actual: float, expected: float) -> float:
     if expected == 0.0:
         return abs(actual)
@@ -55,10 +56,12 @@ def _benchmark_a_expected(t_minutes: float) -> tuple[float, float]:
 def test_benchmark_a_transient_concentrations(t_minutes: float) -> None:
     t_hours = t_minutes / 60.0
     result = _propagate_affine_phase(
-        A=(-(BENCHMARK_A.beta_m3_per_hour / BENCHMARK_A.v_nf_m3 + BENCHMARK_A.lambda_nf_per_hour),
-           BENCHMARK_A.beta_m3_per_hour / BENCHMARK_A.v_nf_m3,
-           BENCHMARK_A.beta_m3_per_hour / BENCHMARK_A.v_ff_m3,
-           -(BENCHMARK_A.beta_m3_per_hour / BENCHMARK_A.v_ff_m3 + BENCHMARK_A.lambda_ff_per_hour)),
+        A=(
+            -(BENCHMARK_A.beta_m3_per_hour / BENCHMARK_A.v_nf_m3 + BENCHMARK_A.lambda_nf_per_hour),
+            BENCHMARK_A.beta_m3_per_hour / BENCHMARK_A.v_nf_m3,
+            BENCHMARK_A.beta_m3_per_hour / BENCHMARK_A.v_ff_m3,
+            -(BENCHMARK_A.beta_m3_per_hour / BENCHMARK_A.v_ff_m3 + BENCHMARK_A.lambda_ff_per_hour),
+        ),
         u=(BENCHMARK_A_EMISSION_RATE_MG_PER_HOUR / BENCHMARK_A.v_nf_m3, 0.0),
         x0=(0.0, 0.0),
         duration_hours=t_hours,
@@ -72,6 +75,7 @@ def test_benchmark_a_transient_concentrations(t_minutes: float) -> None:
 # ---------------------------------------------------------------------------
 # Benchmark B — Classical steady-state identity
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.parametrize("g", [1000.0, 5000.0, 20000.0])
 @pytest.mark.parametrize("q", [10.0, 50.0, 100.0])
@@ -98,16 +102,20 @@ def test_benchmark_b_steady_state_identity(g: float, q: float, beta: float) -> N
     )
     # Steady-state identity applies to the end-of-phase concentration, not the time average.
     assert _rel_err(result.far_field_end_concentration_mg_per_m3, g / q) <= 1e-6
-    assert _rel_err(
-        result.near_field_end_concentration_mg_per_m3
-        - result.far_field_end_concentration_mg_per_m3,
-        g / beta,
-    ) <= 1e-6
+    assert (
+        _rel_err(
+            result.near_field_end_concentration_mg_per_m3
+            - result.far_field_end_concentration_mg_per_m3,
+            g / beta,
+        )
+        <= 1e-6
+    )
 
 
 # ---------------------------------------------------------------------------
 # Benchmark C — Single-zone convergence as beta -> large
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.parametrize("t_hours", [0.5, 1.0, 2.0])
 def test_benchmark_c_single_zone_convergence(t_hours: float) -> None:
@@ -157,6 +165,7 @@ def test_benchmark_c_single_zone_convergence(t_hours: float) -> None:
 # ---------------------------------------------------------------------------
 # Mass balance residual
 # ---------------------------------------------------------------------------
+
 
 def test_mass_balance_residual_zero_losses() -> None:
     """With no losses, all emitted mass must remain in the room."""
@@ -223,6 +232,7 @@ def test_mass_balance_residual_with_ventilation_and_deposition() -> None:
 # Beta -> 0 decoupled exact branch
 # ---------------------------------------------------------------------------
 
+
 def test_beta_zero_decoupled() -> None:
     """When beta is zero, NF and FF evolve independently."""
     params = TwoZoneParams(
@@ -266,12 +276,8 @@ def test_beta_zero_decoupled() -> None:
 
     assert math.isclose(result.near_field_peak_concentration_mg_per_m3, c_nf_spray, rel_tol=1e-9)
     assert math.isclose(result.far_field_peak_concentration_mg_per_m3, c_ff_spray, rel_tol=1e-9)
-    assert math.isclose(
-        result.near_field_end_concentration_mg_per_m3, c_nf_end, rel_tol=1e-9
-    )
-    assert math.isclose(
-        result.far_field_end_concentration_mg_per_m3, c_ff_end, rel_tol=1e-9
-    )
+    assert math.isclose(result.near_field_end_concentration_mg_per_m3, c_nf_end, rel_tol=1e-9)
+    assert math.isclose(result.far_field_end_concentration_mg_per_m3, c_ff_end, rel_tol=1e-9)
     assert math.isclose(
         result.near_field_time_integral_mg_h_per_m3,
         int_nf_spray + int_nf_decay,
@@ -288,11 +294,15 @@ def test_beta_zero_decoupled() -> None:
 # Edge cases
 # ---------------------------------------------------------------------------
 
+
 def test_zero_source_zero_duration() -> None:
     result = solve_two_zone_piecewise_constant(
         params=TwoZoneParams(
-            v_nf_m3=1.0, v_ff_m3=9.0, beta_m3_per_hour=50.0,
-            lambda_nf_per_hour=0.5, lambda_ff_per_hour=1.0,
+            v_nf_m3=1.0,
+            v_ff_m3=9.0,
+            beta_m3_per_hour=50.0,
+            lambda_nf_per_hour=0.5,
+            lambda_ff_per_hour=1.0,
         ),
         emission_rate_mg_per_hour=0.0,
         spray_duration_hours=0.0,
@@ -331,8 +341,11 @@ def test_validation_errors() -> None:
     with pytest.raises(ValueError, match="spray_duration_hours must be non-negative"):
         solve_two_zone_piecewise_constant(
             params=TwoZoneParams(
-                v_nf_m3=1.0, v_ff_m3=9.0, beta_m3_per_hour=50.0,
-                lambda_nf_per_hour=0.5, lambda_ff_per_hour=1.0,
+                v_nf_m3=1.0,
+                v_ff_m3=9.0,
+                beta_m3_per_hour=50.0,
+                lambda_nf_per_hour=0.5,
+                lambda_ff_per_hour=1.0,
             ),
             emission_rate_mg_per_hour=100.0,
             spray_duration_hours=-1.0,
@@ -341,8 +354,11 @@ def test_validation_errors() -> None:
     with pytest.raises(ValueError, match="total_duration_hours must be >= spray_duration_hours"):
         solve_two_zone_piecewise_constant(
             params=TwoZoneParams(
-                v_nf_m3=1.0, v_ff_m3=9.0, beta_m3_per_hour=50.0,
-                lambda_nf_per_hour=0.5, lambda_ff_per_hour=1.0,
+                v_nf_m3=1.0,
+                v_ff_m3=9.0,
+                beta_m3_per_hour=50.0,
+                lambda_nf_per_hour=0.5,
+                lambda_ff_per_hour=1.0,
             ),
             emission_rate_mg_per_hour=100.0,
             spray_duration_hours=2.0,
@@ -353,6 +369,7 @@ def test_validation_errors() -> None:
 # ---------------------------------------------------------------------------
 # Time-integral exactness via algebraic identity
 # ---------------------------------------------------------------------------
+
 
 def test_integral_exactness_against_numeric_quadrature() -> None:
     """Compare the analytical time integral to a simple deterministic quadrature."""
@@ -458,8 +475,7 @@ def test_delayed_far_field_peak_after_spray_ends() -> None:
     # The spray-on end-state FF concentration is lower than the true FF peak
     # because FF continues to rise during the early decay phase.
     assert (
-        result.far_field_peak_concentration_mg_per_m3
-        > result.far_field_end_concentration_mg_per_m3
+        result.far_field_peak_concentration_mg_per_m3 > result.far_field_end_concentration_mg_per_m3
     )
     # And the peak is strictly later than the spray end.
     # We verify by sampling that the maximum is not at t=spray_duration.

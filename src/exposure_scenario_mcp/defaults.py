@@ -622,8 +622,7 @@ class DefaultsRegistry:
             best_match: dict[str, Any] | None = None
             for candidate in section.get("vapor_pressure_bands_mmhg", []):
                 if vapor_pressure_mmhg >= float(candidate["minimum"]) and (
-                    best_match is None
-                    or float(candidate["minimum"]) > float(best_match["minimum"])
+                    best_match is None or float(candidate["minimum"]) > float(best_match["minimum"])
                 ):
                     best_match = candidate
             if best_match is not None:
@@ -713,9 +712,7 @@ class DefaultsRegistry:
         *,
         chemistry_profile: str = "generic",
     ) -> tuple[float, AssumptionSourceReference]:
-        values = self.payload["worker_dermal_execution_defaults"][
-            "barrier_breakthrough_lag_hours"
-        ]
+        values = self.payload["worker_dermal_execution_defaults"]["barrier_breakthrough_lag_hours"]
         profile_values = values.get(chemistry_profile, values["generic"])
         material_key = barrier_material.lower()
         entry = profile_values.get(material_key, profile_values["unknown"])
@@ -899,11 +896,11 @@ class DefaultsRegistry:
             "capture_zone_alignment_factor"
         ]
         generic_entry = values["generic"]
-        if not any(
-            item in normalized_profile for item in ("local_exhaust", "enclosed_process")
-        ):
-            return "generic", float(generic_entry["value"]), self._source(
-                generic_entry["source_id"]
+        if not any(item in normalized_profile for item in ("local_exhaust", "enclosed_process")):
+            return (
+                "generic",
+                float(generic_entry["value"]),
+                self._source(generic_entry["source_id"]),
             )
 
         normalized_terms = " ".join(
@@ -938,8 +935,11 @@ class DefaultsRegistry:
         if source_distance_m is None or not any(
             item in normalized_profile for item in ("local_exhaust", "enclosed_process")
         ):
-            return "generic", "generic", float(generic_entry["value"]), self._source(
-                generic_entry["source_id"]
+            return (
+                "generic",
+                "generic",
+                float(generic_entry["value"]),
+                self._source(generic_entry["source_id"]),
             )
 
         active_profile_label = "generic"
@@ -1003,14 +1003,10 @@ class DefaultsRegistry:
         lev_family: str | None = None,
         hood_face_velocity_m_per_s: float | None = None,
     ) -> tuple[str, str, str, str, float, AssumptionSourceReference]:
-        values = self.payload["worker_inhalation_execution_defaults"][
-            "capture_velocity_factor"
-        ]
+        values = self.payload["worker_inhalation_execution_defaults"]["capture_velocity_factor"]
         generic_entry = values["generic"]
         normalized_profile = control_profile.lower()
-        if not any(
-            item in normalized_profile for item in ("local_exhaust", "enclosed_process")
-        ):
+        if not any(item in normalized_profile for item in ("local_exhaust", "enclosed_process")):
             return (
                 "generic",
                 "generic",
@@ -1078,9 +1074,9 @@ class DefaultsRegistry:
         final_factor = base_factor
         velocity_source = base_source
         measured_profiles = values.get("measured_profile_overrides", {})
-        measured_profile_values = (
-            measured_profiles.get(active_profile_label) or measured_profiles.get("generic")
-        )
+        measured_profile_values = measured_profiles.get(
+            active_profile_label
+        ) or measured_profiles.get("generic")
         if hood_face_velocity_m_per_s is not None and measured_profile_values is not None:
             for candidate_label, candidate_entry in measured_profile_values.items():
                 min_velocity = candidate_entry.get("min_m_per_s")
@@ -1683,9 +1679,9 @@ def build_defaults_curation_report(
             value=global_density["density_g_per_ml"],
             source_id=global_density["source_id"],
         )
-    for product_category, entry in (
-        conversion_defaults.get("product_category_overrides", {}).items()
-    ):
+    for product_category, entry in conversion_defaults.get(
+        "product_category_overrides", {}
+    ).items():
         _append_entry(
             entries,
             active_registry,
@@ -1703,9 +1699,7 @@ def build_defaults_curation_report(
             source_id=entry["source_id"],
             applicability={"physical_form": physical_form},
         )
-    for product_subtype, entry in (
-        conversion_defaults.get("product_subtype_overrides", {}).items()
-    ):
+    for product_subtype, entry in conversion_defaults.get("product_subtype_overrides", {}).items():
         _append_entry(
             entries,
             active_registry,
@@ -1728,9 +1722,9 @@ def build_defaults_curation_report(
             source_id=global_aerosol_volume_factor["source_id"],
             applicability={"application_method": "aerosol_spray"},
         )
-    for product_category, entry in (
-        aerosol_volume_factor.get("product_category_overrides", {}).items()
-    ):
+    for product_category, entry in aerosol_volume_factor.get(
+        "product_category_overrides", {}
+    ).items():
         _append_entry(
             entries,
             active_registry,
@@ -1742,9 +1736,9 @@ def build_defaults_curation_report(
                 "product_category": product_category,
             },
         )
-    for product_subtype, entry in (
-        aerosol_volume_factor.get("product_subtype_overrides", {}).items()
-    ):
+    for product_subtype, entry in aerosol_volume_factor.get(
+        "product_subtype_overrides", {}
+    ).items():
         _append_entry(
             entries,
             active_registry,
@@ -1830,6 +1824,7 @@ def build_defaults_curation_report(
                 value=room_global[parameter_name],
                 source_id=room_global[source_field],
             )
+
     def append_room_selector_entry(
         selector_key: str,
         selector_value: str,

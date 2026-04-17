@@ -1,6 +1,6 @@
 {
   "sourcePlatform": "exposure-scenario-mcp",
-  "sourceVersion": "0.1.0",
+  "sourceVersion": "0.2.0",
   "modelName": "exp-example-dermal-001-upstream-context",
   "modelType": "exposure-scenario-context",
   "executionDate": "2026-03-24T00:00:00+00:00",

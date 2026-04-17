@@ -391,10 +391,10 @@ def register_core_tools(
         """Compare the same scenario across jurisdictions and return dose variance plus drivers."""
 
         try:
-            comparison = compare_jurisdictional_scenarios(params)
+            comparison = compare_jurisdictional_scenarios(params, engine=context.engine)
             return success_result(
                 (
-                    f"Compared {len(comparison.jurisdictions)} jurisdictions. "
+                    f"Compared {len(comparison.compared_jurisdictions)} jurisdictions. "
                     f"Dose range: {comparison.dose_range.minimum_value:.4f}–"
                     f"{comparison.dose_range.maximum_value:.4f} {comparison.dose_range.unit}."
                 ),

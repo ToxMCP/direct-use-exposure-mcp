@@ -8,11 +8,19 @@
 
 > Part of **ToxMCP** Suite → https://github.com/ToxMCP/toxmcp
 
-**Public MCP server for deterministic direct-use and near-field external exposure construction in exposure-led NGRA workflows.**
-It turns product-use assumptions into auditable dermal, direct-use/incidental oral,
-inhalation, and aggregate external-dose scenarios, then exports structured evidence
-objects and PBPK-ready handoff payloads without taking over PBPK execution, WoE synthesis,
-BER, PoD derivation, or final risk decisions.
+**Public MCP server for auditable deterministic exposure screening in regulatory and scientific AI workflows.**
+It turns product-use assumptions into reproducible dermal, direct-use/incidental oral,
+inhalation, jurisdictional-comparison, and aggregate external-dose scenarios with explicit
+provenance, limitations, quality flags, and fit-for-purpose guidance. It also exports
+structured evidence objects and PBPK-ready handoff payloads without taking over PBPK
+execution, WoE synthesis, BER, PoD derivation, or final risk decisions.
+
+Use it when you need:
+
+- a stable, inspectable external-dose object rather than free-text exposure reasoning
+- governed defaults and explicit scenario assumptions that can survive review
+- deterministic cross-jurisdiction comparisons without black-box probabilistic overclaiming
+- clean handoffs into PBPK or broader ToxMCP orchestration layers
 
 ## Architecture
 
@@ -83,7 +91,7 @@ For a suite-level map of sibling services and shared handoff contracts, see
 
 ## ToxMCP suite fit
 
-This repo is the exposure-construction module inside the broader
+This repo is the public exposure-construction module inside the broader
 [ToxMCP Suite](https://github.com/ToxMCP/toxmcp). The current public module map is:
 
 | Module | Role in the suite | Relationship to this repo |
@@ -104,7 +112,7 @@ umbrella repo:
 That distinction matters for the README and contract story: this MCP should read as one
 module in a growing suite, not as the whole ToxMCP platform.
 
-## What's in v0.1.0
+## What's in v0.2.0
 
 - Deterministic dermal plus direct-use/incidental oral screening scenario construction
 - Deterministic inhalation screening with room-volume, ventilation, saturation-cap, and deposition semantics
@@ -137,6 +145,13 @@ Direct-Use Exposure MCP gives the suite a dedicated exposure layer that is:
 - **MCP-native** with typed tools, resources, prompts, schemas, and examples
 - **auditable** through assumption records, defaults versioning, provenance, and quality flags
 - **bounded** so it complements PBPK and adjacent review/orchestration layers instead of overlapping them
+
+## Who this is for
+
+- **Regulatory toxicologists and exposure assessors** who need scenario outputs that remain reviewable and traceable.
+- **Product safety, stewardship, and EHS teams** who need consistent screening scenarios before higher-tier assessment.
+- **Consultants and dossier-support teams** who need reproducible exposure objects for briefings, memos, and handoff packages.
+- **Scientific AI and MCP builders** who need a trustworthy exposure module inside a broader governed workflow.
 
 ## Capability maturity
 
@@ -191,20 +206,21 @@ The detailed maturity matrix is in
 
 1. [Architecture](#architecture)
 2. [ToxMCP suite fit](#toxmcp-suite-fit)
-3. [What's in v0.1.0](#whats-in-v010)
+3. [What's in v0.2.0](#whats-in-v020)
 4. [Why this project exists](#why-this-project-exists)
-5. [Capability maturity](#capability-maturity)
-6. [Feature snapshot](#feature-snapshot)
-7. [Tool catalog](#tool-catalog)
-8. [Resource catalog](#resource-catalog)
-9. [Quick start](#quick-start)
-10. [Release verification](#release-verification)
-11. [Repository layout](#repository-layout)
-12. [Current limitations](#current-limitations)
-13. [Scientific boundaries](#scientific-boundaries)
-14. [Contributing](#contributing)
-15. [Code of conduct](#code-of-conduct)
-16. [License](#license)
+5. [Who this is for](#who-this-is-for)
+6. [Capability maturity](#capability-maturity)
+7. [Feature snapshot](#feature-snapshot)
+8. [Tool catalog](#tool-catalog)
+9. [Resource catalog](#resource-catalog)
+10. [Quick start](#quick-start)
+11. [Release verification](#release-verification)
+12. [Repository layout](#repository-layout)
+13. [Current limitations](#current-limitations)
+14. [Scientific boundaries](#scientific-boundaries)
+15. [Contributing](#contributing)
+16. [Code of conduct](#code-of-conduct)
+17. [License](#license)
 
 ## Tool catalog
 
@@ -221,6 +237,7 @@ The detailed maturity matrix is in
 - `exposure_build_inhalation_tier1_screening_scenario`
 - `exposure_build_aggregate_exposure_scenario`
 - `exposure_compare_exposure_scenarios`
+- `exposure_compare_jurisdictional_scenarios`
 
 ### Evidence fit and enrichment
 
@@ -299,13 +316,16 @@ The detailed maturity matrix is in
 - `docs://validation-time-series-packs`
 - `docs://verification-summary`
 - `docs://goldset-benchmark-guide`
+- `docs://red-team-review-memo`
 - `docs://suite-integration-guide`
+- `docs://toxmcp-suite-index`
 - `docs://integrated-exposure-workflow-guide`
 - `docs://exposure-platform-architecture`
 - `docs://capability-maturity-matrix`
 - `docs://repository-slug-decision`
 - `docs://cross-mcp-contract-guide`
 - `docs://service-selection-guide`
+- `docs://herbal-medicinal-routing-guide`
 - `docs://worker-routing-guide`
 - `docs://worker-tier2-bridge-guide`
 - `docs://worker-art-adapter-guide`
@@ -346,7 +366,7 @@ uv run exposure-scenario-mcp --transport stdio
 ```
 
 The public product name is now `Direct-Use Exposure MCP`, while the current GitHub slug,
-Python package, import path, CLI, and MCP server IDs remain stable through the `v0.1.x`
+Python package, import path, CLI, and MCP server IDs remain stable through the `v0.2.x`
 line. The current GitHub slug is:
 
 - `ToxMCP/direct-use-exposure-mcp`
@@ -362,11 +382,11 @@ uv run exposure-scenario-mcp --transport streamable-http --host 127.0.0.1 --port
 
 Current published surface from `docs/contracts/contract_manifest.json`:
 
-- `35` tools
+- `36` tools
 - `65` resources
 - `2` prompts
-- `151` schemas
-- `91` examples
+- `153` schemas
+- `98` examples
 
 Legacy `Exposure_Scenario_MCP_tasks.*` planning artifacts at the repo root are now archived
 status notes, not the live implementation backlog.
@@ -378,6 +398,7 @@ uv run ruff check .
 uv run pytest
 uv build
 uv run generate-exposure-contracts
+uv run validate-evals
 uv run check-exposure-release-artifacts
 ```
 
@@ -390,7 +411,7 @@ The MCP also publishes a consolidated runtime trust surface through:
 - `docs://test-evidence-summary`
 - `docs://herbal-medicinal-routing-guide`
 
-Current published package version: `0.1.0`
+Current published package version: `0.2.0`
 
 Repository-facing release docs:
 
@@ -412,7 +433,7 @@ Repository-facing release docs:
 
 ## Current limitations
 
-The current `v0.1.0` release is intentionally honest about what it does not do:
+The current `v0.2.0` release is intentionally honest about what it does not do:
 
 - It is deterministic-first and does not ship a probabilistic population engine.
 - It does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.

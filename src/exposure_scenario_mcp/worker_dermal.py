@@ -48,6 +48,7 @@ from exposure_scenario_mcp.models import (
     ValidationSummary,
     WorkerTaskRoutingInput,
 )
+from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
 from exposure_scenario_mcp.worker_routing import route_worker_task
 
@@ -56,15 +57,9 @@ WORKER_DERMAL_ADAPTER_GUIDANCE_RESOURCE = "docs://worker-dermal-adapter-guide"
 WORKER_DERMAL_EXECUTION_GUIDANCE_RESOURCE = "docs://worker-dermal-execution-guide"
 WORKER_DERMAL_TEMPLATE_CATALOG_VERSION = "2026.04.07.v1"
 WORKER_DERMAL_BENCHMARK_CASE_ID = "worker_dermal_wet_wipe_gloved_hands_execution"
-WORKER_DERMAL_BIOCIDAL_BENCHMARK_CASE_ID = (
-    "worker_dermal_handheld_biocidal_trigger_spray_execution"
-)
-WORKER_DERMAL_SURFACE_CAP_BENCHMARK_CASE_ID = (
-    "worker_dermal_extreme_loading_surface_cap_execution"
-)
-WORKER_DERMAL_BIOCIDAL_EXTERNAL_CHECK_ID = (
-    "worker_biocidal_handheld_trigger_spray_dermal_mass_2023"
-)
+WORKER_DERMAL_BIOCIDAL_BENCHMARK_CASE_ID = "worker_dermal_handheld_biocidal_trigger_spray_execution"
+WORKER_DERMAL_SURFACE_CAP_BENCHMARK_CASE_ID = "worker_dermal_extreme_loading_surface_cap_execution"
+WORKER_DERMAL_BIOCIDAL_EXTERNAL_CHECK_ID = "worker_biocidal_handheld_trigger_spray_dermal_mass_2023"
 WORKER_BENCHMARK_REL_TOLERANCE = 0.05
 
 
@@ -120,9 +115,7 @@ class WorkerDermalBarrierMaterial(StrEnum):
 
 
 class WorkerDermalChemicalContext(PhyschemContext):
-    schema_version: Literal["workerDermalChemicalContext.v1"] = (
-        "workerDermalChemicalContext.v1"
-    )
+    schema_version: Literal["workerDermalChemicalContext.v1"] = "workerDermalChemicalContext.v1"
 
 
 class WorkerDermalTaskContext(StrictModel):
@@ -334,7 +327,7 @@ class WorkerDermalAbsorbedDoseTaskEnvelope(StrictModel):
         "workerDermalAbsorbedDoseTaskEnvelope.v1"
     )
     adapter_name: str = Field(default="worker_dermal_absorption_ppe_adapter", alias="adapterName")
-    adapter_version: str = Field(default="0.1.0", alias="adapterVersion")
+    adapter_version: str = Field(default=CURRENT_VERSION, alias="adapterVersion")
     contact_profile: str = Field(..., alias="contactProfile")
     ppe_profile: str = Field(..., alias="ppeProfile")
     body_zone_profile: str = Field(..., alias="bodyZoneProfile")
@@ -788,10 +781,7 @@ def _build_worker_dermal_validation_summary(
     heuristic_assumption_names = sorted(
         item.name
         for item in result.assumptions
-        if (
-            "heuristic" in item.source.source_id
-            or item.source.source_id.startswith("benchmark_")
-        )
+        if ("heuristic" in item.source.source_id or item.source.source_id.startswith("benchmark_"))
     )
     benchmark_case_ids: list[str] = []
     executed_validation_checks: list[ExecutedValidationCheck] = []
@@ -1341,7 +1331,7 @@ def _bridge_provenance(
     return ProvenanceBundle(
         algorithm_id="worker.dermal_absorbed_dose_bridge.v1",
         plugin_id="worker_dermal_absorbed_dose_bridge_export",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -1355,7 +1345,7 @@ def _bridge_provenance(
 
 def _calculate_potts_guy_kp(log_kow: float, molecular_weight: float) -> float:
     """Calculate the permeability coefficient Kp (cm/h) using the Potts-Guy equation.
-    
+
     log Kp = -2.72 + 0.71 * logKow - 0.0061 * MW
     """
     log_kp = -2.72 + (0.71 * log_kow) - (0.0061 * molecular_weight)
@@ -1371,7 +1361,7 @@ def _calculate_permeation_limited_mass(
     duration_h: float,
 ) -> float:
     """Calculate the maximum mass (mg) that can permeate over a given duration.
-    
+
     Cv (mg/cm3) = density (g/mL) * 1000 * concentration_fraction
     Flux J (mg/cm2/h) = Kp * Cv
     Mass (mg) = J * Area * Duration
@@ -1389,7 +1379,7 @@ def _adapter_ingest_provenance(
     return ProvenanceBundle(
         algorithm_id="worker.dermal_absorbed_dose_adapter_ingest.v1",
         plugin_id="worker_dermal_absorbed_dose_adapter_ingest",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -1410,7 +1400,7 @@ def _execution_provenance(
     return ProvenanceBundle(
         algorithm_id="worker.dermal_absorbed_dose_execution.v1",
         plugin_id="worker_dermal_absorbed_dose_execution",
-        plugin_version="0.1.0",
+        plugin_version=CURRENT_VERSION,
         defaults_version=registry.version,
         defaults_hash_sha256=registry.sha256,
         generated_at=generated_at or datetime.now(UTC).isoformat(),
@@ -1951,9 +1941,7 @@ def ingest_worker_dermal_absorbed_dose_task(
                 "sourceRequestSchema": (
                     params.supporting_handoffs.get("baseRequest", {}) or {}
                 ).get("schemaVersion")
-                or (params.supporting_handoffs.get("baseRequest", {}) or {}).get(
-                    "schema_version"
-                ),
+                or (params.supporting_handoffs.get("baseRequest", {}) or {}).get("schema_version"),
                 "templateCatalogVersion": WORKER_DERMAL_TEMPLATE_CATALOG_VERSION,
             },
         ),
@@ -2129,9 +2117,7 @@ def execute_worker_dermal_absorbed_dose_task(
     application_method = str(dermal_inputs.get("applicationMethod") or "")
     product_category = str(dermal_inputs.get("productCategory") or "")
     product_subtype = (
-        str(dermal_inputs.get("productSubtype"))
-        if dermal_inputs.get("productSubtype")
-        else None
+        str(dermal_inputs.get("productSubtype")) if dermal_inputs.get("productSubtype") else None
     )
     physical_form = str(dermal_inputs.get("physicalForm") or "")
 
@@ -2163,9 +2149,7 @@ def execute_worker_dermal_absorbed_dose_task(
                 unit="g/mL",
                 source_kind=SourceKind.USER_INPUT,
                 source=_execution_algorithm_source(),
-                rationale=(
-                    "Density was carried through the dermal adapter request."
-                ),
+                rationale=("Density was carried through the dermal adapter request."),
                 applicability_domain=applicability_domain,
             )
         )
@@ -2397,8 +2381,7 @@ def execute_worker_dermal_absorbed_dose_task(
                     quality_flags.append(
                         QualityFlag(
                             code=(
-                                "worker_dermal_pressurized_aerosol_volume_"
-                                "interpretation_defaulted"
+                                "worker_dermal_pressurized_aerosol_volume_interpretation_defaulted"
                             ),
                             severity=Severity.WARNING,
                             message=(
@@ -2408,9 +2391,7 @@ def execute_worker_dermal_absorbed_dose_task(
                         )
                     )
             product_mass_g_event = (
-                use_amount_per_event
-                * density_g_per_ml
-                * pressurized_aerosol_volume_factor
+                use_amount_per_event * density_g_per_ml * pressurized_aerosol_volume_factor
             )
             assumptions.append(
                 _assumption_record(
@@ -2620,9 +2601,7 @@ def execute_worker_dermal_absorbed_dose_task(
     if body_zone_area_cm2 <= 0.0:
         raise ExposureScenarioError(
             code="worker_dermal_body_zone_area_not_positive",
-            message=(
-                f"body_zone_area_cm2 must be positive but received {body_zone_area_cm2}."
-            ),
+            message=(f"body_zone_area_cm2 must be positive but received {body_zone_area_cm2}."),
             suggestion=(
                 "Provide a positive exposedSurfaceAreaCm2 override or select a body-zone "
                 "profile with a positive surface area default."
@@ -2753,9 +2732,7 @@ def execute_worker_dermal_absorbed_dose_task(
         (
             base_ppe_penetration_factor,
             ppe_source,
-        ) = registry.worker_dermal_ppe_penetration_factor(
-            task_context.ppe_state.value
-        )
+        ) = registry.worker_dermal_ppe_penetration_factor(task_context.ppe_state.value)
         assumptions.append(
             _assumption_record(
                 name="base_ppe_penetration_factor",
@@ -2819,11 +2796,7 @@ def execute_worker_dermal_absorbed_dose_task(
                     barrier_chemistry_source,
                 ) = registry.worker_dermal_barrier_chemistry_factor(
                     task_context.barrier_material.value,
-                    log_kow=(
-                        chemical_context.log_kow
-                        if chemical_context is not None
-                        else None
-                    ),
+                    log_kow=(chemical_context.log_kow if chemical_context is not None else None),
                     water_solubility_mg_per_l=(
                         chemical_context.water_solubility_mg_per_l
                         if chemical_context is not None
@@ -2945,9 +2918,7 @@ def execute_worker_dermal_absorbed_dose_task(
                 )
         ppe_penetration_factor = min(
             max(
-                base_ppe_penetration_factor
-                * barrier_material_factor
-                * barrier_chemistry_factor,
+                base_ppe_penetration_factor * barrier_material_factor * barrier_chemistry_factor,
                 0.0,
             )
             * barrier_breakthrough_fraction,
@@ -3253,11 +3224,7 @@ def execute_worker_dermal_absorbed_dose_task(
             ) = registry.worker_dermal_chemical_context_factor_bounds()
             chemical_context_factor = min(
                 max(
-                    (
-                        log_kow_factor
-                        * molecular_weight_factor
-                        * water_solubility_factor
-                    ),
+                    (log_kow_factor * molecular_weight_factor * water_solubility_factor),
                     chemical_context_bounds[0],
                 ),
                 chemical_context_bounds[1],
@@ -3269,12 +3236,12 @@ def execute_worker_dermal_absorbed_dose_task(
                     unit="factor",
                     source_kind=SourceKind.DERIVED,
                     source=chemical_context_bounds_source,
-                rationale=(
-                    "Chemical-context modifier was derived from bounded logKow, "
-                    "molecular-weight, and water-solubility heuristic factors."
-                ),
-                applicability_domain=applicability_domain,
-            )
+                    rationale=(
+                        "Chemical-context modifier was derived from bounded logKow, "
+                        "molecular-weight, and water-solubility heuristic factors."
+                    ),
+                    applicability_domain=applicability_domain,
+                )
             )
         else:
             quality_flags.append(
@@ -3413,9 +3380,7 @@ def execute_worker_dermal_absorbed_dose_task(
                 )
             )
             route_metrics["pottsGuyKpCmPerHour"] = round(kp_cm_h, 10)
-            route_metrics["permeationLimitedAbsorbedMassMgDay"] = round(
-                permeation_limited_mass, 8
-            )
+            route_metrics["permeationLimitedAbsorbedMassMgDay"] = round(permeation_limited_mass, 8)
 
         assumptions.append(
             _assumption_record(
@@ -3434,9 +3399,7 @@ def execute_worker_dermal_absorbed_dose_task(
             )
         )
         route_metrics["externalSkinMassMgPerDay"] = round(external_mass_mg_day, 8)
-        route_metrics["retainedExternalSkinMassMgPerDay"] = round(
-            retained_external_mass_mg_day, 8
-        )
+        route_metrics["retainedExternalSkinMassMgPerDay"] = round(retained_external_mass_mg_day, 8)
         route_metrics["protectedExternalSkinMassMgPerDay"] = round(
             protected_external_mass_mg_day,
             8,
@@ -3474,17 +3437,13 @@ def execute_worker_dermal_absorbed_dose_task(
                 pressurized_aerosol_physchem_factor,
                 8,
             )
-            route_metrics["pressurizedAerosolPhyschemProfile"] = (
-                pressurized_aerosol_physchem_label
-            )
+            route_metrics["pressurizedAerosolPhyschemProfile"] = pressurized_aerosol_physchem_label
         if pressurized_aerosol_carrier_factor != 1.0:
             route_metrics["pressurizedAerosolCarrierFamilyAdjustmentFactor"] = round(
                 pressurized_aerosol_carrier_factor,
                 8,
             )
-            route_metrics["pressurizedAerosolCarrierFamily"] = (
-                pressurized_aerosol_carrier_label
-            )
+            route_metrics["pressurizedAerosolCarrierFamily"] = pressurized_aerosol_carrier_label
         if pressurized_aerosol_formulation_factor != 1.0:
             route_metrics["pressurizedAerosolFormulationProfileAdjustmentFactor"] = round(
                 pressurized_aerosol_formulation_factor,

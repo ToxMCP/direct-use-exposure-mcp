@@ -14,9 +14,7 @@ def test_packaged_probability_profile_manifest_loads() -> None:
         "adult_trigger_spray_room_volume_m3",
         "child_direct_oral_liquid_use_events_per_day",
     } <= {item.profile_id for item in manifest.profiles}
-    assert {
-        item.driver_family.value for item in manifest.profiles
-    } >= {
+    assert {item.driver_family.value for item in manifest.profiles} >= {
         "use_burden",
         "formulation_strength",
         "microenvironment",

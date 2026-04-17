@@ -25,12 +25,13 @@ from exposure_scenario_mcp.models import (
     TierSemantics,
     UncertaintyType,
 )
+from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 
 SYSTEM_SOURCE = AssumptionSourceReference(
     source_id="exposure_scenario_mcp",
     title="Direct-Use Exposure MCP runtime",
     locator="docs://algorithm-notes",
-    version="0.1.0",
+    version=CURRENT_VERSION,
     hash_sha256=None,
 )
 
@@ -98,9 +99,7 @@ ASSUMPTION_UNCERTAINTY_TYPES: dict[str, tuple[UncertaintyType, ...]] = {
         UncertaintyType.PARAMETER_UNCERTAINTY,
         UncertaintyType.MODEL_UNCERTAINTY,
     ),
-    "post_application_delay_hours": (
-        UncertaintyType.SCENARIO_UNCERTAINTY,
-    ),
+    "post_application_delay_hours": (UncertaintyType.SCENARIO_UNCERTAINTY,),
     "total_decay_rate_per_hour": (
         UncertaintyType.PARAMETER_UNCERTAINTY,
         UncertaintyType.MODEL_UNCERTAINTY,
@@ -559,7 +558,7 @@ class AssumptionTracker:
         self,
         plugin_id: str,
         algorithm_id: str,
-        plugin_version: str = "0.1.0",
+        plugin_version: str = CURRENT_VERSION,
         generated_at: str | None = None,
     ) -> ProvenanceBundle:
         return ProvenanceBundle(
@@ -570,7 +569,7 @@ class AssumptionTracker:
             defaults_hash_sha256=self.registry.sha256,
             generated_at=generated_at or datetime.now(UTC).isoformat(),
             notes=[
-                "Deterministic-first v0.1 engine.",
+                "Deterministic-first exposure engine.",
                 "All defaults are surfaced through exposureAssumptionRecord entries.",
             ],
         )

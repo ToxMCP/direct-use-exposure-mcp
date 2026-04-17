@@ -15,7 +15,7 @@ release decisions are tied to the live public surface rather than a static check
 - `docs://security-provenance-review`: human-readable review derived from the current surface
 - `release://security-provenance-review-report`: machine-readable review payload
 
-## Expected Warning Classes In v0.1.0
+## Expected Warning Classes In v0.2.0
 
 - Remote `streamable-http` deployment still depends on external auth, TLS, and origin controls.
 - Some screening defaults remain heuristic and must be interpreted as flagged screening factors,

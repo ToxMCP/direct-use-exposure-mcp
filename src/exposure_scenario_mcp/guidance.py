@@ -11,6 +11,7 @@ from exposure_scenario_mcp.models import (
     ReleaseReadinessReport,
     SecurityProvenanceReviewReport,
 )
+from exposure_scenario_mcp.package_metadata import CURRENT_RELEASE_TAG, CURRENT_VERSION
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
@@ -26,9 +27,7 @@ def _benchmark_matrix_lines() -> list[str]:
     fixture = load_benchmark_manifest()
     lines = ["## Benchmark Matrix", ""]
     for case in fixture.get("cases", []):
-        lines.append(
-            f"- `{case['id']}` [{case['kind']}] {case['description']}"
-        )
+        lines.append(f"- `{case['id']}` [{case['kind']}] {case['description']}")
     return lines
 
 
@@ -59,9 +58,7 @@ def _archetype_library_lines() -> list[str]:
             f"- `{item.set_id}` [{item.route.value}/{item.scenario_class.value}] {item.label}"
         )
         if item.driver_parameters:
-            lines.append(
-                f"  drivers: {', '.join(f'`{name}`' for name in item.driver_parameters)}"
-            )
+            lines.append(f"  drivers: {', '.join(f'`{name}`' for name in item.driver_parameters)}")
     return lines
 
 
@@ -771,9 +768,9 @@ Static companion: `docs/toxmcp_suite_index.md`
 
 
 def capability_maturity_matrix_guide() -> str:
-    return """# Capability Maturity Matrix
+    return f"""# Capability Maturity Matrix
 
-This guide explains how to interpret the released `0.1.0` surface.
+This guide explains how to interpret the released `{CURRENT_VERSION}` surface.
 
 The MCP now has four layers:
 
@@ -1567,7 +1564,8 @@ def uncertainty_framework() -> str:
 
 ## Current Guardrail
 
-- `v0.1.0` supports Tier A on every scenario output, Tier B via deterministic envelopes
+- `{CURRENT_RELEASE_TAG}` supports Tier A on every scenario output, Tier B via
+  deterministic envelopes
   and parameter-bounds propagation, and Tier C only for packaged single-driver
   or scenario-package probability bounds.
 - Probabilistic tiers remain blocked until validation evidence, dependency handling, and
@@ -1665,7 +1663,7 @@ def inhalation_tier_upgrade_guide() -> str:
         "",
         "## Current State",
         "",
-        "- `v0.1.0` implements Tier 0 inhalation and a spray-focused Tier 1 NF/FF",
+        f"- `{CURRENT_RELEASE_TAG}` implements Tier 0 inhalation and a spray-focused Tier 1 NF/FF",
         "  screening path.",
         "- Spray scenarios can emit `tierUpgradeAdvisories` when the Tier 0 output",
         "  is likely to miss",
@@ -1745,11 +1743,11 @@ def inhalation_tier_upgrade_guide() -> str:
 
 
 def inhalation_residual_air_reentry_guide() -> str:
-    return """# Inhalation Residual-Air Reentry Guide
+    return f"""# Inhalation Residual-Air Reentry Guide
 
 ## Current State
 
-- `v0.1.0` now ships a first-class residual-air reentry inhalation tool:
+- `{CURRENT_RELEASE_TAG}` now ships a first-class residual-air reentry inhalation tool:
   `exposure_build_inhalation_residual_air_reentry_scenario`
 - Request schema: `inhalationResidualAirReentryScenarioRequest.v1`
 - Response schema: `exposureScenario.v1`
@@ -1837,9 +1835,7 @@ def validation_framework() -> str:
         "",
     ]
     for item in report.benchmark_domains:
-        lines.append(
-            f"- `{item.domain}`: {', '.join(f'`{case_id}`' for case_id in item.case_ids)}"
-        )
+        lines.append(f"- `{item.domain}`: {', '.join(f'`{case_id}`' for case_id in item.case_ids)}")
         for note in item.notes:
             lines.append(f"  note: {note}")
     lines.extend(["", "## External Validation Datasets", ""])
@@ -1864,9 +1860,7 @@ def validation_framework() -> str:
                 f"- The executable time-series manifest currently publishes "
                 f"`{time_series_manifest.pack_count}`"
             ),
-            (
-                "  sparse reference packs through `validation://time-series-packs`."
-            ),
+            ("  sparse reference packs through `validation://time-series-packs`."),
             "- Current executable checks cover hand-cream loading realism for hand-scale",
             "  dermal scenarios and wet-cloth contact mass realism for household-cleaner",
             "  wipe scenarios.",
@@ -1915,9 +1909,10 @@ def validation_reference_bands_guide() -> str:
         "",
     ]
     for item in manifest.bands:
-        selectors = ", ".join(
-            f"{key}={value}" for key, value in sorted(item.applicable_selectors.items())
-        ) or "global"
+        selectors = (
+            ", ".join(f"{key}={value}" for key, value in sorted(item.applicable_selectors.items()))
+            or "global"
+        )
         lines.append(
             f"- `{item.reference_band_id}` -> `{item.check_id}` "
             f"[{item.domain}] `{item.reference_lower}` to `{item.reference_upper}` `{item.unit}`"
@@ -1948,9 +1943,10 @@ def validation_time_series_packs_guide() -> str:
         "",
     ]
     for pack in manifest.packs:
-        selectors = ", ".join(
-            f"{key}={value}" for key, value in sorted(pack.applicable_selectors.items())
-        ) or "global"
+        selectors = (
+            ", ".join(f"{key}={value}" for key, value in sorted(pack.applicable_selectors.items()))
+            or "global"
+        )
         lines.append(
             f"- `{pack.reference_pack_id}` [{pack.domain}] "
             f"time reference: `{pack.time_coordinate_reference}`"
@@ -1997,9 +1993,10 @@ def defaults_curation_report_markdown() -> str:
             "aerosolized_fraction",
         }:
             continue
-        selectors = ", ".join(
-            f"{key}={value}" for key, value in sorted(entry.applicability.items())
-        ) or "global"
+        selectors = (
+            ", ".join(f"{key}={value}" for key, value in sorted(entry.applicability.items()))
+            or "global"
+        )
         lines.append(f"- `{entry.path_id}` -> `{entry.source_id}` ({selectors})")
     lines.extend(["", "## Route-Semantic Highlights", ""])
     for entry in report.entries:
@@ -2110,9 +2107,7 @@ def validation_coverage_report_markdown() -> str:
                 + ", ".join(f"`{pack_id}`" for pack_id in item.time_series_pack_ids)
             )
         if item.open_gap_ids:
-            lines.append(
-                "  open gaps: " + ", ".join(f"`{gap_id}`" for gap_id in item.open_gap_ids)
-            )
+            lines.append("  open gaps: " + ", ".join(f"`{gap_id}`" for gap_id in item.open_gap_ids))
     lines.extend(["", "## Notes", ""])
     lines.extend(f"- {item}" for item in report.overall_notes)
     return "\n".join(lines)
@@ -2227,8 +2222,7 @@ def verification_summary_guide() -> str:
         lines.append(f"  evidence: {check.evidence}")
         if check.related_resources:
             lines.append(
-                "  resources: "
-                + ", ".join(f"`{item}`" for item in check.related_resources)
+                "  resources: " + ", ".join(f"`{item}`" for item in check.related_resources)
             )
         if check.recommendation:
             lines.append(f"  next step: {check.recommendation}")
@@ -2369,8 +2363,7 @@ def security_provenance_review_markdown(report: SecurityProvenanceReviewReport) 
             lines.append(f"  next step: {finding.recommendation}")
         if finding.references:
             lines.append(
-                "  references: "
-                + ", ".join(f"`{reference}`" for reference in finding.references)
+                "  references: " + ", ".join(f"`{reference}`" for reference in finding.references)
             )
     lines.extend(["", "## External Requirements", ""])
     lines.extend(f"- {item}" for item in report.external_requirements)
@@ -2379,10 +2372,11 @@ def security_provenance_review_markdown(report: SecurityProvenanceReviewReport) 
 
 def release_notes_markdown(report: ReleaseMetadataReport) -> str:
     lines = [
-        "# Direct-Use Exposure MCP v0.1.0",
+        f"# Direct-Use Exposure MCP v{report.release_version}",
         "",
-        "Direct-Use Exposure MCP `v0.1.0` is the first public deterministic external-dose "
-        "release candidate for the ToxMCP suite.",
+        f"Direct-Use Exposure MCP `v{report.release_version}` hardens the public "
+        "deterministic external-dose surface for regulatory-facing use with stricter "
+        "jurisdictional-comparison auditability and enforced release-artifact verification.",
         "",
         "## Included In This Release",
         "",
@@ -2441,9 +2435,7 @@ def conformance_report_markdown(
         )
     lines.extend(["", "## Benchmark Coverage", ""])
     lines.append(f"- Benchmark cases published: `{metadata.benchmark_case_count}`")
-    lines.extend(
-        f"- `{case_id}`" for case_id in metadata.benchmark_case_ids
-    )
+    lines.extend(f"- `{case_id}`" for case_id in metadata.benchmark_case_ids)
     lines.extend(["", "## Release Gates", ""])
     for check in readiness.checks:
         lines.append(f"- `{check.check_id}` [{check.status.upper()}] {check.title}")

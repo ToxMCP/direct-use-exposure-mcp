@@ -1,6 +1,6 @@
 # Release Readiness
 
-Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-first.
+Release gating for `v0.2.0` is benchmark-first, contract-first, and provenance-first.
 
 ## Required Gates
 
@@ -8,6 +8,7 @@ Release gating for `v0.1.0` is benchmark-first, contract-first, and provenance-f
 - `uv run pytest`
 - `uv build`
 - `uv run generate-exposure-contracts`
+- `uv run validate-evals`
 - `uv run check-exposure-release-artifacts`
 
 ## Minimum Release Claims

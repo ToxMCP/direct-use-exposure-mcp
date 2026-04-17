@@ -63,19 +63,47 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Sync dependencies
         run: uv sync --extra dev
-      - name: Generate contract assets
-        run: uv run generate-exposure-contracts
       - name: Test
         run: uv run pytest
-      - name: Validate evals against current surface
-        run: uv run validate-evals
       - name: Build distribution artifacts
         run: uv build
+      - name: Generate contract assets
+        run: uv run generate-exposure-contracts
+      - name: Validate evals against current surface
+        run: uv run validate-evals
+      - name: Check generated assets are committed
+        run: |
+          RELEASE_VERSION=$(python - <<'PY'
+          import tomllib
+          from pathlib import Path
+
+          print(tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))["project"]["version"])
+          PY
+          )
+          git diff --exit-code -- \
+            defaults/manifest.json \
+            docs/contracts/contract_manifest.json \
+            docs/contracts/schemas \
+            "docs/releases/v${RELEASE_VERSION}.md" \
+            "docs/releases/v${RELEASE_VERSION}.release_metadata.json" \
+            evals/exposure_scenario_mcp_readonly.xml \
+            schemas
+          git ls-files --error-unmatch "docs/releases/v${RELEASE_VERSION}.md" >/dev/null
+          git ls-files --error-unmatch "docs/releases/v${RELEASE_VERSION}.release_metadata.json" >/dev/null
+      - name: Verify release artifact metadata
+        run: uv run check-exposure-release-artifacts
       - name: Wheel install smoke test
         run: |
+          RELEASE_VERSION=$(python - <<'PY'
+          import tomllib
+          from pathlib import Path
+
+          print(tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))["project"]["version"])
+          PY
+          )
           python -m venv .wheel-smoke
           . .wheel-smoke/bin/activate
-          pip install dist/exposure_scenario_mcp-0.1.0-py3-none-any.whl
+          pip install "dist/exposure_scenario_mcp-${RELEASE_VERSION}-py3-none-any.whl"
           python -m exposure_scenario_mcp --help >/dev/null
           python - <<'PY'
           import json

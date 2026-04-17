@@ -7,7 +7,13 @@ from importlib.metadata import PackageNotFoundError, version
 PACKAGE_NAME = "exposure-scenario-mcp"
 SERVER_NAME = "exposure_scenario_mcp"
 PRODUCT_NAME = "Direct-Use Exposure MCP"
-FALLBACK_VERSION = "0.1.0"
+CURRENT_VERSION = "0.2.0"
+CURRENT_RELEASE_TAG = f"v{CURRENT_VERSION}"
+CURRENT_RELEASE_NOTES_RELATIVE_PATH = f"docs/releases/{CURRENT_RELEASE_TAG}.md"
+CURRENT_RELEASE_METADATA_RELATIVE_PATH = (
+    f"docs/releases/{CURRENT_RELEASE_TAG}.release_metadata.json"
+)
+FALLBACK_VERSION = CURRENT_VERSION
 
 
 def package_version() -> str:
@@ -17,4 +23,4 @@ def package_version() -> str:
         return FALLBACK_VERSION
 
 
-__version__ = package_version()
+__version__ = CURRENT_VERSION

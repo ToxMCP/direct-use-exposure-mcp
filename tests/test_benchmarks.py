@@ -156,9 +156,9 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
                 item.route.value: item.total_dose.value for item in summary.per_route_totals
             }
             for route_name, expected_value in expected["route_totals"].items():
-                assert actual_route_totals[route_name] == pytest.approx(
-                    expected_value, rel=1e-6
-                ), case["id"]
+                assert actual_route_totals[route_name] == pytest.approx(expected_value, rel=1e-6), (
+                    case["id"]
+                )
             route_by_scenario_id = {
                 item.scenario_id: item.route.value for item in summary.component_scenarios
             }
@@ -167,9 +167,9 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
                 for item in summary.dominant_contributors
             }
             for route_name, expected_value in expected["dominant_contributor_fractions"].items():
-                assert actual_contributors[route_name] == pytest.approx(
-                    expected_value, rel=1e-6
-                ), case["id"]
+                assert actual_contributors[route_name] == pytest.approx(expected_value, rel=1e-6), (
+                    case["id"]
+                )
             if "internal_equivalent_total_dose_value" in expected:
                 assert summary.internal_equivalent_total_dose is not None, case["id"]
                 assert summary.internal_equivalent_total_dose.value == pytest.approx(
@@ -179,9 +179,7 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
                     item.route.value: item.total_dose.value
                     for item in summary.per_route_internal_equivalent_totals
                 }
-                for route_name, expected_value in expected[
-                    "internal_route_totals"
-                ].items():
+                for route_name, expected_value in expected["internal_route_totals"].items():
                     assert actual_internal_totals[route_name] == pytest.approx(
                         expected_value, rel=1e-6
                     ), case["id"]
@@ -221,23 +219,24 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
                 ExportPbpkScenarioInputRequest(**export_kwargs),
                 DefaultsRegistry.load(),
             )
-            assert exported.dose_magnitude == pytest.approx(
-                expected["dose_magnitude"], rel=1e-6
-            ), case["id"]
+            assert exported.dose_magnitude == pytest.approx(expected["dose_magnitude"], rel=1e-6), (
+                case["id"]
+            )
             assert exported.dose_unit.value == expected["dose_unit"], case["id"]
             assert exported.timing_pattern == expected["timing_pattern"], case["id"]
-            assert exported.population_context.population_group == expected["population_context"][
-                "population_group"
-            ], case["id"]
+            assert (
+                exported.population_context.population_group
+                == expected["population_context"]["population_group"]
+            ), case["id"]
             assert exported.population_context.body_weight_kg == pytest.approx(
                 expected["population_context"]["body_weight_kg"], rel=1e-6
             ), case["id"]
             assert exported.population_context.region == expected["population_context"]["region"], (
                 case["id"]
             )
-            assert len(exported.supporting_assumption_names) == expected[
-                "supporting_assumption_count"
-            ], case["id"]
+            assert (
+                len(exported.supporting_assumption_names) == expected["supporting_assumption_count"]
+            ), case["id"]
             if "transient_concentration_profile" in expected:
                 assert [
                     item.model_dump(mode="json", by_alias=True)
@@ -259,46 +258,50 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
             assert payload["bundle"]["modelType"] == expected["model_type"], case["id"]
             expected_run_id = f"{source_scenario.scenario_id}-external-context"
             assert payload["bundle"]["runId"] == expected_run_id, case["id"]
-            assert payload["bundle"]["assessmentContext"]["contextOfUse"] == expected[
-                "context_of_use"
-            ], case["id"]
+            assert (
+                payload["bundle"]["assessmentContext"]["contextOfUse"] == expected["context_of_use"]
+            ), case["id"]
             assert payload["bundle"]["assessmentContext"]["doseScenario"]["scenarioId"] == (
                 source_scenario.scenario_id
             ), case["id"]
             assert payload["bundle"]["assessmentContext"]["doseScenario"][
                 "bodyWeightKg"
             ] == pytest.approx(expected["body_weight_kg"], rel=1e-6), case["id"]
-            assert payload["bundle"]["chemicalIdentity"]["preferredName"] == expected[
-                "preferred_name"
-            ], case["id"]
-            assert sorted(payload["bundle"]["supportingHandoffs"]) == expected[
-                "supporting_handoff_keys"
-            ], case["id"]
-            assert payload["bundle"]["supportingHandoffs"]["pbpkScenarioInput"][
-                "schema_version"
-            ] == expected["pbpk_scenario_schema_version"], case["id"]
-            assert payload["requestPayload"]["sourcePlatform"] == expected["source_platform"], (
+            assert (
+                payload["bundle"]["chemicalIdentity"]["preferredName"] == expected["preferred_name"]
+            ), case["id"]
+            assert (
+                sorted(payload["bundle"]["supportingHandoffs"])
+                == expected["supporting_handoff_keys"]
+            ), case["id"]
+            assert (
+                payload["bundle"]["supportingHandoffs"]["pbpkScenarioInput"]["schema_version"]
+                == expected["pbpk_scenario_schema_version"]
+            ), case["id"]
+            assert payload["requestPayload"]["sourcePlatform"] == expected["source_platform"], case[
+                "id"
+            ]
+            assert payload["requestPayload"]["comparisonMetric"] == expected["comparison_metric"], (
                 case["id"]
             )
-            assert payload["requestPayload"]["comparisonMetric"] == expected[
-                "comparison_metric"
-            ], case["id"]
             assert payload["toolCall"]["toolName"] == expected["ingest_tool_name"], case["id"]
-            assert payload["toolCall"]["arguments"]["sourcePlatform"] == expected[
-                "source_platform"
-            ], case["id"]
-            assert payload["toxclawModuleParams"]["ingestToolName"] == expected[
-                "ingest_tool_name"
-            ], case["id"]
-            assert payload["compatibilityReport"]["target_tool"] == expected[
-                "compatibility_target"
-            ], case["id"]
-            assert payload["compatibilityReport"]["ready_for_external_pbpk_import"] is expected[
-                "compatibility_ready"
-            ], case["id"]
-            assert payload["compatibilityReport"]["missing_external_bundle_fields"] == expected[
-                "missing_external_bundle_fields"
-            ], case["id"]
+            assert (
+                payload["toolCall"]["arguments"]["sourcePlatform"] == expected["source_platform"]
+            ), case["id"]
+            assert (
+                payload["toxclawModuleParams"]["ingestToolName"] == expected["ingest_tool_name"]
+            ), case["id"]
+            assert (
+                payload["compatibilityReport"]["target_tool"] == expected["compatibility_target"]
+            ), case["id"]
+            assert (
+                payload["compatibilityReport"]["ready_for_external_pbpk_import"]
+                is expected["compatibility_ready"]
+            ), case["id"]
+            assert (
+                payload["compatibilityReport"]["missing_external_bundle_fields"]
+                == expected["missing_external_bundle_fields"]
+            ), case["id"]
             continue
 
         if case["kind"] == "scenario_package_probability":
@@ -312,9 +315,9 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
             assert summary.route.value == expected["route"], case["id"]
             assert summary.scenario_class.value == expected["scenario_class"], case["id"]
             assert summary.package_profile_id == expected["package_profile_id"], case["id"]
-            assert summary.archetype_library_set_id == expected["archetype_library_set_id"], (
-                case["id"]
-            )
+            assert summary.archetype_library_set_id == expected["archetype_library_set_id"], case[
+                "id"
+            ]
             assert summary.minimum_dose.value == pytest.approx(
                 expected["minimum_dose_value"], rel=1e-6
             ), case["id"]
