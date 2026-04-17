@@ -115,13 +115,17 @@ def test_benchmark_corpus_matches_engine_outputs() -> None:
             ), case["id"]
             assert scenario.external_dose.unit.value == expected["external_dose_unit"], case["id"]
             for metric_name, expected_value in expected["route_metrics"].items():
-                assert scenario.route_metrics[metric_name] == pytest.approx(
-                    expected_value, rel=1e-6
-                ), case["id"]
+                actual_value = scenario.route_metrics[metric_name]
+                if isinstance(expected_value, (int, float)):
+                    assert actual_value == pytest.approx(expected_value, rel=1e-6), case["id"]
+                else:
+                    assert actual_value == expected_value, case["id"]
             for assumption_name, expected_value in expected.get("assumptions", {}).items():
-                assert assumption_values(scenario)[assumption_name] == pytest.approx(
-                    expected_value, rel=1e-6
-                ), case["id"]
+                actual_value = assumption_values(scenario)[assumption_name]
+                if isinstance(expected_value, (int, float)):
+                    assert actual_value == pytest.approx(expected_value, rel=1e-6), case["id"]
+                else:
+                    assert actual_value == expected_value, case["id"]
             assert scenario.provenance.defaults_version == fixture["defaults_version"], case["id"]
             continue
 

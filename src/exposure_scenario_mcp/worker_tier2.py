@@ -2460,9 +2460,7 @@ def _match_art_determinant_template(
         template_id = str(template["template_id"])
         if template_id in {"generic_worker_spray_mist_v1", "generic_worker_vapor_task_v1"}:
             alignment_status = WorkerArtTemplateAlignmentStatus.HEURISTIC
-        elif product_subtypes and not subtype:
-            alignment_status = WorkerArtTemplateAlignmentStatus.PARTIAL
-        elif workplace_tokens and not workplace_hit:
+        elif (product_subtypes and not subtype) or (workplace_tokens and not workplace_hit):
             alignment_status = WorkerArtTemplateAlignmentStatus.PARTIAL
         else:
             alignment_status = WorkerArtTemplateAlignmentStatus.ALIGNED

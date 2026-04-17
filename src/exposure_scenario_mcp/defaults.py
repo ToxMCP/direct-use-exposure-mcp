@@ -417,7 +417,7 @@ class DefaultsRegistry:
                 "air_exchange_rate_per_hour": float(entry["air_exchange_rate_per_hour"]),
                 "exposure_duration_hours": float(entry["exposure_duration_hours"]),
             }
-            return values, {name: source for name in values}
+            return values, dict.fromkeys(values, source)
 
         global_entry = entry["global"]
         region_key = region.lower()
@@ -612,11 +612,11 @@ class DefaultsRegistry:
         if vapor_pressure_mmhg is not None:
             best_match: dict[str, Any] | None = None
             for candidate in section.get("vapor_pressure_bands_mmhg", []):
-                if vapor_pressure_mmhg >= float(candidate["minimum"]):
-                    if best_match is None or float(candidate["minimum"]) > float(
-                        best_match["minimum"]
-                    ):
-                        best_match = candidate
+                if vapor_pressure_mmhg >= float(candidate["minimum"]) and (
+                    best_match is None
+                    or float(candidate["minimum"]) > float(best_match["minimum"])
+                ):
+                    best_match = candidate
             if best_match is not None:
                 return float(best_match["value"]), self._source(best_match["source_id"])
 
@@ -873,10 +873,11 @@ class DefaultsRegistry:
             tokens = tuple(str(item).lower() for item in candidate_entry.get("tokens", []))
             if not tokens:
                 continue
-            if any(token in normalized_terms for token in tokens):
-                if float(candidate_entry["value"]) < float(entry["value"]):
-                    label = candidate_label
-                    entry = candidate_entry
+            if any(token in normalized_terms for token in tokens) and float(
+                candidate_entry["value"]
+            ) < float(entry["value"]):
+                label = candidate_label
+                entry = candidate_entry
         return label, float(entry["value"]), self._source(entry["source_id"])
 
     def worker_inhalation_capture_zone_alignment_factor(
@@ -907,10 +908,11 @@ class DefaultsRegistry:
             tokens = tuple(str(item).lower() for item in candidate_entry.get("tokens", []))
             if not tokens:
                 continue
-            if any(token in normalized_terms for token in tokens):
-                if float(candidate_entry["value"]) < float(entry["value"]):
-                    label = candidate_label
-                    entry = candidate_entry
+            if any(token in normalized_terms for token in tokens) and float(
+                candidate_entry["value"]
+            ) < float(entry["value"]):
+                label = candidate_label
+                entry = candidate_entry
         return label, float(entry["value"]), self._source(entry["source_id"])
 
     def worker_inhalation_capture_distance_alignment_factor(

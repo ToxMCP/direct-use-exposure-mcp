@@ -1476,9 +1476,12 @@ def _map_consexpo_product_subtype(record: ConsExpoEvidenceRecord) -> str | None:
         ):
             return "indoor_surface_insecticide"
 
-    if normalized_group in {"disinfecting_products", "disinfectants"}:
-        if "trigger" in normalized_subgroup and "surface" in normalized_subgroup:
-            return "surface_trigger_spray_disinfectant"
+    if (
+        normalized_group in {"disinfecting_products", "disinfectants"}
+        and "trigger" in normalized_subgroup
+        and "surface" in normalized_subgroup
+    ):
+        return "surface_trigger_spray_disinfectant"
 
     return None
 
@@ -2358,14 +2361,17 @@ def _assess_model_compatibility(
         return ("LOW", concerns) if concerns else ("HIGH", concerns)
 
     # ConsExpo uses well-mixed room models; mismatches with spatial inhalation models
-    if source_kind == "consexpo" and route == Route.INHALATION:
-        if request.scenario_class == ScenarioClass.INHALATION:
-            concerns.append(
-                "ConsExpo evidence assumes well-mixed room inhalation physics, but the "
-                "request uses the direct inhalation scenario class. Near-field/far-field "
-                "or source-geometry terms may be inconsistent."
-            )
-            return "LOW", concerns
+    if (
+        source_kind == "consexpo"
+        and route == Route.INHALATION
+        and request.scenario_class == ScenarioClass.INHALATION
+    ):
+        concerns.append(
+            "ConsExpo evidence assumes well-mixed room inhalation physics, but the "
+            "request uses the direct inhalation scenario class. Near-field/far-field "
+            "or source-geometry terms may be inconsistent."
+        )
+        return "LOW", concerns
 
     # SCCS is primarily dermal/oral guidance
     if source_kind in {"sccs", "sccs_opinion"} and route == Route.INHALATION:

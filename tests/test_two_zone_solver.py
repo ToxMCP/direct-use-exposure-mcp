@@ -391,17 +391,11 @@ def test_integral_exactness_against_numeric_quadrature() -> None:
     sum_ff = 0.0
     for i in range(n_steps + 1):
         t = i * dt
-        if i == 0 or i == n_steps:
-            weight = 0.5
-        else:
-            weight = 1.0
+        weight = 0.5 if i == 0 or i == n_steps else 1.0
         sum_nf += weight * c_nf
         sum_ff += weight * c_ff
         # Euler step for next concentration
-        if t < t_spray:
-            du = u
-        else:
-            du = (0.0, 0.0)
+        du = u if t < t_spray else (0.0, 0.0)
         c_nf_next = c_nf + (a11 * c_nf + a12 * c_ff + du[0]) * dt
         c_ff_next = c_ff + (a21 * c_nf + a22 * c_ff + du[1]) * dt
         c_nf, c_ff = c_nf_next, c_ff_next

@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.13.v33",
+  "defaults_version": "2026.04.15.v34",
   "cases": [
     {
       "id": "dermal_hand_cream_screening",
@@ -2408,6 +2408,137 @@
           "runoffFraction": 0.16,
           "maxRetainedLoadingMgPerCm2Day": 2.0
         }
+      }
+    },
+    {
+      "id": "inhalation_tier1_two_zone_steady_state_identity",
+      "kind": "scenario",
+      "description": "Deterministic two-zone steady-state identity check. With phi=0, beta=200, Q=100, G=100000, the analytic identities C_FF=G/Q and C_NF-C_FF=G/beta must hold to machine epsilon.",
+      "request": {
+        "schema_version": "inhalationTier1ScenarioRequest.v1",
+        "chemical_id": "BENCH_2Z_SS",
+        "chemical_name": "Benchmark Two-Zone Steady State",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark Steady State Spray",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 1.0,
+          "use_amount_per_event": 1000.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 50.0,
+          "air_exchange_rate_per_hour": 2.0,
+          "exposure_duration_hours": 10.0,
+          "aerosolized_fraction": 1.0
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68.0,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {},
+        "source_distance_m": 0.35,
+        "spray_duration_seconds": 36000.0,
+        "near_field_volume_m3": 1.0,
+        "airflow_directionality": "cross_draft",
+        "particle_size_regime": "coarse_spray",
+        "solverVariant": "two_zone_v1",
+        "interzonalFlowRateM3PerHour": 200.0,
+        "ventilationAllocationToNearFieldFraction": 0.0,
+        "nearFieldLossRatePerHour": 0.0,
+        "farFieldLossRatePerHour": 0.0
+      },
+      "expected": {
+        "external_dose_value": 191.74632354,
+        "external_dose_unit": "mg/kg-day",
+        "route_metrics": {
+          "far_field_end_concentration_mg_per_m3": 999.99999791,
+          "near_field_end_concentration_mg_per_m3": 1499.99999789,
+          "mass_balance_residual_mg": 0.0,
+          "solver_variant": "two_zone_v1",
+          "two_zone_solver_active": true
+        },
+        "assumptions": {
+          "interzonal_flow_rate_m3_per_hour": 200.0,
+          "room_ventilation_flow_rate_m3_per_hour": 100.0
+        }
+      }
+    },
+    {
+      "id": "inhalation_tier1_two_zone_pbpk_export",
+      "kind": "pbpk_export",
+      "description": "Two-zone Tier 1 deterministic solver must produce a valid transient concentration profile for PBPK export.",
+      "request": {
+        "schema_version": "inhalationTier1ScenarioRequest.v1",
+        "chemical_id": "BENCH_2Z_PBPK",
+        "chemical_name": "Benchmark Two-Zone PBPK",
+        "route": "inhalation",
+        "scenario_class": "inhalation",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Benchmark PBPK Spray",
+          "product_category": "household_cleaner",
+          "physical_form": "spray",
+          "application_method": "trigger_spray",
+          "retention_type": "surface_contact",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 12.0,
+          "use_amount_unit": "mL",
+          "use_events_per_day": 1,
+          "room_volume_m3": 25.0,
+          "air_exchange_rate_per_hour": 2.0,
+          "exposure_duration_hours": 0.5
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": 68.0,
+          "inhalation_rate_m3_per_hour": 0.9,
+          "region": "EU",
+          "demographic_tags": []
+        },
+        "assumption_overrides": {},
+        "source_distance_m": 0.35,
+        "spray_duration_seconds": 8.0,
+        "near_field_volume_m3": 2.0,
+        "airflow_directionality": "cross_draft",
+        "particle_size_regime": "coarse_spray",
+        "solverVariant": "two_zone_v1"
+      },
+      "regimen_name": "screening_daily_use",
+      "include_transient_concentration_profile": true,
+      "expected": {
+        "dose_magnitude": 0.03861385,
+        "dose_unit": "mg/kg-day",
+        "timing_pattern": "screening_daily_use",
+        "population_context": {
+          "population_group": "adult",
+          "body_weight_kg": 68.0,
+          "region": "EU"
+        },
+        "supporting_assumption_count": 51,
+        "transient_concentration_profile": [
+          {
+            "timeHours": 0.0,
+            "concentrationMgPerM3": 0.0
+          },
+          {
+            "timeHours": 0.25,
+            "concentrationMgPerM3": 5.83498146
+          },
+          {
+            "timeHours": 0.5,
+            "concentrationMgPerM3": 1.21493504
+          }
+        ]
       }
     }
   ]

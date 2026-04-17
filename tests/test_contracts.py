@@ -662,7 +662,7 @@ def test_defaults_curation_report_matches_schema_and_surface() -> None:
     )
     assert any(
         item["pathId"] == "room_volume_m3:product_subtype=air_space_insecticide"
-        and item["curationStatus"] == "heuristic"
+        and item["curationStatus"] == "curated"
         for item in report["entries"]
     )
     assert any(
@@ -677,7 +677,7 @@ def test_defaults_curation_report_matches_schema_and_surface() -> None:
     )
     assert any(
         item["pathId"] == "transfer_efficiency:application_method=wipe"
-        and item["curationStatus"] == "heuristic"
+        and item["curationStatus"] == "curated"
         for item in report["entries"]
     )
 

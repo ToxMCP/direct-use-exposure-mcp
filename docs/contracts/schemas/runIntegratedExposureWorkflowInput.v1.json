@@ -596,7 +596,7 @@
         "requestedTier": {
           "$ref": "#/$defs/TierLevel",
           "default": "tier_0",
-          "description": "Requested inhalation modeling tier. Tier 1 is reserved as a future contract hook and is not implemented in v0.1.0."
+          "description": "Requested inhalation modeling tier. Tier 0 uses the well-mixed room model. Tier 1 uses the deterministic near-field / far-field two-zone solver (explicit via solver_variant='two_zone_v1')."
         }
       },
       "required": [

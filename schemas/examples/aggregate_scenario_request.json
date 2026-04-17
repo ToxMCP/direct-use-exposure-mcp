@@ -1,0 +1,2410 @@
+{
+  "chemical_id": "DTXSID7020182",
+  "label": "Example co-use summary",
+  "aggregationMode": "external_summary",
+  "routeBioavailabilityAdjustments": [],
+  "component_scenarios": [
+    {
+      "schema_version": "exposureScenario.v1",
+      "scenario_id": "exp-example-dermal-001",
+      "chemical_id": "DTXSID7020182",
+      "chemical_name": "Example Solvent A",
+      "route": "dermal",
+      "scenario_class": "screening",
+      "external_dose": {
+        "metric": "normalized_external_dose",
+        "value": 1.125,
+        "unit": "mg/kg-day"
+      },
+      "product_use_profile": {
+        "schema_version": "productUseProfile.v1",
+        "product_name": "Example Hand Cream",
+        "product_subtype": null,
+        "intendedUseFamily": null,
+        "oralExposureContext": null,
+        "aerosolCarrierFamily": null,
+        "aerosolFormulationProfile": null,
+        "product_category": "personal_care",
+        "physical_form": "cream",
+        "application_method": "hand_application",
+        "retention_type": "leave_on",
+        "concentration_fraction": 0.02,
+        "use_amount_per_event": 1.5,
+        "use_amount_unit": "g",
+        "dosageUnitCountPerEvent": null,
+        "dosageUnitMassG": null,
+        "dosageUnitLabel": null,
+        "use_events_per_day": 3.0,
+        "density_g_per_ml": null,
+        "particleMaterialContext": null,
+        "transfer_efficiency": null,
+        "retention_factor": null,
+        "applicationStripLengthCm": null,
+        "applicationCoverageContext": null,
+        "ingestion_fraction": null,
+        "aerosolized_fraction": null,
+        "room_volume_m3": null,
+        "air_exchange_rate_per_hour": null,
+        "exposure_duration_hours": null
+      },
+      "population_profile": {
+        "schema_version": "populationProfile.v1",
+        "population_group": "adult",
+        "body_weight_kg": 80.0,
+        "inhalation_rate_m3_per_hour": null,
+        "exposed_surface_area_cm2": null,
+        "demographic_tags": [
+          "consumer",
+          "general_population"
+        ],
+        "region": "EU"
+      },
+      "route_metrics": {
+        "chemical_mass_mg_per_event": 30.0,
+        "external_mass_mg_per_day": 90.0,
+        "surface_loading_mg_per_cm2_day": 0.01578947,
+        "product_loading_mg_per_cm2_per_event": 0.26315789,
+        "product_mass_loading_mg_per_cm2_per_event": 0.26315789,
+        "chemical_loading_mg_per_cm2_per_event": 0.00526316
+      },
+      "assumptions": [
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "use_amount_per_event",
+          "value": 1.5,
+          "unit": "g",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Product amount per event was supplied directly in grams.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "variability",
+              "parameter_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "product_mass_g_per_event",
+          "value": 1.5,
+          "unit": "g",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Mass-based use amount already represents product mass per event.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "parameter_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "dermal",
+              "scenario_class": "screening",
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application",
+              "retention_type": "leave_on",
+              "population_group": "adult",
+              "demographic_tags": "consumer,general_population",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "concentration_fraction",
+          "value": 0.02,
+          "unit": "fraction",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Chemical fraction in the product was supplied explicitly.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "parameter_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "personal_care",
+              "physical_form": "cream"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "use_events_per_day",
+          "value": 3.0,
+          "unit": "events/day",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Use frequency was supplied explicitly.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "variability"
+            ],
+            "applicability_domain": {
+              "product_category": "personal_care",
+              "application_method": "hand_application",
+              "population_group": "adult"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "chemical_mass_mg_per_event",
+          "value": 30.0,
+          "unit": "mg/event",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Product mass per event multiplied by concentration fraction.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "parameter_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "dermal",
+              "scenario_class": "screening",
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application",
+              "retention_type": "leave_on",
+              "population_group": "adult",
+              "demographic_tags": "consumer,general_population",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "body_weight_kg",
+          "value": 80.0,
+          "unit": "kg",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "epa_exposure_factors_handbook_2011",
+            "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+            "locator": "docs://defaults-evidence-map#population-defaults",
+            "version": "2026.03.25.v6",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Resolved from population defaults for 'adult'.",
+          "governance": {
+            "evidence_grade": "grade_4",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [
+              "variability"
+            ],
+            "applicability_domain": {
+              "population_group": "adult",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "retention_factor",
+          "value": 1.0,
+          "unit": "fraction",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "screening_route_semantics_defaults_v1",
+            "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
+            "locator": "docs://defaults-evidence-map#screening-route-semantics",
+            "version": "2026.03.25.v6",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Retention factor defaulted from retention_type='leave_on'.",
+          "governance": {
+            "evidence_grade": "grade_2",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [
+              "parameter_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application",
+              "retention_type": "leave_on"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "transfer_efficiency",
+          "value": 1.0,
+          "unit": "fraction",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "rivm_cosmetics_hand_cream_direct_application_defaults_2025",
+            "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
+            "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
+            "version": "RIVM report 2025-0099 / 2025",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
+          "governance": {
+            "evidence_grade": "grade_3",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [
+              "parameter_uncertainty",
+              "model_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "external_mass_mg_per_day",
+          "value": 90.0,
+          "unit": "mg/day",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "model_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "dermal",
+              "scenario_class": "screening",
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application",
+              "retention_type": "leave_on",
+              "population_group": "adult",
+              "demographic_tags": "consumer,general_population",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "exposed_surface_area_cm2",
+          "value": 5700.0,
+          "unit": "cm2",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "epa_exposure_factors_handbook_2011",
+            "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+            "locator": "docs://defaults-evidence-map#population-defaults",
+            "version": "2026.03.25.v6",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Resolved from population defaults for 'adult'.",
+          "governance": {
+            "evidence_grade": "grade_4",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [
+              "variability",
+              "parameter_uncertainty"
+            ],
+            "applicability_domain": {
+              "population_group": "adult",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "product_mass_loading_mg_per_cm2_per_event",
+          "value": 0.2631578947368421,
+          "unit": "mg/cm2/event",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Product mass loading = product mass per event / exposed surface area.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "dermal",
+              "scenario_class": "screening",
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application",
+              "retention_type": "leave_on",
+              "population_group": "adult",
+              "demographic_tags": "consumer,general_population",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "chemical_loading_mg_per_cm2_per_event",
+          "value": 0.005263157894736842,
+          "unit": "mg/cm2/event",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Chemical loading = chemical mass per event / exposed surface area.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "dermal",
+              "scenario_class": "screening",
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application",
+              "retention_type": "leave_on",
+              "population_group": "adult",
+              "demographic_tags": "consumer,general_population",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "normalized_external_dose_mg_per_kg_day",
+          "value": 1.125,
+          "unit": "mg/kg-day",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Normalized external dose = external mass per day / body weight.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "model_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "dermal",
+              "scenario_class": "screening",
+              "product_category": "personal_care",
+              "physical_form": "cream",
+              "application_method": "hand_application",
+              "retention_type": "leave_on",
+              "population_group": "adult",
+              "demographic_tags": "consumer,general_population",
+              "region": "EU"
+            }
+          }
+        }
+      ],
+      "provenance": {
+        "schema_version": "provenanceBundle.v1",
+        "algorithm_id": "screening.external_dose.v1",
+        "plugin_id": "screening_scenario_plugin",
+        "plugin_version": "0.1.0",
+        "defaults_version": "2026.04.15.v34",
+        "defaults_hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30",
+        "generated_at": "2026-03-24T00:00:00+00:00",
+        "notes": [
+          "Deterministic-first v0.1 engine.",
+          "All defaults are surfaced through exposureAssumptionRecord entries."
+        ]
+      },
+      "limitations": [],
+      "quality_flags": [
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'body_weight_kg'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'retention_factor'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'transfer_efficiency'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'exposed_surface_area_cm2'."
+        },
+        {
+          "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
+          "severity": "warning",
+          "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
+        }
+      ],
+      "fit_for_purpose": {
+        "label": "deterministic_screening",
+        "suitable_for": [
+          "screening prioritization",
+          "PBPK scenario preparation",
+          "auditable scenario comparison"
+        ],
+        "not_suitable_for": [
+          "internal exposure estimation",
+          "final risk characterization",
+          "population-scale probabilistic inference"
+        ]
+      },
+      "tier_semantics": {
+        "tier_claimed": "tier_0",
+        "tier_earned": "tier_0",
+        "tier_rationale": "Route-specific external exposure is produced with deterministic screening equations and may rely on default factor packs.",
+        "assumption_checks_passed": true,
+        "required_caveats": [
+          "Interpret the result as an external dermal load at the skin boundary; it does not include dermal absorption."
+        ],
+        "forbidden_interpretations": [
+          "Do not interpret this screening result as absorbed dermal dose, systemic exposure, or a final risk conclusion."
+        ]
+      },
+      "uncertaintyTier": "tier_a",
+      "uncertaintyRegister": [
+        {
+          "entryId": "tier-a-model-boundary",
+          "title": "Tier A deterministic screening boundary remains in force",
+          "uncertaintyTypes": [
+            "model_uncertainty"
+          ],
+          "relatedAssumptions": [],
+          "quantificationStatus": "qualitative_only",
+          "biasDirection": "unknown",
+          "impactLevel": "high",
+          "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
+          "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
+        },
+        {
+          "entryId": "dependency-handling-required",
+          "title": "Known dependencies are preserved qualitatively, not numerically",
+          "uncertaintyTypes": [
+            "variability",
+            "scenario_uncertainty"
+          ],
+          "relatedAssumptions": [
+            "use_amount_per_event",
+            "use_events_per_day"
+          ],
+          "quantificationStatus": "qualitative_only",
+          "biasDirection": "unknown",
+          "impactLevel": "high",
+          "summary": "The output carries known dependence structures, but no joint sampling or correlation model is applied in Tier A.",
+          "recommendation": "Use scenario packaging for Tier B and reserve probabilistic propagation for later tiers with explicit joint models."
+        }
+      ],
+      "sensitivityRanking": [
+        {
+          "parameterName": "use_events_per_day",
+          "sourceKind": "user_input",
+          "baselineValue": 3.0,
+          "perturbedValue": 3.3,
+          "unit": "events/day",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.1125,
+          "percentDelta": 10.0,
+          "elasticity": 1.0,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "use_amount_per_event",
+          "sourceKind": "user_input",
+          "baselineValue": 1.5,
+          "perturbedValue": 1.65,
+          "unit": "g",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.1125,
+          "percentDelta": 10.0,
+          "elasticity": 1.0,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "transfer_efficiency",
+          "sourceKind": "default_registry",
+          "baselineValue": 1.0,
+          "perturbedValue": 1.1,
+          "unit": "fraction",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.1125,
+          "percentDelta": 10.0,
+          "elasticity": 1.0,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "retention_factor",
+          "sourceKind": "default_registry",
+          "baselineValue": 1.0,
+          "perturbedValue": 1.1,
+          "unit": "fraction",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.1125,
+          "percentDelta": 10.0,
+          "elasticity": 1.0,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "concentration_fraction",
+          "sourceKind": "user_input",
+          "baselineValue": 0.02,
+          "perturbedValue": 0.022,
+          "unit": "fraction",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.1125,
+          "percentDelta": 10.0,
+          "elasticity": 1.0,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "body_weight_kg",
+          "sourceKind": "default_registry",
+          "baselineValue": 80.0,
+          "perturbedValue": 88.0,
+          "unit": "kg",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": -0.10227273,
+          "percentDelta": -9.090909,
+          "elasticity": -0.909091,
+          "direction": "negative"
+        }
+      ],
+      "dependencyMetadata": [
+        {
+          "dependencyId": "use-intensity-cluster",
+          "title": "Use amount and frequency should be treated as a behavioral package",
+          "relationshipType": "behavioral",
+          "assumptionNames": [
+            "use_amount_per_event",
+            "use_events_per_day"
+          ],
+          "handlingStrategy": "scenario_packaged",
+          "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+        }
+      ],
+      "validationSummary": {
+        "validationStatus": "benchmark_regression",
+        "routeMechanism": "dermal_direct_application",
+        "benchmarkCaseIds": [
+          "dermal_capsicum_hydrogel_patch_label_amount_screening",
+          "dermal_density_precedence_volume_case",
+          "dermal_face_cream_sccs_screening",
+          "dermal_hand_cream_screening",
+          "dermal_herbal_recovery_patch_label_amount_screening",
+          "dermal_herbal_topical_spray_label_amount_screening",
+          "dermal_tcm_topical_balm_screening"
+        ],
+        "externalDatasetIds": [
+          "skin_protection_cream_dose_per_area_2012"
+        ],
+        "evidenceReadiness": "external_partial",
+        "heuristicAssumptionNames": [],
+        "validationGapIds": [
+          "dermal_validation_partial_only"
+        ],
+        "executedValidationChecks": [],
+        "highestSupportedUncertaintyTier": "tier_b",
+        "probabilisticEnablement": "blocked",
+        "notes": [
+          "Deterministic verification and benchmark regression are available for this domain.",
+          "External validation remains a documented future capability rather than an active gate.",
+          "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
+          "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
+        ]
+      },
+      "interpretation_notes": [
+        "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
+      ],
+      "tierUpgradeAdvisories": []
+    },
+    {
+      "schema_version": "exposureScenario.v1",
+      "scenario_id": "inh-example-room-001",
+      "chemical_id": "DTXSID7020182",
+      "chemical_name": "Example Solvent A",
+      "route": "inhalation",
+      "scenario_class": "inhalation",
+      "external_dose": {
+        "metric": "normalized_external_dose",
+        "value": 0.01813117,
+        "unit": "mg/kg-day"
+      },
+      "product_use_profile": {
+        "schema_version": "productUseProfile.v1",
+        "product_name": "Example Trigger Spray",
+        "product_subtype": null,
+        "intendedUseFamily": null,
+        "oralExposureContext": null,
+        "aerosolCarrierFamily": null,
+        "aerosolFormulationProfile": null,
+        "product_category": "household_cleaner",
+        "physical_form": "spray",
+        "application_method": "trigger_spray",
+        "retention_type": "surface_contact",
+        "concentration_fraction": 0.05,
+        "use_amount_per_event": 12.0,
+        "use_amount_unit": "mL",
+        "dosageUnitCountPerEvent": null,
+        "dosageUnitMassG": null,
+        "dosageUnitLabel": null,
+        "use_events_per_day": 1.0,
+        "density_g_per_ml": null,
+        "particleMaterialContext": null,
+        "transfer_efficiency": null,
+        "retention_factor": null,
+        "applicationStripLengthCm": null,
+        "applicationCoverageContext": null,
+        "ingestion_fraction": null,
+        "aerosolized_fraction": null,
+        "room_volume_m3": 25.0,
+        "air_exchange_rate_per_hour": null,
+        "exposure_duration_hours": 0.5
+      },
+      "population_profile": {
+        "schema_version": "populationProfile.v1",
+        "population_group": "adult",
+        "body_weight_kg": 68.0,
+        "inhalation_rate_m3_per_hour": 0.9,
+        "exposed_surface_area_cm2": null,
+        "demographic_tags": [],
+        "region": "EU"
+      },
+      "route_metrics": {
+        "chemical_mass_mg_per_event": 600.0,
+        "released_mass_mg_per_event": 120.0,
+        "initial_air_concentration_mg_per_m3": 4.8,
+        "uncapped_initial_air_concentration_mg_per_m3": 4.8,
+        "average_air_concentration_mg_per_m3": 2.73982158,
+        "uncapped_average_air_concentration_mg_per_m3": 2.73982158,
+        "air_concentration_at_event_end_mg_per_m3": 1.37522302,
+        "deposition_rate_per_hour": 0.5,
+        "total_loss_rate_per_hour": 2.5,
+        "room_air_decay_half_life_hours": 0.27725887,
+        "saturation_cap_mg_per_m3": 51694.90999577,
+        "saturation_cap_applied": false,
+        "vapor_pressure_mmhg": 8.0,
+        "molecular_weight_g_per_mol": 120.15,
+        "inhaled_mass_mg_per_day": 1.23291971,
+        "extrathoracic_swallow_fraction": 0.25,
+        "swallowed_extrathoracic_mass_mg_per_day": 0.30822993,
+        "lower_respiratory_inhaled_mass_mg_per_day": 0.92468978
+      },
+      "assumptions": [
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "use_amount_per_event",
+          "value": 12.0,
+          "unit": "mL",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Product amount per event was supplied in milliliters and converted with density.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "variability",
+              "parameter_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "density_g_per_ml",
+          "value": 1.0,
+          "unit": "g/mL",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "epa_exposure_factors_handbook_2011",
+            "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+            "locator": "docs://defaults-evidence-map#population-defaults",
+            "version": "2026.03.25.v6",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category, physical form, and product subtype when available.",
+          "governance": {
+            "evidence_grade": "grade_4",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [
+              "parameter_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "household_cleaner",
+              "physical_form": "spray"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "product_mass_g_per_event",
+          "value": 12.0,
+          "unit": "g",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Converted volume-based use amount into mass using density and, when needed, a bounded pressurized-aerosol interpretation factor.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "parameter_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "concentration_fraction",
+          "value": 0.05,
+          "unit": "fraction",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Chemical fraction in the product was supplied explicitly.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "parameter_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "household_cleaner",
+              "physical_form": "spray"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "use_events_per_day",
+          "value": 1.0,
+          "unit": "events/day",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Use frequency was supplied explicitly.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "variability"
+            ],
+            "applicability_domain": {
+              "product_category": "household_cleaner",
+              "application_method": "trigger_spray",
+              "population_group": "adult"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "chemical_mass_mg_per_event",
+          "value": 600.0,
+          "unit": "mg/event",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Product mass per event multiplied by concentration fraction.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "parameter_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "aerosolized_fraction",
+          "value": 0.2,
+          "unit": "fraction",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "peer_reviewed_cleaning_trigger_spray_airborne_fraction_2019",
+            "title": "Characterization of airborne particles from cleaning sprays and their corresponding respiratory deposition fractions",
+            "locator": "https://pubmed.ncbi.nlm.nih.gov/31361572/",
+            "version": "J Aerosol Sci. 2019",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Aerosolized fraction defaulted from application_method='trigger_spray' and product_category='household_cleaner'.",
+          "governance": {
+            "evidence_grade": "grade_3",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [
+              "parameter_uncertainty",
+              "model_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "room_volume_m3",
+          "value": 25.0,
+          "unit": "m3",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Room volume was supplied explicitly.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "variability",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "household_cleaner",
+              "application_method": "trigger_spray",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "air_exchange_rate_per_hour",
+          "value": 2.0,
+          "unit": "1/h",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "echa_consumer_inhalation_room_defaults",
+            "title": "ECHA consumer inhalation room-default benchmark",
+            "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
+            "version": "public ECHA dossier entry accessed 2026-03-24",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Air exchange rate defaulted from the shared inhalation defaults pack.",
+          "governance": {
+            "evidence_grade": "grade_3",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [
+              "variability",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "household_cleaner",
+              "application_method": "trigger_spray",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "exposure_duration_hours",
+          "value": 0.5,
+          "unit": "h",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "echa_consumer_inhalation_room_defaults",
+            "title": "ECHA consumer inhalation room-default benchmark",
+            "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
+            "version": "public ECHA dossier entry accessed 2026-03-24",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Exposure duration defaulted from the shared inhalation defaults pack.",
+          "governance": {
+            "evidence_grade": "grade_3",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [
+              "variability",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "product_category": "household_cleaner",
+              "application_method": "trigger_spray",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "inhalation_rate_m3_per_hour",
+          "value": 0.9,
+          "unit": "m3/h",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Inhalation rate was supplied explicitly.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "variability"
+            ],
+            "applicability_domain": {
+              "population_group": "adult",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "body_weight_kg",
+          "value": 68.0,
+          "unit": "kg",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Body weight was supplied explicitly for dose normalization.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [
+              "variability"
+            ],
+            "applicability_domain": {
+              "population_group": "adult",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "vapor_pressure_mmhg",
+          "value": 8.0,
+          "unit": "mmHg",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Vapor pressure was supplied explicitly for bounded volatility-aware inhalation screening.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "molecular_weight_g_per_mol",
+          "value": 120.15,
+          "unit": "g/mol",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Molecular weight was supplied explicitly for bounded volatility-aware inhalation screening.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "log_kow",
+          "value": 2.1,
+          "unit": "log10",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "logKow was supplied explicitly for chemistry-aware screening context.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "water_solubility_mg_per_l",
+          "value": 950.0,
+          "unit": "mg/L",
+          "source_kind": "user_input",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "explicit_user_input",
+          "default_applied": false,
+          "rationale": "Water solubility was supplied explicitly for chemistry-aware screening context.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "explicit_input",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "user_asserted",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "deposition_rate_per_hour",
+          "value": 0.5,
+          "unit": "1/h",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "echa_consumer_inhalation_room_defaults",
+            "title": "ECHA consumer inhalation room-default benchmark",
+            "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
+            "version": "public ECHA dossier entry accessed 2026-03-24",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
+          "governance": {
+            "evidence_grade": "grade_3",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "saturation_cap_reference_temperature_c",
+          "value": 25.0,
+          "unit": "C",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "inhalation_volatility_saturation_cap_policy_2026",
+            "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
+            "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+            "version": "2026.04.11.v1",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Volatility saturation cap uses the governed room-temperature screening policy.",
+          "governance": {
+            "evidence_grade": "grade_2",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "saturation_cap_mg_per_m3",
+          "value": 51694.90999577034,
+          "unit": "mg/m3",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "inhalation_volatility_saturation_cap_policy_2026",
+            "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
+            "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+            "version": "2026.04.11.v1",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Thermodynamic saturation ceiling derived from vapor pressure, molecular weight, and the governed room-temperature policy.",
+          "governance": {
+            "evidence_grade": "grade_2",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "extrathoracic_swallow_fraction",
+          "value": 0.25,
+          "unit": "fraction",
+          "source_kind": "default_registry",
+          "source": {
+            "source_id": "inhalation_extrathoracic_oral_handoff_heuristics_2026",
+            "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
+            "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
+            "version": "2026.04.12.v1",
+            "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          },
+          "confidence": "registry_default",
+          "default_applied": true,
+          "rationale": "Extrathoracic swallowed fraction defaulted from the bounded spray physiology handoff pack.",
+          "governance": {
+            "evidence_grade": "grade_2",
+            "evidence_basis": "curated_default",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "in_domain",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "released_mass_mg_per_event",
+          "value": 120.0,
+          "unit": "mg/event",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Released mass = chemical mass per event x aerosolized fraction.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "model_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "total_loss_rate_per_hour",
+          "value": 2.5,
+          "unit": "1/h",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Total room-air loss rate = air exchange rate + deposition sink.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "average_air_concentration_mg_per_m3",
+          "value": 2.7398215800568697,
+          "unit": "mg/m3",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Average air concentration derived from a well-mixed room model with bounded air exchange and deposition removal.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "model_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "uncapped_average_air_concentration_mg_per_m3",
+          "value": 2.7398215800568697,
+          "unit": "mg/m3",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Uncapped room-average air concentration before any volatility saturation cap is applied.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "initial_air_concentration_mg_per_m3",
+          "value": 4.8,
+          "unit": "mg/m3",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Initial room concentration immediately after release in the well-mixed single-zone model.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "uncapped_initial_air_concentration_mg_per_m3",
+          "value": 4.8,
+          "unit": "mg/m3",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Uncapped initial room concentration before any volatility saturation cap is applied.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "air_concentration_at_event_end_mg_per_m3",
+          "value": 1.3752230249289124,
+          "unit": "mg/m3",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "End-of-window room concentration after first-order air exchange and deposition removal in the well-mixed single-zone model.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "room_air_decay_half_life_hours",
+          "value": 0.2772588722239781,
+          "unit": "h",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Room-air decay half-life implied by air exchange plus the bounded deposition sink in the well-mixed single-zone model.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "saturation_cap_applied",
+          "value": false,
+          "unit": null,
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Whether the volatility saturation cap constrained one or more modeled Tier 0 room-air concentrations.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "inhaled_mass_mg_per_day",
+          "value": 1.2329197110255914,
+          "unit": "mg/day",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Inhaled mass = average concentration x inhalation rate x event duration x events/day.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "model_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "swallowed_extrathoracic_mass_mg_per_day",
+          "value": 0.30822992775639785,
+          "unit": "mg/day",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Extrathoracic swallowed mass per day derived from the bounded swallowed fraction applied to the screening inhaled mass.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "lower_respiratory_inhaled_mass_mg_per_day",
+          "value": 0.9246897832691936,
+          "unit": "mg/day",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Lower-respiratory inhaled mass per day after subtracting the bounded extrathoracic swallowed share from the screening inhaled mass.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        },
+        {
+          "schema_version": "exposureAssumptionRecord.v1",
+          "name": "normalized_external_dose_mg_per_kg_day",
+          "value": 0.01813117222096458,
+          "unit": "mg/kg-day",
+          "source_kind": "derived",
+          "source": {
+            "source_id": "exposure_scenario_mcp",
+            "title": "Direct-Use Exposure MCP runtime",
+            "locator": "docs://algorithm-notes",
+            "version": "0.1.0",
+            "hash_sha256": null
+          },
+          "confidence": "deterministic_derived",
+          "default_applied": false,
+          "rationale": "Normalized external dose = inhaled mass per day / body weight.",
+          "governance": {
+            "evidence_grade": null,
+            "evidence_basis": "derived",
+            "default_visibility": "silent_traceable",
+            "applicability_status": "derived",
+            "uncertainty_types": [
+              "model_uncertainty",
+              "scenario_uncertainty"
+            ],
+            "applicability_domain": {
+              "route": "inhalation",
+              "scenario_class": "inhalation",
+              "product_category": "household_cleaner",
+              "physical_form": "spray",
+              "application_method": "trigger_spray",
+              "retention_type": "surface_contact",
+              "population_group": "adult",
+              "demographic_tags": "",
+              "region": "EU"
+            }
+          }
+        }
+      ],
+      "provenance": {
+        "schema_version": "provenanceBundle.v1",
+        "algorithm_id": "inhalation.room_well_mixed.v1",
+        "plugin_id": "inhalation_screening_plugin",
+        "plugin_version": "0.1.0",
+        "defaults_version": "2026.04.15.v34",
+        "defaults_hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30",
+        "generated_at": "2026-03-24T00:00:00+00:00",
+        "notes": [
+          "Deterministic-first v0.1 engine.",
+          "All defaults are surfaced through exposureAssumptionRecord entries."
+        ]
+      },
+      "limitations": [
+        {
+          "code": "extrathoracic_oral_handoff_screening",
+          "severity": "warning",
+          "message": "Spray inhalation includes a bounded extrathoracic swallowed-fraction estimate. This is not a full regional deposition model or an automatic oral handoff into a separate ingestion scenario."
+        },
+        {
+          "code": "breathing_zone_not_modeled",
+          "severity": "warning",
+          "message": "Tier-0 inhalation uses a well-mixed room average and does not resolve near-field breathing-zone peaks for spray events."
+        }
+      ],
+      "quality_flags": [
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'density_g_per_ml'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'aerosolized_fraction'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'air_exchange_rate_per_hour'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'exposure_duration_hours'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'deposition_rate_per_hour'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'saturation_cap_reference_temperature_c'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'saturation_cap_mg_per_m3'."
+        },
+        {
+          "code": "default_applied",
+          "severity": "info",
+          "message": "Default value applied for 'extrathoracic_swallow_fraction'."
+        },
+        {
+          "code": "tier_0_spray_screening",
+          "severity": "warning",
+          "message": "Spray event was evaluated with the Tier-0 well-mixed screening model; consider a near-field/far-field tier for directed or short-duration sprays."
+        }
+      ],
+      "fit_for_purpose": {
+        "label": "inhalation_screening",
+        "suitable_for": [
+          "screening prioritization",
+          "PBPK scenario preparation",
+          "auditable scenario comparison"
+        ],
+        "not_suitable_for": [
+          "internal exposure estimation",
+          "final risk characterization",
+          "population-scale probabilistic inference"
+        ]
+      },
+      "tier_semantics": {
+        "tier_claimed": "tier_0",
+        "tier_earned": "tier_0",
+        "tier_rationale": "Inhalation output uses a deterministic single-zone, well-mixed room model with first-order air exchange removal.",
+        "assumption_checks_passed": true,
+        "required_caveats": [
+          "Interpret the reported air concentration as a room-average screening value.",
+          "Air exchange and deposition are represented as bounded first-order loss terms rather than a full airflow or aerosol-dynamics treatment."
+        ],
+        "forbidden_interpretations": [
+          "Do not interpret this result as a breathing-zone peak concentration.",
+          "Do not treat directed or source-proximal spray events as near-field resolved.",
+          "Do not interpret the result as deposited dose, absorbed dose, or a final risk conclusion."
+        ]
+      },
+      "uncertaintyTier": "tier_a",
+      "uncertaintyRegister": [
+        {
+          "entryId": "tier-a-model-boundary",
+          "title": "Tier A deterministic screening boundary remains in force",
+          "uncertaintyTypes": [
+            "model_uncertainty"
+          ],
+          "relatedAssumptions": [],
+          "quantificationStatus": "qualitative_only",
+          "biasDirection": "unknown",
+          "impactLevel": "high",
+          "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
+          "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
+        },
+        {
+          "entryId": "mechanistic-constraint-deposition-sink",
+          "title": "Bounded aerosol deposition sink constrains inhalation persistence",
+          "uncertaintyTypes": [
+            "model_uncertainty",
+            "parameter_uncertainty"
+          ],
+          "relatedAssumptions": [
+            "air_exchange_rate_per_hour",
+            "exposure_duration_hours"
+          ],
+          "quantificationStatus": "qualitative_only",
+          "biasDirection": "bidirectional",
+          "impactLevel": "medium",
+          "summary": "Inhalation persistence is reduced with a bounded first-order deposition sink rather than a full aerosol deposition and evaporation solver.",
+          "recommendation": "Treat deposition-sensitive spray outputs as physically bounded screening estimates and prefer benchmarked particle families."
+        },
+        {
+          "entryId": "mechanistic-constraint-extrathoracic-handoff",
+          "title": "Coarse-spray extrathoracic swallowing is represented as a bounded handoff",
+          "uncertaintyTypes": [
+            "model_uncertainty",
+            "parameter_uncertainty"
+          ],
+          "relatedAssumptions": [],
+          "quantificationStatus": "qualitative_only",
+          "biasDirection": "bidirectional",
+          "impactLevel": "high",
+          "summary": "A portion of spray mass is routed to extrathoracic swallowing with a bounded regime-dependent screening fraction.",
+          "recommendation": "Keep inhalation and incidental-oral interpretation linked for coarse sprays and avoid treating the handoff as a deposition dosimetry model."
+        },
+        {
+          "entryId": "limitation-extrathoracic_oral_handoff_screening",
+          "title": "Limitation `extrathoracic_oral_handoff_screening` remains unquantified",
+          "uncertaintyTypes": [
+            "model_uncertainty",
+            "parameter_uncertainty"
+          ],
+          "relatedAssumptions": [],
+          "quantificationStatus": "qualitative_only",
+          "biasDirection": "bidirectional",
+          "impactLevel": "medium",
+          "summary": "Spray inhalation includes a bounded extrathoracic swallowed-fraction estimate. This is not a full regional deposition model or an automatic oral handoff into a separate ingestion scenario.",
+          "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
+        },
+        {
+          "entryId": "limitation-breathing_zone_not_modeled",
+          "title": "Limitation `breathing_zone_not_modeled` remains unquantified",
+          "uncertaintyTypes": [
+            "model_uncertainty",
+            "scenario_uncertainty"
+          ],
+          "relatedAssumptions": [],
+          "quantificationStatus": "qualitative_only",
+          "biasDirection": "likely_underestimate",
+          "impactLevel": "high",
+          "summary": "Tier-0 inhalation uses a well-mixed room average and does not resolve near-field breathing-zone peaks for spray events.",
+          "recommendation": "Treat this as a model or scenario uncertainty and keep it visible in downstream interpretation."
+        },
+        {
+          "entryId": "dependency-handling-required",
+          "title": "Known dependencies are preserved qualitatively, not numerically",
+          "uncertaintyTypes": [
+            "variability",
+            "scenario_uncertainty"
+          ],
+          "relatedAssumptions": [
+            "aerosolized_fraction",
+            "air_exchange_rate_per_hour",
+            "application_method",
+            "body_weight_kg",
+            "exposure_duration_hours",
+            "inhalation_rate_m3_per_hour",
+            "physical_form",
+            "room_volume_m3",
+            "use_amount_per_event",
+            "use_events_per_day"
+          ],
+          "quantificationStatus": "qualitative_only",
+          "biasDirection": "unknown",
+          "impactLevel": "high",
+          "summary": "The output carries known dependence structures, but no joint sampling or correlation model is applied in Tier A.",
+          "recommendation": "Use scenario packaging for Tier B and reserve probabilistic propagation for later tiers with explicit joint models."
+        }
+      ],
+      "sensitivityRanking": [
+        {
+          "parameterName": "use_events_per_day",
+          "sourceKind": "user_input",
+          "baselineValue": 1.0,
+          "perturbedValue": 1.1,
+          "unit": "events/day",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.00181312,
+          "percentDelta": 10.000017,
+          "elasticity": 1.000002,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "use_amount_per_event",
+          "sourceKind": "user_input",
+          "baselineValue": 12.0,
+          "perturbedValue": 13.2,
+          "unit": "mL",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.00181312,
+          "percentDelta": 10.000017,
+          "elasticity": 1.000002,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "inhalation_rate_m3_per_hour",
+          "sourceKind": "user_input",
+          "baselineValue": 0.9,
+          "perturbedValue": 0.99,
+          "unit": "m3/h",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.00181312,
+          "percentDelta": 10.000017,
+          "elasticity": 1.000002,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "density_g_per_ml",
+          "sourceKind": "default_registry",
+          "baselineValue": 1.0,
+          "perturbedValue": 1.1,
+          "unit": "g/mL",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.00181312,
+          "percentDelta": 10.000017,
+          "elasticity": 1.000002,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "concentration_fraction",
+          "sourceKind": "user_input",
+          "baselineValue": 0.05,
+          "perturbedValue": 0.055,
+          "unit": "fraction",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.00181312,
+          "percentDelta": 10.000017,
+          "elasticity": 1.000002,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "aerosolized_fraction",
+          "sourceKind": "default_registry",
+          "baselineValue": 0.2,
+          "perturbedValue": 0.22,
+          "unit": "fraction",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": 0.00181312,
+          "percentDelta": 10.000017,
+          "elasticity": 1.000002,
+          "direction": "positive"
+        },
+        {
+          "parameterName": "room_volume_m3",
+          "sourceKind": "user_input",
+          "baselineValue": 25.0,
+          "perturbedValue": 27.5,
+          "unit": "m3",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": -0.00164829,
+          "percentDelta": -9.090919,
+          "elasticity": -0.909092,
+          "direction": "negative"
+        },
+        {
+          "parameterName": "body_weight_kg",
+          "sourceKind": "user_input",
+          "baselineValue": 68.0,
+          "perturbedValue": 74.8,
+          "unit": "kg",
+          "perturbationFraction": 0.1,
+          "responseMetric": "normalized_external_dose",
+          "absoluteDelta": -0.00164829,
+          "percentDelta": -9.090919,
+          "elasticity": -0.909092,
+          "direction": "negative"
+        }
+      ],
+      "dependencyMetadata": [
+        {
+          "dependencyId": "use-intensity-cluster",
+          "title": "Use amount and frequency should be treated as a behavioral package",
+          "relationshipType": "behavioral",
+          "assumptionNames": [
+            "use_amount_per_event",
+            "use_events_per_day"
+          ],
+          "handlingStrategy": "scenario_packaged",
+          "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
+        },
+        {
+          "dependencyId": "body-size-scaling-cluster",
+          "title": "Body size and physiology should scale together",
+          "relationshipType": "physiological",
+          "assumptionNames": [
+            "body_weight_kg",
+            "inhalation_rate_m3_per_hour"
+          ],
+          "handlingStrategy": "joint_model_required",
+          "note": "Future probabilistic tiers should use a joint physiological model rather than independent sampling."
+        },
+        {
+          "dependencyId": "room-context-cluster",
+          "title": "Room size, ventilation, and duration form one scenario context",
+          "relationshipType": "scenario_package",
+          "assumptionNames": [
+            "room_volume_m3",
+            "air_exchange_rate_per_hour",
+            "exposure_duration_hours"
+          ],
+          "handlingStrategy": "scenario_packaged",
+          "note": "Microenvironment parameters should be changed as coherent room archetypes instead of independent marginals."
+        },
+        {
+          "dependencyId": "spray-mechanism-cluster",
+          "title": "Aerosol release depends on spray mechanism and physical form",
+          "relationshipType": "mechanistic",
+          "assumptionNames": [
+            "aerosolized_fraction",
+            "application_method",
+            "physical_form"
+          ],
+          "handlingStrategy": "conditional_model_required",
+          "note": "Later uncertainty tiers should condition aerosol release on the spray mechanism rather than sample it independently."
+        }
+      ],
+      "validationSummary": {
+        "validationStatus": "benchmark_regression",
+        "routeMechanism": "inhalation_well_mixed_spray",
+        "benchmarkCaseIds": [
+          "inhalation_air_space_insecticide_aerosol_screening",
+          "inhalation_air_space_insecticide_aerosol_time_series_0p75h_2001",
+          "inhalation_air_space_insecticide_aerosol_time_series_6h_2001",
+          "inhalation_saturation_cap_stress_case",
+          "inhalation_trigger_spray_screening"
+        ],
+        "externalDatasetIds": [
+          "cleaning_trigger_spray_airborne_mass_fraction_2019",
+          "spray_cleaning_disinfection_decay_half_life_2023"
+        ],
+        "evidenceReadiness": "external_partial",
+        "heuristicAssumptionNames": [],
+        "validationGapIds": [
+          "tier0_spray_external_validation_partial_only"
+        ],
+        "executedValidationChecks": [
+          {
+            "checkId": "cleaning_trigger_spray_airborne_fraction_2019",
+            "title": "Trigger-spray cleaner airborne fraction vs ready-to-use cleaning spray study",
+            "referenceDatasetId": "cleaning_trigger_spray_airborne_mass_fraction_2019",
+            "status": "pass",
+            "comparedMetric": "aerosolized_fraction",
+            "observedValue": 0.2,
+            "referenceLower": 0.027,
+            "referenceUpper": 0.322,
+            "unit": "fraction",
+            "note": "Observed aerosolized_fraction is compared against the reported 2.7%-32.2% airborne-mass range for ready-to-use trigger cleaning sprays."
+          },
+          {
+            "checkId": "trigger_spray_aerosol_decay_half_life_2023",
+            "title": "Trigger-spray aerosol decay half-life vs climate-chamber spray study",
+            "referenceDatasetId": "spray_cleaning_disinfection_decay_half_life_2023",
+            "status": "pass",
+            "comparedMetric": "room_air_decay_half_life_hours",
+            "observedValue": 0.27725887,
+            "referenceLower": 0.125,
+            "referenceUpper": 0.375,
+            "unit": "h",
+            "note": "Observed room-air decay half-life is compared against a screening band centered on the reported 0.25 h average trigger-spray aerosol half-life from the 2023 cleaning and disinfection spray chamber study."
+          }
+        ],
+        "highestSupportedUncertaintyTier": "tier_b",
+        "probabilisticEnablement": "blocked",
+        "notes": [
+          "Deterministic verification and benchmark regression are available for this domain.",
+          "External validation remains a documented future capability rather than an active gate.",
+          "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
+          "Probabilistic outputs stay disabled until dependencies and validation evidence mature.",
+          "Executable validation checks were run because the scenario matched one or more published reference patterns."
+        ]
+      },
+      "interpretation_notes": [
+        "Deterministic inhalation screening scenario using a well-mixed room assumption.",
+        "Air exchange acts as a first-order removal term rather than a full CFD treatment."
+      ],
+      "tierUpgradeAdvisories": [
+        {
+          "advisoryId": "inh-tier1-upgrade-spray",
+          "route": "inhalation",
+          "currentTier": "tier_0",
+          "targetTier": "tier_1",
+          "status": "recommended_not_implemented",
+          "recommendedModelFamily": "inhalation_near_field_far_field_screening",
+          "triggerCodes": [
+            "spray_application",
+            "breathing_zone_peak_relevant",
+            "short_duration_event"
+          ],
+          "requiredInputs": [
+            {
+              "fieldName": "source_distance_m",
+              "description": "Distance from the breathing zone to the active spray source.",
+              "reason": "Near-field concentration depends on source-to-breathing-zone geometry."
+            },
+            {
+              "fieldName": "spray_duration_seconds",
+              "description": "Active spray emission duration for each event.",
+              "reason": "Short spray bursts can create transient peaks not captured by room averages."
+            },
+            {
+              "fieldName": "near_field_volume_m3",
+              "description": "Local near-field control volume around the user.",
+              "reason": "A Tier 1 split requires an explicit near-field compartment size."
+            },
+            {
+              "fieldName": "airflow_directionality",
+              "description": "Directional airflow or ventilation context near the source.",
+              "reason": "Local airflow governs coupling between near-field and far-field zones."
+            },
+            {
+              "fieldName": "particle_size_regime",
+              "description": "Spray droplet or aerosol size regime used for screening.",
+              "reason": "Spray behavior and local persistence depend on size-driven transport."
+            }
+          ],
+          "blockingGaps": [
+            "tier_1_validation_evidence_incomplete"
+          ],
+          "guidanceResource": "docs://inhalation-tier-upgrade-guide",
+          "rationale": "Spray events can produce short-duration breathing-zone peaks that are not resolved by the Tier-0 well-mixed room model."
+        }
+      ]
+    }
+  ]
+}

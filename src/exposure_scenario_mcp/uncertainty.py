@@ -586,9 +586,12 @@ def _mechanistic_constraint_entries(
         return [name for name in names if name in assumption_names]
 
     deposition_rate = route_metrics.get("deposition_rate_per_hour")
-    if scenario.route == Route.INHALATION and isinstance(deposition_rate, int | float):
-        if float(deposition_rate) > 0.0:
-            entries.append(
+    if (
+        scenario.route == Route.INHALATION
+        and isinstance(deposition_rate, int | float)
+        and float(deposition_rate) > 0.0
+    ):
+        entries.append(
                 UncertaintyRegisterEntry(
                     entry_id="mechanistic-constraint-deposition-sink",
                     title="Bounded aerosol deposition sink constrains inhalation persistence",
@@ -755,9 +758,12 @@ def _mechanistic_constraint_entries(
         )
 
     swallowed_mass = route_metrics.get("swallowed_extrathoracic_mass_mg_per_day")
-    if scenario.route == Route.INHALATION and isinstance(swallowed_mass, int | float):
-        if float(swallowed_mass) > 0.0:
-            entries.append(
+    if (
+        scenario.route == Route.INHALATION
+        and isinstance(swallowed_mass, int | float)
+        and float(swallowed_mass) > 0.0
+    ):
+        entries.append(
                 UncertaintyRegisterEntry(
                     entry_id="mechanistic-constraint-extrathoracic-handoff",
                     title=(

@@ -514,17 +514,17 @@
       "unit": "1/h",
       "source_kind": "default_registry",
       "source": {
-        "source_id": "inhalation_deposition_sink_heuristics_2026",
-        "title": "Direct-Use Exposure MCP heuristic inhalation deposition-sink defaults",
-        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
-        "version": "2026.04.11.v1",
-        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
+        "source_id": "echa_consumer_inhalation_room_defaults",
+        "title": "ECHA consumer inhalation room-default benchmark",
+        "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
+        "version": "public ECHA dossier entry accessed 2026-03-24",
+        "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
       },
       "confidence": "registry_default",
       "default_applied": true,
       "rationale": "Deposition sink defaulted from the bounded inhalation physical-caps pack.",
       "governance": {
-        "evidence_grade": "grade_2",
+        "evidence_grade": "grade_3",
         "evidence_basis": "curated_default",
         "default_visibility": "silent_traceable",
         "applicability_status": "in_domain",
@@ -554,7 +554,7 @@
         "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
+        "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -590,7 +590,7 @@
         "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
+        "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -655,20 +655,20 @@
       "unit": "g/mL",
       "source_kind": "default_registry",
       "source": {
-        "source_id": "heuristic_density_defaults_v1",
-        "title": "Direct-Use Exposure MCP heuristic density screening defaults",
-        "locator": "docs://defaults-evidence-map#heuristic-density-defaults",
+        "source_id": "epa_exposure_factors_handbook_2011",
+        "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+        "locator": "docs://defaults-evidence-map#population-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
+        "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
       },
       "confidence": "registry_default",
       "default_applied": true,
       "rationale": "Default density used for volume-to-mass conversion in screening mode, resolved from product category, physical form, and product subtype when available.",
       "governance": {
-        "evidence_grade": "grade_1",
-        "evidence_basis": "heuristic_default",
-        "default_visibility": "warn",
-        "applicability_status": "screening_extrapolation",
+        "evidence_grade": "grade_4",
+        "evidence_basis": "curated_default",
+        "default_visibility": "silent_traceable",
+        "applicability_status": "in_domain",
         "uncertainty_types": [
           "parameter_uncertainty"
         ],
@@ -795,17 +795,17 @@
       "unit": "fraction",
       "source_kind": "default_registry",
       "source": {
-        "source_id": "native_residual_air_reentry_emission_heuristics_2026",
-        "title": "Direct-Use Exposure MCP bounded treated-surface residual-air emission heuristics",
-        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
-        "version": "2026.04.11.v1",
-        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
+        "source_id": "rivm_general_fact_sheet_unspecified_room_defaults_2014",
+        "title": "RIVM General Fact Sheet unspecified-room defaults for consumer exposure",
+        "locator": "https://www.rivm.nl/bibliotheek/rapporten/090013003.pdf",
+        "version": "RIVM report 090013003 / 2014",
+        "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
       },
       "confidence": "registry_default",
       "default_applied": true,
       "rationale": "Treated-surface residue fraction defaulted from the bounded native residual-air reentry heuristics.",
       "governance": {
-        "evidence_grade": "grade_2",
+        "evidence_grade": "grade_3",
         "evidence_basis": "curated_default",
         "default_visibility": "silent_traceable",
         "applicability_status": "in_domain",
@@ -867,17 +867,17 @@
       "unit": "1/h",
       "source_kind": "default_registry",
       "source": {
-        "source_id": "native_residual_air_reentry_emission_heuristics_2026",
-        "title": "Direct-Use Exposure MCP bounded treated-surface residual-air emission heuristics",
-        "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
-        "version": "2026.04.11.v1",
-        "hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803"
+        "source_id": "rivm_general_fact_sheet_unspecified_room_defaults_2014",
+        "title": "RIVM General Fact Sheet unspecified-room defaults for consumer exposure",
+        "locator": "https://www.rivm.nl/bibliotheek/rapporten/090013003.pdf",
+        "version": "RIVM report 090013003 / 2014",
+        "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
       },
       "confidence": "registry_default",
       "default_applied": true,
       "rationale": "Treated-surface emission rate defaulted from the bounded native residual-air reentry heuristics.",
       "governance": {
-        "evidence_grade": "grade_2",
+        "evidence_grade": "grade_3",
         "evidence_basis": "curated_default",
         "default_visibility": "silent_traceable",
         "applicability_status": "in_domain",
@@ -1274,8 +1274,8 @@
     "algorithm_id": "inhalation.residual_air_reentry.v1",
     "plugin_id": "inhalation_residual_air_reentry_plugin",
     "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.13.v33",
-    "defaults_hash_sha256": "a145a889226dc33698da4f8f3982ca6c5f593f126f6950d1e31b3b4c77260803",
+    "defaults_version": "2026.04.15.v34",
+    "defaults_hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first v0.1 engine.",
@@ -1309,11 +1309,6 @@
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'density_g_per_ml'."
-    },
-    {
-      "code": "heuristic_default_source",
-      "severity": "warning",
-      "message": "Default value for 'density_g_per_ml' comes from a heuristic screening source rather than a curated factor pack."
     },
     {
       "code": "default_applied",
@@ -1409,21 +1404,6 @@
       "impactLevel": "high",
       "summary": "Residual-air reentry was derived from a bounded native treated-surface source term rather than a full indoor partitioning or furnishing uptake model.",
       "recommendation": "Use the native treated-surface branch for same-room screening and prefer measured reentry air or richer emission data when available."
-    },
-    {
-      "entryId": "assumption-density_g_per_ml",
-      "title": "Resolved assumption `density_g_per_ml` carries default uncertainty",
-      "uncertaintyTypes": [
-        "parameter_uncertainty"
-      ],
-      "relatedAssumptions": [
-        "density_g_per_ml"
-      ],
-      "quantificationStatus": "qualitative_only",
-      "biasDirection": "unknown",
-      "impactLevel": "high",
-      "summary": "`density_g_per_ml` resolved as `heuristic_default` with `screening_extrapolation` status.",
-      "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
     },
     {
       "entryId": "limitation-native_treated_surface_emission_bounded",
@@ -1619,12 +1599,9 @@
       "diazinon_office_postapplication_air_1990"
     ],
     "evidenceReadiness": "benchmark_plus_external_candidates",
-    "heuristicAssumptionNames": [
-      "density_g_per_ml"
-    ],
+    "heuristicAssumptionNames": [],
     "validationGapIds": [
-      "residual_air_reentry_validation_narrow_anchor_only",
-      "heuristic_defaults_active"
+      "residual_air_reentry_validation_narrow_anchor_only"
     ],
     "executedValidationChecks": [],
     "highestSupportedUncertaintyTier": "tier_b",

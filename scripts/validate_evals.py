@@ -16,7 +16,7 @@ CONTRACT_MANIFEST_PATH = REPO_ROOT / "docs" / "contracts" / "contract_manifest.j
 
 
 def _load_eval_answers() -> dict[str, str]:
-    tree = ET.parse(EVAL_PATH)
+    tree = ET.parse(EVAL_PATH)  # noqa: S314
     root = tree.getroot()
     answers: dict[str, str] = {}
     for qa in root.findall("qa_pair"):

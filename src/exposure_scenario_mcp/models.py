@@ -306,7 +306,7 @@ class AggregationMode(StrEnum):
 
 
 class ValidationCheckStatus(StrEnum):
-    PASS = "pass"
+    PASS = "pass"  # noqa: S105
     WARNING = "warning"
     OUT_OF_DOMAIN = "out_of_domain"
 
@@ -1744,8 +1744,9 @@ class InhalationScenarioRequest(ExposureScenarioRequest):
         default=TierLevel.TIER_0,
         alias="requestedTier",
         description=(
-            "Requested inhalation modeling tier. Tier 1 is reserved as a future contract "
-            "hook and is not implemented in v0.1.0."
+            "Requested inhalation modeling tier. Tier 0 uses the well-mixed room model. "
+            "Tier 1 uses the deterministic near-field / far-field two-zone solver "
+            "(explicit via solver_variant='two_zone_v1')."
         ),
     )
 
@@ -2180,7 +2181,31 @@ class ExposureScenario(StrictModel):
     product_use_profile: ProductUseProfile = Field(..., description="Resolved product-use profile.")
     population_profile: PopulationProfile = Field(..., description="Resolved population profile.")
     route_metrics: dict[str, ScalarValue] = Field(
-        default_factory=dict, description="Route-specific metrics."
+        default_factory=dict,
+        description="Route-specific metrics.",
+        json_schema_extra={
+            "properties": {
+                "two_zone_solver_active": {"type": "boolean"},
+                "solver_variant": {"type": "string"},
+                "near_field_peak_concentration_mg_per_m3": {"type": "number"},
+                "far_field_average_air_concentration_mg_per_m3": {"type": "number"},
+                "mass_balance_residual_mg": {"type": "number"},
+                "interzonal_flow_rate_m3_per_hour": {"type": "number"},
+                "far_field_volume_m3": {"type": "number"},
+                "average_air_concentration_mg_per_m3": {"type": "number"},
+                "external_mass_mg_per_day": {"type": "number"},
+                "chemical_mass_mg_per_event": {"type": "number"},
+                "released_mass_mg_per_event": {"type": "number"},
+                "effectiveWorkerControlFactor": {"type": "number"},
+                "baselineModelFamily": {"type": "string"},
+                "templateId": {"type": "string"},
+                "templateAlignmentStatus": {"type": "string"},
+                "controlProfile": {"type": "string"},
+                "activityClass": {"type": "string"},
+                "workerControlFactor": {"type": "number"},
+                "respiratoryProtectionFactor": {"type": "number"},
+            }
+        },
     )
     assumptions: list[ExposureAssumptionRecord] = Field(
         default_factory=list, description="Explicit parameter ledger."

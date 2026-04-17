@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import cast
 from uuid import uuid4
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry, instantiate_library_request
@@ -75,15 +76,13 @@ def _mechanistic_summary_entries(
                 },
             )
             bucket["count"] = int(bucket["count"]) + 1
-            related = bucket["related_assumptions"]
-            assert isinstance(related, set)
+            related = cast(set, bucket["related_assumptions"])
             related.update(entry.related_assumptions)
 
     entries: list[UncertaintyRegisterEntry] = []
     total = len(scenarios)
     for entry_id, payload in aggregated.items():
-        base_entry = payload["entry"]
-        assert isinstance(base_entry, UncertaintyRegisterEntry)
+        base_entry = cast(UncertaintyRegisterEntry, payload["entry"])
         related = sorted(str(item) for item in payload["related_assumptions"])
         count = int(payload["count"])
         entries.append(

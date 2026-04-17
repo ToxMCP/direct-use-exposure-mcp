@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from typing import cast
 from uuid import uuid4
 
 from exposure_scenario_mcp.defaults import DefaultsRegistry
@@ -15,6 +16,7 @@ from exposure_scenario_mcp.models import (
     PhyschemContext,
     ResidualAirReentryMode,
     Route,
+    ScalarValue,
     ScenarioClass,
     ScenarioDose,
     Severity,
@@ -1300,10 +1302,7 @@ def _can_auto_select_two_zone(
         return False
     if saturation_cap_applied:
         return False
-    if matched_profile is None or not matched_profile.supports_two_zone:
-        return False
-    # Migration lock stub – reserved for future benchmark-family locking.
-    return True
+    return matched_profile is not None and matched_profile.supports_two_zone
 
 
 def build_inhalation_tier_1_screening_scenario(
@@ -2322,7 +2321,7 @@ def build_inhalation_residual_air_reentry_scenario(
     )
 
     saturation_cap_applied = False
-    route_metrics: dict[str, float | str | bool] = {
+    route_metrics: dict[str, ScalarValue] = {
         "reentry_mode": request.reentry_mode.value,
         "deposition_rate_per_hour": round(deposition_rate, 8),
         "total_decay_rate_per_hour": round(total_decay_rate, 8),
@@ -2340,7 +2339,9 @@ def build_inhalation_residual_air_reentry_scenario(
     tier_rationale = ""
 
     if request.reentry_mode == ResidualAirReentryMode.ANCHORED_REENTRY:
-        reentry_start_concentration = request.air_concentration_at_reentry_start_mg_per_m3
+        reentry_start_concentration = cast(
+            float, request.air_concentration_at_reentry_start_mg_per_m3
+        )
         tracker.add_user(
             "air_concentration_at_reentry_start_mg_per_m3",
             reentry_start_concentration,

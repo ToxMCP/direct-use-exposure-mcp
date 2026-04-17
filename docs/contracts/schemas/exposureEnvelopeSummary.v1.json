@@ -571,6 +571,65 @@
             ]
           },
           "description": "Route-specific metrics.",
+          "properties": {
+            "two_zone_solver_active": {
+              "type": "boolean"
+            },
+            "solver_variant": {
+              "type": "string"
+            },
+            "near_field_peak_concentration_mg_per_m3": {
+              "type": "number"
+            },
+            "far_field_average_air_concentration_mg_per_m3": {
+              "type": "number"
+            },
+            "mass_balance_residual_mg": {
+              "type": "number"
+            },
+            "interzonal_flow_rate_m3_per_hour": {
+              "type": "number"
+            },
+            "far_field_volume_m3": {
+              "type": "number"
+            },
+            "average_air_concentration_mg_per_m3": {
+              "type": "number"
+            },
+            "external_mass_mg_per_day": {
+              "type": "number"
+            },
+            "chemical_mass_mg_per_event": {
+              "type": "number"
+            },
+            "released_mass_mg_per_event": {
+              "type": "number"
+            },
+            "effectiveWorkerControlFactor": {
+              "type": "number"
+            },
+            "baselineModelFamily": {
+              "type": "string"
+            },
+            "templateId": {
+              "type": "string"
+            },
+            "templateAlignmentStatus": {
+              "type": "string"
+            },
+            "controlProfile": {
+              "type": "string"
+            },
+            "activityClass": {
+              "type": "string"
+            },
+            "workerControlFactor": {
+              "type": "number"
+            },
+            "respiratoryProtectionFactor": {
+              "type": "number"
+            }
+          },
           "title": "Route Metrics",
           "type": "object"
         },

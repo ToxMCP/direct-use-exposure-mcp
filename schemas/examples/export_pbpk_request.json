@@ -1,67 +1,5 @@
 {
-  "schema_version": "toxclawEvidenceEnvelope.v1",
-  "source_module": "exposure_scenario_mcp",
-  "record_kind": "exposureScenario",
-  "chemical_id": "DTXSID7020182",
-  "context_of_use": "screening_prioritization",
-  "route": "dermal",
-  "scenario_class": "screening",
-  "summary": "dermal screening scenario with external dose 1.125 mg/kg-day",
-  "fit_for_purpose": {
-    "label": "deterministic_screening",
-    "suitable_for": [
-      "screening prioritization",
-      "PBPK scenario preparation",
-      "auditable scenario comparison"
-    ],
-    "not_suitable_for": [
-      "internal exposure estimation",
-      "final risk characterization",
-      "population-scale probabilistic inference"
-    ]
-  },
-  "limitations": [],
-  "quality_flags": [
-    {
-      "code": "default_applied",
-      "severity": "info",
-      "message": "Default value applied for 'body_weight_kg'."
-    },
-    {
-      "code": "default_applied",
-      "severity": "info",
-      "message": "Default value applied for 'retention_factor'."
-    },
-    {
-      "code": "default_applied",
-      "severity": "info",
-      "message": "Default value applied for 'transfer_efficiency'."
-    },
-    {
-      "code": "default_applied",
-      "severity": "info",
-      "message": "Default value applied for 'exposed_surface_area_cm2'."
-    },
-    {
-      "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
-      "severity": "warning",
-      "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
-    }
-  ],
-  "provenance": {
-    "schema_version": "provenanceBundle.v1",
-    "algorithm_id": "screening.external_dose.v1",
-    "plugin_id": "screening_scenario_plugin",
-    "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.15.v34",
-    "defaults_hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30",
-    "generated_at": "2026-03-24T00:00:00+00:00",
-    "notes": [
-      "Deterministic-first v0.1 engine.",
-      "All defaults are surfaced through exposureAssumptionRecord entries."
-    ]
-  },
-  "payload": {
+  "scenario": {
     "schema_version": "exposureScenario.v1",
     "scenario_id": "exp-example-dermal-001",
     "chemical_id": "DTXSID7020182",
@@ -77,10 +15,10 @@
       "schema_version": "productUseProfile.v1",
       "product_name": "Example Hand Cream",
       "product_subtype": null,
-      "intended_use_family": null,
-      "oral_exposure_context": null,
-      "aerosol_carrier_family": null,
-      "aerosol_formulation_profile": null,
+      "intendedUseFamily": null,
+      "oralExposureContext": null,
+      "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
       "product_category": "personal_care",
       "physical_form": "cream",
       "application_method": "hand_application",
@@ -88,16 +26,16 @@
       "concentration_fraction": 0.02,
       "use_amount_per_event": 1.5,
       "use_amount_unit": "g",
-      "dosage_unit_count_per_event": null,
-      "dosage_unit_mass_g": null,
-      "dosage_unit_label": null,
+      "dosageUnitCountPerEvent": null,
+      "dosageUnitMassG": null,
+      "dosageUnitLabel": null,
       "use_events_per_day": 3.0,
       "density_g_per_ml": null,
-      "particle_material_context": null,
+      "particleMaterialContext": null,
       "transfer_efficiency": null,
       "retention_factor": null,
-      "application_strip_length_cm": null,
-      "application_coverage_context": null,
+      "applicationStripLengthCm": null,
+      "applicationCoverageContext": null,
       "ingestion_fraction": null,
       "aerosolized_fraction": null,
       "room_volume_m3": null,
@@ -633,136 +571,136 @@
         "Do not interpret this screening result as absorbed dermal dose, systemic exposure, or a final risk conclusion."
       ]
     },
-    "uncertainty_tier": "tier_a",
-    "uncertainty_register": [
+    "uncertaintyTier": "tier_a",
+    "uncertaintyRegister": [
       {
-        "entry_id": "tier-a-model-boundary",
+        "entryId": "tier-a-model-boundary",
         "title": "Tier A deterministic screening boundary remains in force",
-        "uncertainty_types": [
+        "uncertaintyTypes": [
           "model_uncertainty"
         ],
-        "related_assumptions": [],
-        "quantification_status": "qualitative_only",
-        "bias_direction": "unknown",
-        "impact_level": "high",
+        "relatedAssumptions": [],
+        "quantificationStatus": "qualitative_only",
+        "biasDirection": "unknown",
+        "impactLevel": "high",
         "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
         "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
       },
       {
-        "entry_id": "dependency-handling-required",
+        "entryId": "dependency-handling-required",
         "title": "Known dependencies are preserved qualitatively, not numerically",
-        "uncertainty_types": [
+        "uncertaintyTypes": [
           "variability",
           "scenario_uncertainty"
         ],
-        "related_assumptions": [
+        "relatedAssumptions": [
           "use_amount_per_event",
           "use_events_per_day"
         ],
-        "quantification_status": "qualitative_only",
-        "bias_direction": "unknown",
-        "impact_level": "high",
+        "quantificationStatus": "qualitative_only",
+        "biasDirection": "unknown",
+        "impactLevel": "high",
         "summary": "The output carries known dependence structures, but no joint sampling or correlation model is applied in Tier A.",
         "recommendation": "Use scenario packaging for Tier B and reserve probabilistic propagation for later tiers with explicit joint models."
       }
     ],
-    "sensitivity_ranking": [
+    "sensitivityRanking": [
       {
-        "parameter_name": "use_events_per_day",
-        "source_kind": "user_input",
-        "baseline_value": 3.0,
-        "perturbed_value": 3.3,
+        "parameterName": "use_events_per_day",
+        "sourceKind": "user_input",
+        "baselineValue": 3.0,
+        "perturbedValue": 3.3,
         "unit": "events/day",
-        "perturbation_fraction": 0.1,
-        "response_metric": "normalized_external_dose",
-        "absolute_delta": 0.1125,
-        "percent_delta": 10.0,
+        "perturbationFraction": 0.1,
+        "responseMetric": "normalized_external_dose",
+        "absoluteDelta": 0.1125,
+        "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
       },
       {
-        "parameter_name": "use_amount_per_event",
-        "source_kind": "user_input",
-        "baseline_value": 1.5,
-        "perturbed_value": 1.65,
+        "parameterName": "use_amount_per_event",
+        "sourceKind": "user_input",
+        "baselineValue": 1.5,
+        "perturbedValue": 1.65,
         "unit": "g",
-        "perturbation_fraction": 0.1,
-        "response_metric": "normalized_external_dose",
-        "absolute_delta": 0.1125,
-        "percent_delta": 10.0,
+        "perturbationFraction": 0.1,
+        "responseMetric": "normalized_external_dose",
+        "absoluteDelta": 0.1125,
+        "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
       },
       {
-        "parameter_name": "transfer_efficiency",
-        "source_kind": "default_registry",
-        "baseline_value": 1.0,
-        "perturbed_value": 1.1,
+        "parameterName": "transfer_efficiency",
+        "sourceKind": "default_registry",
+        "baselineValue": 1.0,
+        "perturbedValue": 1.1,
         "unit": "fraction",
-        "perturbation_fraction": 0.1,
-        "response_metric": "normalized_external_dose",
-        "absolute_delta": 0.1125,
-        "percent_delta": 10.0,
+        "perturbationFraction": 0.1,
+        "responseMetric": "normalized_external_dose",
+        "absoluteDelta": 0.1125,
+        "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
       },
       {
-        "parameter_name": "retention_factor",
-        "source_kind": "default_registry",
-        "baseline_value": 1.0,
-        "perturbed_value": 1.1,
+        "parameterName": "retention_factor",
+        "sourceKind": "default_registry",
+        "baselineValue": 1.0,
+        "perturbedValue": 1.1,
         "unit": "fraction",
-        "perturbation_fraction": 0.1,
-        "response_metric": "normalized_external_dose",
-        "absolute_delta": 0.1125,
-        "percent_delta": 10.0,
+        "perturbationFraction": 0.1,
+        "responseMetric": "normalized_external_dose",
+        "absoluteDelta": 0.1125,
+        "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
       },
       {
-        "parameter_name": "concentration_fraction",
-        "source_kind": "user_input",
-        "baseline_value": 0.02,
-        "perturbed_value": 0.022,
+        "parameterName": "concentration_fraction",
+        "sourceKind": "user_input",
+        "baselineValue": 0.02,
+        "perturbedValue": 0.022,
         "unit": "fraction",
-        "perturbation_fraction": 0.1,
-        "response_metric": "normalized_external_dose",
-        "absolute_delta": 0.1125,
-        "percent_delta": 10.0,
+        "perturbationFraction": 0.1,
+        "responseMetric": "normalized_external_dose",
+        "absoluteDelta": 0.1125,
+        "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
       },
       {
-        "parameter_name": "body_weight_kg",
-        "source_kind": "default_registry",
-        "baseline_value": 80.0,
-        "perturbed_value": 88.0,
+        "parameterName": "body_weight_kg",
+        "sourceKind": "default_registry",
+        "baselineValue": 80.0,
+        "perturbedValue": 88.0,
         "unit": "kg",
-        "perturbation_fraction": 0.1,
-        "response_metric": "normalized_external_dose",
-        "absolute_delta": -0.10227273,
-        "percent_delta": -9.090909,
+        "perturbationFraction": 0.1,
+        "responseMetric": "normalized_external_dose",
+        "absoluteDelta": -0.10227273,
+        "percentDelta": -9.090909,
         "elasticity": -0.909091,
         "direction": "negative"
       }
     ],
-    "dependency_metadata": [
+    "dependencyMetadata": [
       {
-        "dependency_id": "use-intensity-cluster",
+        "dependencyId": "use-intensity-cluster",
         "title": "Use amount and frequency should be treated as a behavioral package",
-        "relationship_type": "behavioral",
-        "assumption_names": [
+        "relationshipType": "behavioral",
+        "assumptionNames": [
           "use_amount_per_event",
           "use_events_per_day"
         ],
-        "handling_strategy": "scenario_packaged",
+        "handlingStrategy": "scenario_packaged",
         "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
       }
     ],
-    "validation_summary": {
-      "validation_status": "benchmark_regression",
-      "route_mechanism": "dermal_direct_application",
-      "benchmark_case_ids": [
+    "validationSummary": {
+      "validationStatus": "benchmark_regression",
+      "routeMechanism": "dermal_direct_application",
+      "benchmarkCaseIds": [
         "dermal_capsicum_hydrogel_patch_label_amount_screening",
         "dermal_density_precedence_volume_case",
         "dermal_face_cream_sccs_screening",
@@ -771,17 +709,17 @@
         "dermal_herbal_topical_spray_label_amount_screening",
         "dermal_tcm_topical_balm_screening"
       ],
-      "external_dataset_ids": [
+      "externalDatasetIds": [
         "skin_protection_cream_dose_per_area_2012"
       ],
-      "evidence_readiness": "external_partial",
-      "heuristic_assumption_names": [],
-      "validation_gap_ids": [
+      "evidenceReadiness": "external_partial",
+      "heuristicAssumptionNames": [],
+      "validationGapIds": [
         "dermal_validation_partial_only"
       ],
-      "executed_validation_checks": [],
-      "highest_supported_uncertainty_tier": "tier_b",
-      "probabilistic_enablement": "blocked",
+      "executedValidationChecks": [],
+      "highestSupportedUncertaintyTier": "tier_b",
+      "probabilisticEnablement": "blocked",
       "notes": [
         "Deterministic verification and benchmark regression are available for this domain.",
         "External validation remains a documented future capability rather than an active gate.",
@@ -792,6 +730,8 @@
     "interpretation_notes": [
       "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
     ],
-    "tier_upgrade_advisories": []
-  }
+    "tierUpgradeAdvisories": []
+  },
+  "regimen_name": "screening_daily_use",
+  "includeTransientConcentrationProfile": false
 }

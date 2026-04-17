@@ -1833,7 +1833,7 @@ def test_global_inhalation_room_defaults_split_room_and_duration_sources() -> No
     )
     assert assumptions["exposure_duration_hours"].value == pytest.approx(0.5, rel=1e-6)
     assert assumptions["exposure_duration_hours"].source.source_id == (
-        "heuristic_time_limited_release_duration_defaults_v1"
+        "epa_exposure_factors_handbook_2011"
     )
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         4.61509298, rel=1e-6
@@ -2004,13 +2004,13 @@ def test_air_space_pesticide_aerosol_subtype_uses_consexpo_branches() -> None:
     assert assumptions["air_exchange_rate_per_hour"].value == pytest.approx(0.6, rel=1e-6)
     assert assumptions["exposure_duration_hours"].value == pytest.approx(4.0, rel=1e-6)
     assert assumptions["room_volume_m3"].source.source_id == (
-        "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026"
+        "rivm_general_fact_sheet_unspecified_room_defaults_2014"
     )
     assert assumptions["air_exchange_rate_per_hour"].source.source_id == (
-        "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026"
+        "rivm_general_fact_sheet_unspecified_room_defaults_2014"
     )
     assert assumptions["exposure_duration_hours"].source.source_id == (
-        "heuristic_consexpo_pest_control_air_space_room_defaults_bridge_2026"
+        "rivm_general_fact_sheet_unspecified_room_defaults_2014"
     )
     assert assumptions["aerosolized_fraction"].governance.applicability_domain == {
         "product_category": "pesticide",
@@ -2480,7 +2480,7 @@ def test_volume_based_cream_uses_physical_form_density_override() -> None:
     density = next(item for item in scenario.assumptions if item.name == "density_g_per_ml")
 
     assert density.value == pytest.approx(0.95, rel=1e-6)
-    assert density.source.source_id == "heuristic_density_defaults_v1"
+    assert density.source.source_id == "epa_exposure_factors_handbook_2011"
     assert density.governance.applicability_domain["physical_form"] == "cream"
     assert scenario.route_metrics["external_mass_mg_per_day"] == pytest.approx(190.0, rel=1e-6)
     assert scenario.external_dose.value == pytest.approx(2.375, rel=1e-6)

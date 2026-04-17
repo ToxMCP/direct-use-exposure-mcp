@@ -1,12 +1,5 @@
 {
-  "schema_version": "parameterBoundsSummary.v1",
-  "summaryId": "bnd-example-dermal-001",
-  "chemical_id": "DTXSID7020182",
-  "route": "dermal",
-  "scenarioClass": "screening",
-  "label": "Example dermal parameter bounds",
-  "uncertaintyTier": "tier_b",
-  "baseScenario": {
+  "baseline": {
     "schema_version": "exposureScenario.v1",
     "scenario_id": "exp-example-dermal-001",
     "chemical_id": "DTXSID7020182",
@@ -739,16 +732,16 @@
     ],
     "tierUpgradeAdvisories": []
   },
-  "minScenario": {
+  "comparison": {
     "schema_version": "exposureScenario.v1",
-    "scenario_id": "exp-example-bounds-min-001",
+    "scenario_id": "exp-example-dermal-refined-001",
     "chemical_id": "DTXSID7020182",
     "chemical_name": "Example Solvent A",
     "route": "dermal",
     "scenario_class": "screening",
     "external_dose": {
       "metric": "normalized_external_dose",
-      "value": 0.5,
+      "value": 0.585,
       "unit": "mg/kg-day"
     },
     "product_use_profile": {
@@ -763,7 +756,7 @@
       "physical_form": "cream",
       "application_method": "hand_application",
       "retention_type": "leave_on",
-      "concentration_fraction": 0.01,
+      "concentration_fraction": 0.02,
       "use_amount_per_event": 1.5,
       "use_amount_unit": "g",
       "dosageUnitCountPerEvent": null,
@@ -772,8 +765,8 @@
       "use_events_per_day": 3.0,
       "density_g_per_ml": null,
       "particleMaterialContext": null,
-      "transfer_efficiency": null,
-      "retention_factor": null,
+      "transfer_efficiency": 0.8,
+      "retention_factor": 0.65,
       "applicationStripLengthCm": null,
       "applicationCoverageContext": null,
       "ingestion_fraction": null,
@@ -785,7 +778,7 @@
     "population_profile": {
       "schema_version": "populationProfile.v1",
       "population_group": "adult",
-      "body_weight_kg": 90.0,
+      "body_weight_kg": 80.0,
       "inhalation_rate_m3_per_hour": null,
       "exposed_surface_area_cm2": null,
       "demographic_tags": [
@@ -795,12 +788,12 @@
       "region": "EU"
     },
     "route_metrics": {
-      "chemical_mass_mg_per_event": 15.0,
-      "external_mass_mg_per_day": 45.0,
-      "surface_loading_mg_per_cm2_day": 0.00789474,
+      "chemical_mass_mg_per_event": 30.0,
+      "external_mass_mg_per_day": 46.8,
+      "surface_loading_mg_per_cm2_day": 0.00821053,
       "product_loading_mg_per_cm2_per_event": 0.26315789,
       "product_mass_loading_mg_per_cm2_per_event": 0.26315789,
-      "chemical_loading_mg_per_cm2_per_event": 0.00263158
+      "chemical_loading_mg_per_cm2_per_event": 0.00526316
     },
     "assumptions": [
       {
@@ -875,7 +868,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "concentration_fraction",
-        "value": 0.01,
+        "value": 0.02,
         "unit": "fraction",
         "source_kind": "user_input",
         "source": {
@@ -937,7 +930,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "chemical_mass_mg_per_event",
-        "value": 15.0,
+        "value": 30.0,
         "unit": "mg/event",
         "source_kind": "derived",
         "source": {
@@ -975,24 +968,24 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "body_weight_kg",
-        "value": 90.0,
+        "value": 80.0,
         "unit": "kg",
-        "source_kind": "user_input",
+        "source_kind": "default_registry",
         "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
+          "source_id": "epa_exposure_factors_handbook_2011",
+          "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
+          "locator": "docs://defaults-evidence-map#population-defaults",
+          "version": "2026.03.25.v6",
+          "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
         },
-        "confidence": "explicit_user_input",
-        "default_applied": false,
-        "rationale": "Body weight was supplied explicitly for dose normalization.",
+        "confidence": "registry_default",
+        "default_applied": true,
+        "rationale": "Resolved from population defaults for 'adult'.",
         "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "explicit_input",
+          "evidence_grade": "grade_4",
+          "evidence_basis": "curated_default",
           "default_visibility": "silent_traceable",
-          "applicability_status": "user_asserted",
+          "applicability_status": "in_domain",
           "uncertainty_types": [
             "variability"
           ],
@@ -1005,24 +998,24 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "retention_factor",
-        "value": 1.0,
+        "value": 0.65,
         "unit": "fraction",
-        "source_kind": "default_registry",
+        "source_kind": "user_input",
         "source": {
-          "source_id": "screening_route_semantics_defaults_v1",
-          "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
-          "locator": "docs://defaults-evidence-map#screening-route-semantics",
-          "version": "2026.03.25.v6",
-          "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          "source_id": "exposure_scenario_mcp",
+          "title": "Direct-Use Exposure MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
         },
-        "confidence": "registry_default",
-        "default_applied": true,
-        "rationale": "Retention factor defaulted from retention_type='leave_on'.",
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Dermal retention factor was supplied explicitly.",
         "governance": {
-          "evidence_grade": "grade_2",
-          "evidence_basis": "curated_default",
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
           "default_visibility": "silent_traceable",
-          "applicability_status": "in_domain",
+          "applicability_status": "user_asserted",
           "uncertainty_types": [
             "parameter_uncertainty",
             "scenario_uncertainty"
@@ -1038,24 +1031,24 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "transfer_efficiency",
-        "value": 1.0,
+        "value": 0.8,
         "unit": "fraction",
-        "source_kind": "default_registry",
+        "source_kind": "user_input",
         "source": {
-          "source_id": "rivm_cosmetics_hand_cream_direct_application_defaults_2025",
-          "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
-          "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
-          "version": "RIVM report 2025-0099 / 2025",
-          "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
+          "source_id": "exposure_scenario_mcp",
+          "title": "Direct-Use Exposure MCP runtime",
+          "locator": "docs://algorithm-notes",
+          "version": "0.1.0",
+          "hash_sha256": null
         },
-        "confidence": "registry_default",
-        "default_applied": true,
-        "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
+        "confidence": "explicit_user_input",
+        "default_applied": false,
+        "rationale": "Transfer efficiency was supplied explicitly.",
         "governance": {
-          "evidence_grade": "grade_3",
-          "evidence_basis": "curated_default",
+          "evidence_grade": null,
+          "evidence_basis": "explicit_input",
           "default_visibility": "silent_traceable",
-          "applicability_status": "in_domain",
+          "applicability_status": "user_asserted",
           "uncertainty_types": [
             "parameter_uncertainty",
             "model_uncertainty"
@@ -1070,7 +1063,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "external_mass_mg_per_day",
-        "value": 45.0,
+        "value": 46.800000000000004,
         "unit": "mg/day",
         "source_kind": "derived",
         "source": {
@@ -1174,7 +1167,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "chemical_loading_mg_per_cm2_per_event",
-        "value": 0.002631578947368421,
+        "value": 0.005263157894736842,
         "unit": "mg/cm2/event",
         "source_kind": "derived",
         "source": {
@@ -1209,7 +1202,7 @@
       {
         "schema_version": "exposureAssumptionRecord.v1",
         "name": "normalized_external_dose_mg_per_kg_day",
-        "value": 0.5,
+        "value": 0.5850000000000001,
         "unit": "mg/kg-day",
         "source_kind": "derived",
         "source": {
@@ -1263,12 +1256,7 @@
       {
         "code": "default_applied",
         "severity": "info",
-        "message": "Default value applied for 'retention_factor'."
-      },
-      {
-        "code": "default_applied",
-        "severity": "info",
-        "message": "Default value applied for 'transfer_efficiency'."
+        "message": "Default value applied for 'body_weight_kg'."
       },
       {
         "code": "default_applied",
@@ -1348,7 +1336,7 @@
         "unit": "events/day",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.05,
+        "absoluteDelta": 0.0585,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1361,33 +1349,33 @@
         "unit": "g",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.05,
+        "absoluteDelta": 0.0585,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
       },
       {
         "parameterName": "transfer_efficiency",
-        "sourceKind": "default_registry",
-        "baselineValue": 1.0,
-        "perturbedValue": 1.1,
+        "sourceKind": "user_input",
+        "baselineValue": 0.8,
+        "perturbedValue": 0.88,
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.05,
+        "absoluteDelta": 0.0585,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
       },
       {
         "parameterName": "retention_factor",
-        "sourceKind": "default_registry",
-        "baselineValue": 1.0,
-        "perturbedValue": 1.1,
+        "sourceKind": "user_input",
+        "baselineValue": 0.65,
+        "perturbedValue": 0.715,
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.05,
+        "absoluteDelta": 0.0585,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
@@ -1395,753 +1383,25 @@
       {
         "parameterName": "concentration_fraction",
         "sourceKind": "user_input",
-        "baselineValue": 0.01,
-        "perturbedValue": 0.011,
+        "baselineValue": 0.02,
+        "perturbedValue": 0.022,
         "unit": "fraction",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.05,
+        "absoluteDelta": 0.0585,
         "percentDelta": 10.0,
         "elasticity": 1.0,
         "direction": "positive"
       },
       {
         "parameterName": "body_weight_kg",
-        "sourceKind": "user_input",
-        "baselineValue": 90.0,
-        "perturbedValue": 99.0,
-        "unit": "kg",
-        "perturbationFraction": 0.1,
-        "responseMetric": "normalized_external_dose",
-        "absoluteDelta": -0.04545455,
-        "percentDelta": -9.09091,
-        "elasticity": -0.909091,
-        "direction": "negative"
-      }
-    ],
-    "dependencyMetadata": [
-      {
-        "dependencyId": "use-intensity-cluster",
-        "title": "Use amount and frequency should be treated as a behavioral package",
-        "relationshipType": "behavioral",
-        "assumptionNames": [
-          "use_amount_per_event",
-          "use_events_per_day"
-        ],
-        "handlingStrategy": "scenario_packaged",
-        "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
-      }
-    ],
-    "validationSummary": {
-      "validationStatus": "benchmark_regression",
-      "routeMechanism": "dermal_direct_application",
-      "benchmarkCaseIds": [
-        "dermal_capsicum_hydrogel_patch_label_amount_screening",
-        "dermal_density_precedence_volume_case",
-        "dermal_face_cream_sccs_screening",
-        "dermal_hand_cream_screening",
-        "dermal_herbal_recovery_patch_label_amount_screening",
-        "dermal_herbal_topical_spray_label_amount_screening",
-        "dermal_tcm_topical_balm_screening"
-      ],
-      "externalDatasetIds": [
-        "skin_protection_cream_dose_per_area_2012"
-      ],
-      "evidenceReadiness": "external_partial",
-      "heuristicAssumptionNames": [],
-      "validationGapIds": [
-        "dermal_validation_partial_only"
-      ],
-      "executedValidationChecks": [],
-      "highestSupportedUncertaintyTier": "tier_b",
-      "probabilisticEnablement": "blocked",
-      "notes": [
-        "Deterministic verification and benchmark regression are available for this domain.",
-        "External validation remains a documented future capability rather than an active gate.",
-        "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
-        "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
-      ]
-    },
-    "interpretation_notes": [
-      "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
-    ],
-    "tierUpgradeAdvisories": []
-  },
-  "maxScenario": {
-    "schema_version": "exposureScenario.v1",
-    "scenario_id": "exp-example-bounds-max-001",
-    "chemical_id": "DTXSID7020182",
-    "chemical_name": "Example Solvent A",
-    "route": "dermal",
-    "scenario_class": "screening",
-    "external_dose": {
-      "metric": "normalized_external_dose",
-      "value": 2.25,
-      "unit": "mg/kg-day"
-    },
-    "product_use_profile": {
-      "schema_version": "productUseProfile.v1",
-      "product_name": "Example Hand Cream",
-      "product_subtype": null,
-      "intendedUseFamily": null,
-      "oralExposureContext": null,
-      "aerosolCarrierFamily": null,
-      "aerosolFormulationProfile": null,
-      "product_category": "personal_care",
-      "physical_form": "cream",
-      "application_method": "hand_application",
-      "retention_type": "leave_on",
-      "concentration_fraction": 0.03,
-      "use_amount_per_event": 1.5,
-      "use_amount_unit": "g",
-      "dosageUnitCountPerEvent": null,
-      "dosageUnitMassG": null,
-      "dosageUnitLabel": null,
-      "use_events_per_day": 3.0,
-      "density_g_per_ml": null,
-      "particleMaterialContext": null,
-      "transfer_efficiency": null,
-      "retention_factor": null,
-      "applicationStripLengthCm": null,
-      "applicationCoverageContext": null,
-      "ingestion_fraction": null,
-      "aerosolized_fraction": null,
-      "room_volume_m3": null,
-      "air_exchange_rate_per_hour": null,
-      "exposure_duration_hours": null
-    },
-    "population_profile": {
-      "schema_version": "populationProfile.v1",
-      "population_group": "adult",
-      "body_weight_kg": 60.0,
-      "inhalation_rate_m3_per_hour": null,
-      "exposed_surface_area_cm2": null,
-      "demographic_tags": [
-        "consumer",
-        "general_population"
-      ],
-      "region": "EU"
-    },
-    "route_metrics": {
-      "chemical_mass_mg_per_event": 45.0,
-      "external_mass_mg_per_day": 135.0,
-      "surface_loading_mg_per_cm2_day": 0.02368421,
-      "product_loading_mg_per_cm2_per_event": 0.26315789,
-      "product_mass_loading_mg_per_cm2_per_event": 0.26315789,
-      "chemical_loading_mg_per_cm2_per_event": 0.00789474
-    },
-    "assumptions": [
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "use_amount_per_event",
-        "value": 1.5,
-        "unit": "g",
-        "source_kind": "user_input",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "explicit_user_input",
-        "default_applied": false,
-        "rationale": "Product amount per event was supplied directly in grams.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "explicit_input",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "user_asserted",
-          "uncertainty_types": [
-            "variability",
-            "parameter_uncertainty"
-          ],
-          "applicability_domain": {
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "product_mass_g_per_event",
-        "value": 1.5,
-        "unit": "g",
-        "source_kind": "derived",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "deterministic_derived",
-        "default_applied": false,
-        "rationale": "Mass-based use amount already represents product mass per event.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "derived",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "derived",
-          "uncertainty_types": [
-            "parameter_uncertainty"
-          ],
-          "applicability_domain": {
-            "route": "dermal",
-            "scenario_class": "screening",
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application",
-            "retention_type": "leave_on",
-            "population_group": "adult",
-            "demographic_tags": "consumer,general_population",
-            "region": "EU"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "concentration_fraction",
-        "value": 0.03,
-        "unit": "fraction",
-        "source_kind": "user_input",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "explicit_user_input",
-        "default_applied": false,
-        "rationale": "Chemical fraction in the product was supplied explicitly.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "explicit_input",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "user_asserted",
-          "uncertainty_types": [
-            "parameter_uncertainty",
-            "scenario_uncertainty"
-          ],
-          "applicability_domain": {
-            "product_category": "personal_care",
-            "physical_form": "cream"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "use_events_per_day",
-        "value": 3.0,
-        "unit": "events/day",
-        "source_kind": "user_input",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "explicit_user_input",
-        "default_applied": false,
-        "rationale": "Use frequency was supplied explicitly.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "explicit_input",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "user_asserted",
-          "uncertainty_types": [
-            "variability"
-          ],
-          "applicability_domain": {
-            "product_category": "personal_care",
-            "application_method": "hand_application",
-            "population_group": "adult"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "chemical_mass_mg_per_event",
-        "value": 45.0,
-        "unit": "mg/event",
-        "source_kind": "derived",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "deterministic_derived",
-        "default_applied": false,
-        "rationale": "Product mass per event multiplied by concentration fraction.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "derived",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "derived",
-          "uncertainty_types": [
-            "parameter_uncertainty",
-            "scenario_uncertainty"
-          ],
-          "applicability_domain": {
-            "route": "dermal",
-            "scenario_class": "screening",
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application",
-            "retention_type": "leave_on",
-            "population_group": "adult",
-            "demographic_tags": "consumer,general_population",
-            "region": "EU"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "body_weight_kg",
-        "value": 60.0,
-        "unit": "kg",
-        "source_kind": "user_input",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "explicit_user_input",
-        "default_applied": false,
-        "rationale": "Body weight was supplied explicitly for dose normalization.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "explicit_input",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "user_asserted",
-          "uncertainty_types": [
-            "variability"
-          ],
-          "applicability_domain": {
-            "population_group": "adult",
-            "region": "EU"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "retention_factor",
-        "value": 1.0,
-        "unit": "fraction",
-        "source_kind": "default_registry",
-        "source": {
-          "source_id": "screening_route_semantics_defaults_v1",
-          "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
-          "locator": "docs://defaults-evidence-map#screening-route-semantics",
-          "version": "2026.03.25.v6",
-          "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
-        },
-        "confidence": "registry_default",
-        "default_applied": true,
-        "rationale": "Retention factor defaulted from retention_type='leave_on'.",
-        "governance": {
-          "evidence_grade": "grade_2",
-          "evidence_basis": "curated_default",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "in_domain",
-          "uncertainty_types": [
-            "parameter_uncertainty",
-            "scenario_uncertainty"
-          ],
-          "applicability_domain": {
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application",
-            "retention_type": "leave_on"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "transfer_efficiency",
-        "value": 1.0,
-        "unit": "fraction",
-        "source_kind": "default_registry",
-        "source": {
-          "source_id": "rivm_cosmetics_hand_cream_direct_application_defaults_2025",
-          "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
-          "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
-          "version": "RIVM report 2025-0099 / 2025",
-          "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
-        },
-        "confidence": "registry_default",
-        "default_applied": true,
-        "rationale": "Transfer efficiency defaulted from application_method='hand_application' and product_category='personal_care'.",
-        "governance": {
-          "evidence_grade": "grade_3",
-          "evidence_basis": "curated_default",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "in_domain",
-          "uncertainty_types": [
-            "parameter_uncertainty",
-            "model_uncertainty"
-          ],
-          "applicability_domain": {
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "external_mass_mg_per_day",
-        "value": 135.0,
-        "unit": "mg/day",
-        "source_kind": "derived",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "deterministic_derived",
-        "default_applied": false,
-        "rationale": "Dermal external mass = chemical mass per event x events/day x retention x transfer efficiency.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "derived",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "derived",
-          "uncertainty_types": [
-            "model_uncertainty",
-            "scenario_uncertainty"
-          ],
-          "applicability_domain": {
-            "route": "dermal",
-            "scenario_class": "screening",
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application",
-            "retention_type": "leave_on",
-            "population_group": "adult",
-            "demographic_tags": "consumer,general_population",
-            "region": "EU"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "exposed_surface_area_cm2",
-        "value": 5700.0,
-        "unit": "cm2",
-        "source_kind": "default_registry",
-        "source": {
-          "source_id": "epa_exposure_factors_handbook_2011",
-          "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
-          "locator": "docs://defaults-evidence-map#population-defaults",
-          "version": "2026.03.25.v6",
-          "hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30"
-        },
-        "confidence": "registry_default",
-        "default_applied": true,
-        "rationale": "Resolved from population defaults for 'adult'.",
-        "governance": {
-          "evidence_grade": "grade_4",
-          "evidence_basis": "curated_default",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "in_domain",
-          "uncertainty_types": [
-            "variability",
-            "parameter_uncertainty"
-          ],
-          "applicability_domain": {
-            "population_group": "adult",
-            "region": "EU"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "product_mass_loading_mg_per_cm2_per_event",
-        "value": 0.2631578947368421,
-        "unit": "mg/cm2/event",
-        "source_kind": "derived",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "deterministic_derived",
-        "default_applied": false,
-        "rationale": "Product mass loading = product mass per event / exposed surface area.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "derived",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "derived",
-          "uncertainty_types": [],
-          "applicability_domain": {
-            "route": "dermal",
-            "scenario_class": "screening",
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application",
-            "retention_type": "leave_on",
-            "population_group": "adult",
-            "demographic_tags": "consumer,general_population",
-            "region": "EU"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "chemical_loading_mg_per_cm2_per_event",
-        "value": 0.007894736842105263,
-        "unit": "mg/cm2/event",
-        "source_kind": "derived",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "deterministic_derived",
-        "default_applied": false,
-        "rationale": "Chemical loading = chemical mass per event / exposed surface area.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "derived",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "derived",
-          "uncertainty_types": [],
-          "applicability_domain": {
-            "route": "dermal",
-            "scenario_class": "screening",
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application",
-            "retention_type": "leave_on",
-            "population_group": "adult",
-            "demographic_tags": "consumer,general_population",
-            "region": "EU"
-          }
-        }
-      },
-      {
-        "schema_version": "exposureAssumptionRecord.v1",
-        "name": "normalized_external_dose_mg_per_kg_day",
-        "value": 2.25,
-        "unit": "mg/kg-day",
-        "source_kind": "derived",
-        "source": {
-          "source_id": "exposure_scenario_mcp",
-          "title": "Direct-Use Exposure MCP runtime",
-          "locator": "docs://algorithm-notes",
-          "version": "0.1.0",
-          "hash_sha256": null
-        },
-        "confidence": "deterministic_derived",
-        "default_applied": false,
-        "rationale": "Normalized external dose = external mass per day / body weight.",
-        "governance": {
-          "evidence_grade": null,
-          "evidence_basis": "derived",
-          "default_visibility": "silent_traceable",
-          "applicability_status": "derived",
-          "uncertainty_types": [
-            "model_uncertainty",
-            "scenario_uncertainty"
-          ],
-          "applicability_domain": {
-            "route": "dermal",
-            "scenario_class": "screening",
-            "product_category": "personal_care",
-            "physical_form": "cream",
-            "application_method": "hand_application",
-            "retention_type": "leave_on",
-            "population_group": "adult",
-            "demographic_tags": "consumer,general_population",
-            "region": "EU"
-          }
-        }
-      }
-    ],
-    "provenance": {
-      "schema_version": "provenanceBundle.v1",
-      "algorithm_id": "screening.external_dose.v1",
-      "plugin_id": "screening_scenario_plugin",
-      "plugin_version": "0.1.0",
-      "defaults_version": "2026.04.15.v34",
-      "defaults_hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30",
-      "generated_at": "2026-03-24T00:00:00+00:00",
-      "notes": [
-        "Deterministic-first v0.1 engine.",
-        "All defaults are surfaced through exposureAssumptionRecord entries."
-      ]
-    },
-    "limitations": [],
-    "quality_flags": [
-      {
-        "code": "default_applied",
-        "severity": "info",
-        "message": "Default value applied for 'retention_factor'."
-      },
-      {
-        "code": "default_applied",
-        "severity": "info",
-        "message": "Default value applied for 'transfer_efficiency'."
-      },
-      {
-        "code": "default_applied",
-        "severity": "info",
-        "message": "Default value applied for 'exposed_surface_area_cm2'."
-      },
-      {
-        "code": "dermal_surface_area_defaulted_hands_forearms_anchor",
-        "severity": "warning",
-        "message": "The defaulted exposed_surface_area_cm2 (5700 cm\u00b2 for adult) is a hands/forearms screening anchor, not total body surface area. For whole-body products (e.g., body lotion), override this value."
-      }
-    ],
-    "fit_for_purpose": {
-      "label": "deterministic_screening",
-      "suitable_for": [
-        "screening prioritization",
-        "PBPK scenario preparation",
-        "auditable scenario comparison"
-      ],
-      "not_suitable_for": [
-        "internal exposure estimation",
-        "final risk characterization",
-        "population-scale probabilistic inference"
-      ]
-    },
-    "tier_semantics": {
-      "tier_claimed": "tier_0",
-      "tier_earned": "tier_0",
-      "tier_rationale": "Route-specific external exposure is produced with deterministic screening equations and may rely on default factor packs.",
-      "assumption_checks_passed": true,
-      "required_caveats": [
-        "Interpret the result as an external dermal load at the skin boundary; it does not include dermal absorption."
-      ],
-      "forbidden_interpretations": [
-        "Do not interpret this screening result as absorbed dermal dose, systemic exposure, or a final risk conclusion."
-      ]
-    },
-    "uncertaintyTier": "tier_a",
-    "uncertaintyRegister": [
-      {
-        "entryId": "tier-a-model-boundary",
-        "title": "Tier A deterministic screening boundary remains in force",
-        "uncertaintyTypes": [
-          "model_uncertainty"
-        ],
-        "relatedAssumptions": [],
-        "quantificationStatus": "qualitative_only",
-        "biasDirection": "unknown",
-        "impactLevel": "high",
-        "summary": "The current result is governed as tier_a and tier_0; it is auditable but not probabilistic.",
-        "recommendation": "Use named scenario envelopes for Tier B refinement before attempting probabilistic propagation."
-      },
-      {
-        "entryId": "dependency-handling-required",
-        "title": "Known dependencies are preserved qualitatively, not numerically",
-        "uncertaintyTypes": [
-          "variability",
-          "scenario_uncertainty"
-        ],
-        "relatedAssumptions": [
-          "use_amount_per_event",
-          "use_events_per_day"
-        ],
-        "quantificationStatus": "qualitative_only",
-        "biasDirection": "unknown",
-        "impactLevel": "high",
-        "summary": "The output carries known dependence structures, but no joint sampling or correlation model is applied in Tier A.",
-        "recommendation": "Use scenario packaging for Tier B and reserve probabilistic propagation for later tiers with explicit joint models."
-      }
-    ],
-    "sensitivityRanking": [
-      {
-        "parameterName": "use_events_per_day",
-        "sourceKind": "user_input",
-        "baselineValue": 3.0,
-        "perturbedValue": 3.3,
-        "unit": "events/day",
-        "perturbationFraction": 0.1,
-        "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.225,
-        "percentDelta": 10.0,
-        "elasticity": 1.0,
-        "direction": "positive"
-      },
-      {
-        "parameterName": "use_amount_per_event",
-        "sourceKind": "user_input",
-        "baselineValue": 1.5,
-        "perturbedValue": 1.65,
-        "unit": "g",
-        "perturbationFraction": 0.1,
-        "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.225,
-        "percentDelta": 10.0,
-        "elasticity": 1.0,
-        "direction": "positive"
-      },
-      {
-        "parameterName": "transfer_efficiency",
         "sourceKind": "default_registry",
-        "baselineValue": 1.0,
-        "perturbedValue": 1.1,
-        "unit": "fraction",
-        "perturbationFraction": 0.1,
-        "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.225,
-        "percentDelta": 10.0,
-        "elasticity": 1.0,
-        "direction": "positive"
-      },
-      {
-        "parameterName": "retention_factor",
-        "sourceKind": "default_registry",
-        "baselineValue": 1.0,
-        "perturbedValue": 1.1,
-        "unit": "fraction",
-        "perturbationFraction": 0.1,
-        "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.225,
-        "percentDelta": 10.0,
-        "elasticity": 1.0,
-        "direction": "positive"
-      },
-      {
-        "parameterName": "concentration_fraction",
-        "sourceKind": "user_input",
-        "baselineValue": 0.03,
-        "perturbedValue": 0.033,
-        "unit": "fraction",
-        "perturbationFraction": 0.1,
-        "responseMetric": "normalized_external_dose",
-        "absoluteDelta": 0.225,
-        "percentDelta": 10.0,
-        "elasticity": 1.0,
-        "direction": "positive"
-      },
-      {
-        "parameterName": "body_weight_kg",
-        "sourceKind": "user_input",
-        "baselineValue": 60.0,
-        "perturbedValue": 66.0,
+        "baselineValue": 80.0,
+        "perturbedValue": 88.0,
         "unit": "kg",
         "perturbationFraction": 0.1,
         "responseMetric": "normalized_external_dose",
-        "absoluteDelta": -0.20454545,
+        "absoluteDelta": -0.05318182,
         "percentDelta": -9.090909,
         "elasticity": -0.909091,
         "direction": "negative"
@@ -2194,160 +1454,5 @@
       "Deterministic dermal screening scenario using explicit retention and transfer modifiers."
     ],
     "tierUpgradeAdvisories": []
-  },
-  "boundedParameters": [
-    {
-      "parameterName": "concentration_fraction",
-      "lowerValue": 0.01,
-      "upperValue": 0.03,
-      "unit": null,
-      "rationale": "Bound ingredient concentration between low and high plausible values."
-    },
-    {
-      "parameterName": "body_weight_kg",
-      "lowerValue": 60.0,
-      "upperValue": 90.0,
-      "unit": "kg",
-      "rationale": "Bound normalization by plausible adult body weights."
-    }
-  ],
-  "monotonicityChecks": [
-    {
-      "parameterName": "concentration_fraction",
-      "expectedDirection": "increase_increases_dose",
-      "lowerDose": 0.5625,
-      "upperDose": 1.6875,
-      "status": "pass",
-      "note": "Monotonicity check compares single-parameter lower and upper bounds against the deterministic base scenario."
-    },
-    {
-      "parameterName": "body_weight_kg",
-      "expectedDirection": "increase_decreases_dose",
-      "lowerDose": 1.5,
-      "upperDose": 1.0,
-      "status": "pass",
-      "note": "Monotonicity check compares single-parameter lower and upper bounds against the deterministic base scenario."
-    }
-  ],
-  "minDose": {
-    "metric": "normalized_external_dose",
-    "value": 0.5,
-    "unit": "mg/kg-day"
-  },
-  "maxDose": {
-    "metric": "normalized_external_dose",
-    "value": 2.25,
-    "unit": "mg/kg-day"
-  },
-  "uncertaintyRegister": [
-    {
-      "entryId": "bounds-summary-range",
-      "title": "Parameter-bounds summary is a deterministic bounded range",
-      "uncertaintyTypes": [
-        "parameter_uncertainty",
-        "scenario_uncertainty"
-      ],
-      "relatedAssumptions": [
-        "concentration_fraction",
-        "body_weight_kg"
-      ],
-      "quantificationStatus": "bounded",
-      "biasDirection": "bidirectional",
-      "impactLevel": "high",
-      "summary": "The summary propagates explicit lower and upper parameter bounds through the deterministic engine without assigning probabilities.",
-      "recommendation": "Do not interpret the resulting range as a confidence interval or population probability statement."
-    },
-    {
-      "entryId": "bound-concentration_fraction",
-      "title": "Bounded parameter `concentration_fraction` drives the summary",
-      "uncertaintyTypes": [
-        "parameter_uncertainty",
-        "scenario_uncertainty"
-      ],
-      "relatedAssumptions": [
-        "concentration_fraction"
-      ],
-      "quantificationStatus": "bounded",
-      "biasDirection": "bidirectional",
-      "impactLevel": "medium",
-      "summary": "`concentration_fraction` is bounded between 0.01 and 0.03.",
-      "recommendation": "Bound ingredient concentration between low and high plausible values."
-    },
-    {
-      "entryId": "bound-body_weight_kg",
-      "title": "Bounded parameter `body_weight_kg` drives the summary",
-      "uncertaintyTypes": [
-        "parameter_uncertainty",
-        "scenario_uncertainty"
-      ],
-      "relatedAssumptions": [
-        "body_weight_kg"
-      ],
-      "quantificationStatus": "bounded",
-      "biasDirection": "bidirectional",
-      "impactLevel": "medium",
-      "summary": "`body_weight_kg` is bounded between 60 and 90.",
-      "recommendation": "Bound normalization by plausible adult body weights."
-    }
-  ],
-  "dependencyMetadata": [
-    {
-      "dependencyId": "use-intensity-cluster",
-      "title": "Use amount and frequency should be treated as a behavioral package",
-      "relationshipType": "behavioral",
-      "assumptionNames": [
-        "use_amount_per_event",
-        "use_events_per_day"
-      ],
-      "handlingStrategy": "scenario_packaged",
-      "note": "Tier A/B keeps use amount and use frequency in named scenario packages instead of sampling them independently."
-    }
-  ],
-  "validationSummary": {
-    "validationStatus": "benchmark_regression",
-    "routeMechanism": "dermal_direct_application",
-    "benchmarkCaseIds": [
-      "dermal_capsicum_hydrogel_patch_label_amount_screening",
-      "dermal_density_precedence_volume_case",
-      "dermal_face_cream_sccs_screening",
-      "dermal_hand_cream_screening",
-      "dermal_herbal_recovery_patch_label_amount_screening",
-      "dermal_herbal_topical_spray_label_amount_screening",
-      "dermal_tcm_topical_balm_screening"
-    ],
-    "externalDatasetIds": [
-      "skin_protection_cream_dose_per_area_2012"
-    ],
-    "evidenceReadiness": "external_partial",
-    "heuristicAssumptionNames": [],
-    "validationGapIds": [
-      "dermal_validation_partial_only"
-    ],
-    "executedValidationChecks": [],
-    "highestSupportedUncertaintyTier": "tier_b",
-    "probabilisticEnablement": "blocked",
-    "notes": [
-      "Deterministic verification and benchmark regression are available for this domain.",
-      "External validation remains a documented future capability rather than an active gate.",
-      "Heuristic assumption names are emitted explicitly so evidence gaps stay attached to the scenario rather than hidden in source packs.",
-      "Probabilistic outputs stay disabled until dependencies and validation evidence mature."
-    ]
-  },
-  "provenance": {
-    "schema_version": "provenanceBundle.v1",
-    "algorithm_id": "uncertainty.bounds.v1",
-    "plugin_id": "parameter_bounds_service",
-    "plugin_version": "0.1.0",
-    "defaults_version": "2026.04.15.v34",
-    "defaults_hash_sha256": "0d29ef73a2450e454b32d11430becced0b3a38afce9f8bec169c27b6b0537a30",
-    "generated_at": "2026-03-24T00:00:00+00:00",
-    "notes": [
-      "Deterministic-first v0.1 engine.",
-      "All defaults are surfaced through exposureAssumptionRecord entries."
-    ]
-  },
-  "interpretation_notes": [
-    "This output is a bounded deterministic range, not a probabilistic interval.",
-    "Bounds are only as defensible as the supplied parameter ranges and route relevance."
-  ]
+  }
 }

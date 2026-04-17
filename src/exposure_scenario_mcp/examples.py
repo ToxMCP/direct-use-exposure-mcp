@@ -926,11 +926,14 @@ def build_examples() -> dict[str, dict]:
         airflow_directionality="cross_draft",
         particle_size_regime="coarse_spray",
     )
+    inhalation_tier1_request_two_zone = inhalation_tier1_request.model_copy(
+        update={"solver_variant": "two_zone_v1"}
+    )
     inhalation_tier1_scenario = _freeze_scenario(
         enrich_scenario_uncertainty(
             engine,
             build_inhalation_tier_1_screening_scenario(
-                inhalation_tier1_request,
+                inhalation_tier1_request_two_zone,
                 defaults_registry,
                 generated_at=EXAMPLE_GENERATED_AT,
             ),
@@ -949,51 +952,52 @@ def build_examples() -> dict[str, dict]:
         engine.build(refined_request),
         EXAMPLE_IDS["screening_dermal_refined_scenario"],
     )
+    envelope_input = BuildExposureEnvelopeInput(
+        chemical_id="DTXSID7020182",
+        label="Example dermal use envelope",
+        archetypes=[
+            EnvelopeArchetypeInput(
+                label="Lower plausible use",
+                description="Reduced amount and lower frequency archetype.",
+                request=dermal_request.model_copy(
+                    update={
+                        "product_use_profile": (
+                            dermal_request.product_use_profile.model_copy(
+                                update={
+                                    "use_amount_per_event": 1.0,
+                                    "use_events_per_day": 2,
+                                }
+                            )
+                        )
+                    }
+                ),
+            ),
+            EnvelopeArchetypeInput(
+                label="Typical use",
+                description="Baseline screening archetype.",
+                request=dermal_request,
+            ),
+            EnvelopeArchetypeInput(
+                label="Upper plausible use",
+                description="Higher amount and explicit refinement modifiers.",
+                request=refined_request.model_copy(
+                    update={
+                        "product_use_profile": (
+                            refined_request.product_use_profile.model_copy(
+                                update={
+                                    "use_amount_per_event": 2.0,
+                                    "use_events_per_day": 4,
+                                }
+                            )
+                        )
+                    }
+                ),
+            ),
+        ],
+    )
     envelope_summary = _freeze_envelope(
         build_exposure_envelope(
-            BuildExposureEnvelopeInput(
-                chemical_id="DTXSID7020182",
-                label="Example dermal use envelope",
-                archetypes=[
-                    EnvelopeArchetypeInput(
-                        label="Lower plausible use",
-                        description="Reduced amount and lower frequency archetype.",
-                        request=dermal_request.model_copy(
-                            update={
-                                "product_use_profile": (
-                                    dermal_request.product_use_profile.model_copy(
-                                        update={
-                                            "use_amount_per_event": 1.0,
-                                            "use_events_per_day": 2,
-                                        }
-                                    )
-                                )
-                            }
-                        ),
-                    ),
-                    EnvelopeArchetypeInput(
-                        label="Typical use",
-                        description="Baseline screening archetype.",
-                        request=dermal_request,
-                    ),
-                    EnvelopeArchetypeInput(
-                        label="Upper plausible use",
-                        description="Higher amount and explicit refinement modifiers.",
-                        request=refined_request.model_copy(
-                            update={
-                                "product_use_profile": (
-                                    refined_request.product_use_profile.model_copy(
-                                        update={
-                                            "use_amount_per_event": 2.0,
-                                            "use_events_per_day": 4,
-                                        }
-                                    )
-                                )
-                            }
-                        ),
-                    ),
-                ],
-            ),
+            envelope_input,
             engine,
             defaults_registry,
             generated_at=EXAMPLE_GENERATED_AT,
@@ -1157,11 +1161,12 @@ def build_examples() -> dict[str, dict]:
         aggregate_scenarios(aggregate_internal_equivalent_input, defaults_registry),
         EXAMPLE_IDS["aggregate_internal_equivalent_summary"],
     )
+    pbpk_request = ExportPbpkScenarioInputRequest(
+        scenario=dermal_scenario, regimen_name="screening_daily_use"
+    )
     pbpk_input = _freeze_pbpk_input(
         export_pbpk_input(
-            ExportPbpkScenarioInputRequest(
-                scenario=dermal_scenario, regimen_name="screening_daily_use"
-            ),
+            pbpk_request,
             defaults_registry,
         )
     )
@@ -1175,9 +1180,12 @@ def build_examples() -> dict[str, dict]:
             defaults_registry,
         )
     )
+    comparison_input = CompareExposureScenariosInput(
+        baseline=dermal_scenario, comparison=refined_scenario
+    )
     comparison = _freeze_comparison(
         compare_scenarios(
-            CompareExposureScenariosInput(baseline=dermal_scenario, comparison=refined_scenario),
+            comparison_input,
             defaults_registry,
         )
     )
@@ -1783,9 +1791,13 @@ def build_examples() -> dict[str, dict]:
         "inhalation_tier1_request": inhalation_tier1_request.model_dump(
             mode="json", by_alias=True
         ),
+        "inhalation_tier1_request_two_zone": inhalation_tier1_request_two_zone.model_dump(
+            mode="json", by_alias=True
+        ),
         "inhalation_tier1_scenario": inhalation_tier1_scenario.model_dump(
             mode="json", by_alias=True
         ),
+        "build_envelope_request": envelope_input.model_dump(mode="json", by_alias=True),
         "exposure_envelope_summary": envelope_summary.model_dump(mode="json", by_alias=True),
         "exposure_envelope_from_library_request": library_envelope_request.model_dump(
             mode="json", by_alias=True
@@ -1820,10 +1832,12 @@ def build_examples() -> dict[str, dict]:
         "inhalation_tier1_scenario_package_probability_summary": (
             tier1_scenario_package_probability_summary.model_dump(mode="json", by_alias=True)
         ),
+        "aggregate_scenario_request": aggregate_input.model_dump(mode="json", by_alias=True),
         "aggregate_summary": aggregate_summary.model_dump(mode="json", by_alias=True),
         "aggregate_internal_equivalent_summary": aggregate_internal_equivalent_summary.model_dump(
             mode="json", by_alias=True
         ),
+        "export_pbpk_request": pbpk_request.model_dump(mode="json", by_alias=True),
         "pbpk_input": pbpk_input.model_dump(mode="json", by_alias=True),
         "pbpk_input_transient": pbpk_input_transient.model_dump(mode="json", by_alias=True),
         "pbpk_external_import_request": pbpk_external_import_package.request_payload.model_dump(
@@ -1838,6 +1852,7 @@ def build_examples() -> dict[str, dict]:
         "pbpk_external_import_package": pbpk_external_import_package.model_dump(
             mode="json", by_alias=True
         ),
+        "compare_scenarios_request": comparison_input.model_dump(mode="json", by_alias=True),
         "comparison_record": comparison.model_dump(mode="json", by_alias=True),
         "comp_tox_record": comp_tox_record.model_dump(mode="json", by_alias=True),
         "comp_tox_enriched_request": comp_tox_enriched_request.model_dump(

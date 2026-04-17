@@ -1,0 +1,178 @@
+{
+  "schema_version": "buildExposureEnvelopeInput.v1",
+  "chemical_id": "DTXSID7020182",
+  "label": "Example dermal use envelope",
+  "archetypes": [
+    {
+      "templateId": null,
+      "label": "Lower plausible use",
+      "description": "Reduced amount and lower frequency archetype.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Hand Cream",
+          "product_subtype": null,
+          "intendedUseFamily": null,
+          "oralExposureContext": null,
+          "aerosolCarrierFamily": null,
+          "aerosolFormulationProfile": null,
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 1.0,
+          "use_amount_unit": "g",
+          "dosageUnitCountPerEvent": null,
+          "dosageUnitMassG": null,
+          "dosageUnitLabel": null,
+          "use_events_per_day": 2.0,
+          "density_g_per_ml": null,
+          "particleMaterialContext": null,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "applicationStripLengthCm": null,
+          "applicationCoverageContext": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": null,
+          "air_exchange_rate_per_hour": null,
+          "exposure_duration_hours": null
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": null,
+          "inhalation_rate_m3_per_hour": null,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [
+            "consumer",
+            "general_population"
+          ],
+          "region": "EU"
+        },
+        "physchemContext": null,
+        "assumption_overrides": {}
+      }
+    },
+    {
+      "templateId": null,
+      "label": "Typical use",
+      "description": "Baseline screening archetype.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Hand Cream",
+          "product_subtype": null,
+          "intendedUseFamily": null,
+          "oralExposureContext": null,
+          "aerosolCarrierFamily": null,
+          "aerosolFormulationProfile": null,
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 1.5,
+          "use_amount_unit": "g",
+          "dosageUnitCountPerEvent": null,
+          "dosageUnitMassG": null,
+          "dosageUnitLabel": null,
+          "use_events_per_day": 3.0,
+          "density_g_per_ml": null,
+          "particleMaterialContext": null,
+          "transfer_efficiency": null,
+          "retention_factor": null,
+          "applicationStripLengthCm": null,
+          "applicationCoverageContext": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": null,
+          "air_exchange_rate_per_hour": null,
+          "exposure_duration_hours": null
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": null,
+          "inhalation_rate_m3_per_hour": null,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [
+            "consumer",
+            "general_population"
+          ],
+          "region": "EU"
+        },
+        "physchemContext": null,
+        "assumption_overrides": {}
+      }
+    },
+    {
+      "templateId": null,
+      "label": "Upper plausible use",
+      "description": "Higher amount and explicit refinement modifiers.",
+      "request": {
+        "schema_version": "exposureScenarioRequest.v1",
+        "chemical_id": "DTXSID7020182",
+        "chemical_name": "Example Solvent A",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "product_use_profile": {
+          "schema_version": "productUseProfile.v1",
+          "product_name": "Example Hand Cream",
+          "product_subtype": null,
+          "intendedUseFamily": null,
+          "oralExposureContext": null,
+          "aerosolCarrierFamily": null,
+          "aerosolFormulationProfile": null,
+          "product_category": "personal_care",
+          "physical_form": "cream",
+          "application_method": "hand_application",
+          "retention_type": "leave_on",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 2.0,
+          "use_amount_unit": "g",
+          "dosageUnitCountPerEvent": null,
+          "dosageUnitMassG": null,
+          "dosageUnitLabel": null,
+          "use_events_per_day": 4.0,
+          "density_g_per_ml": null,
+          "particleMaterialContext": null,
+          "transfer_efficiency": 0.8,
+          "retention_factor": 0.65,
+          "applicationStripLengthCm": null,
+          "applicationCoverageContext": null,
+          "ingestion_fraction": null,
+          "aerosolized_fraction": null,
+          "room_volume_m3": null,
+          "air_exchange_rate_per_hour": null,
+          "exposure_duration_hours": null
+        },
+        "population_profile": {
+          "schema_version": "populationProfile.v1",
+          "population_group": "adult",
+          "body_weight_kg": null,
+          "inhalation_rate_m3_per_hour": null,
+          "exposed_surface_area_cm2": null,
+          "demographic_tags": [
+            "consumer",
+            "general_population"
+          ],
+          "region": "EU"
+        },
+        "physchemContext": null,
+        "assumption_overrides": {}
+      }
+    }
+  ]
+}

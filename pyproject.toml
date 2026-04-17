@@ -14,6 +14,8 @@ dependencies = [
 dev = [
   "pytest>=8.3.0",
   "ruff>=0.6.9",
+  "mypy>=1.11.0",
+  "pip-audit>=2.7.0",
 ]
 
 [project.scripts]
@@ -56,4 +58,11 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B"]
+select = ["E", "F", "I", "UP", "B", "S", "C4", "SIM", "PT"]
+per-file-ignores = { "tests/**" = ["S101", "S314", "S603"] }
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
