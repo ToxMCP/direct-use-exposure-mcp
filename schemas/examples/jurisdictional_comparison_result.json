@@ -1,0 +1,134 @@
+{
+  "schema_version": "jurisdictionalComparisonResult.v1",
+  "comparisonId": "jurisdictional-comparison-example-001",
+  "baseRequest": {
+    "schema_version": "exposureScenarioRequest.v1",
+    "chemical_id": "DTXSID7020182",
+    "chemical_name": "Example Solvent A",
+    "route": "dermal",
+    "scenario_class": "screening",
+    "product_use_profile": {
+      "schema_version": "productUseProfile.v1",
+      "product_name": "Example Hand Cream",
+      "product_subtype": null,
+      "intendedUseFamily": null,
+      "oralExposureContext": null,
+      "aerosolCarrierFamily": null,
+      "aerosolFormulationProfile": null,
+      "product_category": "personal_care",
+      "physical_form": "cream",
+      "application_method": "hand_application",
+      "retention_type": "leave_on",
+      "concentration_fraction": 0.02,
+      "use_amount_per_event": 1.5,
+      "use_amount_unit": "g",
+      "dosageUnitCountPerEvent": null,
+      "dosageUnitMassG": null,
+      "dosageUnitLabel": null,
+      "use_events_per_day": 3.0,
+      "density_g_per_ml": null,
+      "particleMaterialContext": null,
+      "transfer_efficiency": null,
+      "retention_factor": null,
+      "applicationStripLengthCm": null,
+      "applicationCoverageContext": null,
+      "ingestion_fraction": null,
+      "aerosolized_fraction": null,
+      "room_volume_m3": null,
+      "air_exchange_rate_per_hour": null,
+      "exposure_duration_hours": null
+    },
+    "population_profile": {
+      "schema_version": "populationProfile.v1",
+      "population_group": "adult",
+      "body_weight_kg": null,
+      "inhalation_rate_m3_per_hour": null,
+      "exposed_surface_area_cm2": null,
+      "demographic_tags": [
+        "consumer",
+        "general_population"
+      ],
+      "region": "EU"
+    },
+    "physchemContext": null,
+    "assumption_overrides": {}
+  },
+  "comparedJurisdictions": [
+    "global",
+    "china"
+  ],
+  "externalDoseByJurisdiction": {
+    "global": {
+      "metric": "normalized_external_dose",
+      "value": 1.125,
+      "unit": "mg/kg-day"
+    },
+    "china": {
+      "metric": "normalized_external_dose",
+      "value": 1.42857143,
+      "unit": "mg/kg-day"
+    }
+  },
+  "doseRange": {
+    "schema_version": "doseRange.v1",
+    "minimumValue": 1.125,
+    "maximumValue": 1.42857143,
+    "minimumJurisdiction": "global",
+    "maximumJurisdiction": "china",
+    "unit": "mg/kg-day"
+  },
+  "varianceDrivers": [
+    {
+      "schema_version": "varianceDriver.v1",
+      "assumptionName": "exposed_surface_area_cm2",
+      "globalValue": 5700.0,
+      "jurisdictionValues": {
+        "global": 5700.0,
+        "china": 16500.0
+      },
+      "varianceRatio": 2.8947,
+      "description": "'exposed_surface_area_cm2' varies by 2.89x across jurisdictions."
+    },
+    {
+      "schema_version": "varianceDriver.v1",
+      "assumptionName": "body_weight_kg",
+      "globalValue": 80.0,
+      "jurisdictionValues": {
+        "global": 80.0,
+        "china": 63.0
+      },
+      "varianceRatio": 1.2698,
+      "description": "'body_weight_kg' varies by 1.27x across jurisdictions."
+    },
+    {
+      "schema_version": "varianceDriver.v1",
+      "assumptionName": "chemical_loading_mg_per_cm2_per_event",
+      "globalValue": 0.005263157894736842,
+      "jurisdictionValues": {
+        "global": 0.005263157894736842,
+        "china": 0.0018181818181818182
+      },
+      "varianceRatio": 2.8947,
+      "description": "'chemical_loading_mg_per_cm2_per_event' varies by 2.89x across jurisdictions."
+    }
+  ],
+  "harmonizationOpportunity": "Inter-jurisdictional variance is driven primarily by 'exposed_surface_area_cm2' (2.89x range). Harmonization opportunity: agree on a reference value for international assessments.",
+  "uncertaintyRegister": [
+    {
+      "entryId": "inter-jurisdictional-population-variance",
+      "title": "Population defaults differ across compared jurisdictions",
+      "uncertaintyTypes": [
+        "parameter_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "body_weight_kg",
+        "inhalation_rate_m3_per_hour"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "bidirectional",
+      "impactLevel": "medium",
+      "summary": "Normalized dose varies with population exposure factors. Cross-jurisdictional comparison reveals the magnitude of this variance.",
+      "recommendation": "Consider whether a harmonized reference population is appropriate for the regulatory context."
+    }
+  ]
+}

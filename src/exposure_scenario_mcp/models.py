@@ -3203,6 +3203,55 @@ class ContractPromptEntry(StrictModel):
     description: str
 
 
+class DoseRange(StrictModel):
+    schema_version: Literal["doseRange.v1"] = "doseRange.v1"
+    minimum_value: float = Field(..., alias="minimumValue")
+    maximum_value: float = Field(..., alias="maximumValue")
+    minimum_jurisdiction: str = Field(..., alias="minimumJurisdiction")
+    maximum_jurisdiction: str = Field(..., alias="maximumJurisdiction")
+    unit: str
+
+
+class VarianceDriver(StrictModel):
+    schema_version: Literal["varianceDriver.v1"] = "varianceDriver.v1"
+    assumption_name: str = Field(..., alias="assumptionName")
+    global_value: ScalarValue = Field(..., alias="globalValue")
+    jurisdiction_values: dict[str, ScalarValue] = Field(..., alias="jurisdictionValues")
+    variance_ratio: float = Field(..., alias="varianceRatio")
+    description: str
+
+
+class JurisdictionalComparisonResult(StrictModel):
+    schema_version: Literal["jurisdictionalComparisonResult.v1"] = (
+        "jurisdictionalComparisonResult.v1"
+    )
+    comparison_id: str = Field(..., alias="comparisonId")
+    base_request: ExposureScenarioRequest = Field(..., alias="baseRequest")
+    compared_jurisdictions: list[str] = Field(..., alias="comparedJurisdictions")
+    external_dose_by_jurisdiction: dict[str, ScenarioDose] = Field(
+        ..., alias="externalDoseByJurisdiction"
+    )
+    dose_range: DoseRange = Field(..., alias="doseRange")
+    variance_drivers: list[VarianceDriver] = Field(default_factory=list, alias="varianceDrivers")
+    harmonization_opportunity: str | None = Field(default=None, alias="harmonizationOpportunity")
+    uncertainty_register: list[UncertaintyRegisterEntry] = Field(
+        default_factory=list, alias="uncertaintyRegister"
+    )
+
+
+class CompareJurisdictionalScenariosInput(StrictModel):
+    schema_version: Literal["compareJurisdictionalScenariosInput.v1"] = (
+        "compareJurisdictionalScenariosInput.v1"
+    )
+    request: ExposureScenarioRequest
+    jurisdictions: list[str] = Field(
+        default_factory=lambda: ["global"],
+        description="Jurisdictions to compare. Must be a subset of supported_regions.")
+    include_uncertainty_register: bool = Field(
+        default=True, alias="includeUncertaintyRegister"
+    )
+
+
 class ContractManifest(StrictModel):
     schema_version: Literal["contractManifest.v1"] = "contractManifest.v1"
     server_name: str

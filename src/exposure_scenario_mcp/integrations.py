@@ -1031,6 +1031,7 @@ class ExposureWorkflowHook(StrictModel):
     ]
     tool_name: Literal[
         "exposure_compare_exposure_scenarios",
+        "exposure_compare_jurisdictional_scenarios",
         "exposure_build_screening_exposure_scenario",
         "exposure_build_inhalation_screening_scenario",
         "exposure_build_aggregate_exposure_scenario",

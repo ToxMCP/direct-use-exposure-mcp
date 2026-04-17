@@ -46,6 +46,7 @@ def _readonly_eval_bundle(
     inhalation_scenario = examples["inhalation_scenario"]
     aggregate_summary = examples["aggregate_summary"]
     comparison_record = examples["comparison_record"]
+    jurisdictional_comparison = examples["jurisdictional_comparison_result"]
 
     route_totals = {
         item["route"]: item["total_dose"]["value"]
@@ -108,6 +109,22 @@ def _readonly_eval_bundle(
             "product-to-skin transfer rather than retention. Answer with the exact assumption "
             "name only.",
             "transfer_efficiency",
+        ),
+        (
+            "Inspect the contract manifest. What is the exact tool name for comparing the same "
+            "scenario across multiple jurisdictions? Answer exactly.",
+            "exposure_compare_jurisdictional_scenarios",
+        ),
+        (
+            "Using the jurisdictional comparison example, which jurisdiction yields the lower "
+            "external dose: global or china? Answer with the jurisdiction name only.",
+            jurisdictional_comparison["doseRange"]["minimumJurisdiction"],
+        ),
+        (
+            "From the jurisdictional comparison example, name the assumption that is the "
+            "primary variance driver between global and china. Answer with the exact "
+            "assumption name only.",
+            jurisdictional_comparison["varianceDrivers"][0]["assumptionName"],
         ),
     ]
 

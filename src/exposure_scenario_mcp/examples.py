@@ -43,6 +43,7 @@ from exposure_scenario_mcp.models import (
     BuildProbabilityBoundsFromScenarioPackageInput,
     ChemicalIdentity,
     CompareExposureScenariosInput,
+    CompareJurisdictionalScenariosInput,
     ConcentrationSurface,
     EnvelopeArchetypeInput,
     EnvironmentalReleaseScenario,
@@ -101,6 +102,7 @@ from exposure_scenario_mcp.runtime import (
     PluginRegistry,
     ScenarioEngine,
     aggregate_scenarios,
+    compare_jurisdictional_scenarios,
     compare_scenarios,
     export_pbpk_input,
 )
@@ -1189,6 +1191,13 @@ def build_examples() -> dict[str, dict]:
             defaults_registry,
         )
     )
+    jurisdictional_comparison_input = CompareJurisdictionalScenariosInput(
+        request=dermal_request,
+        jurisdictions=["global", "china"],
+    )
+    jurisdictional_comparison = compare_jurisdictional_scenarios(
+        jurisdictional_comparison_input,
+    ).model_copy(update={"comparison_id": "jurisdictional-comparison-example-001"})
     comp_tox_record = CompToxChemicalRecord(
         chemical_id="DTXSID7020182",
         preferred_name="Example Solvent A",
@@ -1854,6 +1863,12 @@ def build_examples() -> dict[str, dict]:
         ),
         "compare_scenarios_request": comparison_input.model_dump(mode="json", by_alias=True),
         "comparison_record": comparison.model_dump(mode="json", by_alias=True),
+        "compare_jurisdictional_scenarios_request": (
+            jurisdictional_comparison_input.model_dump(mode="json", by_alias=True)
+        ),
+        "jurisdictional_comparison_result": jurisdictional_comparison.model_dump(
+            mode="json", by_alias=True
+        ),
         "comp_tox_record": comp_tox_record.model_dump(mode="json", by_alias=True),
         "comp_tox_enriched_request": comp_tox_enriched_request.model_dump(
             mode="json", by_alias=True

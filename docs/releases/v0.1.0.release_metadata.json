@@ -54,8 +54,8 @@
     "inhalation_tier1_two_zone_steady_state_identity",
     "inhalation_tier1_two_zone_pbpk_export"
   ],
-  "contractSchemaCount": 151,
-  "contractExampleCount": 96,
+  "contractSchemaCount": 153,
+  "contractExampleCount": 98,
   "distributionArtifacts": [
     {
       "kind": "wheel",

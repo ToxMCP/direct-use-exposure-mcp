@@ -209,6 +209,12 @@
       "description": "Compare two scenarios and surface dose and assumption deltas."
     },
     {
+      "name": "exposure_compare_jurisdictional_scenarios",
+      "request_schema": "compareJurisdictionalScenariosInput.v1",
+      "response_schema": "jurisdictionalComparisonResult.v1",
+      "description": "Compare the same exposure scenario across multiple jurisdictions and surface dose variance, key assumption drivers, and harmonization opportunities."
+    },
+    {
       "name": "exposure_run_verification_checks",
       "request_schema": null,
       "response_schema": "verificationSummaryReport.v1",
@@ -597,6 +603,8 @@
     "exportToxClawEvidenceBundleRequest.v1": "schemas/exportToxClawEvidenceBundleRequest.v1.json",
     "exportToxClawRefinementBundleRequest.v1": "schemas/exportToxClawRefinementBundleRequest.v1.json",
     "compareExposureScenariosInput.v1": "schemas/compareExposureScenariosInput.v1.json",
+    "compareJurisdictionalScenariosInput.v1": "schemas/compareJurisdictionalScenariosInput.v1.json",
+    "jurisdictionalComparisonResult.v1": "schemas/jurisdictionalComparisonResult.v1.json",
     "compToxChemicalRecord.v1": "schemas/compToxChemicalRecord.v1.json",
     "consExpoEvidenceRecord.v1": "schemas/consExpoEvidenceRecord.v1.json",
     "sccsCosmeticsEvidenceRecord.v1": "schemas/sccsCosmeticsEvidenceRecord.v1.json",
@@ -690,6 +698,8 @@
     "pbpk_external_import_package": "schemas/examples/pbpk_external_import_package.json",
     "compare_scenarios_request": "schemas/examples/compare_scenarios_request.json",
     "comparison_record": "schemas/examples/comparison_record.json",
+    "compare_jurisdictional_scenarios_request": "schemas/examples/compare_jurisdictional_scenarios_request.json",
+    "jurisdictional_comparison_result": "schemas/examples/jurisdictional_comparison_result.json",
     "comp_tox_record": "schemas/examples/comp_tox_record.json",
     "comp_tox_enriched_request": "schemas/examples/comp_tox_enriched_request.json",
     "cons_expo_evidence_record": "schemas/examples/cons_expo_evidence_record.json",

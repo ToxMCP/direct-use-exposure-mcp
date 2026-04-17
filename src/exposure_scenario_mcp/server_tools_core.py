@@ -26,6 +26,7 @@ from exposure_scenario_mcp.models import (
     BuildProbabilityBoundsFromProfileInput,
     BuildProbabilityBoundsFromScenarioPackageInput,
     CompareExposureScenariosInput,
+    CompareJurisdictionalScenariosInput,
     ExportPbpkExternalImportBundleRequest,
     ExportPbpkScenarioInputRequest,
     ExportToxClawEvidenceBundleRequest,
@@ -36,6 +37,7 @@ from exposure_scenario_mcp.models import (
     InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
+    JurisdictionalComparisonResult,
     ParameterBoundsSummary,
     PbpkScenarioInput,
     ProbabilityBoundsProfileSummary,
@@ -53,6 +55,7 @@ from exposure_scenario_mcp.probability_bounds import (
 )
 from exposure_scenario_mcp.runtime import (
     aggregate_scenarios,
+    compare_jurisdictional_scenarios,
     compare_scenarios,
     export_pbpk_input,
 )
@@ -372,6 +375,28 @@ def register_core_tools(
                 (
                     f"Compared {comparison.baseline_scenario_id} against "
                     f"{comparison.comparison_scenario_id}."
+                ),
+                comparison,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+
+    @mcp.tool(
+        name="exposure_compare_jurisdictional_scenarios",
+        annotations=read_only_tool_annotations("Compare Jurisdictional Scenarios"),
+    )
+    def exposure_compare_jurisdictional_scenarios(
+        params: CompareJurisdictionalScenariosInput,
+    ) -> Annotated[CallToolResult, JurisdictionalComparisonResult]:
+        """Compare the same scenario across jurisdictions and return dose variance plus drivers."""
+
+        try:
+            comparison = compare_jurisdictional_scenarios(params)
+            return success_result(
+                (
+                    f"Compared {len(comparison.jurisdictions)} jurisdictions. "
+                    f"Dose range: {comparison.dose_range.minimum_value:.4f}–"
+                    f"{comparison.dose_range.maximum_value:.4f} {comparison.dose_range.unit}."
                 ),
                 comparison,
             )

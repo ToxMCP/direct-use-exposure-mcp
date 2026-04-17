@@ -62,6 +62,7 @@ from exposure_scenario_mcp.models import (
     BuildProbabilityBoundsFromScenarioPackageInput,
     ChemicalIdentity,
     CompareExposureScenariosInput,
+    CompareJurisdictionalScenariosInput,
     ConcentrationSurface,
     ContractManifest,
     ContractPromptEntry,
@@ -88,6 +89,7 @@ from exposure_scenario_mcp.models import (
     InhalationResidualAirReentryScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
+    JurisdictionalComparisonResult,
     MonotonicityCheck,
     ParameterBoundInput,
     ParameterBoundsSummary,
@@ -307,6 +309,8 @@ SCHEMA_MODELS = {
     "exportToxClawEvidenceBundleRequest.v1": ExportToxClawEvidenceBundleRequest,
     "exportToxClawRefinementBundleRequest.v1": ExportToxClawRefinementBundleRequest,
     "compareExposureScenariosInput.v1": CompareExposureScenariosInput,
+    "compareJurisdictionalScenariosInput.v1": CompareJurisdictionalScenariosInput,
+    "jurisdictionalComparisonResult.v1": JurisdictionalComparisonResult,
     "compToxChemicalRecord.v1": CompToxChemicalRecord,
     "consExpoEvidenceRecord.v1": ConsExpoEvidenceRecord,
     "sccsCosmeticsEvidenceRecord.v1": SccsCosmeticsEvidenceRecord,
@@ -664,6 +668,16 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 request_schema="compareExposureScenariosInput.v1",
                 response_schema="scenarioComparisonRecord.v1",
                 description="Compare two scenarios and surface dose and assumption deltas.",
+            ),
+            ContractToolEntry(
+                name="exposure_compare_jurisdictional_scenarios",
+                request_schema="compareJurisdictionalScenariosInput.v1",
+                response_schema="jurisdictionalComparisonResult.v1",
+                description=(
+                    "Compare the same exposure scenario across multiple jurisdictions "
+                    "and surface dose variance, key assumption drivers, and "
+                    "harmonization opportunities."
+                ),
             ),
             ContractToolEntry(
                 name="exposure_run_verification_checks",

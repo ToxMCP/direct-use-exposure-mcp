@@ -17,20 +17,26 @@ from exposure_scenario_mcp.models import (
     AssumptionDelta,
     BuildAggregateExposureScenarioInput,
     CompareExposureScenariosInput,
+    CompareJurisdictionalScenariosInput,
+    DoseRange,
     DoseUnit,
     ExportPbpkScenarioInputRequest,
     ExposureScenario,
     ExposureScenarioRequest,
+    JurisdictionalComparisonResult,
     PbpkConcentrationProfilePoint,
     PbpkPopulationContext,
     PbpkScenarioInput,
     PhyschemContext,
     Route,
     RouteDoseTotal,
+    ScalarValue,
     ScenarioClass,
     ScenarioComparisonRecord,
     ScenarioDose,
     Severity,
+    UncertaintyRegisterEntry,
+    VarianceDriver,
 )
 from exposure_scenario_mcp.provenance import AssumptionTracker
 from exposure_scenario_mcp.uncertainty import (
@@ -837,3 +843,161 @@ class ScenarioEngine:
         if not include_diagnostics:
             return scenario
         return enrich_scenario_uncertainty(self, scenario)
+
+
+def compare_jurisdictional_scenarios(
+    input_data: CompareJurisdictionalScenariosInput,
+    *,
+    engine: ScenarioEngine | None = None,
+) -> JurisdictionalComparisonResult:
+    """Build the same scenario across multiple jurisdictions and compare results.
+
+    This helps regulators understand inter-jurisdictional variance drivers
+    and identify harmonization opportunities.
+    """
+    defaults_registry = DefaultsRegistry.load()
+    active_engine = engine or ScenarioEngine(
+        registry=PluginRegistry(),
+        defaults_registry=defaults_registry,
+    )
+    # Ensure screening and inhalation plugins are available
+    if not any(
+        p.scenario_class == ScenarioClass.SCREENING for p in active_engine.registry._plugins
+    ):
+        from exposure_scenario_mcp.plugins.inhalation import InhalationScreeningPlugin
+        from exposure_scenario_mcp.plugins.screening import ScreeningScenarioPlugin
+        active_engine.registry.register(ScreeningScenarioPlugin())
+        active_engine.registry.register(InhalationScreeningPlugin())
+
+    supported = set(defaults_registry.manifest()["supported_regions"])
+    jurisdictions = [j for j in input_data.jurisdictions if j in supported]
+    if not jurisdictions:
+        raise ExposureScenarioError(
+            code="jurisdiction_not_supported",
+            message=(
+                f"None of the requested jurisdictions {input_data.jurisdictions} "
+                "are supported."
+            ),
+            suggestion=f"Use one of: {', '.join(sorted(supported))}.",
+        )
+
+    base_request = input_data.request
+    external_dose_by_jurisdiction: dict[str, ScenarioDose] = {}
+    all_assumptions: dict[str, dict[str, ScalarValue]] = {}
+
+    for jurisdiction in jurisdictions:
+        regional_request = base_request.model_copy(
+            update={
+                "population_profile": base_request.population_profile.model_copy(
+                    update={"region": jurisdiction}
+                )
+            }
+        )
+        scenario = active_engine.build(regional_request)
+        external_dose_by_jurisdiction[jurisdiction] = scenario.external_dose
+        all_assumptions[jurisdiction] = {
+            item.name: item.value for item in scenario.assumptions
+        }
+
+    doses = [d.value for d in external_dose_by_jurisdiction.values()]
+    min_dose = min(doses)
+    max_dose = max(doses)
+    min_jurisdiction = min(
+        external_dose_by_jurisdiction, key=lambda j: external_dose_by_jurisdiction[j].value
+    )
+    max_jurisdiction = max(
+        external_dose_by_jurisdiction, key=lambda j: external_dose_by_jurisdiction[j].value
+    )
+
+    dose_range = DoseRange(
+        minimumValue=min_dose,
+        maximumValue=max_dose,
+        minimumJurisdiction=min_jurisdiction,
+        maximumJurisdiction=max_jurisdiction,
+        unit=external_dose_by_jurisdiction[jurisdictions[0]].unit.value,
+    )
+
+    # Identify variance drivers: assumptions that change across jurisdictions
+    variance_drivers: list[VarianceDriver] = []
+    global_assumptions = all_assumptions.get("global", {})
+    assumption_names = set()
+    for ass in all_assumptions.values():
+        assumption_names.update(ass.keys())
+
+    # Exclude derived output metrics from variance-driver analysis.
+    _DERIVED_METRIC_PREFIXES = ("normalized_", "external_mass_", "chemical_mass_", "product_mass_")
+    for name in assumption_names:
+        if name.startswith(_DERIVED_METRIC_PREFIXES):
+            continue
+        values = {
+            j: all_assumptions[j].get(name)
+            for j in jurisdictions
+            if name in all_assumptions[j]
+        }
+        if len(values) < 2:
+            continue
+        numeric_values = [v for v in values.values() if isinstance(v, (int, float))]
+        if len(numeric_values) < 2:
+            continue
+        if len(set(numeric_values)) == 1:
+            continue
+        variance_ratio = max(numeric_values) / min(numeric_values) if min(numeric_values) else 1.0
+        if variance_ratio > 1.01:  # Only flag meaningful variance (>1%)
+            global_value = global_assumptions.get(name)
+            variance_drivers.append(
+                VarianceDriver(
+                    assumptionName=name,
+                    globalValue=global_value,
+                    jurisdictionValues=values,
+                    varianceRatio=round(variance_ratio, 4),
+                    description=f"'{name}' varies by {variance_ratio:.2f}x across jurisdictions.",
+                )
+            )
+
+    # Generate harmonization opportunity narrative
+    harmonization_opportunity: str | None = None
+    if variance_drivers:
+        top_driver = max(variance_drivers, key=lambda d: d.variance_ratio)
+        harmonization_opportunity = (
+            f"Inter-jurisdictional variance is driven primarily by '{top_driver.assumption_name}' "
+            f"({top_driver.variance_ratio:.2f}x range). Harmonization opportunity: agree on a "
+            f"reference value for international assessments."
+        )
+
+    uncertainty_register: list[UncertaintyRegisterEntry] = []
+    if input_data.include_uncertainty_register:
+        from exposure_scenario_mcp.models import (
+            BiasDirection,
+            UncertaintyQuantificationStatus,
+            UncertaintyType,
+        )
+        uncertainty_register.append(
+            UncertaintyRegisterEntry(
+                entryId="inter-jurisdictional-population-variance",
+                title="Population defaults differ across compared jurisdictions",
+                uncertaintyTypes=[UncertaintyType.PARAMETER_UNCERTAINTY],
+                relatedAssumptions=["body_weight_kg", "inhalation_rate_m3_per_hour"],
+                quantificationStatus=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                biasDirection=BiasDirection.BIDIRECTIONAL,
+                impactLevel="medium",
+                summary=(
+                    "Normalized dose varies with population exposure factors. "
+                    "Cross-jurisdictional comparison reveals the magnitude of this variance."
+                ),
+                recommendation=(
+                    "Consider whether a harmonized reference population is appropriate "
+                    "for the regulatory context."
+                ),
+            )
+        )
+
+    return JurisdictionalComparisonResult(
+        comparisonId=f"jurisdictional-comparison-{uuid4().hex[:8]}",
+        baseRequest=base_request,
+        comparedJurisdictions=jurisdictions,
+        externalDoseByJurisdiction=external_dose_by_jurisdiction,
+        doseRange=dose_range,
+        varianceDrivers=variance_drivers,
+        harmonizationOpportunity=harmonization_opportunity,
+        uncertaintyRegister=uncertainty_register,
+    )

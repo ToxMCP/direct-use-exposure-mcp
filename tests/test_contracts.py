@@ -146,7 +146,7 @@ def test_contract_manifest_and_server_boot() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
-    assert len(manifest["tools"]) == 35
+    assert len(manifest["tools"]) == 36
     assert "chemicalIdentity.v1" in manifest["schemas"]
     assert "exposureScenarioDefinition.v1" in manifest["schemas"]
     assert "routeDoseEstimate.v1" in manifest["schemas"]

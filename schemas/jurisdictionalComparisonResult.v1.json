@@ -1,0 +1,1248 @@
+{
+  "$defs": {
+    "BiasDirection": {
+      "enum": [
+        "likely_overestimate",
+        "likely_underestimate",
+        "bidirectional",
+        "unknown"
+      ],
+      "title": "BiasDirection",
+      "type": "string"
+    },
+    "DoseRange": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "doseRange.v1",
+          "default": "doseRange.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "minimumValue": {
+          "title": "Minimumvalue",
+          "type": "number"
+        },
+        "maximumValue": {
+          "title": "Maximumvalue",
+          "type": "number"
+        },
+        "minimumJurisdiction": {
+          "title": "Minimumjurisdiction",
+          "type": "string"
+        },
+        "maximumJurisdiction": {
+          "title": "Maximumjurisdiction",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "minimumValue",
+        "maximumValue",
+        "minimumJurisdiction",
+        "maximumJurisdiction",
+        "unit"
+      ],
+      "title": "DoseRange",
+      "type": "object"
+    },
+    "DoseUnit": {
+      "enum": [
+        "mg/day",
+        "mg/event",
+        "mg/kg-day",
+        "mg/m3"
+      ],
+      "title": "DoseUnit",
+      "type": "string"
+    },
+    "ExposureScenarioRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "exposureScenarioRequest.v1",
+          "default": "exposureScenarioRequest.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "chemical_id": {
+          "description": "Stable chemical identifier.",
+          "title": "Chemical Id",
+          "type": "string"
+        },
+        "chemical_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional chemical name.",
+          "title": "Chemical Name"
+        },
+        "route": {
+          "$ref": "#/$defs/Route",
+          "description": "Requested exposure route."
+        },
+        "scenario_class": {
+          "$ref": "#/$defs/ScenarioClass",
+          "default": "screening",
+          "description": "Requested scenario class."
+        },
+        "product_use_profile": {
+          "$ref": "#/$defs/ProductUseProfile",
+          "description": "Product and use-context profile."
+        },
+        "population_profile": {
+          "$ref": "#/$defs/PopulationProfile",
+          "description": "Population profile for the exposed cohort."
+        },
+        "physchemContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PhyschemContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional physchem descriptors preserved on direct-use requests for bounded mechanistic refinements."
+        },
+        "assumption_overrides": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Additional explicit overrides for auditability.",
+          "title": "Assumption Overrides",
+          "type": "object"
+        }
+      },
+      "required": [
+        "chemical_id",
+        "route",
+        "product_use_profile",
+        "population_profile"
+      ],
+      "title": "ExposureScenarioRequest",
+      "type": "object"
+    },
+    "IntendedUseFamily": {
+      "enum": [
+        "medicinal",
+        "supplement",
+        "food",
+        "cosmetic",
+        "cleaning",
+        "pesticidal",
+        "occupational_material",
+        "other_direct_use"
+      ],
+      "title": "IntendedUseFamily",
+      "type": "string"
+    },
+    "OralExposureContext": {
+      "enum": [
+        "direct_use_medicinal",
+        "direct_use_supplement",
+        "incidental_non_dietary",
+        "food_mediated",
+        "environmental_media"
+      ],
+      "title": "OralExposureContext",
+      "type": "string"
+    },
+    "ParticleAgglomerationState": {
+      "enum": [
+        "primary_particles",
+        "agglomerated",
+        "aggregated",
+        "mixed",
+        "unknown"
+      ],
+      "title": "ParticleAgglomerationState",
+      "type": "string"
+    },
+    "ParticleCompositionFamily": {
+      "enum": [
+        "polymer",
+        "metal_oxide",
+        "silica",
+        "pigment",
+        "hydroxyapatite",
+        "carbon_based",
+        "other"
+      ],
+      "title": "ParticleCompositionFamily",
+      "type": "string"
+    },
+    "ParticleMaterialClass": {
+      "enum": [
+        "nanomaterial",
+        "synthetic_polymer_microparticle",
+        "non_plastic_micro_nano_particle"
+      ],
+      "title": "ParticleMaterialClass",
+      "type": "string"
+    },
+    "ParticleMaterialContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "particleMaterialContext.v1",
+          "default": "particleMaterialContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "materialClass": {
+          "$ref": "#/$defs/ParticleMaterialClass",
+          "description": "High-level particle material class."
+        },
+        "nanoStatus": {
+          "$ref": "#/$defs/ParticleNanoStatus",
+          "description": "Whether the context is nano-specific."
+        },
+        "particleSizeDomain": {
+          "$ref": "#/$defs/ParticleSizeDomain",
+          "description": "Primary size-domain classification."
+        },
+        "compositionFamily": {
+          "$ref": "#/$defs/ParticleCompositionFamily",
+          "description": "Broad composition family."
+        },
+        "intentionallyManufacturedParticle": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the material is an intentionally manufactured particle.",
+          "title": "Intentionallymanufacturedparticle"
+        },
+        "insolubleOrBiopersistent": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the particle is treated as insoluble or biopersistent.",
+          "title": "Insolubleorbiopersistent"
+        },
+        "solubilityClass": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleSolubilityClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Screening solubility class."
+        },
+        "agglomerationState": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleAgglomerationState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Agglomeration or aggregation state relevant to use."
+        },
+        "shapeFamily": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleShapeFamily"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Particle shape family."
+        },
+        "surfaceTreated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the particle has a relevant surface treatment or coating.",
+          "title": "Surfacetreated"
+        },
+        "surfaceTreatmentNotes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short notes on coatings or surface treatment when known.",
+          "title": "Surfacetreatmentnotes"
+        },
+        "medianPrimaryParticleSizeNm": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Median primary particle size in nm when known.",
+          "title": "Medianprimaryparticlesizenm"
+        },
+        "sizeRangeNmLow": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Lower particle size bound in nm.",
+          "title": "Sizerangenmlow"
+        },
+        "sizeRangeNmHigh": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Upper particle size bound in nm.",
+          "title": "Sizerangenmhigh"
+        },
+        "respirableFractionRelevance": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether inhalation respirable-fraction context is materially relevant.",
+          "title": "Respirablefractionrelevance"
+        },
+        "dermalPenetrationConcern": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether dermal particle penetration or retention is a relevant concern.",
+          "title": "Dermalpenetrationconcern"
+        },
+        "article16NotificationRelevant": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether EU cosmetics Article 16 nanomaterial notification context applies.",
+          "title": "Article16Notificationrelevant"
+        },
+        "echaSpmRestrictionRelevant": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether EU synthetic polymer microparticle restriction/reporting context applies.",
+          "title": "Echaspmrestrictionrelevant"
+        },
+        "notes": {
+          "description": "Additional material-context notes.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "materialClass",
+        "nanoStatus",
+        "particleSizeDomain",
+        "compositionFamily"
+      ],
+      "title": "ParticleMaterialContext",
+      "type": "object"
+    },
+    "ParticleNanoStatus": {
+      "enum": [
+        "nano_specific",
+        "contains_nano_fraction",
+        "non_nano",
+        "unknown"
+      ],
+      "title": "ParticleNanoStatus",
+      "type": "string"
+    },
+    "ParticleShapeFamily": {
+      "enum": [
+        "spherical",
+        "fibrous",
+        "platelet",
+        "irregular",
+        "rod_like",
+        "unknown"
+      ],
+      "title": "ParticleShapeFamily",
+      "type": "string"
+    },
+    "ParticleSizeDomain": {
+      "enum": [
+        "nano",
+        "micro",
+        "mixed_micro_nano",
+        "unknown"
+      ],
+      "title": "ParticleSizeDomain",
+      "type": "string"
+    },
+    "ParticleSolubilityClass": {
+      "enum": [
+        "insoluble",
+        "poorly_soluble",
+        "soluble",
+        "dissolves_rapidly",
+        "unknown"
+      ],
+      "title": "ParticleSolubilityClass",
+      "type": "string"
+    },
+    "PhyschemContext": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "physchemContext.v1",
+          "default": "physchemContext.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "vaporPressureMmhg": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Vapor pressure in mmHg for bounded volatility-aware calculations.",
+          "title": "Vaporpressuremmhg"
+        },
+        "molecularWeightGPerMol": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Molecular weight in g/mol for bounded thermodynamic conversions.",
+          "title": "Molecularweightgpermol"
+        },
+        "logKow": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "logKow descriptor preserved for chemistry-aware screening refinements.",
+          "title": "Logkow"
+        },
+        "waterSolubilityMgPerL": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Water solubility in mg/L preserved for chemistry-aware screening refinements.",
+          "title": "Watersolubilitymgperl"
+        }
+      },
+      "title": "PhyschemContext",
+      "type": "object"
+    },
+    "PopulationProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "populationProfile.v1",
+          "default": "populationProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "population_group": {
+          "description": "Population group, for example adult or child.",
+          "title": "Population Group",
+          "type": "string"
+        },
+        "body_weight_kg": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Body weight in kilograms.",
+          "title": "Body Weight Kg"
+        },
+        "inhalation_rate_m3_per_hour": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inhalation rate for inhalation screening.",
+          "title": "Inhalation Rate M3 Per Hour"
+        },
+        "exposed_surface_area_cm2": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Exposed surface area for dermal scenarios.",
+          "title": "Exposed Surface Area Cm2"
+        },
+        "demographic_tags": {
+          "description": "Demographic descriptors for auditability.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Demographic Tags",
+          "type": "array"
+        },
+        "region": {
+          "default": "global",
+          "description": "Regional context for defaults or interpretation.",
+          "title": "Region",
+          "type": "string"
+        }
+      },
+      "required": [
+        "population_group"
+      ],
+      "title": "PopulationProfile",
+      "type": "object"
+    },
+    "ProductAmountUnit": {
+      "enum": [
+        "g",
+        "mL"
+      ],
+      "title": "ProductAmountUnit",
+      "type": "string"
+    },
+    "ProductUseProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "productUseProfile.v1",
+          "default": "productUseProfile.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "product_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional human-readable product label.",
+          "title": "Product Name"
+        },
+        "product_subtype": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional narrower product-use subtype such as indoor_surface_insecticide or surface_trigger_spray_disinfectant.",
+          "title": "Product Subtype"
+        },
+        "intendedUseFamily": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntendedUseFamily"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional intended-use family such as medicinal, supplement, food, cosmetic, cleaning, or pesticidal. This is carried for clearer suite routing and review."
+        },
+        "oralExposureContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OralExposureContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional oral pathway routing tag used to distinguish direct-use medicinal or supplement regimens from incidental, food-mediated, or environmental-media oral semantics."
+        },
+        "aerosolCarrierFamily": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional explicit aerosol carrier family such as hydrocarbon_propellant_solvent or water_ethanol_propellant when formulation-level spray semantics are known.",
+          "title": "Aerosolcarrierfamily"
+        },
+        "aerosolFormulationProfile": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional explicit aerosol formulation profile such as anhydrous_ethanol_propellant, water_quat_propellant, or high_solids_polymer_propellant when formulation-specific spray semantics are known.",
+          "title": "Aerosolformulationprofile"
+        },
+        "product_category": {
+          "description": "Product category or PUC-like category.",
+          "title": "Product Category",
+          "type": "string"
+        },
+        "physical_form": {
+          "description": "Physical form such as cream, liquid, spray, or gel.",
+          "title": "Physical Form",
+          "type": "string"
+        },
+        "application_method": {
+          "description": "How the product is applied, for example hand_application or trigger_spray.",
+          "title": "Application Method",
+          "type": "string"
+        },
+        "retention_type": {
+          "default": "leave_on",
+          "description": "Retention class such as leave_on or rinse_off.",
+          "title": "Retention Type",
+          "type": "string"
+        },
+        "concentration_fraction": {
+          "description": "Fraction of the target chemical in the product, 0-1.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Concentration Fraction",
+          "type": "number"
+        },
+        "use_amount_per_event": {
+          "description": "Product amount used per event.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Amount Per Event",
+          "type": "number"
+        },
+        "use_amount_unit": {
+          "$ref": "#/$defs/ProductAmountUnit",
+          "description": "Unit for the use amount per event."
+        },
+        "dosageUnitCountPerEvent": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional count of tablets, capsules, pills, sachets, or similar dosage units used per event for oral solid or discrete-dose direct-use regimens.",
+          "title": "Dosageunitcountperevent"
+        },
+        "dosageUnitMassG": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional product mass per dosage unit in grams when oral or discrete-dose regimens are represented as counted tablets, capsules, or pills.",
+          "title": "Dosageunitmassg"
+        },
+        "dosageUnitLabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional dosage-unit label such as tablet, capsule, pill, sachet, or lozenge used to make direct-use oral-solid semantics auditable.",
+          "title": "Dosageunitlabel"
+        },
+        "use_events_per_day": {
+          "description": "Number of product-use events per day.",
+          "exclusiveMinimum": 0.0,
+          "title": "Use Events Per Day",
+          "type": "number"
+        },
+        "density_g_per_ml": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Density when the product amount is in mL.",
+          "title": "Density G Per Ml"
+        },
+        "particleMaterialContext": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParticleMaterialContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional particle or nanomaterial context carried with the use profile."
+        },
+        "transfer_efficiency": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Route modifier for external transfer.",
+          "title": "Transfer Efficiency"
+        },
+        "retention_factor": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Retention modifier for dermal screening.",
+          "title": "Retention Factor"
+        },
+        "applicationStripLengthCm": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional topical application geometry input for strip-length dosed gels, ointments, or balms when official directions use cm per application.",
+          "title": "Applicationstriplengthcm"
+        },
+        "applicationCoverageContext": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional topical application coverage note such as palm_sized_area or lower_leg when product instructions define geometry by treated area.",
+          "title": "Applicationcoveragecontext"
+        },
+        "ingestion_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass incidentally or directly ingested.",
+          "title": "Ingestion Fraction"
+        },
+        "aerosolized_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fraction of chemical mass released to air.",
+          "title": "Aerosolized Fraction"
+        },
+        "room_volume_m3": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Indoor room volume for inhalation screening.",
+          "title": "Room Volume M3"
+        },
+        "air_exchange_rate_per_hour": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Air exchange rate for inhalation screening.",
+          "title": "Air Exchange Rate Per Hour"
+        },
+        "exposure_duration_hours": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration of exposure per event.",
+          "title": "Exposure Duration Hours"
+        }
+      },
+      "required": [
+        "product_category",
+        "physical_form",
+        "application_method",
+        "concentration_fraction",
+        "use_amount_per_event",
+        "use_amount_unit",
+        "use_events_per_day"
+      ],
+      "title": "ProductUseProfile",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "dermal",
+        "oral",
+        "inhalation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "ScenarioClass": {
+      "enum": [
+        "screening",
+        "aggregate",
+        "inhalation",
+        "refined",
+        "population_distribution"
+      ],
+      "title": "ScenarioClass",
+      "type": "string"
+    },
+    "ScenarioDose": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "description": "Dose metric label.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "description": "Numeric value for the dose metric.",
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/DoseUnit",
+          "description": "Canonical dose unit."
+        }
+      },
+      "required": [
+        "metric",
+        "value",
+        "unit"
+      ],
+      "title": "ScenarioDose",
+      "type": "object"
+    },
+    "UncertaintyQuantificationStatus": {
+      "enum": [
+        "qualitative_only",
+        "bounded",
+        "probability_bounds",
+        "probabilistic"
+      ],
+      "title": "UncertaintyQuantificationStatus",
+      "type": "string"
+    },
+    "UncertaintyRegisterEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "entryId": {
+          "title": "Entryid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "uncertaintyTypes": {
+          "items": {
+            "$ref": "#/$defs/UncertaintyType"
+          },
+          "title": "Uncertaintytypes",
+          "type": "array"
+        },
+        "relatedAssumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Relatedassumptions",
+          "type": "array"
+        },
+        "quantificationStatus": {
+          "$ref": "#/$defs/UncertaintyQuantificationStatus"
+        },
+        "biasDirection": {
+          "$ref": "#/$defs/BiasDirection"
+        },
+        "impactLevel": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "Impactlevel",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommendation"
+        }
+      },
+      "required": [
+        "entryId",
+        "title",
+        "quantificationStatus",
+        "biasDirection",
+        "impactLevel",
+        "summary"
+      ],
+      "title": "UncertaintyRegisterEntry",
+      "type": "object"
+    },
+    "UncertaintyType": {
+      "enum": [
+        "variability",
+        "parameter_uncertainty",
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ],
+      "title": "UncertaintyType",
+      "type": "string"
+    },
+    "VarianceDriver": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "varianceDriver.v1",
+          "default": "varianceDriver.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "assumptionName": {
+          "title": "Assumptionname",
+          "type": "string"
+        },
+        "globalValue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Globalvalue"
+        },
+        "jurisdictionValues": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Jurisdictionvalues",
+          "type": "object"
+        },
+        "varianceRatio": {
+          "title": "Varianceratio",
+          "type": "number"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assumptionName",
+        "globalValue",
+        "jurisdictionValues",
+        "varianceRatio",
+        "description"
+      ],
+      "title": "VarianceDriver",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "jurisdictionalComparisonResult.v1",
+      "default": "jurisdictionalComparisonResult.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "comparisonId": {
+      "title": "Comparisonid",
+      "type": "string"
+    },
+    "baseRequest": {
+      "$ref": "#/$defs/ExposureScenarioRequest"
+    },
+    "comparedJurisdictions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Comparedjurisdictions",
+      "type": "array"
+    },
+    "externalDoseByJurisdiction": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ScenarioDose"
+      },
+      "title": "Externaldosebyjurisdiction",
+      "type": "object"
+    },
+    "doseRange": {
+      "$ref": "#/$defs/DoseRange"
+    },
+    "varianceDrivers": {
+      "items": {
+        "$ref": "#/$defs/VarianceDriver"
+      },
+      "title": "Variancedrivers",
+      "type": "array"
+    },
+    "harmonizationOpportunity": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Harmonizationopportunity"
+    },
+    "uncertaintyRegister": {
+      "items": {
+        "$ref": "#/$defs/UncertaintyRegisterEntry"
+      },
+      "title": "Uncertaintyregister",
+      "type": "array"
+    }
+  },
+  "required": [
+    "comparisonId",
+    "baseRequest",
+    "comparedJurisdictions",
+    "externalDoseByJurisdiction",
+    "doseRange"
+  ],
+  "title": "JurisdictionalComparisonResult",
+  "type": "object"
+}
