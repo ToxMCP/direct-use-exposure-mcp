@@ -19,6 +19,12 @@ repo_concat_*.txt
 fix_*.py
 generate_*.py
 
+# Root-level planning / PRD artifacts that should stay out of the public repo surface
+/*_tasks.json
+/*_tasks.md
+/*_PRD*.docx
+/*_prd.md
+
 # Generated output directories
 output/
 tmp/

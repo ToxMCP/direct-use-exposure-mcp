@@ -388,8 +388,8 @@ Current published surface from `docs/contracts/contract_manifest.json`:
 - `153` schemas
 - `98` examples
 
-Legacy `Exposure_Scenario_MCP_tasks.*` planning artifacts at the repo root are now archived
-status notes, not the live implementation backlog.
+Legacy root-level planning and PRD artifacts are intentionally excluded from the public repo
+surface and are not part of the live implementation backlog.
 
 ## Release verification
 
