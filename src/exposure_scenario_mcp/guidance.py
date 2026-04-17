@@ -2374,9 +2374,27 @@ def release_notes_markdown(report: ReleaseMetadataReport) -> str:
     lines = [
         f"# Direct-Use Exposure MCP v{report.release_version}",
         "",
-        f"Direct-Use Exposure MCP `v{report.release_version}` hardens the public "
-        "deterministic external-dose surface for regulatory-facing use with stricter "
-        "jurisdictional-comparison auditability and enforced release-artifact verification.",
+        f"Direct-Use Exposure MCP `v{report.release_version}` is the first public release "
+        "positioned as an auditable, deterministic exposure-screening MCP for regulatory "
+        "and scientific AI workflows. This cut hardens the public external-dose surface "
+        "for regulatory-facing use with stricter jurisdictional-comparison auditability, "
+        "deterministic comparison semantics, and enforced release-artifact verification.",
+        "",
+        "## Public Positioning",
+        "",
+        "- Use this release when you need a reproducible external-dose scenario object that "
+        "can be inspected by humans and consumed by agents.",
+        "- Expect explicit assumptions, provenance, limitations, quality flags, and "
+        "fit-for-purpose framing on public outputs rather than black-box screening claims.",
+        "- Do not treat this release as a full PBPK engine, final risk platform, or "
+        "replacement for assessor judgment.",
+        "",
+        "## Primary Users",
+        "",
+        "- Regulatory toxicologists and exposure assessors",
+        "- Product safety, stewardship, and EHS teams",
+        "- Consultants building screening packages or technical briefing notes",
+        "- Scientific AI and MCP builders who need a trustworthy exposure module",
         "",
         "## Included In This Release",
         "",

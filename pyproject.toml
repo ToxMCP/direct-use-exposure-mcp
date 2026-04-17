@@ -31,6 +31,26 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/exposure_scenario_mcp", "scripts"]
 
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.venv",
+  "/.venv/**",
+  "/.wheel-smoke",
+  "/.wheel-smoke/**",
+  "/.mypy_cache",
+  "/.mypy_cache/**",
+  "/.pytest_cache",
+  "/.pytest_cache/**",
+  "/.ruff_cache",
+  "/.ruff_cache/**",
+  "/dist",
+  "/dist/**",
+  "/output",
+  "/output/**",
+  "/tmp",
+  "/tmp/**",
+]
+
 [tool.hatch.build.targets.wheel.force-include]
 "defaults/v1/core_defaults.json" = "exposure_scenario_mcp/data/defaults/v1/core_defaults.json"
 "archetypes/v1/envelope_archetype_library.json" = "exposure_scenario_mcp/data/archetypes/v1/envelope_archetype_library.json"

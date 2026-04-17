@@ -68,10 +68,13 @@ jobs:
       - name: Build distribution artifacts
         run: uv build
       - name: Generate contract assets
+        if: matrix.python-version == '3.12'
         run: uv run generate-exposure-contracts
       - name: Validate evals against current surface
+        if: matrix.python-version == '3.12'
         run: uv run validate-evals
       - name: Check generated assets are committed
+        if: matrix.python-version == '3.12'
         run: |
           RELEASE_VERSION=$(python - <<'PY'
           import tomllib
@@ -91,8 +94,10 @@ jobs:
           git ls-files --error-unmatch "docs/releases/v${RELEASE_VERSION}.md" >/dev/null
           git ls-files --error-unmatch "docs/releases/v${RELEASE_VERSION}.release_metadata.json" >/dev/null
       - name: Verify release artifact metadata
+        if: matrix.python-version == '3.12'
         run: uv run check-exposure-release-artifacts
       - name: Wheel install smoke test
+        if: matrix.python-version == '3.12'
         run: |
           RELEASE_VERSION=$(python - <<'PY'
           import tomllib
