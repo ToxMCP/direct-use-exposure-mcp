@@ -1795,11 +1795,6 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
     package_name, package_version = _project_metadata()
     artifacts = _distribution_artifacts(package_name, package_version)
     all_artifacts_present = all(artifact.present for artifact in artifacts)
-    all_artifacts_hashed = all(
-        artifact.sha256 is not None and artifact.size_bytes is not None
-        for artifact in artifacts
-        if artifact.present
-    )
     checks = [
         ReleaseReadinessCheck(
             check_id="contract-surface",
@@ -1871,13 +1866,15 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
         ReleaseReadinessCheck(
             check_id="validation-suite",
             title="Local validation gates are defined",
-            status="pass" if all_artifacts_present and all_artifacts_hashed else "warning",
+            status="pass" if all_artifacts_present else "warning",
             blocking=False,
             evidence=(
                 "The standard validation path is `uv run ruff check .`, `uv run pytest`, "
                 "`uv build`, `uv run generate-exposure-contracts`, and "
-                "`uv run check-exposure-release-artifacts`."
-                if all_artifacts_present and all_artifacts_hashed
+                "`uv run check-exposure-release-artifacts`. Release metadata tracks "
+                "artifact presence and canonical filenames without pinning "
+                "environment-sensitive local build digests."
+                if all_artifacts_present
                 else (
                     "The validation path is defined, but release metadata still needs to be "
                     "regenerated after `uv build` before artifact verification can pass."

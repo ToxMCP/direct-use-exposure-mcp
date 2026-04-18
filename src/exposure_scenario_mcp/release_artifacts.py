@@ -30,15 +30,12 @@ def distribution_artifacts_for_release(
     for kind, filename in expected:
         artifact_path = None if dist_dir is None else dist_dir / filename
         if artifact_path is not None and artifact_path.exists():
-            pin_integrity = kind == "wheel"
             artifacts.append(
                 ReleaseDistributionArtifact(
                     kind=kind,
                     filename=filename,
                     relativePath=f"{dist_label}/{filename}",
                     present=True,
-                    sha256=sha256_path(artifact_path) if pin_integrity else None,
-                    sizeBytes=artifact_path.stat().st_size if pin_integrity else None,
                 )
             )
             continue
