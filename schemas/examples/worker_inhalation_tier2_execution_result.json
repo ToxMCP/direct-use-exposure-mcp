@@ -816,10 +816,10 @@
       "default_applied": true,
       "rationale": "Extrathoracic swallowed fraction defaulted from the bounded spray physiology handoff pack.",
       "governance": {
-        "evidence_grade": "grade_2",
-        "evidence_basis": "curated_default",
-        "default_visibility": "silent_traceable",
-        "applicability_status": "in_domain",
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
         "uncertainty_types": [],
         "applicability_domain": {
           "route": "inhalation",
@@ -1026,10 +1026,10 @@
       "default_applied": true,
       "rationale": "Tier 1 local entrainment floor includes a bounded thermal-plume entrainment term.",
       "governance": {
-        "evidence_grade": "grade_2",
-        "evidence_basis": "curated_default",
-        "default_visibility": "silent_traceable",
-        "applicability_status": "in_domain",
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
         "uncertainty_types": [],
         "applicability_domain": {
           "route": "inhalation",
@@ -1061,10 +1061,10 @@
       "default_applied": true,
       "rationale": "Tier 1 local entrainment floor includes a bounded spray-jet entrainment term resolved from application method.",
       "governance": {
-        "evidence_grade": "grade_2",
-        "evidence_basis": "curated_default",
-        "default_visibility": "silent_traceable",
-        "applicability_status": "in_domain",
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
         "uncertainty_types": [],
         "applicability_domain": {
           "route": "inhalation",
@@ -1904,6 +1904,11 @@
       "message": "Default value applied for 'extrathoracic_swallow_fraction'."
     },
     {
+      "code": "heuristic_default_source",
+      "severity": "warning",
+      "message": "Default value for 'extrathoracic_swallow_fraction' comes from a heuristic screening source rather than a curated factor pack."
+    },
+    {
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'near_field_exchange_turnover_per_hour'."
@@ -1914,9 +1919,19 @@
       "message": "Default value applied for 'thermal_plume_rate_m3_per_hour'."
     },
     {
+      "code": "heuristic_default_source",
+      "severity": "warning",
+      "message": "Default value for 'thermal_plume_rate_m3_per_hour' comes from a heuristic screening source rather than a curated factor pack."
+    },
+    {
       "code": "default_applied",
       "severity": "info",
       "message": "Default value applied for 'spray_jet_rate_m3_per_hour'."
+    },
+    {
+      "code": "heuristic_default_source",
+      "severity": "warning",
+      "message": "Default value for 'spray_jet_rate_m3_per_hour' comes from a heuristic screening source rather than a curated factor pack."
     },
     {
       "code": "default_applied",

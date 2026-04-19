@@ -251,13 +251,13 @@ The detailed maturity matrix is in
 - `exposure_apply_product_use_evidence`
 - `exposure_reconcile_product_use_evidence`
 - `exposure_run_integrated_workflow`
-- `exposure_route_worker_task`
-- `exposure_export_worker_inhalation_tier2_bridge`
+- `worker_route_task` (`exposure_route_worker_task` compatibility alias)
+- `worker_export_inhalation_tier2_bridge` (`exposure_export_worker_inhalation_tier2_bridge` compatibility alias)
 - `worker_ingest_inhalation_tier2_task`
 - `worker_execute_inhalation_tier2_task`
 - `worker_export_inhalation_art_execution_package`
 - `worker_import_inhalation_art_execution_result`
-- `exposure_export_worker_dermal_absorbed_dose_bridge`
+- `worker_export_dermal_absorbed_dose_bridge` (`exposure_export_worker_dermal_absorbed_dose_bridge` compatibility alias)
 - `worker_ingest_dermal_absorbed_dose_task`
 - `worker_execute_dermal_absorbed_dose_task`
 
@@ -265,8 +265,9 @@ The detailed maturity matrix is in
 
 - `exposure_export_pbpk_scenario_input`
 - `exposure_export_pbpk_external_import_bundle`
-- `exposure_export_toxclaw_evidence_bundle`
-- `exposure_export_toxclaw_refinement_bundle`
+
+Pre-release downstream evidence/refinement export tools remain implemented but are intentionally
+left out of the public overview until the downstream consumer ships.
 
 ### Verification and trust
 
@@ -359,7 +360,7 @@ The detailed maturity matrix is in
 git clone https://github.com/ToxMCP/direct-use-exposure-mcp.git
 cd direct-use-exposure-mcp
 
-uv sync --extra dev
+uv sync --extra dev --locked
 uv run generate-exposure-contracts
 uv run pytest
 uv run exposure-scenario-mcp --transport stdio
@@ -380,9 +381,24 @@ Run over Streamable HTTP:
 uv run exposure-scenario-mcp --transport streamable-http --host 127.0.0.1 --port 8001
 ```
 
+Run with Docker:
+
+```bash
+docker build -t exposure-scenario-mcp .
+docker run --rm -it exposure-scenario-mcp
+docker run --rm exposure-scenario-mcp --healthcheck
+docker run --rm -p 8001:8000 exposure-scenario-mcp \
+  --transport streamable-http --host 0.0.0.0 --port 8000
+```
+
+The published container build installs from `uv.lock`, uses a non-root runtime user, and
+keeps the default entrypoint transport-neutral so the same image can serve either stdio or
+`streamable-http`. The bundled startup healthcheck now boots the packaged server, loads the
+runtime defaults/registries, and verifies a representative core/integration/worker surface.
+
 Current published surface from `docs/contracts/contract_manifest.json`:
 
-- `36` tools
+- `39` tools
 - `65` resources
 - `2` prompts
 - `153` schemas

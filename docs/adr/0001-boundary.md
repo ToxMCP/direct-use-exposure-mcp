@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-Direct-Use Exposure MCP sits between problem formulation/orchestration in ToxClaw and downstream toxicokinetics in PBPK MCP. The largest architecture risk is boundary bleed, where exposure construction, toxicokinetics, and WoE logic become entangled.
+Direct-Use Exposure MCP sits between an upstream orchestration/reporting layer and downstream toxicokinetics in PBPK MCP. The largest architecture risk is boundary bleed, where exposure construction, toxicokinetics, and WoE logic become entangled.
 
 ## Decision
 
@@ -32,4 +32,4 @@ This module explicitly does not own:
 
 - Tool outputs stay route- and dose-focused, not hazard- or risk-focused.
 - PBPK export objects include dosing semantics only, not product narratives.
-- ToxClaw remains responsible for problem formulation, tier selection, and final scenario choice.
+- The future orchestration/reporting layer remains responsible for problem formulation, tier selection, and final scenario choice.

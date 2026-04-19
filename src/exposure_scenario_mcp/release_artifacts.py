@@ -5,8 +5,11 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Literal
 
 from exposure_scenario_mcp.models import ReleaseDistributionArtifact
+
+DistributionKind = Literal["wheel", "sdist"]
 
 
 def sha256_path(path: Path) -> str:
@@ -21,7 +24,7 @@ def distribution_artifacts_for_release(
     package_name: str, version: str, dist_dir: Path | None
 ) -> list[ReleaseDistributionArtifact]:
     normalized = package_name.replace("-", "_")
-    expected = [
+    expected: list[tuple[DistributionKind, str]] = [
         ("wheel", f"{normalized}-{version}-py3-none-any.whl"),
         ("sdist", f"{normalized}-{version}.tar.gz"),
     ]
@@ -36,6 +39,8 @@ def distribution_artifacts_for_release(
                     filename=filename,
                     relativePath=f"{dist_label}/{filename}",
                     present=True,
+                    sha256=sha256_path(artifact_path),
+                    sizeBytes=artifact_path.stat().st_size,
                 )
             )
             continue

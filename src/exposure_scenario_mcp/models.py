@@ -3004,6 +3004,7 @@ class ToolResultMeta(StrictModel):
     status_check_uri: str | None = Field(default=None, alias="statusCheckUri")
     retryable: bool = False
     error_code: str | None = Field(default=None, alias="errorCode")
+    mcp_error_code: int | None = Field(default=None, alias="mcpErrorCode")
     notes: list[str] = Field(default_factory=list)
 
 

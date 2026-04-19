@@ -92,6 +92,18 @@
       "default": null,
       "title": "Errorcode"
     },
+    "mcpErrorCode": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Mcperrorcode"
+    },
     "notes": {
       "items": {
         "type": "string"

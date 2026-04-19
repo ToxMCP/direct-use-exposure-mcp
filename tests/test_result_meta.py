@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from mcp.types import INTERNAL_ERROR, INVALID_PARAMS
+
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import (
@@ -68,5 +70,20 @@ def test_error_result_emits_failed_meta_without_queue_semantics() -> None:
     assert result.meta["resultStatus"] == "failed"
     assert result.meta["executionMode"] == "sync"
     assert result.meta["errorCode"] == "example_failure"
+    assert result.meta["mcpErrorCode"] == INVALID_PARAMS
     assert result.meta["jobId"] is None
     assert result.meta["statusCheckUri"] is None
+
+
+def test_internal_error_result_uses_internal_mcp_error_code() -> None:
+    error = ExposureScenarioError(
+        code="InternalError",
+        message="Illustrative internal failure.",
+    )
+
+    result = _error_result(error)
+
+    assert result.isError is True
+    assert result.meta is not None
+    assert result.meta["errorCode"] == "InternalError"
+    assert result.meta["mcpErrorCode"] == INTERNAL_ERROR

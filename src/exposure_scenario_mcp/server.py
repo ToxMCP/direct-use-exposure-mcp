@@ -3,26 +3,24 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 from mcp.server.fastmcp import FastMCP
 from mcp.types import CallToolResult, TextContent
 
-from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
-from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError
-from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
-from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
+from exposure_scenario_mcp.package_metadata import package_version
 from exposure_scenario_mcp.result_meta import build_tool_result_meta
-from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine
-from exposure_scenario_mcp.scenario_probability_packages import (
-    ScenarioProbabilityPackageRegistry,
-)
-from exposure_scenario_mcp.server_context import ServerContext
 from exposure_scenario_mcp.server_resources import register_prompts, register_resources
+from exposure_scenario_mcp.server_runtime import (
+    ServerRuntimeProvider,
+    ServerRuntimeState,
+    build_server_runtime_state,
+)
 from exposure_scenario_mcp.server_tools_core import register_core_tools
 from exposure_scenario_mcp.server_tools_integration import register_integration_tools
 from exposure_scenario_mcp.server_tools_worker import register_worker_tools
-from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 
 _logger = logging.getLogger("exposure_scenario_mcp.server")
 
@@ -47,39 +45,36 @@ def _error_result(error: ExposureScenarioError) -> CallToolResult:
 def create_mcp_server() -> FastMCP:
     """Create the FastMCP server and register the published domain surfaces."""
 
-    defaults_registry = DefaultsRegistry.load()
-    archetype_library = ArchetypeLibraryRegistry.load()
-    probability_profiles = ProbabilityBoundsProfileRegistry.load()
-    scenario_probability_packages = ScenarioProbabilityPackageRegistry.load()
-    tier1_inhalation_profiles = Tier1InhalationProfileRegistry.load()
+    runtime_provider = ServerRuntimeProvider(build_server_runtime_state)
 
-    plugin_registry = PluginRegistry()
-    plugin_registry.register(ScreeningScenarioPlugin())
-    plugin_registry.register(InhalationScreeningPlugin())
-    engine = ScenarioEngine(registry=plugin_registry, defaults_registry=defaults_registry)
+    @asynccontextmanager
+    async def lifespan(_mcp: FastMCP) -> AsyncIterator[ServerRuntimeState]:
+        runtime_state = runtime_provider.get_runtime_state()
+        _logger.info(
+            "MCP startup: server=%s defaults=%s archetypes=%s profiles=%s packages=%s tier1=%s",
+            package_version(),
+            runtime_state.defaults_registry.version,
+            runtime_state.archetype_library.version,
+            runtime_state.probability_profiles.version,
+            runtime_state.scenario_probability_packages.version,
+            runtime_state.tier1_inhalation_profiles.version,
+        )
+        try:
+            yield runtime_state
+        finally:
+            runtime_provider.clear()
+            _logger.info("MCP server shutdown complete")
 
-    context = ServerContext(
-        defaults_registry=defaults_registry,
-        archetype_library=archetype_library,
-        probability_profiles=probability_profiles,
-        scenario_probability_packages=scenario_probability_packages,
-        tier1_inhalation_profiles=tier1_inhalation_profiles,
-        engine=engine,
-    )
+    mcp = FastMCP("exposure_scenario_mcp", lifespan=lifespan)
+    mcp._server_runtime_provider = runtime_provider  # type: ignore[attr-defined]
 
-    _logger.info(
-        "Loading registries: defaults=%s archetypes=%s profiles=%s packages=%s tier1=%s",
-        defaults_registry.version,
-        archetype_library.version,
-        probability_profiles.version,
-        scenario_probability_packages.version,
-        tier1_inhalation_profiles.version,
-    )
-    mcp = FastMCP("exposure_scenario_mcp")
-    register_core_tools(mcp, context, _success_result, _error_result)
-    register_integration_tools(mcp, context, _success_result, _error_result)
-    register_worker_tools(mcp, context, _success_result, _error_result)
-    register_resources(mcp, context)
+    def context_provider():
+        return runtime_provider.get_context(mcp)
+
+    register_core_tools(mcp, context_provider, _success_result, _error_result)
+    register_integration_tools(mcp, context_provider, _success_result, _error_result)
+    register_worker_tools(mcp, context_provider, _success_result, _error_result)
+    register_resources(mcp, context_provider)
     register_prompts(mcp)
     _logger.info("MCP server initialized")
     return mcp

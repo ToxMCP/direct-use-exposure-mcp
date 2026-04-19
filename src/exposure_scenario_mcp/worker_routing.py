@@ -340,7 +340,7 @@ def route_worker_task(
             detection_basis=detection_basis,
             support_status=WorkerSupportStatus.FUTURE_ADAPTER_RECOMMENDED,
             recommended_model_family="dermal_absorption_ppe_adapter_candidate",
-            recommended_tool="exposure_export_worker_dermal_absorbed_dose_bridge",
+            recommended_tool="worker_export_dermal_absorbed_dose_bridge",
             target_mcp="exposure_scenario_mcp",
             guidance_resource=WORKER_GUIDANCE_RESOURCE,
             required_inputs=[

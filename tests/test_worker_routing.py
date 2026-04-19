@@ -116,7 +116,7 @@ def test_worker_router_recommends_dermal_bridge_for_absorbed_dose_path() -> None
 
     assert decision.worker_detected is True
     assert decision.support_status == WorkerSupportStatus.FUTURE_ADAPTER_RECOMMENDED
-    assert decision.recommended_tool == "exposure_export_worker_dermal_absorbed_dose_bridge"
+    assert decision.recommended_tool == "worker_export_dermal_absorbed_dose_bridge"
     assert decision.recommended_model_family == "dermal_absorption_ppe_adapter_candidate"
 
 

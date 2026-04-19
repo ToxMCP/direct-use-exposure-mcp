@@ -26,4 +26,4 @@ uv run generate-exposure-contracts
 
 - Confirm the defaults manifest version and SHA256 before benchmark or release runs.
 - Regenerate contracts whenever public schemas, examples, tools, or resources change.
-- Keep ToxClaw and PBPK handoffs explicit; do not add hidden transformation logic in clients.
+- Keep downstream orchestration-layer and PBPK handoffs explicit; do not add hidden transformation logic in clients.

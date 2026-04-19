@@ -18,7 +18,7 @@ The current technical identifiers are:
 
 The new product name is a better scientific fit now that the suite boundary is explicit:
 this MCP owns direct-use and near-field external-dose construction, while Fate MCP,
-Dietary MCP, PBPK MCP, and ToxClaw own adjacent concerns.
+Dietary MCP, PBPK MCP, and a future orchestration/reporting layer own adjacent concerns.
 
 At the same time, the package and protocol identifiers are already live in:
 

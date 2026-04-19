@@ -14,7 +14,7 @@ dossier can support.
 Near term, the lower-risk path is:
 
 - keep deterministic exposure math in Direct-Use Exposure MCP
-- keep WoE/report orchestration in ToxClaw
+- keep WoE/report orchestration in a future orchestration/reporting layer
 - continue curating evidence-linked defaults and validation datasets in versioned data packs
 - define the future Literature MCP interface now so later extraction/curation work has a clean
   landing zone
@@ -25,7 +25,7 @@ Direct-Use Exposure MCP already does three things well:
 
 - resolve screening inputs into external-dose scenarios
 - publish provenance, uncertainty, and validation posture
-- export deterministic handoff objects for PBPK MCP and ToxClaw
+- export deterministic handoff objects for PBPK MCP and the future orchestration/reporting layer
 
 It should **not** become the primary home for document ingestion, citation normalization,
 parameter extraction, or evidence review workflow. Those concerns have a different lifecycle,
@@ -193,9 +193,9 @@ For executable or cited validation support, each dataset record needs:
 - exact citation and locator metadata
 - review status and supersession chain
 
-## What ToxClaw Would Need From It
+## What A Future Orchestration Layer Would Need From It
 
-ToxClaw would consume Literature MCP differently from Direct-Use Exposure MCP.
+A future orchestration/reporting layer would consume Literature MCP differently from Direct-Use Exposure MCP.
 Likely needs:
 
 - source summaries for problem formulation

@@ -720,10 +720,10 @@
       "default_applied": true,
       "rationale": "Extrathoracic swallowed fraction defaulted from the bounded spray physiology handoff pack.",
       "governance": {
-        "evidence_grade": "grade_2",
-        "evidence_basis": "curated_default",
-        "default_visibility": "silent_traceable",
-        "applicability_status": "in_domain",
+        "evidence_grade": "grade_1",
+        "evidence_basis": "heuristic_default",
+        "default_visibility": "warn",
+        "applicability_status": "screening_extrapolation",
         "uncertainty_types": [],
         "applicability_domain": {
           "route": "inhalation",
@@ -1273,6 +1273,11 @@
       "message": "Default value applied for 'extrathoracic_swallow_fraction'."
     },
     {
+      "code": "heuristic_default_source",
+      "severity": "warning",
+      "message": "Default value for 'extrathoracic_swallow_fraction' comes from a heuristic screening source rather than a curated factor pack."
+    },
+    {
       "code": "tier_0_spray_screening",
       "severity": "warning",
       "message": "Spray event was evaluated with the Tier-0 well-mixed screening model; consider a near-field/far-field tier for directed or short-duration sprays."
@@ -1351,6 +1356,19 @@
       "impactLevel": "high",
       "summary": "A portion of spray mass is routed to extrathoracic swallowing with a bounded regime-dependent screening fraction.",
       "recommendation": "Keep inhalation and incidental-oral interpretation linked for coarse sprays and avoid treating the handoff as a deposition dosimetry model."
+    },
+    {
+      "entryId": "assumption-extrathoracic_swallow_fraction",
+      "title": "Resolved assumption `extrathoracic_swallow_fraction` carries default uncertainty",
+      "uncertaintyTypes": [],
+      "relatedAssumptions": [
+        "extrathoracic_swallow_fraction"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "medium",
+      "summary": "`extrathoracic_swallow_fraction` resolved as `heuristic_default` with `screening_extrapolation` status.",
+      "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
     },
     {
       "entryId": "limitation-extrathoracic_oral_handoff_screening",
@@ -1575,9 +1593,12 @@
       "spray_cleaning_disinfection_decay_half_life_2023"
     ],
     "evidenceReadiness": "external_partial",
-    "heuristicAssumptionNames": [],
+    "heuristicAssumptionNames": [
+      "extrathoracic_swallow_fraction"
+    ],
     "validationGapIds": [
-      "tier0_spray_external_validation_partial_only"
+      "tier0_spray_external_validation_partial_only",
+      "heuristic_defaults_active"
     ],
     "executedValidationChecks": [
       {

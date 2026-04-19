@@ -36,7 +36,7 @@ not current public modules in the umbrella repo:
 | `Fate MCP` | Environmental release, multimedia transfer, concentration surfaces |
 | `Dietary MCP` | Commodity residues, food-consumption mappings, dietary oral intake |
 | `Literature MCP` | Source normalization, extraction review, evidence-pack curation |
-| `ToxClaw` | Cross-service orchestration, evidence handling, refinement policy, reporting |
+| `Orchestration/reporting layer` | Cross-service orchestration, evidence handling, refinement policy, reporting |
 
 ## Fast Routing Table
 
@@ -52,7 +52,7 @@ not current public modules in the umbrella repo:
 - Environmental source term or multimedia concentration question -> `Fate MCP`
 - Dietary oral intake, food-mediated herbal intake, or food-residue question -> `Dietary MCP`
 - Internal dose or TK simulation question -> `PBPK MCP`
-- Case assembly, refinement choice, or final NGRA-facing reporting question -> `ToxClaw`
+- Case assembly, refinement choice, or final reporting question -> planned orchestration/reporting layer
 
 ## Shared Cross-MCP Contracts
 

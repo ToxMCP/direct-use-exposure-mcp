@@ -36,6 +36,7 @@ class ValidationTimeSeriesReferenceRegistry:
     @classmethod
     @lru_cache(maxsize=4)
     def load(cls, path: Path | None = None) -> ValidationTimeSeriesReferenceRegistry:
+        target: Path | None
         if path is not None:
             raw_text = path.read_text(encoding="utf-8")
             location = str(path)

@@ -332,11 +332,13 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Herbal tea consumed as part of normal diet -> `Dietary MCP`" in herbal_routing
     assert "docs://herbal-medicinal-routing-guide" in suite_index
     assert "Worker Routing Guide" in worker_routing
+    assert "worker_route_task" in worker_routing
     assert "exposure_route_worker_task" in worker_routing
     assert "workerTaskRoutingInput.v1" in worker_routing
     assert "workerTaskRoutingDecision.v1" in worker_routing
     assert "docs://worker-routing-guide" in worker_routing
     assert "Worker Tier 2 Bridge Guide" in worker_tier2
+    assert "worker_export_inhalation_tier2_bridge" in worker_tier2
     assert "exposure_export_worker_inhalation_tier2_bridge" in worker_tier2
     assert "exportWorkerInhalationTier2BridgeRequest.v1" in worker_tier2
     assert "workerInhalationTier2BridgePackage.v1" in worker_tier2
@@ -373,6 +375,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "art_worker_result_summary_csv_semicolon_v1" in worker_art_exchange
     assert "adapterHint" in worker_art_exchange
     assert "Worker Dermal Bridge Guide" in worker_dermal_bridge
+    assert "worker_export_dermal_absorbed_dose_bridge" in worker_dermal_bridge
     assert "exposure_export_worker_dermal_absorbed_dose_bridge" in worker_dermal_bridge
     assert "exportWorkerDermalAbsorbedDoseBridgeRequest.v1" in worker_dermal_bridge
     assert "workerDermalAbsorbedDoseBridgePackage.v1" in worker_dermal_bridge

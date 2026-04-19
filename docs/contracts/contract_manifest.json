@@ -107,16 +107,28 @@
       "description": "Run the local evidence-to-scenario-to-PBPK workflow in one audited response."
     },
     {
-      "name": "exposure_route_worker_task",
+      "name": "worker_route_task",
       "request_schema": "workerTaskRoutingInput.v1",
       "response_schema": "workerTaskRoutingDecision.v1",
       "description": "Route a worker-tagged task to the strongest current MCP tool or a future occupational adapter hook."
     },
     {
-      "name": "exposure_export_worker_inhalation_tier2_bridge",
+      "name": "exposure_route_worker_task",
+      "request_schema": "workerTaskRoutingInput.v1",
+      "response_schema": "workerTaskRoutingDecision.v1",
+      "description": "Legacy compatibility alias for `worker_route_task`; prefer the `worker_*` naming surface for worker-specific tools."
+    },
+    {
+      "name": "worker_export_inhalation_tier2_bridge",
       "request_schema": "exportWorkerInhalationTier2BridgeRequest.v1",
       "response_schema": "workerInhalationTier2BridgePackage.v1",
       "description": "Export a normalized worker inhalation Tier 2 handoff package for a future occupational adapter."
+    },
+    {
+      "name": "exposure_export_worker_inhalation_tier2_bridge",
+      "request_schema": "exportWorkerInhalationTier2BridgeRequest.v1",
+      "response_schema": "workerInhalationTier2BridgePackage.v1",
+      "description": "Legacy compatibility alias for `worker_export_inhalation_tier2_bridge`; prefer the `worker_*` naming surface for worker-specific tools."
     },
     {
       "name": "worker_ingest_inhalation_tier2_task",
@@ -143,10 +155,16 @@
       "description": "Import a normalized external ART result into the governed worker inhalation execution schema."
     },
     {
-      "name": "exposure_export_worker_dermal_absorbed_dose_bridge",
+      "name": "worker_export_dermal_absorbed_dose_bridge",
       "request_schema": "exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
       "response_schema": "workerDermalAbsorbedDoseBridgePackage.v1",
       "description": "Export a normalized worker dermal absorbed-dose and PPE handoff package for a future occupational dermal adapter."
+    },
+    {
+      "name": "exposure_export_worker_dermal_absorbed_dose_bridge",
+      "request_schema": "exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
+      "response_schema": "workerDermalAbsorbedDoseBridgePackage.v1",
+      "description": "Legacy compatibility alias for `worker_export_dermal_absorbed_dose_bridge`; prefer the `worker_*` naming surface for worker-specific tools."
     },
     {
       "name": "worker_ingest_dermal_absorbed_dose_task",
@@ -194,13 +212,13 @@
       "name": "exposure_export_toxclaw_evidence_bundle",
       "request_schema": "exportToxClawEvidenceBundleRequest.v1",
       "response_schema": "toxclawEvidenceBundle.v1",
-      "description": "Export deterministic ToxClaw evidence and report-section primitives."
+      "description": "Export deterministic downstream evidence and report-section primitives."
     },
     {
       "name": "exposure_export_toxclaw_refinement_bundle",
       "request_schema": "exportToxClawRefinementBundleRequest.v1",
       "response_schema": "toxclawExposureRefinementBundle.v1",
-      "description": "Export a ToxClaw-facing exposure refinement delta with workflow hooks."
+      "description": "Export a downstream evidence-layer exposure refinement delta with workflow hooks."
     },
     {
       "name": "exposure_compare_exposure_scenarios",
@@ -332,7 +350,7 @@
     },
     {
       "uri": "docs://suite-integration-guide",
-      "description": "Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP."
+      "description": "Boundary and integration guide for CompTox, PBPK, and planned downstream orchestration seams."
     },
     {
       "uri": "docs://integrated-exposure-workflow-guide",
@@ -360,7 +378,7 @@
     },
     {
       "uri": "docs://service-selection-guide",
-      "description": "Guide to routing questions and handoffs across Exposure, Fate, Dietary, PBPK, and ToxClaw."
+      "description": "Guide to routing questions and handoffs across Exposure, Fate, Dietary, PBPK, and the planned orchestration/reporting layer."
     },
     {
       "uri": "docs://herbal-medicinal-routing-guide",

@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import tomllib
 from datetime import UTC, datetime
+from typing import Literal
+
+from pydantic import BaseModel
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.assets import repo_path
@@ -155,6 +158,7 @@ from exposure_scenario_mcp.package_metadata import (
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
+from exposure_scenario_mcp.source_classification import is_heuristic_source_id
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 from exposure_scenario_mcp.validation import build_validation_coverage_report
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
@@ -194,7 +198,12 @@ from exposure_scenario_mcp.worker_tier2 import (
     WorkerInhalationTier2TaskContext,
 )
 
-SCHEMA_MODELS = {
+CheckStatus = Literal["pass", "warning", "blocked"]
+ReadinessStatus = Literal["ready", "ready_with_known_limitations", "blocked"]
+ReviewStatus = Literal["acceptable", "acceptable_with_warnings", "blocked"]
+
+
+SCHEMA_MODELS: dict[str, type[BaseModel]] = {
     "chemicalIdentity.v1": ChemicalIdentity,
     "productUseProfile.v1": ProductUseProfile,
     "populationProfile.v1": PopulationProfile,
@@ -517,7 +526,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractToolEntry(
-                name="exposure_route_worker_task",
+                name="worker_route_task",
                 request_schema="workerTaskRoutingInput.v1",
                 response_schema="workerTaskRoutingDecision.v1",
                 description=(
@@ -526,12 +535,30 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractToolEntry(
-                name="exposure_export_worker_inhalation_tier2_bridge",
+                name="exposure_route_worker_task",
+                request_schema="workerTaskRoutingInput.v1",
+                response_schema="workerTaskRoutingDecision.v1",
+                description=(
+                    "Legacy compatibility alias for `worker_route_task`; prefer the "
+                    "`worker_*` naming surface for worker-specific tools."
+                ),
+            ),
+            ContractToolEntry(
+                name="worker_export_inhalation_tier2_bridge",
                 request_schema="exportWorkerInhalationTier2BridgeRequest.v1",
                 response_schema="workerInhalationTier2BridgePackage.v1",
                 description=(
                     "Export a normalized worker inhalation Tier 2 handoff package for a "
                     "future occupational adapter."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_export_worker_inhalation_tier2_bridge",
+                request_schema="exportWorkerInhalationTier2BridgeRequest.v1",
+                response_schema="workerInhalationTier2BridgePackage.v1",
+                description=(
+                    "Legacy compatibility alias for `worker_export_inhalation_tier2_bridge`; "
+                    "prefer the `worker_*` naming surface for worker-specific tools."
                 ),
             ),
             ContractToolEntry(
@@ -571,12 +598,21 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractToolEntry(
-                name="exposure_export_worker_dermal_absorbed_dose_bridge",
+                name="worker_export_dermal_absorbed_dose_bridge",
                 request_schema="exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
                 response_schema="workerDermalAbsorbedDoseBridgePackage.v1",
                 description=(
                     "Export a normalized worker dermal absorbed-dose and PPE handoff package "
                     "for a future occupational dermal adapter."
+                ),
+            ),
+            ContractToolEntry(
+                name="exposure_export_worker_dermal_absorbed_dose_bridge",
+                request_schema="exportWorkerDermalAbsorbedDoseBridgeRequest.v1",
+                response_schema="workerDermalAbsorbedDoseBridgePackage.v1",
+                description=(
+                    "Legacy compatibility alias for `worker_export_dermal_absorbed_dose_bridge`; "
+                    "prefer the `worker_*` naming surface for worker-specific tools."
                 ),
             ),
             ContractToolEntry(
@@ -645,7 +681,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 request_schema="exportToxClawEvidenceBundleRequest.v1",
                 response_schema="toxclawEvidenceBundle.v1",
                 description=(
-                    "Export deterministic ToxClaw evidence and report-section primitives."
+                    "Export deterministic downstream evidence and report-section primitives."
                 ),
             ),
             ContractToolEntry(
@@ -653,7 +689,8 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 request_schema="exportToxClawRefinementBundleRequest.v1",
                 response_schema="toxclawExposureRefinementBundle.v1",
                 description=(
-                    "Export a ToxClaw-facing exposure refinement delta with workflow hooks."
+                    "Export a downstream evidence-layer exposure refinement delta "
+                    "with workflow hooks."
                 ),
             ),
             ContractToolEntry(
@@ -816,7 +853,10 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
             ),
             ContractResourceEntry(
                 uri="docs://suite-integration-guide",
-                description="Boundary and integration guide for CompTox, ToxClaw, and PBPK MCP.",
+                description=(
+                    "Boundary and integration guide for CompTox, PBPK, and planned "
+                    "downstream orchestration seams."
+                ),
             ),
             ContractResourceEntry(
                 uri="docs://integrated-exposure-workflow-guide",
@@ -854,7 +894,7 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 uri="docs://service-selection-guide",
                 description=(
                     "Guide to routing questions and handoffs across Exposure, Fate, Dietary, "
-                    "PBPK, and ToxClaw."
+                    "PBPK, and the planned orchestration/reporting layer."
                 ),
             ),
             ContractResourceEntry(
@@ -1187,7 +1227,7 @@ def _distribution_artifacts(package_name: str, version: str) -> list[ReleaseDist
     return distribution_artifacts_for_release(package_name, version, repo_path("dist"))
 
 
-def _review_status(findings: list[SecurityProvenanceReviewFinding]) -> str:
+def _review_status(findings: list[SecurityProvenanceReviewFinding]) -> ReviewStatus:
     if any(finding.status == "blocked" for finding in findings):
         return "blocked"
     if any(finding.status == "warning" for finding in findings):
@@ -1202,14 +1242,14 @@ def build_security_provenance_review_report(
     defaults_manifest = defaults_registry.manifest()
     examples = build_examples()
     reviewed_surface = ReviewedSurfaceIndex(
-        tool_names=[tool.name for tool in manifest.tools],
-        resource_uris=[resource.uri for resource in manifest.resources],
-        prompt_names=[prompt.name for prompt in manifest.prompts],
+        toolNames=[tool.name for tool in manifest.tools],
+        resourceUris=[resource.uri for resource in manifest.resources],
+        promptNames=[prompt.name for prompt in manifest.prompts],
     )
     heuristic_sources = [
         source["source_id"]
         for source in defaults_registry.payload.get("sources", [])
-        if str(source.get("source_id", "")).startswith("heuristic_")
+        if is_heuristic_source_id(str(source.get("source_id", "")))
     ]
     provenance_example_names = [
         "screening_dermal_scenario",
@@ -1229,18 +1269,18 @@ def build_security_provenance_review_report(
         {"evidenceId", "contentHash"} <= set(examples[example_name]["evidenceRecord"])
         for example_name in ["toxclaw_evidence_bundle", "toxclaw_refinement_bundle"]
     )
-    provenance_status = (
+    provenance_status: CheckStatus = (
         "pass"
         if provenance_examples_ok and pbpk_external_import_ok and toxclaw_hashing_ok
         else "blocked"
     )
     findings = [
         SecurityProvenanceReviewFinding(
-            finding_id="public-surface-indexed",
+            findingId="public-surface-indexed",
             category="contract_integrity",
             title="Public tool and resource surface is machine-readable",
             status="pass",
-            applies_to=[*reviewed_surface.tool_names, *reviewed_surface.resource_uris],
+            appliesTo=[*reviewed_surface.tool_names, *reviewed_surface.resource_uris],
             evidence=(
                 f"The manifest declares {len(manifest.tools)} tools, "
                 f"{len(manifest.resources)} resources, and {len(manifest.prompts)} prompts, "
@@ -1253,11 +1293,11 @@ def build_security_provenance_review_report(
             ],
         ),
         SecurityProvenanceReviewFinding(
-            finding_id="defaults-pack-integrity",
+            findingId="defaults-pack-integrity",
             category="defaults_integrity",
             title="Defaults pack integrity is explicit and reviewable",
             status="pass",
-            applies_to=["defaults://manifest", "docs://defaults-evidence-map"],
+            appliesTo=["defaults://manifest", "docs://defaults-evidence-map"],
             evidence=(
                 f"Defaults pack `{defaults_manifest['defaults_version']}` carries SHA256 "
                 f"`{defaults_manifest['defaults_hash_sha256'][:16]}` with "
@@ -1267,16 +1307,17 @@ def build_security_provenance_review_report(
             references=["defaults://manifest", "docs://defaults-evidence-map"],
         ),
         SecurityProvenanceReviewFinding(
-            finding_id="output-auditability",
+            findingId="output-auditability",
             category="provenance_auditability",
             title="Public outputs preserve provenance or auditable handoff context",
             status=provenance_status,
-            applies_to=reviewed_surface.tool_names,
+            appliesTo=reviewed_surface.tool_names,
             evidence=(
                 "Generated scenario, aggregate, both comparison outputs, and PBPK input "
                 "examples all carry explicit `provenance`; PBPK external-import output "
                 "preserves auditable handoff context through supporting handoffs and "
-                "compatibility reporting; ToxClaw-facing exports carry deterministic "
+                "compatibility reporting; downstream evidence/refinement exports carry "
+                "deterministic "
                 "evidence records."
             ),
             recommendation=(
@@ -1291,16 +1332,16 @@ def build_security_provenance_review_report(
             ],
         ),
         SecurityProvenanceReviewFinding(
-            finding_id="deterministic-toxclaw-evidence",
+            findingId="deterministic-toxclaw-evidence",
             category="deterministic_evidence_hashing",
-            title="ToxClaw exports use deterministic evidence IDs and content hashes",
+            title="Downstream evidence exports use deterministic IDs and content hashes",
             status="pass" if toxclaw_hashing_ok else "blocked",
-            applies_to=[
+            appliesTo=[
                 "exposure_export_toxclaw_evidence_bundle",
                 "exposure_export_toxclaw_refinement_bundle",
             ],
             evidence=(
-                "Both ToxClaw export example families emit `evidenceId` and `contentHash`, "
+                "Both downstream export example families emit `evidenceId` and `contentHash`, "
                 "keeping downstream citation and report linkage stable across reruns."
             ),
             recommendation=(
@@ -1315,11 +1356,11 @@ def build_security_provenance_review_report(
             ],
         ),
         SecurityProvenanceReviewFinding(
-            finding_id="heuristic-defaults-remain",
+            findingId="heuristic-defaults-remain",
             category="defaults_integrity",
             title="Heuristic screening factors remain visible to downstream consumers",
             status="warning" if heuristic_sources else "pass",
-            applies_to=[
+            appliesTo=[
                 "exposure_build_screening_exposure_scenario",
                 "exposure_build_inhalation_screening_scenario",
                 "defaults://manifest",
@@ -1342,11 +1383,11 @@ def build_security_provenance_review_report(
             references=["docs://defaults-evidence-map", "docs://provenance-policy"],
         ),
         SecurityProvenanceReviewFinding(
-            finding_id="remote-transport-controls-externalized",
+            findingId="remote-transport-controls-externalized",
             category="transport_security",
             title="Remote HTTP deployment still depends on external security controls",
             status="warning",
-            applies_to=[
+            appliesTo=[
                 "docs://operator-guide",
                 "docs://troubleshooting",
                 "streamable-http",
@@ -1363,11 +1404,11 @@ def build_security_provenance_review_report(
             references=["docs://operator-guide", "docs://troubleshooting"],
         ),
         SecurityProvenanceReviewFinding(
-            finding_id="scientific-boundary-explicit",
+            findingId="scientific-boundary-explicit",
             category="scientific_boundary",
             title="Scientific ownership boundary remains explicit",
             status="pass",
-            applies_to=reviewed_surface.tool_names,
+            appliesTo=reviewed_surface.tool_names,
             evidence=(
                 "The published surface keeps ownership at external-dose construction and "
                 "explicitly excludes PBPK execution, internal dose estimation, BER, PoD "
@@ -1380,7 +1421,7 @@ def build_security_provenance_review_report(
             ],
         ),
     ]
-    status = _review_status(findings)
+    status: ReviewStatus = _review_status(findings)
     reviewed_at = datetime.now(UTC).isoformat()
     warning_titles = [finding.title.lower() for finding in findings if finding.status == "warning"]
     if status == "blocked":
@@ -1400,16 +1441,16 @@ def build_security_provenance_review_report(
             "across the current public surface."
         )
     return SecurityProvenanceReviewReport(
-        review_id=f"security-provenance-review-{reviewed_at[:10]}",
-        server_name=manifest.server_name,
-        server_version=manifest.server_version,
-        defaults_version=manifest.defaults_version,
-        reviewed_at=reviewed_at,
+        reviewId=f"security-provenance-review-{reviewed_at[:10]}",
+        serverName=manifest.server_name,
+        serverVersion=manifest.server_version,
+        defaultsVersion=manifest.defaults_version,
+        reviewedAt=reviewed_at,
         status=status,
         summary=summary,
-        reviewed_surface=reviewed_surface,
+        reviewedSurface=reviewed_surface,
         findings=findings,
-        external_requirements=[
+        externalRequirements=[
             (
                 "Keep any `streamable-http` deployment behind authentication, TLS "
                 "termination, and origin policy enforcement."
@@ -1432,20 +1473,20 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
     benchmark_cases = benchmarks.get("cases", [])
     artifacts = _distribution_artifacts(package_name, package_version)
     return ReleaseMetadataReport(
-        release_version=package_version,
-        package_name=package_name,
-        package_version=package_version,
-        server_name=manifest.server_name,
-        server_version=manifest.server_version,
-        defaults_version=manifest.defaults_version,
-        readiness_status=readiness.status,
-        security_review_status=security_review.status,
-        benchmark_case_count=len(benchmark_cases),
-        benchmark_case_ids=[str(case["id"]) for case in benchmark_cases],
-        contract_schema_count=len(manifest.schemas),
-        contract_example_count=len(examples),
-        distribution_artifacts=artifacts,
-        published_docs=[
+        releaseVersion=package_version,
+        packageName=package_name,
+        packageVersion=package_version,
+        serverName=manifest.server_name,
+        serverVersion=manifest.server_version,
+        defaultsVersion=manifest.defaults_version,
+        readinessStatus=readiness.status,
+        securityReviewStatus=security_review.status,
+        benchmarkCaseCount=len(benchmark_cases),
+        benchmarkCaseIds=[str(case["id"]) for case in benchmark_cases],
+        contractSchemaCount=len(manifest.schemas),
+        contractExampleCount=len(examples),
+        distributionArtifacts=artifacts,
+        publishedDocs=[
             "docs://release-notes",
             "docs://conformance-report",
             "docs://release-readiness",
@@ -1461,8 +1502,8 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://toxmcp-suite-index",
             CURRENT_RELEASE_NOTES_RELATIVE_PATH,
         ],
-        validation_commands=readiness.validation_commands,
-        migration_notes=[
+        validationCommands=readiness.validation_commands,
+        migrationNotes=[
             (
                 f"{CURRENT_RELEASE_TAG} supersedes the prior public `v0.1.0` baseline; "
                 "update any pinned release-note or release-metadata references to the new "
@@ -1474,7 +1515,7 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
                 "unsupported or duplicate jurisdictions as request-validation errors."
             ),
         ],
-        known_limitations=readiness.known_limitations,
+        knownLimitations=readiness.known_limitations,
     )
 
 
@@ -1604,7 +1645,7 @@ def build_verification_summary_report(
         )
     )
 
-    release_status = (
+    release_status: CheckStatus = (
         "blocked"
         if readiness.status == "blocked"
         else "warning"
@@ -1630,7 +1671,7 @@ def build_verification_summary_report(
         )
     )
 
-    security_status = (
+    security_status: CheckStatus = (
         "blocked"
         if security_review.status == "blocked"
         else "warning"
@@ -1713,7 +1754,7 @@ def build_verification_summary_report(
         )
     )
 
-    status = (
+    status: CheckStatus = (
         "blocked"
         if any(item.status == "blocked" for item in checks)
         else "warning"
@@ -1797,7 +1838,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
     all_artifacts_present = all(artifact.present for artifact in artifacts)
     checks = [
         ReleaseReadinessCheck(
-            check_id="contract-surface",
+            checkId="contract-surface",
             title="Contract surface is published",
             status="pass",
             blocking=False,
@@ -1807,7 +1848,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             ),
         ),
         ReleaseReadinessCheck(
-            check_id="defaults-integrity",
+            checkId="defaults-integrity",
             title="Defaults pack is versioned and hashed",
             status="pass",
             blocking=False,
@@ -1818,18 +1859,19 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             ),
         ),
         ReleaseReadinessCheck(
-            check_id="provenance-coverage",
+            checkId="provenance-coverage",
             title="Public outputs preserve provenance or deterministic hashes",
             status="pass",
             blocking=False,
             evidence=(
                 "The published security/provenance review confirms that scenario, aggregate, "
-                "comparison, and PBPK outputs preserve auditability, and that ToxClaw exports "
+                "comparison, and PBPK outputs preserve auditability, and that downstream "
+                "evidence exports "
                 "retain deterministic evidence IDs and content hashes."
             ),
         ),
         ReleaseReadinessCheck(
-            check_id="pbpk-upstream-request-alignment",
+            checkId="pbpk-upstream-request-alignment",
             title="PBPK handoff emits the upstream ingest request shape",
             status="pass",
             blocking=False,
@@ -1840,7 +1882,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             ),
         ),
         ReleaseReadinessCheck(
-            check_id="security-provenance-review",
+            checkId="security-provenance-review",
             title="Security and provenance review artifact is published",
             status=(
                 "blocked"
@@ -1864,7 +1906,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             ),
         ),
         ReleaseReadinessCheck(
-            check_id="validation-suite",
+            checkId="validation-suite",
             title="Local validation gates are defined",
             status="pass" if all_artifacts_present else "warning",
             blocking=False,
@@ -1882,7 +1924,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             ),
         ),
         ReleaseReadinessCheck(
-            check_id="result-status-semantics",
+            checkId="result-status-semantics",
             title="Future-safe result metadata is published",
             status="pass",
             blocking=False,
@@ -1893,7 +1935,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             ),
         ),
         ReleaseReadinessCheck(
-            check_id="scientific-boundary",
+            checkId="scientific-boundary",
             title="Scope boundary remains explicit",
             status="pass",
             blocking=False,
@@ -1904,7 +1946,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             ),
         ),
     ]
-    status = (
+    status: ReadinessStatus = (
         "blocked"
         if any(check.status == "blocked" for check in checks)
         else "ready_with_known_limitations"
@@ -1912,23 +1954,23 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
         else "ready"
     )
     return ReleaseReadinessReport(
-        release_candidate=CURRENT_VERSION,
-        server_name=manifest.server_name,
-        server_version=manifest.server_version,
-        defaults_version=manifest.defaults_version,
+        releaseCandidate=CURRENT_VERSION,
+        serverName=manifest.server_name,
+        serverVersion=manifest.server_version,
+        defaultsVersion=manifest.defaults_version,
         status=status,
         summary=(
             "The current Direct-Use Exposure MCP build satisfies its contract, regression, and "
             "provenance gates for a deterministic external-dose release candidate, with "
             "declared limitations and remote-deployment cautions still visible."
         ),
-        public_surface=PublicSurfaceSummary(
-            tool_count=len(manifest.tools),
-            resource_count=len(manifest.resources),
-            prompt_count=len(manifest.prompts),
+        publicSurface=PublicSurfaceSummary(
+            toolCount=len(manifest.tools),
+            resourceCount=len(manifest.resources),
+            promptCount=len(manifest.prompts),
             transports=["stdio", "streamable-http"],
         ),
-        validation_commands=[
+        validationCommands=[
             "uv run ruff check .",
             "uv run pytest",
             "uv build",
@@ -1937,7 +1979,7 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
             "uv run check-exposure-release-artifacts",
         ],
         checks=checks,
-        known_limitations=[
+        knownLimitations=[
             (
                 "This is a deterministic-first public server; "
                 "no probabilistic population engine is shipped."

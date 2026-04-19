@@ -17,6 +17,7 @@ from exposure_scenario_mcp.models import (
     DefaultsCurationReport,
     DefaultsCurationStatus,
 )
+from exposure_scenario_mcp.source_classification import is_heuristic_source_id
 
 DEFAULTS_REPO_RELATIVE_PATH = Path("defaults/v1/core_defaults.json")
 DEFAULTS_PACKAGE_RELATIVE_PATH = "data/defaults/v1/core_defaults.json"
@@ -1569,7 +1570,7 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
 
 
 def _curation_status(source_id: str) -> DefaultsCurationStatus:
-    if source_id.startswith("heuristic_"):
+    if is_heuristic_source_id(source_id):
         return DefaultsCurationStatus.HEURISTIC
     if source_id.startswith("screening_"):
         return DefaultsCurationStatus.ROUTE_SEMANTIC
@@ -1588,7 +1589,7 @@ def _entry_note(
     source_id: str,
     applicability: dict[str, object],
 ) -> str | None:
-    if source_id.startswith("heuristic_"):
+    if is_heuristic_source_id(source_id):
         return (
             f"`{parameter_name}` still resolves from a heuristic screening family for this "
             "applicability branch."

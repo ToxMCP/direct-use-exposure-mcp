@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-Route semantics and units are the main interoperability risk at the handoff boundary with PBPK MCP and ToxClaw.
+Route semantics and units are the main interoperability risk at the handoff boundary with PBPK MCP and the future orchestration/reporting layer.
 
 ## Decision
 
@@ -24,4 +24,3 @@ The module enforces:
 - Aggregate summaries will not silently collapse incompatible component units.
 - PBPK handoff objects remain normalized and mechanically consumable.
 - Defaults remain discoverable and auditable even when they are not overridden by the caller.
-
