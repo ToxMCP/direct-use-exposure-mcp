@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import json
+from types import MethodType
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.lowlevel.helper_types import ReadResourceContents
+from mcp.shared.exceptions import McpError
+from mcp.types import INTERNAL_ERROR, INVALID_PARAMS, ErrorData
 
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest, load_goldset_manifest
 from exposure_scenario_mcp.contracts import (
@@ -67,7 +71,7 @@ from exposure_scenario_mcp.guidance import (
     worker_tier2_bridge_guide,
 )
 from exposure_scenario_mcp.integrations import suite_integration_guide
-from exposure_scenario_mcp.server_context import ServerContext
+from exposure_scenario_mcp.server_context import ServerContextProvider
 from exposure_scenario_mcp.validation import (
     build_validation_coverage_report,
     build_validation_dossier_report,
@@ -77,27 +81,49 @@ from exposure_scenario_mcp.validation import (
 )
 
 
-def register_resources(mcp: FastMCP, context: ServerContext) -> None:
+def _resource_error(
+    *,
+    code: int,
+    message: str,
+    uri: str,
+    resource_type: str | None = None,
+    resource_name: str | None = None,
+    exception_type: str | None = None,
+) -> McpError:
+    data: dict[str, str] = {"resourceUri": uri}
+    if resource_type is not None:
+        data["resourceType"] = resource_type
+    if resource_name is not None:
+        data["resourceName"] = resource_name
+    if exception_type is not None:
+        data["exceptionType"] = exception_type
+    return McpError(ErrorData(code=code, message=message, data=data))
+
+
+def register_resources(mcp: FastMCP, context_provider: ServerContextProvider) -> None:
     """Register machine-readable and human-readable resource endpoints."""
+
+    def active_defaults_registry():
+        return context_provider().defaults_registry
 
     @mcp.resource("contracts://manifest")
     def contract_manifest() -> str:
         """Machine-readable contract manifest."""
 
-        payload = build_contract_manifest(context.defaults_registry).model_dump(mode="json")
+        payload = build_contract_manifest(active_defaults_registry()).model_dump(mode="json")
         return json.dumps(payload, indent=2)
 
     @mcp.resource("defaults://manifest")
     def defaults_manifest() -> str:
         """Versioned defaults manifest including hashes and source counts."""
 
-        return json.dumps(context.defaults_registry.manifest(), indent=2)
+        return json.dumps(active_defaults_registry().manifest(), indent=2)
 
     @mcp.resource("defaults://curation-report")
     def defaults_curation_report_resource() -> str:
         """Machine-readable parameter-branch curation report for defaults."""
 
-        payload = build_defaults_curation_report(context.defaults_registry).model_dump(
+        payload = build_defaults_curation_report(active_defaults_registry()).model_dump(
             mode="json",
             by_alias=True,
         )
@@ -155,7 +181,7 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
     def docs_defaults_evidence_map() -> str:
         """Source register and interpretation notes for defaults and benchmarks."""
 
-        return defaults_evidence_map(context.defaults_registry)
+        return defaults_evidence_map(active_defaults_registry())
 
     @mcp.resource("docs://defaults-curation-report")
     def docs_defaults_curation_report() -> str:
@@ -335,7 +361,7 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
     def docs_release_readiness() -> str:
         """Human-readable release-readiness guidance derived from the current surface."""
 
-        report = build_release_readiness_report(context.defaults_registry)
+        report = build_release_readiness_report(active_defaults_registry())
         return release_readiness_markdown(report)
 
     @mcp.resource("docs://release-trust-checklist")
@@ -348,23 +374,24 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
     def docs_release_notes() -> str:
         """Human-readable release notes for the current published candidate."""
 
-        report = build_release_metadata_report(context.defaults_registry)
+        report = build_release_metadata_report(active_defaults_registry())
         return release_notes_markdown(report)
 
     @mcp.resource("docs://conformance-report")
     def docs_conformance_report() -> str:
         """Human-readable conformance summary for the current release candidate."""
 
-        metadata = build_release_metadata_report(context.defaults_registry)
-        readiness = build_release_readiness_report(context.defaults_registry)
-        security_review = build_security_provenance_review_report(context.defaults_registry)
+        defaults_registry = active_defaults_registry()
+        metadata = build_release_metadata_report(defaults_registry)
+        readiness = build_release_readiness_report(defaults_registry)
+        security_review = build_security_provenance_review_report(defaults_registry)
         return conformance_report_markdown(metadata, readiness, security_review)
 
     @mcp.resource("docs://security-provenance-review")
     def docs_security_provenance_review() -> str:
         """Human-readable security and provenance review derived from the current surface."""
 
-        report = build_security_provenance_review_report(context.defaults_registry)
+        report = build_security_provenance_review_report(active_defaults_registry())
         return security_provenance_review_markdown(report)
 
     @mcp.resource("docs://test-evidence-summary")
@@ -395,7 +422,7 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
     def validation_dossier_report_resource() -> str:
         """Machine-readable validation dossier with coverage, references, and gaps."""
 
-        payload = build_validation_dossier_report(context.defaults_registry).model_dump(
+        payload = build_validation_dossier_report(active_defaults_registry()).model_dump(
             mode="json",
             by_alias=True,
         )
@@ -424,7 +451,7 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
     def verification_summary_resource() -> str:
         """Machine-readable consolidated verification summary."""
 
-        payload = build_verification_summary_report(context.defaults_registry).model_dump(
+        payload = build_verification_summary_report(active_defaults_registry()).model_dump(
             mode="json",
             by_alias=True,
         )
@@ -464,7 +491,7 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
     def release_readiness_report() -> str:
         """Machine-readable release-readiness report."""
 
-        payload = build_release_readiness_report(context.defaults_registry).model_dump(
+        payload = build_release_readiness_report(active_defaults_registry()).model_dump(
             mode="json",
             by_alias=True,
         )
@@ -474,7 +501,7 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
     def release_metadata_report() -> str:
         """Machine-readable release metadata report."""
 
-        payload = build_release_metadata_report(context.defaults_registry).model_dump(
+        payload = build_release_metadata_report(active_defaults_registry()).model_dump(
             mode="json",
             by_alias=True,
         )
@@ -484,7 +511,7 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
     def security_provenance_review_report() -> str:
         """Machine-readable security and provenance review report."""
 
-        payload = build_security_provenance_review_report(context.defaults_registry).model_dump(
+        payload = build_security_provenance_review_report(active_defaults_registry()).model_dump(
             mode="json",
             by_alias=True,
         )
@@ -495,11 +522,6 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """JSON Schema for a public request or response model."""
 
         payload = schema_payloads()
-        if schema_name not in payload:
-            return json.dumps(
-                {"error": f"Schema '{schema_name}' not found."},
-                indent=2,
-            )
         return json.dumps(payload[schema_name], indent=2)
 
     @mcp.resource("examples://{example_name}")
@@ -507,12 +529,79 @@ def register_resources(mcp: FastMCP, context: ServerContext) -> None:
         """Generated example request or output payload."""
 
         payload = build_examples()
-        if example_name not in payload:
-            return json.dumps(
-                {"error": f"Example '{example_name}' not found."},
-                indent=2,
-            )
         return json.dumps(payload[example_name], indent=2)
+
+    async def read_resource_with_protocol_errors(_self, uri) -> list[ReadResourceContents]:
+        uri_str = str(uri)
+
+        if uri_str.startswith("schemas://"):
+            schema_name = uri_str.partition("://")[2]
+            payload = schema_payloads()
+            if schema_name not in payload:
+                raise _resource_error(
+                    code=INVALID_PARAMS,
+                    message=f"Schema '{schema_name}' not found.",
+                    uri=uri_str,
+                    resource_type="schema",
+                    resource_name=schema_name,
+                )
+            return [
+                ReadResourceContents(
+                    content=json.dumps(payload[schema_name], indent=2),
+                    mime_type="text/plain",
+                )
+            ]
+
+        if uri_str.startswith("examples://"):
+            example_name = uri_str.partition("://")[2]
+            payload = build_examples()
+            if example_name not in payload:
+                raise _resource_error(
+                    code=INVALID_PARAMS,
+                    message=f"Example '{example_name}' not found.",
+                    uri=uri_str,
+                    resource_type="example",
+                    resource_name=example_name,
+                )
+            return [
+                ReadResourceContents(
+                    content=json.dumps(payload[example_name], indent=2),
+                    mime_type="text/plain",
+                )
+            ]
+
+        try:
+            resource = await mcp._resource_manager.get_resource(uri, context=mcp.get_context())
+        except ValueError as error:
+            raise _resource_error(
+                code=INVALID_PARAMS,
+                message=str(error),
+                uri=uri_str,
+            ) from error
+
+        if resource is None:  # pragma: no cover
+            raise _resource_error(
+                code=INVALID_PARAMS,
+                message=f"Unknown resource: {uri_str}",
+                uri=uri_str,
+            )
+
+        try:
+            content = await resource.read()
+        except McpError:
+            raise
+        except Exception as error:  # pragma: no cover
+            raise _resource_error(
+                code=INTERNAL_ERROR,
+                message=f"Error reading resource '{uri_str}'.",
+                uri=uri_str,
+                exception_type=type(error).__name__,
+            ) from error
+
+        return [ReadResourceContents(content=content, mime_type=resource.mime_type)]
+
+    mcp.read_resource = MethodType(read_resource_with_protocol_errors, mcp)  # type: ignore[method-assign]
+    mcp._mcp_server.read_resource()(mcp.read_resource)
 
 
 def register_prompts(mcp: FastMCP) -> None:

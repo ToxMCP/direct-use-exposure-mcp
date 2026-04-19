@@ -130,18 +130,20 @@ def tier1_inhalation_parameter_guide() -> str:
         "## Registered Sources",
         "",
     ]
-    for item in manifest.sources:
-        lines.append(f"- `{item.source_id}` [{item.version}] {item.title}")
+    for source in manifest.sources:
+        lines.append(f"- `{source.source_id}` [{source.version}] {source.title}")
     lines.extend(["", "## Airflow Classes", ""])
-    for item in manifest.directionality_profiles:
+    for airflow_profile in manifest.directionality_profiles:
         lines.append(
-            f"- `{item.directionality.value}` -> `{item.exchange_turnover_per_hour}` 1/h: "
-            f"{item.note}"
+            f"- `{airflow_profile.directionality.value}` -> "
+            f"`{airflow_profile.exchange_turnover_per_hour}` 1/h: "
+            f"{airflow_profile.note}"
         )
     lines.extend(["", "## Particle Regimes", ""])
-    for item in manifest.particle_profiles:
+    for particle_profile in manifest.particle_profiles:
         lines.append(
-            f"- `{item.particle_size_regime.value}` -> `{item.persistence_factor}`: {item.note}"
+            f"- `{particle_profile.particle_size_regime.value}` -> "
+            f"`{particle_profile.persistence_factor}`: {particle_profile.note}"
         )
     lines.extend([""])
     lines.extend(_tier1_inhalation_profile_lines())
@@ -257,7 +259,8 @@ uv run check-exposure-release-artifacts
 - Confirm the defaults manifest version and SHA256 before benchmark or release runs.
 - Run the release artifact verifier after `uv build` so published metadata matches `dist/`.
 - Regenerate contracts whenever public schemas, examples, tools, or resources change.
-- Keep ToxClaw and PBPK handoffs explicit; do not add hidden transformation logic in clients.
+- Keep downstream orchestration-layer and PBPK handoffs explicit;
+  do not add hidden transformation logic in clients.
 """
 
 
@@ -585,7 +588,8 @@ Use this guide when routing a question to the right ToxMCP service.
 - Commodity residues, food-consumption mappings, acute/chronic dietary intake ->
   `Dietary MCP`
 - Internal dose, TK simulation, tissue concentration time courses -> `PBPK MCP`
-- Cross-service orchestration, evidence handling, refinement policy, final reporting -> `ToxClaw`
+- Cross-service orchestration, evidence handling, refinement policy,
+  final reporting -> planned orchestration/reporting layer
 
 ## Edge Cases
 
@@ -719,7 +723,7 @@ Use this guide as the one-page orientation layer for the current ToxMCP family.
   should own environmental release, multimedia transfer, and compartment concentration surfaces.
 - `Dietary MCP` (planned sibling)
   should own commodity residues, food-consumption mappings, and dietary oral intake.
-- `ToxClaw` (planned orchestrator seam)
+- planned orchestration/reporting layer
   should own orchestration, evidence handling, refinement policy, and final NGRA-facing
   reporting.
 - `Literature MCP` (optional future sibling)
@@ -751,7 +755,8 @@ across domain boundaries.
 - Environmental source term or multimedia concentration question -> `Fate MCP`
 - Dietary oral intake, food-mediated herbal intake, or food-residue question -> `Dietary MCP`
 - Internal dose or TK simulation question -> `PBPK MCP`
-- Cross-service case assembly, refinement choice, or reporting question -> `ToxClaw`
+- Cross-service case assembly, refinement choice, or reporting question ->
+  planned orchestration/reporting layer
 
 ## How To Read This Repo In The Suite
 
@@ -945,10 +950,11 @@ occupational adapter.
 
 ## Tool Surface
 
-- Tool: `exposure_route_worker_task`
+- Tool: `worker_route_task`
 - Request schema: `workerTaskRoutingInput.v1`
 - Response schema: `workerTaskRoutingDecision.v1`
 - Guidance resource: `docs://worker-routing-guide`
+- Legacy compatibility alias: `exposure_route_worker_task`
 
 ## Detection Rule
 
@@ -967,7 +973,7 @@ occupational adapter.
 - Worker task needing occupational Tier 2 refinement ->
   future `ART` or `Stoffenmanager` adapter path
 - Worker dermal task needing absorbed-dose or PPE-aware refinement ->
-  `exposure_export_worker_dermal_absorbed_dose_bridge`
+  `worker_export_dermal_absorbed_dose_bridge`
 
 ## Current Guardrails
 
@@ -979,7 +985,7 @@ occupational adapter.
 
 ## Client Guidance
 
-- Run `exposure_route_worker_task` before constructing a worker scenario when task
+- Run `worker_route_task` before constructing a worker scenario when task
   mechanics or tier choice are uncertain.
 - If the router still recommends a current MCP tool, preserve emitted `tier_semantics`,
   `quality_flags`, `limitations`, and worker routing fields.
@@ -999,10 +1005,11 @@ solver itself.
 
 ## Tool Surface
 
-- Tool: `exposure_export_worker_inhalation_tier2_bridge`
+- Tool: `worker_export_inhalation_tier2_bridge`
 - Request schema: `exportWorkerInhalationTier2BridgeRequest.v1`
 - Response schema: `workerInhalationTier2BridgePackage.v1`
 - Guidance resource: `docs://worker-tier2-bridge-guide`
+- Legacy compatibility alias: `exposure_export_worker_inhalation_tier2_bridge`
 
 ## What the Bridge Contains
 
@@ -1033,7 +1040,7 @@ solver itself.
 
 ## Client Guidance
 
-- Run `exposure_route_worker_task` first when tier choice is still uncertain.
+- Run `worker_route_task` first when tier choice is still uncertain.
 - Use `compatibilityReport.missingFields` as the collection checklist before sending the
   package into a future worker adapter.
 - Keep `adapterRequest`, `toolCall`, `qualityFlags`, and `provenance` together so the
@@ -1086,7 +1093,7 @@ converts it into an ART-aligned intake envelope. It still does not execute ART i
 
 ## Client Guidance
 
-- Prefer `exposure_export_worker_inhalation_tier2_bridge` first so the worker routing
+- Prefer `worker_export_inhalation_tier2_bridge` first so the worker routing
   decision and bridge provenance stay attached to the request
 - Send the bridge package `toolCall.arguments` directly into
   `worker_ingest_inhalation_tier2_task`
@@ -1159,7 +1166,7 @@ must not be presented as a Tier 2 occupational assessment or an ART execution.
 
 ## Client Guidance
 
-- Use `exposure_export_worker_inhalation_tier2_bridge` first when worker routing and bridge
+- Use `worker_export_inhalation_tier2_bridge` first when worker routing and bridge
   provenance need to stay attached to the execution request
 - Use `worker_ingest_inhalation_tier2_task` first if you want to inspect the normalized
   determinant-template match before execution
@@ -1229,7 +1236,7 @@ the completed external ART result back into the governed worker execution schema
 
 ## Client Guidance
 
-- Use `exposure_export_worker_inhalation_tier2_bridge` first when worker routing and bridge
+- Use `worker_export_inhalation_tier2_bridge` first when worker routing and bridge
   provenance need to remain attached.
 - Use `worker_ingest_inhalation_tier2_task` if you want to inspect template alignment before
   exporting the external execution package.
@@ -1263,10 +1270,11 @@ needed for a future occupational dermal workflow.
 
 ## Tool Surface
 
-- Tool: `exposure_export_worker_dermal_absorbed_dose_bridge`
+- Tool: `worker_export_dermal_absorbed_dose_bridge`
 - Request schema: `exportWorkerDermalAbsorbedDoseBridgeRequest.v1`
 - Response schema: `workerDermalAbsorbedDoseBridgePackage.v1`
 - Guidance resource: `docs://worker-dermal-bridge-guide`
+- Legacy compatibility alias: `exposure_export_worker_dermal_absorbed_dose_bridge`
 
 ## What the Bridge Exports
 
@@ -1302,7 +1310,7 @@ needed for a future occupational dermal workflow.
 
 ## Client Guidance
 
-- Run `exposure_route_worker_task` first when the worker dermal path is still uncertain.
+- Run `worker_route_task` first when the worker dermal path is still uncertain.
 - Use `compatibilityReport.missingFields` as the collection checklist before sending the package
   into a dermal adapter.
 - Keep `adapterRequest`, `toolCall`, `qualityFlags`, and `provenance` together so the
@@ -1356,7 +1364,7 @@ absorbed-dose/PPE-oriented intake envelope. It does not execute a dermal absorpt
 
 ## Client Guidance
 
-- Prefer `exposure_export_worker_dermal_absorbed_dose_bridge` first so the worker routing
+- Prefer `worker_export_dermal_absorbed_dose_bridge` first so the worker routing
   decision and bridge provenance stay attached to the request
 - Send the bridge package `toolCall.arguments` directly into
   `worker_ingest_dermal_absorbed_dose_task`
@@ -1421,7 +1429,7 @@ external mass override, then applies PPE penetration and bounded dermal absorpti
 
 ## Client Guidance
 
-- Use `exposure_export_worker_dermal_absorbed_dose_bridge` first when the dermal worker context
+- Use `worker_export_dermal_absorbed_dose_bridge` first when the dermal worker context
   needs to stay auditable from routing through execution
 - Use `worker_ingest_dermal_absorbed_dose_task` first if you want to inspect the normalized
   determinant-template match before running execution
@@ -1513,7 +1521,7 @@ def provenance_policy() -> str:
 - The defaults pack is versioned and hashed with SHA256.
 - Heuristic defaults must emit warning-quality flags so downstream users know they are still
   screening-level factors.
-- ToxClaw-facing evidence exports use deterministic content hashes and stable IDs.
+- Downstream evidence/refinement exports use deterministic content hashes and stable IDs.
 
 ## Boundary
 
@@ -1834,15 +1842,21 @@ def validation_framework() -> str:
         "  reference bands, time-series packs, and goldset links.",
         "",
     ]
-    for item in report.benchmark_domains:
-        lines.append(f"- `{item.domain}`: {', '.join(f'`{case_id}`' for case_id in item.case_ids)}")
-        for note in item.notes:
+    for domain_summary in report.benchmark_domains:
+        lines.append(
+            f"- `{domain_summary.domain}`: "
+            f"{', '.join(f'`{case_id}`' for case_id in domain_summary.case_ids)}"
+        )
+        for note in domain_summary.notes:
             lines.append(f"  note: {note}")
     lines.extend(["", "## External Validation Datasets", ""])
-    for item in report.external_datasets:
-        prefix = f"- `{item.dataset_id}` [{item.status.value}] {item.observable}: {item.note}"
-        if item.reference_title and item.reference_locator:
-            prefix += f" Reference: {item.reference_title} ({item.reference_locator})."
+    for dataset in report.external_datasets:
+        prefix = (
+            f"- `{dataset.dataset_id}` [{dataset.status.value}] "
+            f"{dataset.observable}: {dataset.note}"
+        )
+        if dataset.reference_title and dataset.reference_locator:
+            prefix += f" Reference: {dataset.reference_title} ({dataset.reference_locator})."
         lines.append(prefix)
     lines.extend(
         [
@@ -1885,8 +1899,8 @@ def validation_framework() -> str:
     for source_id in report.heuristic_source_ids:
         lines.append(f"- `{source_id}`")
     lines.extend(["", "## Open Validation Gaps", ""])
-    for item in report.open_gaps:
-        lines.append(f"- `{item.gap_id}` [{item.severity.value}] {item.title}")
+    for gap in report.open_gaps:
+        lines.append(f"- `{gap.gap_id}` [{gap.severity.value}] {gap.title}")
     lines.extend(["", "## Notes", ""])
     lines.extend(f"- {item}" for item in report.notes)
     return "\n".join(lines)
@@ -2249,13 +2263,45 @@ def troubleshooting_guide() -> str:
   duration.
 - `pbpk_transient_profile_route_metrics_missing`: the source inhalation scenario did not expose
   start and end air concentrations for transient export.
+- `probability_bounds_profile_missing`: the selected Tier C driver profile ID is not published in
+  the active manifest.
+- `scenario_package_probability_template_missing`: a packaged Tier C support point references an
+  archetype or template ID that is not available in the active release.
+
+## Scenario Review Checks
+
+1. Confirm the request is reaching the intended route and scenario class.
+2. Inspect `assumptions`, `qualityFlags`, and `limitations` before interpreting the dose.
+3. Treat `heuristic_default_source` flags as a cue to inspect the cited defaults branch.
+4. Check `validationSummary` to see whether executable bands or external anchors were applied.
 
 ## Troubleshooting Sequence
 
 1. Validate the request against the published schema resource.
-2. Inspect `qualityFlags`, `limitations`, and `provenance` in the returned object.
+2. Inspect `qualityFlags`, `limitations`, `provenance`, and tool-result `_meta` in the
+   returned object.
 3. Check the defaults manifest and defaults evidence map for the active factor source.
 4. Re-run contract generation after changing any outward-facing schema or example.
+
+## Error Metadata
+
+- `errorCode` is the domain-specific failure code. Use it for scientific/debug interpretation.
+- `mcpErrorCode` is the generic MCP boundary classification. It does not replace the domain code.
+- Current mapping is intentionally conservative:
+  - `InternalError` -> `-32603` (`INTERNAL_ERROR`)
+  - all other current tool-facing failures -> `-32602` (`INVALID_PARAMS`)
+
+## Docker And Deployment Checks
+
+- Rebuild the image after dependency changes so the locked `uv.lock` install is refreshed.
+- If the container exits immediately under stdio, verify the client is launching the MCP process
+  rather than expecting an HTTP listener.
+- If `streamable-http` is exposed, confirm the port mapping and pass
+  `--host 0.0.0.0 --port 8000` or your chosen bound port explicitly.
+- The bundled container health check now boots the packaged server, loads defaults, and verifies
+  representative tools, resources, and prompts.
+- Add gateway or endpoint probes when you need transport-level liveness checks for
+  `streamable-http` deployments.
 
 ## Remote Deployment Caution
 
@@ -2280,6 +2326,8 @@ def result_status_semantics() -> str:
 - `terminal` is always `true`.
 - `queueRequired` is always `false`.
 - `jobId` and `statusCheckUri` are `null`.
+- `errorCode` stays domain-specific.
+- `mcpErrorCode` carries the generic MCP boundary classification when a tool fails.
 
 ## Reserved Future States
 
@@ -2291,6 +2339,8 @@ def result_status_semantics() -> str:
 
 - Read `structuredContent` for the domain object.
 - Read top-level `_meta` for execution semantics.
+- When a call fails, treat `errorCode` as the detailed scientific/debug code and
+  `mcpErrorCode` as the coarse protocol bucket.
 - Do not expect polling or queue semantics from the current deterministic release.
 """
 
@@ -2401,7 +2451,7 @@ def release_notes_markdown(report: ReleaseMetadataReport) -> str:
         "- Dermal, direct-use/incidental oral, and inhalation screening scenario construction",
         "- Aggregate/co-use summaries and auditable scenario comparison",
         "- PBPK handoff export aligned to the published PBPK MCP request shape",
-        "- Deterministic ToxClaw evidence and refinement-bundle exports",
+        "- Deterministic downstream evidence and refinement-bundle exports",
         "",
         "## Benchmark Summary",
         "",

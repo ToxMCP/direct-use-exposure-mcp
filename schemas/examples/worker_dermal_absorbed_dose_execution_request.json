@@ -115,7 +115,7 @@
         ],
         "support_status": "future_adapter_recommended",
         "recommended_model_family": "dermal_absorption_ppe_adapter_candidate",
-        "recommended_tool": "exposure_export_worker_dermal_absorbed_dose_bridge",
+        "recommended_tool": "worker_export_dermal_absorbed_dose_bridge",
         "target_mcp": "exposure_scenario_mcp",
         "guidance_resource": "docs://worker-routing-guide",
         "required_inputs": [

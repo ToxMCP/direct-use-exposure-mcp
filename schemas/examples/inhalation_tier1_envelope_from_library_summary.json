@@ -695,10 +695,10 @@
             "default_applied": true,
             "rationale": "Extrathoracic swallowed fraction defaulted from the bounded spray physiology handoff pack.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -905,10 +905,10 @@
             "default_applied": true,
             "rationale": "Tier 1 local entrainment floor includes a bounded thermal-plume entrainment term.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -940,10 +940,10 @@
             "default_applied": true,
             "rationale": "Tier 1 local entrainment floor includes a bounded spray-jet entrainment term resolved from application method.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -1625,6 +1625,11 @@
             "message": "Default value applied for 'extrathoracic_swallow_fraction'."
           },
           {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'extrathoracic_swallow_fraction' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'near_field_exchange_turnover_per_hour'."
@@ -1635,9 +1640,19 @@
             "message": "Default value applied for 'thermal_plume_rate_m3_per_hour'."
           },
           {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'thermal_plume_rate_m3_per_hour' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'spray_jet_rate_m3_per_hour'."
+          },
+          {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'spray_jet_rate_m3_per_hour' comes from a heuristic screening source rather than a curated factor pack."
           },
           {
             "code": "default_applied",
@@ -1752,6 +1767,45 @@
             "impactLevel": "medium",
             "summary": "The Tier 1 near-field/far-field solver bounded weak static interzonal mixing upward with a local entrainment floor from thermal-plume and spray-jet heuristics.",
             "recommendation": "Treat floor-bound Tier 1 outputs as physically bounded screening results and prefer measured local airflow or validated task-family anchors when available."
+          },
+          {
+            "entryId": "assumption-extrathoracic_swallow_fraction",
+            "title": "Resolved assumption `extrathoracic_swallow_fraction` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "extrathoracic_swallow_fraction"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`extrathoracic_swallow_fraction` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "assumption-thermal_plume_rate_m3_per_hour",
+            "title": "Resolved assumption `thermal_plume_rate_m3_per_hour` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "thermal_plume_rate_m3_per_hour"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`thermal_plume_rate_m3_per_hour` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "assumption-spray_jet_rate_m3_per_hour",
+            "title": "Resolved assumption `spray_jet_rate_m3_per_hour` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "spray_jet_rate_m3_per_hour"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`spray_jet_rate_m3_per_hour` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
           },
           {
             "entryId": "limitation-extrathoracic_oral_handoff_screening",
@@ -2021,9 +2075,14 @@
             "consumer_spray_inhalation_exposure_2015"
           ],
           "evidenceReadiness": "external_partial",
-          "heuristicAssumptionNames": [],
+          "heuristicAssumptionNames": [
+            "extrathoracic_swallow_fraction",
+            "spray_jet_rate_m3_per_hour",
+            "thermal_plume_rate_m3_per_hour"
+          ],
           "validationGapIds": [
-            "tier1_nf_ff_external_validation_partial_only"
+            "tier1_nf_ff_external_validation_partial_only",
+            "heuristic_defaults_active"
           ],
           "executedValidationChecks": [],
           "highestSupportedUncertaintyTier": "tier_c",
@@ -2729,10 +2788,10 @@
             "default_applied": true,
             "rationale": "Extrathoracic swallowed fraction defaulted from the bounded spray physiology handoff pack.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -2939,10 +2998,10 @@
             "default_applied": true,
             "rationale": "Tier 1 local entrainment floor includes a bounded thermal-plume entrainment term.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -2974,10 +3033,10 @@
             "default_applied": true,
             "rationale": "Tier 1 local entrainment floor includes a bounded spray-jet entrainment term resolved from application method.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -3659,6 +3718,11 @@
             "message": "Default value applied for 'extrathoracic_swallow_fraction'."
           },
           {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'extrathoracic_swallow_fraction' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'near_field_exchange_turnover_per_hour'."
@@ -3669,9 +3733,19 @@
             "message": "Default value applied for 'thermal_plume_rate_m3_per_hour'."
           },
           {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'thermal_plume_rate_m3_per_hour' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'spray_jet_rate_m3_per_hour'."
+          },
+          {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'spray_jet_rate_m3_per_hour' comes from a heuristic screening source rather than a curated factor pack."
           },
           {
             "code": "default_applied",
@@ -3786,6 +3860,45 @@
             "impactLevel": "medium",
             "summary": "The Tier 1 near-field/far-field solver bounded weak static interzonal mixing upward with a local entrainment floor from thermal-plume and spray-jet heuristics.",
             "recommendation": "Treat floor-bound Tier 1 outputs as physically bounded screening results and prefer measured local airflow or validated task-family anchors when available."
+          },
+          {
+            "entryId": "assumption-extrathoracic_swallow_fraction",
+            "title": "Resolved assumption `extrathoracic_swallow_fraction` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "extrathoracic_swallow_fraction"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`extrathoracic_swallow_fraction` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "assumption-thermal_plume_rate_m3_per_hour",
+            "title": "Resolved assumption `thermal_plume_rate_m3_per_hour` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "thermal_plume_rate_m3_per_hour"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`thermal_plume_rate_m3_per_hour` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "assumption-spray_jet_rate_m3_per_hour",
+            "title": "Resolved assumption `spray_jet_rate_m3_per_hour` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "spray_jet_rate_m3_per_hour"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`spray_jet_rate_m3_per_hour` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
           },
           {
             "entryId": "limitation-extrathoracic_oral_handoff_screening",
@@ -4055,9 +4168,14 @@
             "consumer_spray_inhalation_exposure_2015"
           ],
           "evidenceReadiness": "external_partial",
-          "heuristicAssumptionNames": [],
+          "heuristicAssumptionNames": [
+            "extrathoracic_swallow_fraction",
+            "spray_jet_rate_m3_per_hour",
+            "thermal_plume_rate_m3_per_hour"
+          ],
           "validationGapIds": [
-            "tier1_nf_ff_external_validation_partial_only"
+            "tier1_nf_ff_external_validation_partial_only",
+            "heuristic_defaults_active"
           ],
           "executedValidationChecks": [],
           "highestSupportedUncertaintyTier": "tier_c",
@@ -4763,10 +4881,10 @@
             "default_applied": true,
             "rationale": "Extrathoracic swallowed fraction defaulted from the bounded spray physiology handoff pack.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -4973,10 +5091,10 @@
             "default_applied": true,
             "rationale": "Tier 1 local entrainment floor includes a bounded thermal-plume entrainment term.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -5008,10 +5126,10 @@
             "default_applied": true,
             "rationale": "Tier 1 local entrainment floor includes a bounded spray-jet entrainment term resolved from application method.",
             "governance": {
-              "evidence_grade": "grade_2",
-              "evidence_basis": "curated_default",
-              "default_visibility": "silent_traceable",
-              "applicability_status": "in_domain",
+              "evidence_grade": "grade_1",
+              "evidence_basis": "heuristic_default",
+              "default_visibility": "warn",
+              "applicability_status": "screening_extrapolation",
               "uncertainty_types": [],
               "applicability_domain": {
                 "route": "inhalation",
@@ -5693,6 +5811,11 @@
             "message": "Default value applied for 'extrathoracic_swallow_fraction'."
           },
           {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'extrathoracic_swallow_fraction' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'near_field_exchange_turnover_per_hour'."
@@ -5703,9 +5826,19 @@
             "message": "Default value applied for 'thermal_plume_rate_m3_per_hour'."
           },
           {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'thermal_plume_rate_m3_per_hour' comes from a heuristic screening source rather than a curated factor pack."
+          },
+          {
             "code": "default_applied",
             "severity": "info",
             "message": "Default value applied for 'spray_jet_rate_m3_per_hour'."
+          },
+          {
+            "code": "heuristic_default_source",
+            "severity": "warning",
+            "message": "Default value for 'spray_jet_rate_m3_per_hour' comes from a heuristic screening source rather than a curated factor pack."
           },
           {
             "code": "default_applied",
@@ -5820,6 +5953,45 @@
             "impactLevel": "medium",
             "summary": "The Tier 1 near-field/far-field solver bounded weak static interzonal mixing upward with a local entrainment floor from thermal-plume and spray-jet heuristics.",
             "recommendation": "Treat floor-bound Tier 1 outputs as physically bounded screening results and prefer measured local airflow or validated task-family anchors when available."
+          },
+          {
+            "entryId": "assumption-extrathoracic_swallow_fraction",
+            "title": "Resolved assumption `extrathoracic_swallow_fraction` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "extrathoracic_swallow_fraction"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`extrathoracic_swallow_fraction` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "assumption-thermal_plume_rate_m3_per_hour",
+            "title": "Resolved assumption `thermal_plume_rate_m3_per_hour` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "thermal_plume_rate_m3_per_hour"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`thermal_plume_rate_m3_per_hour` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
+          },
+          {
+            "entryId": "assumption-spray_jet_rate_m3_per_hour",
+            "title": "Resolved assumption `spray_jet_rate_m3_per_hour` carries default uncertainty",
+            "uncertaintyTypes": [],
+            "relatedAssumptions": [
+              "spray_jet_rate_m3_per_hour"
+            ],
+            "quantificationStatus": "qualitative_only",
+            "biasDirection": "unknown",
+            "impactLevel": "medium",
+            "summary": "`spray_jet_rate_m3_per_hour` resolved as `heuristic_default` with `screening_extrapolation` status.",
+            "recommendation": "Replace this default with scenario-specific evidence or include it in a Tier B envelope as an explicit variant driver."
           },
           {
             "entryId": "limitation-extrathoracic_oral_handoff_screening",
@@ -6089,9 +6261,14 @@
             "consumer_spray_inhalation_exposure_2015"
           ],
           "evidenceReadiness": "external_partial",
-          "heuristicAssumptionNames": [],
+          "heuristicAssumptionNames": [
+            "extrathoracic_swallow_fraction",
+            "spray_jet_rate_m3_per_hour",
+            "thermal_plume_rate_m3_per_hour"
+          ],
           "validationGapIds": [
-            "tier1_nf_ff_external_validation_partial_only"
+            "tier1_nf_ff_external_validation_partial_only",
+            "heuristic_defaults_active"
           ],
           "executedValidationChecks": [],
           "highestSupportedUncertaintyTier": "tier_c",
@@ -6336,9 +6513,14 @@
       "consumer_spray_inhalation_exposure_2015"
     ],
     "evidenceReadiness": "external_partial",
-    "heuristicAssumptionNames": [],
+    "heuristicAssumptionNames": [
+      "extrathoracic_swallow_fraction",
+      "spray_jet_rate_m3_per_hour",
+      "thermal_plume_rate_m3_per_hour"
+    ],
     "validationGapIds": [
-      "tier1_nf_ff_external_validation_partial_only"
+      "tier1_nf_ff_external_validation_partial_only",
+      "heuristic_defaults_active"
     ],
     "executedValidationChecks": [],
     "highestSupportedUncertaintyTier": "tier_c",

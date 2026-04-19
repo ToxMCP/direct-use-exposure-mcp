@@ -14,7 +14,7 @@ Prerequisites:
 Bootstrap a local checkout with:
 
 ```bash
-uv sync --extra dev
+uv sync --extra dev --locked
 uv run generate-exposure-contracts
 uv run pytest
 ```

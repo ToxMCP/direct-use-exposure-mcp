@@ -16,7 +16,7 @@
 
 - The defaults pack is versioned and hashed with SHA256.
 - Heuristic defaults must emit warning-quality flags so downstream users know they are still screening-level factors.
-- ToxClaw-facing evidence exports use deterministic content hashes and stable IDs.
+- Downstream evidence/refinement exports use deterministic content hashes and stable IDs.
 
 ## Boundary
 

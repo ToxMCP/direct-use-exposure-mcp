@@ -144,7 +144,14 @@ def test_contract_manifest_and_server_boot() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
     assert manifest["server_name"] == "exposure_scenario_mcp"
-    assert len(manifest["tools"]) == 36
+    assert len(manifest["tools"]) == 39
+    tool_names = {tool["name"] for tool in manifest["tools"]}
+    assert "worker_route_task" in tool_names
+    assert "exposure_route_worker_task" in tool_names
+    assert "worker_export_inhalation_tier2_bridge" in tool_names
+    assert "exposure_export_worker_inhalation_tier2_bridge" in tool_names
+    assert "worker_export_dermal_absorbed_dose_bridge" in tool_names
+    assert "exposure_export_worker_dermal_absorbed_dose_bridge" in tool_names
     assert "chemicalIdentity.v1" in manifest["schemas"]
     assert "exposureScenarioDefinition.v1" in manifest["schemas"]
     assert "routeDoseEstimate.v1" in manifest["schemas"]
@@ -651,6 +658,12 @@ def test_defaults_curation_report_matches_schema_and_surface() -> None:
     )
     assert any(
         item["pathId"]
+        == "pressurized_aerosol_volume_interpretation_factor:application_method=aerosol_spray"
+        and item["curationStatus"] == "heuristic"
+        for item in report["entries"]
+    )
+    assert any(
+        item["pathId"]
         == (
             "aerosolized_fraction:application_method=aerosol_spray,"
             "product_subtype=air_space_insecticide"
@@ -736,8 +749,10 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert "docs://red-team-review-memo" in artifact["publishedDocs"]
     assert "docs://test-evidence-summary" in artifact["publishedDocs"]
     for item in artifact["distributionArtifacts"]:
-        assert item["sha256"] is None
-        assert item["sizeBytes"] is None
+        assert isinstance(item["sha256"], str)
+        assert len(item["sha256"]) == 64
+        assert isinstance(item["sizeBytes"], int)
+        assert item["sizeBytes"] > 0
     assert "uv build" in artifact["validationCommands"]
     assert "uv run check-exposure-release-artifacts" in artifact["validationCommands"]
     assert report["contractSchemaCount"] >= 1

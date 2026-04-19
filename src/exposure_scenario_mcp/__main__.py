@@ -5,12 +5,13 @@ from __future__ import annotations
 import argparse
 import logging
 
+from exposure_scenario_mcp.healthcheck import run_startup_healthcheck
 from exposure_scenario_mcp.logging_config import configure_logging
 from exposure_scenario_mcp.package_metadata import __version__
 from exposure_scenario_mcp.server import create_mcp_server
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Run Direct-Use Exposure MCP.")
     parser.add_argument(
         "--transport",
@@ -35,10 +36,34 @@ def main() -> None:
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         help="Logging level.",
     )
-    args = parser.parse_args()
+    parser.add_argument(
+        "--healthcheck",
+        action="store_true",
+        help=(
+            "Validate packaged registries and published MCP surface, then exit without "
+            "starting a transport."
+        ),
+    )
+    args = parser.parse_args(argv)
 
     configure_logging(level=getattr(logging, args.log_level))
     logger = logging.getLogger("exposure_scenario_mcp")
+
+    if args.healthcheck:
+        try:
+            summary = run_startup_healthcheck()
+        except Exception as error:
+            logger.error("Startup healthcheck failed: %s", error)
+            raise SystemExit(1) from error
+        logger.info(
+            "Startup healthcheck passed: defaults=%s tools=%s resources=%s prompts=%s",
+            summary.defaults_version,
+            summary.tool_count,
+            summary.resource_count,
+            summary.prompt_count,
+        )
+        return
+
     logger.info(
         "Starting Direct-Use Exposure MCP v%s on %s (%s:%s)",
         __version__,

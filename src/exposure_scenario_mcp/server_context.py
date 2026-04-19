@@ -6,7 +6,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from mcp.types import CallToolResult
+from mcp.types import CallToolResult, ToolAnnotations
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
@@ -20,16 +20,16 @@ ToolSuccessResult = Callable[[str, Any], CallToolResult]
 ToolErrorResult = Callable[[ExposureScenarioError], CallToolResult]
 
 
-def read_only_tool_annotations(title: str) -> dict[str, bool | str]:
+def read_only_tool_annotations(title: str) -> ToolAnnotations:
     """Return the standard MCP annotation bundle for read-only deterministic tools."""
 
-    return {
-        "title": title,
-        "readOnlyHint": True,
-        "destructiveHint": False,
-        "idempotentHint": True,
-        "openWorldHint": False,
-    }
+    return ToolAnnotations(
+        title=title,
+        readOnlyHint=True,
+        destructiveHint=False,
+        idempotentHint=True,
+        openWorldHint=False,
+    )
 
 
 @dataclass(frozen=True)
@@ -42,3 +42,6 @@ class ServerContext:
     scenario_probability_packages: ScenarioProbabilityPackageRegistry
     tier1_inhalation_profiles: Tier1InhalationProfileRegistry
     engine: ScenarioEngine
+
+
+ServerContextProvider = Callable[[], ServerContext]

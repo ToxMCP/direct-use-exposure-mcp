@@ -51,7 +51,7 @@ Release gating for `v0.2.0` is benchmark-first, contract-first, and provenance-f
   Tier 1 manifest publishes the governing screening profiles behind those classes.
 - Tier 1 NF/FF outputs emit explicit alignment warnings when caller-supplied geometry or regime
   inputs diverge materially from a matched packaged profile anchor.
-- ToxClaw evidence and refinement bundles emit deterministic content hashes and stable IDs.
+- Pre-release downstream evidence and refinement bundles emit deterministic content hashes and stable IDs.
 - Security and provenance findings are published through `release://security-provenance-review-report`.
 - Release metadata is published through `release://metadata-report`.
 - Published release metadata includes artifact digests and sizes for the expected wheel and sdist.

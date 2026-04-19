@@ -10,11 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          cache-suffix: py3.12
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Sync dependencies
-        run: uv sync --extra dev
+        run: uv sync --extra dev --locked
       - name: Lint
         run: uv run ruff check .
       - name: Format check
@@ -25,28 +29,54 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          cache-suffix: py3.12
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Sync dependencies
-        run: uv sync --extra dev
-      - name: Mypy (new modules only)
+        run: uv sync --extra dev --locked
+      - name: Mypy (platform slice)
         run: |
           uv run mypy \
             src/exposure_scenario_mcp/solvers/two_zone.py \
             src/exposure_scenario_mcp/plugins/inhalation.py \
-            src/exposure_scenario_mcp/worker_routing.py
+            src/exposure_scenario_mcp/worker_routing.py \
+            src/exposure_scenario_mcp/benchmarks.py \
+            src/exposure_scenario_mcp/contracts.py \
+            src/exposure_scenario_mcp/examples.py \
+            src/exposure_scenario_mcp/guidance.py \
+            src/exposure_scenario_mcp/__main__.py \
+            src/exposure_scenario_mcp/healthcheck.py \
+            src/exposure_scenario_mcp/server.py \
+            src/exposure_scenario_mcp/server_context.py \
+            src/exposure_scenario_mcp/server_errors.py \
+            src/exposure_scenario_mcp/server_runtime.py \
+            src/exposure_scenario_mcp/release_artifacts.py \
+            src/exposure_scenario_mcp/validation_reference_bands.py \
+            src/exposure_scenario_mcp/validation_time_series.py \
+            src/exposure_scenario_mcp/result_meta.py \
+            src/exposure_scenario_mcp/server_resources.py \
+            src/exposure_scenario_mcp/server_tools_core.py \
+            src/exposure_scenario_mcp/server_tools_integration.py \
+            src/exposure_scenario_mcp/server_tools_worker.py
 
   security:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          cache-suffix: py3.12
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Sync dependencies
-        run: uv sync --extra dev
+        run: uv sync --extra dev --locked
       - name: pip-audit
         run: uv run pip-audit --desc
 
@@ -58,11 +88,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          cache-suffix: py${{ matrix.python-version }}
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Sync dependencies
-        run: uv sync --extra dev
+        run: uv sync --extra dev --locked
       - name: Test
         run: uv run pytest
       - name: Build distribution artifacts
@@ -175,3 +209,5 @@ jobs:
         run: docker build -t exposure-scenario-mcp:ci .
       - name: Docker smoke test
         run: docker run --rm exposure-scenario-mcp:ci --help >/dev/null
+      - name: Docker startup healthcheck
+        run: docker run --rm exposure-scenario-mcp:ci --healthcheck >/dev/null

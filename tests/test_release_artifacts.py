@@ -6,6 +6,7 @@ from pathlib import Path
 from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 from exposure_scenario_mcp.release_artifacts import (
     distribution_artifacts_for_release,
+    sha256_path,
     validate_release_metadata_report,
 )
 
@@ -34,10 +35,10 @@ def test_distribution_artifacts_track_presence_without_pinning_local_build_diges
 
     assert [artifact.kind for artifact in artifacts] == ["wheel", "sdist"]
     assert all(artifact.present for artifact in artifacts)
-    assert artifacts[0].sha256 is None
-    assert artifacts[0].size_bytes is None
-    assert artifacts[1].sha256 is None
-    assert artifacts[1].size_bytes is None
+    assert artifacts[0].sha256 == sha256_path(dist_dir / artifacts[0].filename)
+    assert artifacts[0].size_bytes == (dist_dir / artifacts[0].filename).stat().st_size
+    assert artifacts[1].sha256 == sha256_path(dist_dir / artifacts[1].filename)
+    assert artifacts[1].size_bytes == (dist_dir / artifacts[1].filename).stat().st_size
 
 
 def test_validate_release_metadata_report_detects_integrity_mismatch(tmp_path: Path) -> None:

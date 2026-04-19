@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, cast
 
 from mcp.server.fastmcp import FastMCP
 from mcp.types import CallToolResult
@@ -10,11 +10,12 @@ from mcp.types import CallToolResult
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import WorkerTaskRoutingDecision, WorkerTaskRoutingInput
 from exposure_scenario_mcp.server_context import (
-    ServerContext,
+    ServerContextProvider,
     ToolErrorResult,
     ToolSuccessResult,
     read_only_tool_annotations,
 )
+from exposure_scenario_mcp.server_errors import unexpected_tool_error
 from exposure_scenario_mcp.worker_dermal import (
     ExecuteWorkerDermalAbsorbedDoseRequest,
     ExportWorkerDermalAbsorbedDoseBridgeRequest,
@@ -47,22 +48,23 @@ from exposure_scenario_mcp.worker_tier2 import (
 
 def register_worker_tools(
     mcp: FastMCP,
-    context: ServerContext,
+    context_provider: ServerContextProvider,
     success_result: ToolSuccessResult,
     error_result: ToolErrorResult,
 ) -> None:
     """Register worker routing, bridge, ingest, execute, and exchange tools."""
 
     @mcp.tool(
-        name="exposure_route_worker_task",
+        name="worker_route_task",
         annotations=read_only_tool_annotations("Route Worker Task"),
     )
-    def exposure_route_worker_task(
+    def worker_route_task(
         params: WorkerTaskRoutingInput,
     ) -> Annotated[CallToolResult, WorkerTaskRoutingDecision]:
         """Route a worker-tagged task to the best current MCP path or future adapter hook."""
 
         try:
+            context = context_provider()
             decision = route_worker_task(params, context.defaults_registry)
             return success_result(
                 f"Routed worker task for route {decision.route.value}.",
@@ -70,17 +72,34 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(unexpected_tool_error("worker_route_task", error))
 
     @mcp.tool(
-        name="exposure_export_worker_inhalation_tier2_bridge",
+        name="exposure_route_worker_task",
+        annotations=read_only_tool_annotations("Route Worker Task (Legacy Alias)"),
+    )
+    def exposure_route_worker_task(
+        params: WorkerTaskRoutingInput,
+    ) -> Annotated[CallToolResult, WorkerTaskRoutingDecision]:
+        """Legacy compatibility alias for worker_route_task."""
+
+        try:
+            return cast(CallToolResult, worker_route_task(params))
+        except Exception as error:
+            return error_result(unexpected_tool_error("exposure_route_worker_task", error))
+
+    @mcp.tool(
+        name="worker_export_inhalation_tier2_bridge",
         annotations=read_only_tool_annotations("Export Worker Inhalation Tier 2 Bridge"),
     )
-    def exposure_export_worker_inhalation_tier2_bridge(
+    def worker_export_inhalation_tier2_bridge(
         params: ExportWorkerInhalationTier2BridgeRequest,
     ) -> Annotated[CallToolResult, WorkerInhalationTier2BridgePackage]:
         """Export a normalized worker inhalation Tier 2 handoff package for a future adapter."""
 
         try:
+            context = context_provider()
             package = build_worker_inhalation_tier2_bridge(
                 params,
                 registry=context.defaults_registry,
@@ -91,6 +110,28 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("worker_export_inhalation_tier2_bridge", error)
+            )
+
+    @mcp.tool(
+        name="exposure_export_worker_inhalation_tier2_bridge",
+        annotations=read_only_tool_annotations(
+            "Export Worker Inhalation Tier 2 Bridge (Legacy Alias)"
+        ),
+    )
+    def exposure_export_worker_inhalation_tier2_bridge(
+        params: ExportWorkerInhalationTier2BridgeRequest,
+    ) -> Annotated[CallToolResult, WorkerInhalationTier2BridgePackage]:
+        """Legacy compatibility alias for worker_export_inhalation_tier2_bridge."""
+
+        try:
+            return cast(CallToolResult, worker_export_inhalation_tier2_bridge(params))
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_export_worker_inhalation_tier2_bridge", error)
+            )
 
     @mcp.tool(
         name="worker_ingest_inhalation_tier2_task",
@@ -102,6 +143,7 @@ def register_worker_tools(
         """Ingest a worker Tier 2 bridge payload and normalize it into an ART-side intake."""
 
         try:
+            context = context_provider()
             result = ingest_worker_inhalation_tier2_task(
                 params,
                 registry=context.defaults_registry,
@@ -112,6 +154,10 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("worker_ingest_inhalation_tier2_task", error)
+            )
 
     @mcp.tool(
         name="worker_execute_inhalation_tier2_task",
@@ -123,6 +169,7 @@ def register_worker_tools(
         """Execute a bounded ART-aligned worker inhalation screening estimate."""
 
         try:
+            context = context_provider()
             result = execute_worker_inhalation_tier2_task(
                 params,
                 registry=context.defaults_registry,
@@ -133,6 +180,10 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("worker_execute_inhalation_tier2_task", error)
+            )
 
     @mcp.tool(
         name="worker_export_inhalation_art_execution_package",
@@ -144,6 +195,7 @@ def register_worker_tools(
         """Export an ART-ready external execution package plus a result-import template."""
 
         try:
+            context = context_provider()
             result = export_worker_inhalation_art_execution_package(
                 params,
                 registry=context.defaults_registry,
@@ -154,6 +206,10 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("worker_export_inhalation_art_execution_package", error)
+            )
 
     @mcp.tool(
         name="worker_import_inhalation_art_execution_result",
@@ -165,6 +221,7 @@ def register_worker_tools(
         """Import a normalized external ART result into the governed worker execution schema."""
 
         try:
+            context = context_provider()
             result = import_worker_inhalation_art_execution_result(
                 params,
                 registry=context.defaults_registry,
@@ -175,17 +232,22 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("worker_import_inhalation_art_execution_result", error)
+            )
 
     @mcp.tool(
-        name="exposure_export_worker_dermal_absorbed_dose_bridge",
+        name="worker_export_dermal_absorbed_dose_bridge",
         annotations=read_only_tool_annotations("Export Worker Dermal Absorbed-Dose Bridge"),
     )
-    def exposure_export_worker_dermal_absorbed_dose_bridge(
+    def worker_export_dermal_absorbed_dose_bridge(
         params: ExportWorkerDermalAbsorbedDoseBridgeRequest,
     ) -> Annotated[CallToolResult, WorkerDermalAbsorbedDoseBridgePackage]:
         """Export a normalized worker dermal absorbed-dose and PPE handoff package."""
 
         try:
+            context = context_provider()
             package = build_worker_dermal_absorbed_dose_bridge(
                 params,
                 registry=context.defaults_registry,
@@ -196,6 +258,28 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("worker_export_dermal_absorbed_dose_bridge", error)
+            )
+
+    @mcp.tool(
+        name="exposure_export_worker_dermal_absorbed_dose_bridge",
+        annotations=read_only_tool_annotations(
+            "Export Worker Dermal Absorbed-Dose Bridge (Legacy Alias)"
+        ),
+    )
+    def exposure_export_worker_dermal_absorbed_dose_bridge(
+        params: ExportWorkerDermalAbsorbedDoseBridgeRequest,
+    ) -> Annotated[CallToolResult, WorkerDermalAbsorbedDoseBridgePackage]:
+        """Legacy compatibility alias for worker_export_dermal_absorbed_dose_bridge."""
+
+        try:
+            return cast(CallToolResult, worker_export_dermal_absorbed_dose_bridge(params))
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_export_worker_dermal_absorbed_dose_bridge", error)
+            )
 
     @mcp.tool(
         name="worker_ingest_dermal_absorbed_dose_task",
@@ -207,6 +291,7 @@ def register_worker_tools(
         """Ingest a dermal absorbed-dose bridge payload into a PPE-aware adapter envelope."""
 
         try:
+            context = context_provider()
             result = ingest_worker_dermal_absorbed_dose_task(
                 params,
                 registry=context.defaults_registry,
@@ -217,6 +302,10 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("worker_ingest_dermal_absorbed_dose_task", error)
+            )
 
     @mcp.tool(
         name="worker_execute_dermal_absorbed_dose_task",
@@ -228,6 +317,7 @@ def register_worker_tools(
         """Execute a bounded PPE-aware worker dermal absorbed-dose estimate."""
 
         try:
+            context = context_provider()
             result = execute_worker_dermal_absorbed_dose_task(
                 params,
                 registry=context.defaults_registry,
@@ -238,3 +328,7 @@ def register_worker_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("worker_execute_dermal_absorbed_dose_task", error)
+            )

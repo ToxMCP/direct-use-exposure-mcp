@@ -27,6 +27,7 @@ from exposure_scenario_mcp.models import (
     ValidationStatus,
     ValidationSummary,
 )
+from exposure_scenario_mcp.source_classification import is_heuristic_source_id
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
 from exposure_scenario_mcp.validation_time_series import ValidationTimeSeriesReferenceRegistry
 
@@ -812,7 +813,7 @@ def _heuristic_source_ids(registry: DefaultsRegistry) -> list[str]:
     return sorted(
         source["source_id"]
         for source in registry.payload.get("sources", [])
-        if str(source.get("source_id", "")).startswith("heuristic_")
+        if is_heuristic_source_id(str(source.get("source_id", "")))
     )
 
 
@@ -2312,7 +2313,9 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
     ]
     external_dataset_ids = [item.dataset_id for item in matched_datasets]
     heuristic_assumption_names = sorted(
-        item.name for item in scenario.assumptions if item.source.source_id.startswith("heuristic_")
+        item.name
+        for item in scenario.assumptions
+        if is_heuristic_source_id(item.source.source_id)
     )
     executed_validation_checks = _executed_validation_checks(scenario)
     validation_status = (

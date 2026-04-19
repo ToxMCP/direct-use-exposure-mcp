@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any, cast
+
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError
@@ -35,6 +37,7 @@ from exposure_scenario_mcp.integrations import (
 )
 from exposure_scenario_mcp.models import (
     AggregationMode,
+    AirflowDirectionality,
     BuildAggregateExposureScenarioInput,
     BuildExposureEnvelopeFromLibraryInput,
     BuildExposureEnvelopeInput,
@@ -70,13 +73,16 @@ from exposure_scenario_mcp.models import (
     ParticleNanoStatus,
     ParticleShapeFamily,
     ParticleSizeDomain,
+    ParticleSizeRegime,
     ParticleSolubilityClass,
     PhyschemContext,
     PopulationProfile,
     ProbabilityBoundsProfileSummary,
+    ProductAmountUnit,
     ProductUseProfile,
     ProvenanceBundle,
     QualityFlag,
+    ReleaseMediumFraction,
     ResidualAirReentryMode,
     Route,
     RouteBioavailabilityAdjustment,
@@ -119,6 +125,7 @@ from exposure_scenario_mcp.worker_dermal import (
     ExportWorkerDermalAbsorbedDoseBridgeRequest,
     WorkerDermalAbsorbedDoseExecutionOverrides,
     WorkerDermalContactPattern,
+    WorkerDermalModelFamily,
     WorkerDermalPpeState,
     build_worker_dermal_absorbed_dose_bridge,
     execute_worker_dermal_absorbed_dose_task,
@@ -134,6 +141,8 @@ from exposure_scenario_mcp.worker_tier2 import (
     WorkerArtExternalArtifact,
     WorkerArtExternalExecutionResult,
     WorkerInhalationTier2ExecutionOverrides,
+    WorkerTier2ModelFamily,
+    WorkerVentilationContext,
     build_worker_inhalation_tier2_bridge,
     execute_worker_inhalation_tier2_task,
     export_worker_inhalation_art_execution_package,
@@ -239,7 +248,7 @@ def _freeze_pbpk_input(pbpk_input):
     )
 
 
-def _replace_nested_string(value, target: str, replacement: str):
+def _replace_nested_string(value: Any, target: str, replacement: str) -> Any:
     if isinstance(value, dict):
         return {
             key: _replace_nested_string(item, target, replacement) for key, item in value.items()
@@ -251,7 +260,7 @@ def _replace_nested_string(value, target: str, replacement: str):
     return value
 
 
-def _replace_nested_exact_string(value, target: str, replacement: str):
+def _replace_nested_exact_string(value: Any, target: str, replacement: str) -> Any:
     if isinstance(value, dict):
         return {
             key: _replace_nested_exact_string(item, target, replacement)
@@ -264,7 +273,7 @@ def _replace_nested_exact_string(value, target: str, replacement: str):
     return value
 
 
-def _freeze_integrated_workflow_result(result) -> dict:
+def _freeze_integrated_workflow_result(result: Any) -> dict[str, Any]:
     frozen = result.model_dump(mode="json", by_alias=True)
     source_scenario_id = frozen["scenario"]["scenario_id"]
     source_generated_at = frozen["scenario"]["provenance"]["generated_at"]
@@ -273,10 +282,13 @@ def _freeze_integrated_workflow_result(result) -> dict:
         source_scenario_id,
         EXAMPLE_IDS["integrated_workflow_scenario"],
     )
-    return _replace_nested_exact_string(
-        frozen,
-        source_generated_at,
-        EXAMPLE_GENERATED_AT,
+    return cast(
+        dict[str, Any],
+        _replace_nested_exact_string(
+            frozen,
+            source_generated_at,
+            EXAMPLE_GENERATED_AT,
+        ),
     )
 
 
@@ -445,7 +457,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="leave_on",
             concentration_fraction=0.02,
             use_amount_per_event=1.5,
-            use_amount_unit="g",
+            use_amount_unit=ProductAmountUnit.G,
             use_events_per_day=3,
         ),
         population_profile=PopulationProfile(
@@ -488,7 +500,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="ingested",
             concentration_fraction=0.25,
             use_amount_per_event=0.8,
-            use_amount_unit="g",
+            use_amount_unit=ProductAmountUnit.G,
             dosageUnitCountPerEvent=4,
             dosageUnitMassG=0.2,
             dosageUnitLabel="pill",
@@ -515,7 +527,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="ingested",
             concentration_fraction=0.12,
             use_amount_per_event=0.6,
-            use_amount_unit="g",
+            use_amount_unit=ProductAmountUnit.G,
             dosageUnitCountPerEvent=2,
             dosageUnitMassG=0.3,
             dosageUnitLabel="capsule",
@@ -543,7 +555,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="ingested",
             concentration_fraction=0.3,
             use_amount_per_event=0.1,
-            use_amount_unit="g",
+            use_amount_unit=ProductAmountUnit.G,
             dosageUnitCountPerEvent=1,
             dosageUnitMassG=0.1,
             dosageUnitLabel="capsule",
@@ -571,7 +583,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="ingested",
             concentration_fraction=1.0,
             use_amount_per_event=2.0,
-            use_amount_unit="g",
+            use_amount_unit=ProductAmountUnit.G,
             use_events_per_day=2,
             intendedUseFamily=IntendedUseFamily.MEDICINAL,
             oralExposureContext=OralExposureContext.DIRECT_USE_MEDICINAL,
@@ -595,7 +607,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="leave_on",
             concentration_fraction=0.04,
             use_amount_per_event=1.2,
-            use_amount_unit="g",
+            use_amount_unit=ProductAmountUnit.G,
             use_events_per_day=3,
             intendedUseFamily=IntendedUseFamily.MEDICINAL,
             applicationStripLengthCm=3.0,
@@ -621,7 +633,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="leave_on",
             concentration_fraction=1.0,
             use_amount_per_event=0.75,
-            use_amount_unit="mL",
+            use_amount_unit=ProductAmountUnit.ML,
             density_g_per_ml=1.0,
             transfer_efficiency=1.0,
             use_events_per_day=1,
@@ -647,7 +659,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="leave_on",
             concentration_fraction=0.108,
             use_amount_per_event=14.0,
-            use_amount_unit="g",
+            use_amount_unit=ProductAmountUnit.G,
             transfer_efficiency=1.0,
             use_events_per_day=1,
             intendedUseFamily=IntendedUseFamily.MEDICINAL,
@@ -672,7 +684,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="leave_on",
             concentration_fraction=0.022,
             use_amount_per_event=1.0,
-            use_amount_unit="g",
+            use_amount_unit=ProductAmountUnit.G,
             transfer_efficiency=1.0,
             use_events_per_day=1,
             intendedUseFamily=IntendedUseFamily.MEDICINAL,
@@ -713,8 +725,8 @@ def build_examples() -> dict[str, dict]:
         regionScope="EU residential fringe",
         siteContext="treated outdoor perimeter near residential receptor",
         releaseMediaFractions=[
-            {"medium": "air", "fraction": 0.6},
-            {"medium": "soil", "fraction": 0.4},
+            ReleaseMediumFraction(medium="air", fraction=0.6),
+            ReleaseMediumFraction(medium="soil", fraction=0.4),
         ],
         treatmentOrRemovalFraction=0.1,
         evidenceSources=["ExampleFateEvidence:release-scenario-001"],
@@ -787,7 +799,7 @@ def build_examples() -> dict[str, dict]:
         chemical_id="DTXSID7020182",
         chemical_name="Example Solvent A",
         route=Route.INHALATION,
-        physchem_context=PhyschemContext(
+        physchemContext=PhyschemContext(
             vaporPressureMmhg=8.0,
             molecularWeightGPerMol=120.15,
             logKow=2.1,
@@ -801,7 +813,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="surface_contact",
             concentration_fraction=0.05,
             use_amount_per_event=12,
-            use_amount_unit="mL",
+            use_amount_unit=ProductAmountUnit.ML,
             use_events_per_day=1,
             room_volume_m3=25,
         ),
@@ -829,7 +841,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="surface_contact",
             concentration_fraction=0.005,
             use_amount_per_event=20,
-            use_amount_unit="mL",
+            use_amount_unit=ProductAmountUnit.ML,
             use_events_per_day=1,
             room_volume_m3=30,
             air_exchange_rate_per_hour=0.5,
@@ -841,9 +853,9 @@ def build_examples() -> dict[str, dict]:
             inhalation_rate_m3_per_hour=0.83,
             region="EU",
         ),
-        air_concentration_at_reentry_start_mg_per_m3=0.08,
-        additional_decay_rate_per_hour=0.03,
-        post_application_delay_hours=4.0,
+        airConcentrationAtReentryStartMgPerM3=0.08,
+        additionalDecayRatePerHour=0.03,
+        postApplicationDelayHours=4.0,
     )
     inhalation_residual_reentry_scenario = _freeze_scenario(
         enrich_scenario_uncertainty(
@@ -876,7 +888,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="surface_contact",
             concentration_fraction=0.005,
             use_amount_per_event=20,
-            use_amount_unit="mL",
+            use_amount_unit=ProductAmountUnit.ML,
             use_events_per_day=1,
             room_volume_m3=30,
             air_exchange_rate_per_hour=0.5,
@@ -906,7 +918,7 @@ def build_examples() -> dict[str, dict]:
         chemical_id="DTXSID7020182",
         chemical_name="Example Solvent A",
         route=Route.INHALATION,
-        physchem_context=PhyschemContext(
+        physchemContext=PhyschemContext(
             vaporPressureMmhg=8.0,
             molecularWeightGPerMol=120.15,
             logKow=2.1,
@@ -920,7 +932,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="surface_contact",
             concentration_fraction=0.05,
             use_amount_per_event=12,
-            use_amount_unit="mL",
+            use_amount_unit=ProductAmountUnit.ML,
             use_events_per_day=1,
             room_volume_m3=25,
         ),
@@ -933,8 +945,8 @@ def build_examples() -> dict[str, dict]:
         source_distance_m=0.35,
         spray_duration_seconds=8.0,
         near_field_volume_m3=2.0,
-        airflow_directionality="cross_draft",
-        particle_size_regime="coarse_spray",
+        airflow_directionality=AirflowDirectionality.CROSS_DRAFT,
+        particle_size_regime=ParticleSizeRegime.COARSE_SPRAY,
     )
     inhalation_tier1_request_two_zone = inhalation_tier1_request.model_copy(
         update={"solver_variant": "two_zone_v1"}
@@ -1466,11 +1478,11 @@ def build_examples() -> dict[str, dict]:
     )
     integrated_exposure_workflow_request = RunIntegratedExposureWorkflowInput(
         request=inhalation_request,
-        comp_tox_record=comp_tox_record,
-        cons_expo_records=[cons_expo_evidence_record],
-        evidence_records=[product_use_evidence_record],
-        pbpk_regimen_name="screening_daily_use",
-        pbpk_context_of_use="screening-brief",
+        compToxRecord=comp_tox_record,
+        consExpoRecords=[cons_expo_evidence_record],
+        evidenceRecords=[product_use_evidence_record],
+        pbpkRegimenName="screening_daily_use",
+        pbpkContextOfUse="screening-brief",
     )
     integrated_exposure_workflow_result = run_integrated_exposure_workflow(
         integrated_exposure_workflow_request,
@@ -1489,7 +1501,7 @@ def build_examples() -> dict[str, dict]:
             retention_type="surface_contact",
             concentration_fraction=0.03,
             use_amount_per_event=15,
-            use_amount_unit="mL",
+            use_amount_unit=ProductAmountUnit.ML,
             use_events_per_day=2,
         ),
         population_profile=PopulationProfile(
@@ -1503,7 +1515,7 @@ def build_examples() -> dict[str, dict]:
     )
     worker_task_routing_decision = route_worker_task(worker_task_routing_request, defaults_registry)
     worker_inhalation_tier2_bridge_request = ExportWorkerInhalationTier2BridgeRequest(
-        base_request=InhalationTier1ScenarioRequest(
+        baseRequest=InhalationTier1ScenarioRequest(
             chemical_id="DTXSID7020182",
             chemical_name="Example Solvent A",
             route=Route.INHALATION,
@@ -1515,7 +1527,7 @@ def build_examples() -> dict[str, dict]:
                 retention_type="surface_contact",
                 concentration_fraction=0.03,
                 use_amount_per_event=15,
-                use_amount_unit="mL",
+                use_amount_unit=ProductAmountUnit.ML,
                 use_events_per_day=2,
                 room_volume_m3=35,
                 air_exchange_rate_per_hour=2.0,
@@ -1531,18 +1543,18 @@ def build_examples() -> dict[str, dict]:
             source_distance_m=0.35,
             spray_duration_seconds=10.0,
             near_field_volume_m3=2.0,
-            airflow_directionality="cross_draft",
-            particle_size_regime="coarse_spray",
+            airflow_directionality=AirflowDirectionality.CROSS_DRAFT,
+            particle_size_regime=ParticleSizeRegime.COARSE_SPRAY,
         ),
-        target_model_family="art",
-        task_description="Worker trigger-spray disinfection task needing Tier 2 refinement",
-        workplace_setting="janitorial closet",
-        task_duration_hours=0.5,
-        ventilation_context="general_ventilation",
-        local_controls=["general ventilation", "task segregation"],
-        respiratory_protection="none",
-        emission_descriptor="short trigger-spray cleaning mist near the breathing zone",
-        context_of_use="worker-tier2-bridge",
+        targetModelFamily=WorkerTier2ModelFamily.ART,
+        taskDescription="Worker trigger-spray disinfection task needing Tier 2 refinement",
+        workplaceSetting="janitorial closet",
+        taskDurationHours=0.5,
+        ventilationContext=WorkerVentilationContext.GENERAL_VENTILATION,
+        localControls=["general ventilation", "task segregation"],
+        respiratoryProtection="none",
+        emissionDescriptor="short trigger-spray cleaning mist near the breathing zone",
+        contextOfUse="worker-tier2-bridge",
         notes=["Illustrative worker inhalation bridge package for a future ART-style adapter."],
     )
     worker_inhalation_tier2_bridge_package = build_worker_inhalation_tier2_bridge(
@@ -1559,12 +1571,12 @@ def build_examples() -> dict[str, dict]:
         generated_at=EXAMPLE_GENERATED_AT,
     )
     worker_inhalation_tier2_execution_request = ExecuteWorkerInhalationTier2Request(
-        adapter_request=worker_inhalation_tier2_adapter_request,
-        execution_overrides=WorkerInhalationTier2ExecutionOverrides(
-            control_factor=0.7,
-            respiratory_protection_factor=0.5,
+        adapterRequest=worker_inhalation_tier2_adapter_request,
+        executionOverrides=WorkerInhalationTier2ExecutionOverrides(
+            controlFactor=0.7,
+            respiratoryProtectionFactor=0.5,
         ),
-        context_of_use="worker-art-execution",
+        contextOfUse="worker-art-execution",
     )
     worker_inhalation_tier2_execution_result = execute_worker_inhalation_tier2_task(
         worker_inhalation_tier2_execution_request,
@@ -1572,8 +1584,8 @@ def build_examples() -> dict[str, dict]:
         generated_at=EXAMPLE_GENERATED_AT,
     )
     worker_art_execution_package_request = ExportWorkerArtExecutionPackageRequest(
-        adapter_request=worker_inhalation_tier2_adapter_request,
-        context_of_use="worker-art-external-exchange",
+        adapterRequest=worker_inhalation_tier2_adapter_request,
+        contextOfUse="worker-art-external-exchange",
     )
     worker_art_execution_package = export_worker_inhalation_art_execution_package(
         worker_art_execution_package_request,
@@ -1581,26 +1593,26 @@ def build_examples() -> dict[str, dict]:
         generated_at=EXAMPLE_GENERATED_AT,
     )
     worker_art_external_result = WorkerArtExternalExecutionResult(
-        source_system="ART",
-        source_run_id="art-run-001",
-        model_version="ART-1.5.0",
-        result_status="completed",
-        breathing_zone_concentration_mg_per_m3=0.72,
-        inhaled_mass_mg_per_day=1.575,
-        normalized_external_dose_mg_per_kg_day=0.021,
-        determinant_snapshot={
+        sourceSystem="ART",
+        sourceRunId="art-run-001",
+        modelVersion="ART-1.5.0",
+        resultStatus="completed",
+        breathingZoneConcentrationMgPerM3=0.72,
+        inhaledMassMgPerDay=1.575,
+        normalizedExternalDoseMgPerKgDay=0.021,
+        determinantSnapshot={
             "workplaceSettingType": "janitorial_closet_or_small_room",
             "ventilationDeterminant": "general_ventilation",
             "taskFamily": "janitorial_disinfectant_trigger_spray",
         },
-        quality_notes=[],
-        raw_artifacts=[
+        qualityNotes=[],
+        rawArtifacts=[
             WorkerArtExternalArtifact(
                 label="ART run summary",
                 locator="artifact://art-run-001/summary.json",
-                media_type="application/json",
-                adapter_hint=WorkerArtArtifactAdapterId.EXECUTION_REPORT_JSON_V1,
-                content_json={
+                mediaType="application/json",
+                adapterHint=WorkerArtArtifactAdapterId.EXECUTION_REPORT_JSON_V1,
+                contentJson={
                     "schemaVersion": "artWorkerExecutionReport.v1",
                     "run": {"id": "art-run-001", "modelVersion": "ART-1.5.0"},
                     "task": {"durationHours": 0.5},
@@ -1622,9 +1634,9 @@ def build_examples() -> dict[str, dict]:
         ],
     )
     worker_art_execution_result_import_request = ImportWorkerArtExecutionResultRequest(
-        adapter_request=worker_inhalation_tier2_adapter_request,
-        external_result=worker_art_external_result,
-        context_of_use="worker-art-external-import",
+        adapterRequest=worker_inhalation_tier2_adapter_request,
+        externalResult=worker_art_external_result,
+        contextOfUse="worker-art-external-import",
     )
     worker_art_execution_result_import = import_worker_inhalation_art_execution_result(
         worker_art_execution_result_import_request,
@@ -1632,7 +1644,7 @@ def build_examples() -> dict[str, dict]:
         generated_at=EXAMPLE_GENERATED_AT,
     )
     worker_dermal_absorbed_dose_bridge_request = ExportWorkerDermalAbsorbedDoseBridgeRequest(
-        base_request=ExposureScenarioRequest(
+        baseRequest=ExposureScenarioRequest(
             chemical_id="DTXSID7020182",
             chemical_name="Example Solvent A",
             route=Route.DERMAL,
@@ -1645,7 +1657,7 @@ def build_examples() -> dict[str, dict]:
                 retention_type="surface_contact",
                 concentration_fraction=0.02,
                 use_amount_per_event=10,
-                use_amount_unit="g",
+                use_amount_unit=ProductAmountUnit.G,
                 use_events_per_day=3,
                 exposure_duration_hours=0.75,
             ),
@@ -1657,16 +1669,16 @@ def build_examples() -> dict[str, dict]:
                 region="EU",
             ),
         ),
-        target_model_family="dermal_absorption_ppe",
-        task_description="Worker wet-wipe cleaning task with gloved hand contact",
-        workplace_setting="custodial closet",
-        contact_duration_hours=0.75,
-        contact_pattern=WorkerDermalContactPattern.SURFACE_TRANSFER,
-        exposed_body_areas=["hands"],
-        ppe_state=WorkerDermalPpeState.WORK_GLOVES,
-        control_measures=["task segregation", "prompt hand washing"],
-        surface_loading_context="wet cleaning cloth contact with surface residue transfer",
-        context_of_use="worker-dermal-bridge",
+        targetModelFamily=WorkerDermalModelFamily.DERMAL_ABSORPTION_PPE,
+        taskDescription="Worker wet-wipe cleaning task with gloved hand contact",
+        workplaceSetting="custodial closet",
+        contactDurationHours=0.75,
+        contactPattern=WorkerDermalContactPattern.SURFACE_TRANSFER,
+        exposedBodyAreas=["hands"],
+        ppeState=WorkerDermalPpeState.WORK_GLOVES,
+        controlMeasures=["task segregation", "prompt hand washing"],
+        surfaceLoadingContext="wet cleaning cloth contact with surface residue transfer",
+        contextOfUse="worker-dermal-bridge",
         notes=["Illustrative worker dermal bridge package for a future absorbed-dose workflow."],
     )
     worker_dermal_absorbed_dose_bridge_package = build_worker_dermal_absorbed_dose_bridge(
@@ -1683,9 +1695,9 @@ def build_examples() -> dict[str, dict]:
         generated_at=EXAMPLE_GENERATED_AT,
     )
     worker_dermal_absorbed_dose_execution_request = ExecuteWorkerDermalAbsorbedDoseRequest(
-        adapter_request=worker_dermal_absorbed_dose_adapter_request,
-        execution_overrides=WorkerDermalAbsorbedDoseExecutionOverrides(ppe_penetration_factor=0.3),
-        context_of_use="worker-dermal-execution",
+        adapterRequest=worker_dermal_absorbed_dose_adapter_request,
+        executionOverrides=WorkerDermalAbsorbedDoseExecutionOverrides(ppePenetrationFactor=0.3),
+        contextOfUse="worker-dermal-execution",
     )
     worker_dermal_absorbed_dose_execution_result = execute_worker_dermal_absorbed_dose_task(
         worker_dermal_absorbed_dose_execution_request,

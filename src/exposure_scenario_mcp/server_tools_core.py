@@ -60,11 +60,12 @@ from exposure_scenario_mcp.runtime import (
     export_pbpk_input,
 )
 from exposure_scenario_mcp.server_context import (
-    ServerContext,
+    ServerContextProvider,
     ToolErrorResult,
     ToolSuccessResult,
     read_only_tool_annotations,
 )
+from exposure_scenario_mcp.server_errors import unexpected_tool_error
 from exposure_scenario_mcp.uncertainty import (
     build_exposure_envelope,
     build_exposure_envelope_from_library,
@@ -75,7 +76,7 @@ from exposure_scenario_mcp.uncertainty import (
 
 def register_core_tools(
     mcp: FastMCP,
-    context: ServerContext,
+    context_provider: ServerContextProvider,
     success_result: ToolSuccessResult,
     error_result: ToolErrorResult,
 ) -> None:
@@ -91,6 +92,7 @@ def register_core_tools(
         """Build one deterministic dermal or oral screening scenario."""
 
         try:
+            context = context_provider()
             scenario = context.engine.build(params)
             return success_result(
                 f"Built {scenario.route.value} screening scenario {scenario.scenario_id}.",
@@ -98,6 +100,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_screening_exposure_scenario", error)
+            )
 
     @mcp.tool(
         name="exposure_build_inhalation_screening_scenario",
@@ -109,6 +115,7 @@ def register_core_tools(
         """Build one deterministic inhalation screening scenario."""
 
         try:
+            context = context_provider()
             scenario = context.engine.build(params)
             return success_result(
                 f"Built inhalation screening scenario {scenario.scenario_id}.",
@@ -116,6 +123,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_inhalation_screening_scenario", error)
+            )
 
     @mcp.tool(
         name="exposure_build_inhalation_residual_air_reentry_scenario",
@@ -127,6 +138,7 @@ def register_core_tools(
         """Build one deterministic residual-air reentry inhalation scenario."""
 
         try:
+            context = context_provider()
             scenario = build_inhalation_residual_air_reentry_scenario(
                 params,
                 context.defaults_registry,
@@ -138,6 +150,12 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error(
+                    "exposure_build_inhalation_residual_air_reentry_scenario", error
+                )
+            )
 
     @mcp.tool(
         name="exposure_build_inhalation_tier1_screening_scenario",
@@ -149,6 +167,7 @@ def register_core_tools(
         """Build one deterministic Tier 1 inhalation scenario using NF/FF screening semantics."""
 
         try:
+            context = context_provider()
             scenario = build_inhalation_tier_1_screening_scenario(
                 params,
                 context.defaults_registry,
@@ -161,6 +180,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_inhalation_tier1_screening_scenario", error)
+            )
 
     @mcp.tool(
         name="exposure_build_exposure_envelope",
@@ -172,6 +195,7 @@ def register_core_tools(
         """Build a deterministic Tier B envelope from named scenario archetypes."""
 
         try:
+            context = context_provider()
             envelope = build_exposure_envelope(
                 params,
                 context.engine,
@@ -183,6 +207,8 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(unexpected_tool_error("exposure_build_exposure_envelope", error))
 
     @mcp.tool(
         name="exposure_build_exposure_envelope_from_library",
@@ -194,6 +220,7 @@ def register_core_tools(
         """Build a deterministic Tier B envelope from a packaged archetype-library set."""
 
         try:
+            context = context_provider()
             envelope = build_exposure_envelope_from_library(
                 params,
                 context.engine,
@@ -206,6 +233,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_exposure_envelope_from_library", error)
+            )
 
     @mcp.tool(
         name="exposure_build_parameter_bounds_summary",
@@ -217,6 +248,7 @@ def register_core_tools(
         """Build a deterministic Tier B bounds summary from explicit parameter ranges."""
 
         try:
+            context = context_provider()
             summary = build_parameter_bounds_summary(
                 params,
                 context.engine,
@@ -228,6 +260,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_parameter_bounds_summary", error)
+            )
 
     @mcp.tool(
         name="exposure_build_probability_bounds_from_profile",
@@ -239,6 +275,7 @@ def register_core_tools(
         """Build a Tier C single-driver probability-bounds summary from a packaged profile."""
 
         try:
+            context = context_provider()
             summary = build_probability_bounds_from_profile(
                 params,
                 context.engine,
@@ -251,6 +288,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_probability_bounds_from_profile", error)
+            )
 
     @mcp.tool(
         name="exposure_build_probability_bounds_from_scenario_package",
@@ -262,6 +303,7 @@ def register_core_tools(
         """Build a Tier C coupled-driver probability-bounds summary from a packaged profile."""
 
         try:
+            context = context_provider()
             summary = build_probability_bounds_from_scenario_package(
                 params,
                 context.engine,
@@ -275,6 +317,12 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error(
+                    "exposure_build_probability_bounds_from_scenario_package", error
+                )
+            )
 
     @mcp.tool(
         name="exposure_build_aggregate_exposure_scenario",
@@ -286,6 +334,7 @@ def register_core_tools(
         """Combine component scenarios into an external or internal-equivalent summary."""
 
         try:
+            context = context_provider()
             summary = aggregate_scenarios(params, context.defaults_registry)
             return success_result(
                 f"Built aggregate exposure summary {summary.scenario_id}.",
@@ -293,6 +342,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_aggregate_exposure_scenario", error)
+            )
 
     @mcp.tool(
         name="exposure_export_pbpk_scenario_input",
@@ -304,6 +357,7 @@ def register_core_tools(
         """Export a PBPK-ready handoff object containing normalized dosing semantics."""
 
         try:
+            context = context_provider()
             pbpk_input = export_pbpk_input(params, context.defaults_registry)
             return success_result(
                 f"Exported PBPK handoff from scenario {pbpk_input.source_scenario_id}.",
@@ -311,6 +365,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_export_pbpk_scenario_input", error)
+            )
 
     @mcp.tool(
         name="exposure_export_pbpk_external_import_bundle",
@@ -321,44 +379,68 @@ def register_core_tools(
     ) -> Annotated[CallToolResult, PbpkExternalImportPackage]:
         """Export a PBPK MCP external-import payload template plus readiness report."""
 
-        package = build_pbpk_external_import_package(params)
-        return success_result(
-            f"Exported PBPK external-import template for scenario {params.scenario.scenario_id}.",
-            package,
-        )
+        try:
+            package = build_pbpk_external_import_package(params)
+            return success_result(
+                (
+                    "Exported PBPK external-import template for scenario "
+                    f"{params.scenario.scenario_id}."
+                ),
+                package,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_export_pbpk_external_import_bundle", error)
+            )
 
     @mcp.tool(
         name="exposure_export_toxclaw_evidence_bundle",
-        annotations=read_only_tool_annotations("Export ToxClaw Evidence Bundle"),
+        annotations=read_only_tool_annotations("Export Downstream Evidence Bundle"),
     )
     def exposure_export_toxclaw_evidence_bundle(
         params: ExportToxClawEvidenceBundleRequest,
     ) -> Annotated[CallToolResult, ToxClawEvidenceBundle]:
-        """Export deterministic ToxClaw evidence and report-section primitives."""
+        """Export deterministic downstream evidence and report-section primitives."""
 
-        bundle = build_toxclaw_evidence_bundle(params)
-        return success_result(
-            f"Exported ToxClaw evidence bundle for scenario {params.scenario.scenario_id}.",
-            bundle,
-        )
+        try:
+            bundle = build_toxclaw_evidence_bundle(params)
+            return success_result(
+                f"Exported downstream evidence bundle for scenario {params.scenario.scenario_id}.",
+                bundle,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_export_toxclaw_evidence_bundle", error)
+            )
 
     @mcp.tool(
         name="exposure_export_toxclaw_refinement_bundle",
-        annotations=read_only_tool_annotations("Export ToxClaw Refinement Bundle"),
+        annotations=read_only_tool_annotations("Export Downstream Refinement Bundle"),
     )
     def exposure_export_toxclaw_refinement_bundle(
         params: ExportToxClawRefinementBundleRequest,
     ) -> Annotated[CallToolResult, ToxClawExposureRefinementBundle]:
-        """Export a ToxClaw-facing exposure refinement delta with workflow hooks."""
+        """Export a downstream evidence-layer exposure refinement delta with workflow hooks."""
 
-        bundle = build_toxclaw_refinement_bundle(params)
-        return success_result(
-            (
-                "Exported ToxClaw refinement bundle for baseline "
-                f"{params.baseline.scenario_id} and comparison {params.comparison.scenario_id}."
-            ),
-            bundle,
-        )
+        try:
+            bundle = build_toxclaw_refinement_bundle(params)
+            return success_result(
+                (
+                    "Exported downstream refinement bundle for baseline "
+                    f"{params.baseline.scenario_id} and comparison {params.comparison.scenario_id}."
+                ),
+                bundle,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_export_toxclaw_refinement_bundle", error)
+            )
 
     @mcp.tool(
         name="exposure_compare_exposure_scenarios",
@@ -370,6 +452,7 @@ def register_core_tools(
         """Compare two scenarios and return dose deltas plus assumption-level change records."""
 
         try:
+            context = context_provider()
             comparison = compare_scenarios(params, context.defaults_registry)
             return success_result(
                 (
@@ -380,6 +463,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_compare_exposure_scenarios", error)
+            )
 
     @mcp.tool(
         name="exposure_compare_jurisdictional_scenarios",
@@ -391,6 +478,7 @@ def register_core_tools(
         """Compare the same scenario across jurisdictions and return dose variance plus drivers."""
 
         try:
+            context = context_provider()
             comparison = compare_jurisdictional_scenarios(params, engine=context.engine)
             return success_result(
                 (
@@ -402,6 +490,10 @@ def register_core_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_compare_jurisdictional_scenarios", error)
+            )
 
     @mcp.tool(
         name="exposure_run_verification_checks",
@@ -410,8 +502,14 @@ def register_core_tools(
     def exposure_run_verification_checks() -> Annotated[CallToolResult, VerificationSummaryReport]:
         """Build a deterministic verification summary over release and trust resources."""
 
-        report = build_verification_summary_report(context.defaults_registry)
-        return success_result(
-            f"Built verification summary with status {report.status}.",
-            report,
-        )
+        try:
+            context = context_provider()
+            report = build_verification_summary_report(context.defaults_registry)
+            return success_result(
+                f"Built verification summary with status {report.status}.",
+                report,
+            )
+        except ExposureScenarioError as error:
+            return error_result(error)
+        except Exception as error:
+            return error_result(unexpected_tool_error("exposure_run_verification_checks", error))

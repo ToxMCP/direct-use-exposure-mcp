@@ -36,16 +36,17 @@ from exposure_scenario_mcp.integrations import (
 )
 from exposure_scenario_mcp.models import ExposureScenarioRequest
 from exposure_scenario_mcp.server_context import (
-    ServerContext,
+    ServerContextProvider,
     ToolErrorResult,
     ToolSuccessResult,
     read_only_tool_annotations,
 )
+from exposure_scenario_mcp.server_errors import unexpected_tool_error
 
 
 def register_integration_tools(
     mcp: FastMCP,
-    context: ServerContext,
+    context_provider: ServerContextProvider,
     success_result: ToolSuccessResult,
     error_result: ToolErrorResult,
 ) -> None:
@@ -68,6 +69,10 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_assess_product_use_evidence_fit", error)
+            )
 
     @mcp.tool(
         name="exposure_apply_product_use_evidence",
@@ -90,6 +95,10 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_apply_product_use_evidence", error)
+            )
 
     @mcp.tool(
         name="exposure_build_product_use_evidence_from_consexpo",
@@ -108,6 +117,10 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_product_use_evidence_from_consexpo", error)
+            )
 
     @mcp.tool(
         name="exposure_build_product_use_evidence_from_sccs",
@@ -126,6 +139,10 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_product_use_evidence_from_sccs", error)
+            )
 
     @mcp.tool(
         name="exposure_build_product_use_evidence_from_sccs_opinion",
@@ -144,6 +161,12 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error(
+                    "exposure_build_product_use_evidence_from_sccs_opinion", error
+                )
+            )
 
     @mcp.tool(
         name="exposure_build_product_use_evidence_from_cosing",
@@ -162,6 +185,10 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_build_product_use_evidence_from_cosing", error)
+            )
 
     @mcp.tool(
         name="exposure_build_product_use_evidence_from_nanomaterial",
@@ -180,6 +207,12 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error(
+                    "exposure_build_product_use_evidence_from_nanomaterial", error
+                )
+            )
 
     @mcp.tool(
         name="exposure_build_product_use_evidence_from_synthetic_polymer_microparticle",
@@ -203,6 +236,13 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error(
+                    "exposure_build_product_use_evidence_from_synthetic_polymer_microparticle",
+                    error,
+                )
+            )
 
     @mcp.tool(
         name="exposure_reconcile_product_use_evidence",
@@ -225,6 +265,10 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(
+                unexpected_tool_error("exposure_reconcile_product_use_evidence", error)
+            )
 
     @mcp.tool(
         name="exposure_run_integrated_workflow",
@@ -236,6 +280,7 @@ def register_integration_tools(
         """Run the local evidence-to-scenario-to-PBPK workflow in one audited response."""
 
         try:
+            context = context_provider()
             result = run_integrated_exposure_workflow(
                 params,
                 registry=context.defaults_registry,
@@ -246,3 +291,5 @@ def register_integration_tools(
             )
         except ExposureScenarioError as error:
             return error_result(error)
+        except Exception as error:
+            return error_result(unexpected_tool_error("exposure_run_integrated_workflow", error))

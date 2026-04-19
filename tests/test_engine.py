@@ -2057,6 +2057,14 @@ def test_generic_volumetric_aerosol_spray_applies_pressurized_interpretation_fac
     assert assumptions["pressurized_aerosol_volume_interpretation_factor"].source.source_id == (
         "pressurized_aerosol_volume_interpretation_heuristics_2026"
     )
+    assert (
+        assumptions["pressurized_aerosol_volume_interpretation_factor"].governance.evidence_basis
+        == EvidenceBasis.HEURISTIC_DEFAULT
+    )
+    assert (
+        assumptions["pressurized_aerosol_volume_interpretation_factor"].governance.default_visibility
+        == DefaultVisibility.WARN
+    )
     assert constrained.external_dose.value == pytest.approx(
         baseline.external_dose.value * 0.35,
         abs=1e-8,
@@ -2069,6 +2077,13 @@ def test_generic_volumetric_aerosol_spray_applies_pressurized_interpretation_fac
         item.code == "pressurized_aerosol_volume_interpretation_defaulted"
         for item in constrained.quality_flags
     )
+    assert any(item.code == "heuristic_default_source" for item in constrained.quality_flags)
+    assert constrained.validation_summary is not None
+    assert set(constrained.validation_summary.heuristic_assumption_names) == {
+        "extrathoracic_swallow_fraction",
+        "pressurized_aerosol_volume_interpretation_factor",
+    }
+    assert "heuristic_defaults_active" in constrained.validation_summary.validation_gap_ids
 
 
 def test_personal_care_deodorant_aerosol_uses_subtype_pressurized_override() -> None:
@@ -2634,8 +2649,10 @@ def test_personal_care_pump_spray_uses_curated_rivm_cosmetics_override() -> None
     )
     assert aerosolized_fraction.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
     assert aerosolized_fraction.governance.evidence_grade == EvidenceGrade.GRADE_3
-    assert scenario.validation_summary.heuristic_assumption_names == []
-    assert "heuristic_defaults_active" not in scenario.validation_summary.validation_gap_ids
+    assert scenario.validation_summary.heuristic_assumption_names == [
+        "extrathoracic_swallow_fraction"
+    ]
+    assert "heuristic_defaults_active" in scenario.validation_summary.validation_gap_ids
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         5.38145026, rel=1e-6
     )
@@ -2680,8 +2697,10 @@ def test_personal_care_aerosol_spray_uses_curated_rivm_cosmetics_override() -> N
     )
     assert aerosolized_fraction.governance.evidence_basis == EvidenceBasis.CURATED_DEFAULT
     assert aerosolized_fraction.governance.evidence_grade == EvidenceGrade.GRADE_3
-    assert scenario.validation_summary.heuristic_assumption_names == []
-    assert "heuristic_defaults_active" not in scenario.validation_summary.validation_gap_ids
+    assert scenario.validation_summary.heuristic_assumption_names == [
+        "extrathoracic_swallow_fraction"
+    ]
+    assert "heuristic_defaults_active" in scenario.validation_summary.validation_gap_ids
     assert scenario.route_metrics["average_air_concentration_mg_per_m3"] == pytest.approx(
         28.09192891, rel=1e-6
     )
