@@ -155,9 +155,7 @@ def register_worker_tools(
         except ExposureScenarioError as error:
             return error_result(error)
         except Exception as error:
-            return error_result(
-                unexpected_tool_error("worker_ingest_inhalation_tier2_task", error)
-            )
+            return error_result(unexpected_tool_error("worker_ingest_inhalation_tier2_task", error))
 
     @mcp.tool(
         name="worker_execute_inhalation_tier2_task",

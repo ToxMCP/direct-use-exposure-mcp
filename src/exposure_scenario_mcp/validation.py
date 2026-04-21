@@ -2313,9 +2313,7 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
     ]
     external_dataset_ids = [item.dataset_id for item in matched_datasets]
     heuristic_assumption_names = sorted(
-        item.name
-        for item in scenario.assumptions
-        if is_heuristic_source_id(item.source.source_id)
+        item.name for item in scenario.assumptions if is_heuristic_source_id(item.source.source_id)
     )
     executed_validation_checks = _executed_validation_checks(scenario)
     validation_status = (

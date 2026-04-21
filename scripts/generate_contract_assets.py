@@ -40,6 +40,47 @@ def _write_text(path: Path, payload: str) -> None:
     path.write_text(payload, encoding="utf-8")
 
 
+def _preserve_published_distribution_artifacts(release_metadata: dict) -> dict:
+    generated_artifacts = release_metadata.get("distributionArtifacts")
+    if not isinstance(generated_artifacts, list) or not RELEASE_METADATA_PATH.exists():
+        return release_metadata
+
+    existing_metadata = json.loads(RELEASE_METADATA_PATH.read_text(encoding="utf-8"))
+    existing_artifacts = existing_metadata.get("distributionArtifacts")
+    if not isinstance(existing_artifacts, list):
+        return release_metadata
+
+    existing_by_kind = {
+        item.get("kind"): item for item in existing_artifacts if isinstance(item, dict)
+    }
+    merged_artifacts: list[dict] = []
+    for artifact in generated_artifacts:
+        if not isinstance(artifact, dict) or artifact.get("present") is True:
+            merged_artifacts.append(artifact)
+            continue
+
+        existing = existing_by_kind.get(artifact.get("kind"))
+        if (
+            isinstance(existing, dict)
+            and existing.get("present") is True
+            and isinstance(existing.get("sha256"), str)
+            and isinstance(existing.get("sizeBytes"), int)
+        ):
+            merged_artifacts.append(
+                {
+                    **artifact,
+                    "present": True,
+                    "sha256": existing["sha256"],
+                    "sizeBytes": existing["sizeBytes"],
+                }
+            )
+            continue
+
+        merged_artifacts.append(artifact)
+
+    return {**release_metadata, "distributionArtifacts": merged_artifacts}
+
+
 def _readonly_eval_bundle(
     *,
     defaults_manifest: dict,
@@ -53,8 +94,7 @@ def _readonly_eval_bundle(
     jurisdictional_comparison = examples["jurisdictional_comparison_result"]
 
     route_totals = {
-        item["route"]: item["total_dose"]["value"]
-        for item in aggregate_summary["per_route_totals"]
+        item["route"]: item["total_dose"]["value"] for item in aggregate_summary["per_route_totals"]
     }
     dominant_route = max(route_totals.items(), key=lambda item: item[1])[0]
     comparison_direction = "increase" if comparison_record["absolute_delta"] > 0 else "decrease"
@@ -156,6 +196,7 @@ def main() -> None:
     release_metadata = build_release_metadata_report(defaults_registry).model_dump(
         mode="json", by_alias=True
     )
+    release_metadata = _preserve_published_distribution_artifacts(release_metadata)
     _write_json(RELEASE_METADATA_PATH, release_metadata)
     defaults_manifest = {
         **defaults_registry.manifest(),
