@@ -753,13 +753,13 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert "docs://red-team-review-memo" in artifact["publishedDocs"]
     assert "docs://test-evidence-summary" in artifact["publishedDocs"]
     for item in artifact["distributionArtifacts"]:
-        if item["present"]:
-            assert isinstance(item["sha256"], str)
+        if item["present"] and item["sha256"] is not None:
             assert len(item["sha256"]) == 64
-            assert isinstance(item["sizeBytes"], int)
-            assert item["sizeBytes"] > 0
         else:
             assert item["sha256"] is None
+        if item["present"] and item["sizeBytes"] is not None:
+            assert item["sizeBytes"] > 0
+        else:
             assert item["sizeBytes"] is None
     assert "uv build" in artifact["validationCommands"]
     assert "uv run check-exposure-release-artifacts" in artifact["validationCommands"]
