@@ -60,25 +60,38 @@ def _preserve_published_distribution_artifacts(release_metadata: dict) -> dict:
             continue
 
         existing = existing_by_kind.get(artifact.get("kind"))
-        if (
-            isinstance(existing, dict)
-            and existing.get("present") is True
-            and isinstance(existing.get("sha256"), str)
-            and isinstance(existing.get("sizeBytes"), int)
-        ):
-            merged_artifacts.append(
-                {
-                    **artifact,
-                    "present": True,
-                    "sha256": existing["sha256"],
-                    "sizeBytes": existing["sizeBytes"],
-                }
-            )
+        if isinstance(existing, dict) and existing.get("present") is True:
+            merged = {**artifact, "present": True}
+            if "sha256" in existing:
+                merged["sha256"] = existing.get("sha256")
+            if "sizeBytes" in existing:
+                merged["sizeBytes"] = existing.get("sizeBytes")
+            merged_artifacts.append(merged)
             continue
 
         merged_artifacts.append(artifact)
 
     return {**release_metadata, "distributionArtifacts": merged_artifacts}
+
+
+def _normalize_committed_distribution_artifacts(release_metadata: dict) -> dict:
+    artifacts = release_metadata.get("distributionArtifacts")
+    if not isinstance(artifacts, list):
+        return release_metadata
+
+    normalized_artifacts: list[dict] = []
+    for artifact in artifacts:
+        if not isinstance(artifact, dict):
+            normalized_artifacts.append(artifact)
+            continue
+
+        if artifact.get("kind") == "sdist" and artifact.get("present") is True:
+            normalized_artifacts.append({**artifact, "sha256": None, "sizeBytes": None})
+            continue
+
+        normalized_artifacts.append(artifact)
+
+    return {**release_metadata, "distributionArtifacts": normalized_artifacts}
 
 
 def _readonly_eval_bundle(
@@ -197,6 +210,7 @@ def main() -> None:
         mode="json", by_alias=True
     )
     release_metadata = _preserve_published_distribution_artifacts(release_metadata)
+    release_metadata = _normalize_committed_distribution_artifacts(release_metadata)
     _write_json(RELEASE_METADATA_PATH, release_metadata)
     defaults_manifest = {
         **defaults_registry.manifest(),

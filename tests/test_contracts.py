@@ -748,11 +748,17 @@ def test_release_metadata_report_matches_schema_and_published_artifact() -> None
     assert "docs://capability-maturity-matrix" in artifact["publishedDocs"]
     assert "docs://red-team-review-memo" in artifact["publishedDocs"]
     assert "docs://test-evidence-summary" in artifact["publishedDocs"]
-    for item in artifact["distributionArtifacts"]:
-        assert isinstance(item["sha256"], str)
-        assert len(item["sha256"]) == 64
-        assert isinstance(item["sizeBytes"], int)
-        assert item["sizeBytes"] > 0
+    artifacts_by_kind = {item["kind"]: item for item in artifact["distributionArtifacts"]}
+    wheel_artifact = artifacts_by_kind["wheel"]
+    assert isinstance(wheel_artifact["sha256"], str)
+    assert len(wheel_artifact["sha256"]) == 64
+    assert isinstance(wheel_artifact["sizeBytes"], int)
+    assert wheel_artifact["sizeBytes"] > 0
+
+    sdist_artifact = artifacts_by_kind["sdist"]
+    assert sdist_artifact["present"] is True
+    assert sdist_artifact["sha256"] is None
+    assert sdist_artifact["sizeBytes"] is None
     assert "uv build" in artifact["validationCommands"]
     assert "uv run check-exposure-release-artifacts" in artifact["validationCommands"]
     assert report["contractSchemaCount"] >= 1
