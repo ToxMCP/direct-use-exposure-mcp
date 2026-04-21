@@ -366,9 +366,7 @@ def register_core_tools(
         except ExposureScenarioError as error:
             return error_result(error)
         except Exception as error:
-            return error_result(
-                unexpected_tool_error("exposure_export_pbpk_scenario_input", error)
-            )
+            return error_result(unexpected_tool_error("exposure_export_pbpk_scenario_input", error))
 
     @mcp.tool(
         name="exposure_export_pbpk_external_import_bundle",
@@ -464,9 +462,7 @@ def register_core_tools(
         except ExposureScenarioError as error:
             return error_result(error)
         except Exception as error:
-            return error_result(
-                unexpected_tool_error("exposure_compare_exposure_scenarios", error)
-            )
+            return error_result(unexpected_tool_error("exposure_compare_exposure_scenarios", error))
 
     @mcp.tool(
         name="exposure_compare_jurisdictional_scenarios",

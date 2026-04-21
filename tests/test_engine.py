@@ -2062,7 +2062,9 @@ def test_generic_volumetric_aerosol_spray_applies_pressurized_interpretation_fac
         == EvidenceBasis.HEURISTIC_DEFAULT
     )
     assert (
-        assumptions["pressurized_aerosol_volume_interpretation_factor"].governance.default_visibility
+        assumptions[
+            "pressurized_aerosol_volume_interpretation_factor"
+        ].governance.default_visibility
         == DefaultVisibility.WARN
     )
     assert constrained.external_dose.value == pytest.approx(
