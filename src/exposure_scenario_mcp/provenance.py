@@ -26,7 +26,10 @@ from exposure_scenario_mcp.models import (
     UncertaintyType,
 )
 from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
-from exposure_scenario_mcp.source_classification import is_heuristic_source_id
+from exposure_scenario_mcp.source_classification import (
+    is_route_semantic_source_id,
+    is_warning_heuristic_source_id,
+)
 
 SYSTEM_SOURCE = AssumptionSourceReference(
     source_id="exposure_scenario_mcp",
@@ -355,7 +358,9 @@ class AssumptionTracker:
     ) -> EvidenceGrade | None:
         if source_kind != SourceKind.DEFAULT_REGISTRY:
             return None
-        if is_heuristic_source_id(source.source_id):
+        if is_route_semantic_source_id(source.source_id):
+            return EvidenceGrade.GRADE_2
+        if is_warning_heuristic_source_id(source.source_id):
             return EvidenceGrade.GRADE_1
         for prefix, grade in DEFAULT_SOURCE_GRADE_HINTS.items():
             if source.source_id.startswith(prefix):
@@ -371,7 +376,7 @@ class AssumptionTracker:
             return EvidenceBasis.EXPLICIT_INPUT
         if source_kind == SourceKind.DERIVED:
             return EvidenceBasis.DERIVED
-        if is_heuristic_source_id(source.source_id):
+        if is_warning_heuristic_source_id(source.source_id):
             return EvidenceBasis.HEURISTIC_DEFAULT
         return EvidenceBasis.CURATED_DEFAULT
 
@@ -380,7 +385,9 @@ class AssumptionTracker:
         source_kind: SourceKind,
         source: AssumptionSourceReference,
     ) -> DefaultVisibility:
-        if source_kind == SourceKind.DEFAULT_REGISTRY and is_heuristic_source_id(source.source_id):
+        if source_kind == SourceKind.DEFAULT_REGISTRY and is_warning_heuristic_source_id(
+            source.source_id
+        ):
             return DefaultVisibility.WARN
         return DefaultVisibility.SILENT_TRACEABLE
 
@@ -393,7 +400,7 @@ class AssumptionTracker:
             return ApplicabilityStatus.USER_ASSERTED
         if source_kind == SourceKind.DERIVED:
             return ApplicabilityStatus.DERIVED
-        if is_heuristic_source_id(source.source_id):
+        if is_warning_heuristic_source_id(source.source_id):
             return ApplicabilityStatus.SCREENING_EXTRAPOLATION
         return ApplicabilityStatus.IN_DOMAIN
 
@@ -489,7 +496,7 @@ class AssumptionTracker:
                 message=f"Default value applied for '{name}'.",
             )
         )
-        if is_heuristic_source_id(source.source_id):
+        if is_warning_heuristic_source_id(source.source_id):
             self.quality_flags.append(
                 QualityFlag(
                     code="heuristic_default_source",

@@ -6,8 +6,8 @@
   "serverName": "exposure_scenario_mcp",
   "serverVersion": "0.2.0",
   "defaultsVersion": "2026.04.15.v35",
-  "readinessStatus": "ready_with_known_limitations",
-  "securityReviewStatus": "acceptable_with_warnings",
+  "readinessStatus": "ready",
+  "securityReviewStatus": "acceptable",
   "benchmarkCaseCount": 43,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
@@ -62,16 +62,16 @@
       "filename": "exposure_scenario_mcp-0.2.0-py3-none-any.whl",
       "relativePath": "dist/exposure_scenario_mcp-0.2.0-py3-none-any.whl",
       "present": true,
-      "sha256": "cac08443ca8e4fe3ab44c45389188894db91a34a157ce066477bce08b101bb09",
-      "sizeBytes": 361191
+      "sha256": "0484105efee1bef6f11b08b44ef1850c29a7413254cc3d90d29ec49e7ed94823",
+      "sizeBytes": 392113
     },
     {
       "kind": "sdist",
       "filename": "exposure_scenario_mcp-0.2.0.tar.gz",
       "relativePath": "dist/exposure_scenario_mcp-0.2.0.tar.gz",
       "present": true,
-      "sha256": "f7548a362e390f57ba02f7e4e65362331d3ff5ec13698e7f7c883265727a9867",
-      "sizeBytes": 1282336
+      "sha256": "c6162ea5a151fea271317faae7d9f820262624d9328cba24f3c7c0cf1a143eaf",
+      "sizeBytes": 1332283
     }
   ],
   "publishedDocs": [
@@ -105,7 +105,7 @@
   "knownLimitations": [
     "This is a deterministic-first public server; no probabilistic population engine is shipped.",
     "The module does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.",
-    "Remote `streamable-http` deployment requires external authentication and origin controls.",
+    "Remote `streamable-http` deployment now supports built-in bearer-token auth, origin allow-lists, and request-size limits, but still relies on gateway- or host-layer TLS, rate limiting, and network scoping.",
     "Some screening factors still resolve from heuristic defaults packs and should be treated as flagged screening-level assumptions until curated replacements are added.",
     "PBPK request alignment should be re-validated whenever PBPK MCP changes its published contract version or request model."
   ]

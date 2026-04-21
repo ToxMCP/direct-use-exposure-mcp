@@ -3,7 +3,7 @@
 [![CI](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![Release](https://img.shields.io/github/v/release/ToxMCP/direct-use-exposure-mcp?sort=semver)](https://github.com/ToxMCP/direct-use-exposure-mcp/releases)
-[![Status](https://img.shields.io/badge/Status-Ready%20with%20Known%20Limitations-2E8B57)](#release-verification)
+[![Status](https://img.shields.io/badge/Status-Ready-2E8B57)](#release-verification)
 [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
 > Part of **ToxMCP** Suite → https://github.com/ToxMCP/toxmcp
@@ -353,6 +353,11 @@ left out of the public overview until the downstream consumer ships.
 
 - `exposure_refinement_playbook`
 - `exposure_pbpk_handoff_checklist`
+- `exposure_evidence_reconciliation_brief`
+- `exposure_integrated_workflow_operator`
+- `exposure_inhalation_tier1_triage`
+- `exposure_worker_bridge_handoff`
+- `exposure_jurisdictional_review`
 
 ## Quick start
 
@@ -400,9 +405,15 @@ Current published surface from `docs/contracts/contract_manifest.json`:
 
 - `39` tools
 - `65` resources
-- `2` prompts
+- `7` prompts
 - `153` schemas
 - `98` examples
+
+Starter operator material:
+
+- [Guided Tutorial](./docs/tutorials/regulatory_screening_walkthrough.md)
+- [Release Runbook](./docs/release_runbook.md)
+- [Maintainer Operating Model](./docs/maintainer_operating_model.md)
 
 Legacy root-level planning and PRD artifacts are intentionally excluded from the public repo
 surface and are not part of the live implementation backlog.

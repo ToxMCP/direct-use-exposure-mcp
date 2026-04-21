@@ -1,0 +1,132 @@
+{
+  "cases": [
+    {
+      "kind": "comptox",
+      "input": {
+        "chemical_id": "DTXSID123",
+        "preferred_name": "Benchmark Solvent A",
+        "casrn": "123-45-6",
+        "product_use_categories": [
+          "personal_care"
+        ],
+        "evidence_sources": [
+          "CompTox:mock-record-001"
+        ]
+      },
+      "expected": {
+        "source_kind": "comptox",
+        "product_use_categories": [
+          "personal_care"
+        ],
+        "source_name": "EPA CompTox"
+      }
+    },
+    {
+      "kind": "consexpo",
+      "input": {
+        "chemical_id": "DTXSID123",
+        "preferred_name": "Diazinon",
+        "casrn": "333-41-5",
+        "factSheetId": "pest_control_products_fact_sheet_2006",
+        "factSheetTitle": "ConsExpo Pest Control Products Fact Sheet",
+        "factSheetVersion": "RIVM report 320005002 / 2006",
+        "factSheetLocator": "https://www.rivm.nl/bibliotheek/rapporten/320005002.pdf",
+        "productGroup": "pest_control_products",
+        "productSubgroup": "Indoor trigger spray insecticide",
+        "modelFamily": "spray",
+        "supportedRoutes": [
+          "dermal",
+          "inhalation"
+        ],
+        "physical_forms": [
+          "spray"
+        ],
+        "application_methods": [
+          "trigger_spray"
+        ],
+        "retention_types": [
+          "surface_contact"
+        ],
+        "physchem_summary": {
+          "density_g_per_ml": 1.08
+        }
+      },
+      "expected": {
+        "source_kind": "consexpo",
+        "source_name": "RIVM ConsExpo",
+        "product_subtype": "indoor_surface_insecticide"
+      }
+    },
+    {
+      "kind": "sccs",
+      "input": {
+        "chemical_id": "DTXSID123",
+        "preferred_name": "Example Cosmetic Ingredient",
+        "casrn": "123-45-6",
+        "guidanceId": "sccs_nog_12th_revision_face_cream_2023",
+        "guidanceTitle": "SCCS Notes of Guidance for the Testing of Cosmetic Ingredients and their Safety Evaluation, 12th revision",
+        "guidanceVersion": "12th revision / 2023",
+        "guidanceLocator": "https://health.ec.europa.eu/publications/sccs-notes-guidance-testing-cosmetic-ingredients-and-their-safety-evaluation-12th-revision_en",
+        "cosmeticProductType": "Face cream",
+        "productFamily": "skin_care",
+        "tableReferences": [
+          "Table 3A",
+          "Table 4"
+        ],
+        "supportedRoutes": [
+          "dermal"
+        ],
+        "physical_forms": [
+          "cream"
+        ],
+        "application_methods": [
+          "hand_application"
+        ],
+        "retention_types": [
+          "leave_on"
+        ],
+        "productUseProfileOverrides": {
+          "use_amount_per_event": 0.71962617,
+          "use_amount_unit": "g",
+          "use_events_per_day": 2.14
+        },
+        "populationProfileOverrides": {
+          "body_weight_kg": 63.79453,
+          "exposed_surface_area_cm2": 565.0,
+          "region": "EU"
+        }
+      },
+      "expected": {
+        "source_kind": "sccs",
+        "source_name": "EU SCCS",
+        "product_subtype": "face_cream"
+      }
+    },
+    {
+      "kind": "cosing",
+      "input": {
+        "chemical_id": "DTXSID123",
+        "preferred_name": "Titanium dioxide",
+        "inci_name": "Titanium Dioxide",
+        "casrn": "13463-67-7",
+        "ec_number": "236-675-5",
+        "cosing_locator": "https://single-market-economy.ec.europa.eu/",
+        "functions": [
+          "UV filter",
+          "colorant"
+        ],
+        "annex_references": [
+          "Annex VI"
+        ],
+        "nanomaterial_flag": true
+      },
+      "expected": {
+        "source_kind": "cosing",
+        "product_use_categories": [
+          "personal_care"
+        ],
+        "source_locator": "https://single-market-economy.ec.europa.eu/"
+      }
+    }
+  ]
+}

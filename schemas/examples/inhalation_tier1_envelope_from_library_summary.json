@@ -142,7 +142,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -309,7 +309,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -654,7 +654,7 @@
               "title": "ECHA consumer inhalation room-default benchmark",
               "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
               "version": "public ECHA dossier entry accessed 2026-03-24",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -689,7 +689,7 @@
               "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -899,7 +899,7 @@
               "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -934,7 +934,7 @@
               "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -1574,7 +1574,7 @@
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.2.0",
           "defaults_version": "2026.04.15.v35",
-          "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+          "defaults_hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first exposure engine.",
@@ -2235,7 +2235,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2402,7 +2402,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2747,7 +2747,7 @@
               "title": "ECHA consumer inhalation room-default benchmark",
               "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
               "version": "public ECHA dossier entry accessed 2026-03-24",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2782,7 +2782,7 @@
               "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -2992,7 +2992,7 @@
               "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3027,7 +3027,7 @@
               "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -3667,7 +3667,7 @@
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.2.0",
           "defaults_version": "2026.04.15.v35",
-          "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+          "defaults_hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first exposure engine.",
@@ -4328,7 +4328,7 @@
               "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
               "locator": "docs://defaults-evidence-map#population-defaults",
               "version": "2026.03.25.v6",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -4495,7 +4495,7 @@
               "title": "RIVM Cosmetics Fact Sheet airborne fraction defaults for cosmetic spray products",
               "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
               "version": "RIVM report 2025-0099 / 2025",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -4840,7 +4840,7 @@
               "title": "ECHA consumer inhalation room-default benchmark",
               "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
               "version": "public ECHA dossier entry accessed 2026-03-24",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -4875,7 +4875,7 @@
               "title": "Direct-Use Exposure MCP bounded extrathoracic oral-handoff heuristics for spray inhalation screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -5085,7 +5085,7 @@
               "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -5120,7 +5120,7 @@
               "title": "Direct-Use Exposure MCP bounded Tier 1 local-entrainment heuristics for NF/FF spray screening",
               "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
               "version": "2026.04.12.v1",
-              "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+              "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
             },
             "confidence": "registry_default",
             "default_applied": true,
@@ -5760,7 +5760,7 @@
           "plugin_id": "inhalation_tier_1_nf_ff_service",
           "plugin_version": "0.2.0",
           "defaults_version": "2026.04.15.v35",
-          "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+          "defaults_hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb",
           "generated_at": "2026-03-24T00:00:00+00:00",
           "notes": [
             "Deterministic-first exposure engine.",
@@ -6538,7 +6538,7 @@
     "plugin_id": "deterministic_envelope_service",
     "plugin_version": "0.2.0",
     "defaults_version": "2026.04.15.v35",
-    "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+    "defaults_hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first exposure engine.",

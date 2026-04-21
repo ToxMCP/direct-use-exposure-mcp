@@ -1,0 +1,28 @@
+name: Monthly Maintenance
+
+on:
+  schedule:
+    - cron: "0 8 1 * *"
+  workflow_dispatch:
+
+jobs:
+  maintenance-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          cache-suffix: py3.12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Sync dependencies
+        run: uv sync --extra dev --locked
+      - name: Startup healthcheck
+        run: uv run exposure-scenario-mcp --healthcheck
+      - name: Full-tree mypy debt check
+        run: uv run python scripts/check_mypy_baseline.py
+      - name: Dependency audit
+        run: uv run pip-audit --desc
