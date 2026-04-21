@@ -45,6 +45,7 @@ exclude = [
   "/.ruff_cache/**",
   "/dist",
   "/dist/**",
+  "/docs/releases/*.release_metadata.json",
   "/output",
   "/output/**",
   "/tmp",
