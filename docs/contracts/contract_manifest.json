@@ -301,6 +301,10 @@
       "description": "Guide to hardening remote streamable-http deployments with external auth, TLS, origin controls, and logging."
     },
     {
+      "uri": "docs://http-audit-operations-guide",
+      "description": "Guide to retaining, replaying, and debugging streamable-http audit events."
+    },
+    {
       "uri": "docs://provenance-policy",
       "description": "Provenance and assumption-emission policy for auditability."
     },

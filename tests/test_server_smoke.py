@@ -83,6 +83,14 @@ def test_read_resource_contracts_manifest(server):
     assert len(payload["tools"]) >= 35
 
 
+def test_read_resource_http_audit_operations_guide(server):
+    contents = _run(server.read_resource("docs://http-audit-operations-guide"))
+    assert len(contents) == 1
+    text = contents[0].content
+    assert "HTTP Audit Operations Guide" in text
+    assert "normalizedInputDigestSha256" in text
+
+
 def test_read_resource_invalid_schema_returns_error_json(server):
     with pytest.raises(McpError) as exc_info:
         _run(server.read_resource("schemas://nonexistent_schema"))

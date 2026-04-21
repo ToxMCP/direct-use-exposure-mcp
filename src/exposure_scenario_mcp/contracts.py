@@ -793,6 +793,12 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                 ),
             ),
             ContractResourceEntry(
+                uri="docs://http-audit-operations-guide",
+                description=(
+                    "Guide to retaining, replaying, and debugging streamable-http audit events."
+                ),
+            ),
+            ContractResourceEntry(
                 uri="docs://provenance-policy",
                 description="Provenance and assumption-emission policy for auditability.",
             ),
@@ -1453,6 +1459,7 @@ def build_security_provenance_review_report(
             references=[
                 "docs://operator-guide",
                 "docs://deployment-hardening-guide",
+                "docs://http-audit-operations-guide",
                 "docs://troubleshooting",
             ],
         ),
@@ -1545,6 +1552,7 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
             "docs://release-readiness",
             "docs://release-trust-checklist",
             "docs://deployment-hardening-guide",
+            "docs://http-audit-operations-guide",
             "docs://security-provenance-review",
             "docs://test-evidence-summary",
             "docs://verification-summary",

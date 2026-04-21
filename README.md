@@ -307,6 +307,7 @@ left out of the public overview until the downstream consumer ships.
 - `docs://defaults-curation-report`
 - `docs://operator-guide`
 - `docs://deployment-hardening-guide`
+- `docs://http-audit-operations-guide`
 - `docs://provenance-policy`
 - `docs://result-status-semantics`
 - `docs://uncertainty-framework`
@@ -404,7 +405,7 @@ runtime defaults/registries, and verifies a representative core/integration/work
 Current published surface from `docs/contracts/contract_manifest.json`:
 
 - `39` tools
-- `65` resources
+- `66` resources
 - `7` prompts
 - `153` schemas
 - `98` examples

@@ -7,7 +7,12 @@ import anyio
 from starlette.responses import JSONResponse
 from starlette.testclient import TestClient
 
-from exposure_scenario_mcp.http_audit import load_http_audit_events, summarize_http_audit_events
+from exposure_scenario_mcp.http_audit import (
+    build_http_audit_replay_report,
+    build_http_audit_runtime_context,
+    load_http_audit_events,
+    summarize_http_audit_events,
+)
 from exposure_scenario_mcp.http_security import (
     ConcurrencyLimitMiddleware,
     RequestTimeoutMiddleware,
@@ -126,11 +131,19 @@ def test_http_audit_sink_records_redacted_stable_digests(tmp_path: Path) -> None
     assert events[0]["qualityFlagCodes"] == ["review-warning"]
     assert events[0]["limitationCodes"] == ["screening-only"]
     assert events[0]["manualReviewRequired"] is True
+    reproducibility = events[0]["reproducibility"]
+    assert reproducibility["releaseVersion"]
+    assert reproducibility["defaultsVersion"]
+    assert len(reproducibility["defaultsHashSha256"]) == 64
+    assert reproducibility["defaultsManifestResource"] == "defaults://manifest"
+    assert reproducibility["releaseMetadataResource"] == "release://metadata-report"
 
     summary = summarize_http_audit_events(events)
     assert summary["totalEvents"] == 2
     assert summary["manualReviewEventCount"] == 2
     assert summary["operationCounts"]["exposure_run_verification_checks"] == 2
+    assert summary["defaultsVersionCounts"][reproducibility["defaultsVersion"]] == 2
+    assert summary["releaseVersionCounts"][reproducibility["releaseVersion"]] == 2
 
 
 def test_http_audit_sink_records_rpc_failures(tmp_path: Path) -> None:
@@ -180,3 +193,66 @@ def test_concurrency_limit_middleware_rejects_when_capacity_is_exhausted() -> No
 
     assert response.status_code == 503
     assert response.json()["error"] == "server_busy"
+
+
+def test_http_audit_replay_report_filters_by_request_id_and_digest(tmp_path: Path) -> None:
+    audit_path = tmp_path / "http-audit-replay.jsonl"
+    app = apply_http_boundary_security(
+        _tool_response_app,
+        build_http_boundary_security_config(
+            max_request_bytes=0,
+            request_timeout_seconds=0,
+            max_concurrency=0,
+            audit_log_path=audit_path,
+        ),
+    )
+
+    with TestClient(app) as client:
+        first = client.post(
+            "/",
+            json={
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "tools/call",
+                "params": {"name": "exposure_run_verification_checks"},
+            },
+        )
+        client.post(
+            "/",
+            json={
+                "jsonrpc": "2.0",
+                "id": 2,
+                "method": "tools/call",
+                "params": {"name": "exposure_run_verification_checks"},
+            },
+        )
+
+    events = load_http_audit_events(audit_path)
+    replay = build_http_audit_replay_report(
+        events,
+        request_id=first.headers["x-exposure-audit-request-id"],
+    )
+
+    assert replay["matchedEventCount"] == 1
+    assert replay["requestIds"] == [first.headers["x-exposure-audit-request-id"]]
+    assert replay["reproducibility"]["defaultsManifestResource"] == "defaults://manifest"
+    assert replay["reproducibility"]["releaseMetadataResource"] == "release://metadata-report"
+
+    digest_replay = build_http_audit_replay_report(
+        events,
+        normalized_input_digest=events[0]["normalizedInputDigestSha256"],
+    )
+    assert digest_replay["matchedEventCount"] == 2
+    assert digest_replay["reproducibility"]["defaultsVersions"]
+
+
+def test_http_audit_runtime_context_tracks_release_metadata(tmp_path: Path) -> None:
+    release_metadata_path = tmp_path / "release.json"
+    release_metadata_path.write_text('{"releaseVersion":"test"}', encoding="utf-8")
+
+    runtime_context = build_http_audit_runtime_context(release_metadata_path=release_metadata_path)
+
+    assert runtime_context["serverVersion"]
+    assert runtime_context["releaseVersion"]
+    assert runtime_context["releaseMetadataPath"] == str(release_metadata_path)
+    assert len(runtime_context["releaseMetadataSha256"]) == 64

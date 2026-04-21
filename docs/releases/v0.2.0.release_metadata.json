@@ -80,6 +80,7 @@
     "docs://release-readiness",
     "docs://release-trust-checklist",
     "docs://deployment-hardening-guide",
+    "docs://http-audit-operations-guide",
     "docs://security-provenance-review",
     "docs://test-evidence-summary",
     "docs://verification-summary",

@@ -36,6 +36,7 @@ from exposure_scenario_mcp.guidance import (
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
     herbal_medicinal_routing_guide,
+    http_audit_operations_guide,
     inhalation_residual_air_reentry_guide,
     inhalation_tier_upgrade_guide,
     integrated_exposure_workflow_guide,
@@ -200,6 +201,12 @@ def register_resources(mcp: FastMCP, context_provider: ServerContextProvider) ->
         """Guide to externally hardening remote streamable-http deployments."""
 
         return deployment_hardening_guide()
+
+    @mcp.resource("docs://http-audit-operations-guide")
+    def docs_http_audit_operations_guide() -> str:
+        """Guide to replaying, retaining, and debugging HTTP audit events."""
+
+        return http_audit_operations_guide()
 
     @mcp.resource("docs://provenance-policy")
     def docs_provenance_policy() -> str:

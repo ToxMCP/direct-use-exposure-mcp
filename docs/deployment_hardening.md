@@ -24,6 +24,10 @@ controls first and then layer gateway controls on top.
   request-level JSONL audit trail without persisting raw bodies.
 - Keep the default request timeout and concurrency ceiling unless benchmark evidence shows a
   reviewed need to widen them.
+- Rotate audit JSONL externally with `logrotate`, container log rotation, or explicit
+  per-day/per-release file paths. The server intentionally appends and never truncates in-process.
+- Retain enough JSONL history to cover incident review, release rollback, and benchmark drift
+  analysis. A reviewed 30- to 90-day retention window is a reasonable default for remote HTTP.
 - Treat `0` as an explicit opt-out of the in-process request-size limit, not the default.
 
 ## Recommended reverse-proxy posture
@@ -34,6 +38,16 @@ controls first and then layer gateway controls on top.
 - Keep request-size limits at the gateway as a second boundary (suggest ≤10 MB)
 - Set gateway-level request timeouts (suggest 30–60 s for screening tools, 120 s for envelope or probability-bound builds)
 - Capture structured access logs with timestamps and client identity
+
+## Replay and forensic workflow
+
+- Capture the `X-Exposure-Audit-Request-Id` response header from the calling client or access log.
+- Use `python scripts/replay_http_audit.py /path/to/http-audit.jsonl --request-id <id>` to isolate
+  a single exchange without storing the raw request body.
+- Use `python scripts/replay_http_audit.py /path/to/http-audit.jsonl --input-digest <sha256>` to
+  group logically identical JSON-RPC requests that differ only in key order or redacted secrets.
+- Match the event defaults and release fingerprints against `defaults://manifest` and
+  `release://metadata-report` before replaying a scenario downstream.
 
 ## Request and execution guardrails
 

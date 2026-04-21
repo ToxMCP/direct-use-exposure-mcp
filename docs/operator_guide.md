@@ -37,4 +37,8 @@ uv run generate-exposure-contracts
   reviewed workload needs longer execution, and only widen concurrency deliberately.
 - Follow `docs/release_runbook.md` for releases and `docs/maintainer_operating_model.md` for the
   monthly triage and release-buddy cadence.
+- Use `python scripts/summarize_http_audit.py <path>` for fleet-level counts and
+  `python scripts/replay_http_audit.py <path> --request-id <id>` for request-level debugging.
+- Keep `docs://http-audit-operations-guide` available to operators who need to trace a result
+  back to a defaults manifest and release metadata snapshot.
 - Keep downstream orchestration-layer and PBPK handoffs explicit; do not add hidden transformation logic in clients.

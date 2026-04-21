@@ -272,6 +272,10 @@ uv run check-exposure-release-artifacts
   monthly triage and release-buddy cadence.
 - Keep downstream orchestration-layer and PBPK handoffs explicit;
   do not add hidden transformation logic in clients.
+- Use `python scripts/summarize_http_audit.py <path>` for fleet-level counts and
+  `python scripts/replay_http_audit.py <path> --request-id <id>` for request-level debugging.
+- Keep `docs://http-audit-operations-guide` available to operators who need to trace a result
+  back to a defaults manifest and release metadata snapshot.
 """
 
 
@@ -346,8 +350,22 @@ first and then layer gateway controls on top.
   request-level JSONL audit trail without persisting raw bodies.
 - Keep the default request timeout and concurrency ceiling unless you have benchmark evidence that
   a wider setting is necessary for your deployment.
+- Rotate audit JSONL externally with `logrotate`, container log rotation, or explicit
+  per-day/per-release file paths. The server intentionally appends and never truncates in-process.
+- Retain enough JSONL history to cover incident review, release rollback, and benchmark drift
+  analysis. A reviewed 30- to 90-day retention window is a reasonable default for remote HTTP.
 - Re-run release verification after transport or deployment changes.
 - Keep warning-level security and provenance findings visible to downstream users.
+
+## Replay and forensic workflow
+
+- Capture the `X-Exposure-Audit-Request-Id` response header from the calling client or access log.
+- Use `python scripts/replay_http_audit.py /path/to/http-audit.jsonl --request-id <id>` to isolate
+  a single exchange without storing the raw request body.
+- Use `python scripts/replay_http_audit.py /path/to/http-audit.jsonl --input-digest <sha256>` to
+  group logically identical JSON-RPC requests that differ only in key order or redacted secrets.
+- Match the event defaults and release fingerprints against `defaults://manifest` and
+  `release://metadata-report` before replaying a scenario downstream.
 
 ## Boundary note
 
@@ -357,6 +375,56 @@ It also provides an in-process request timeout, concurrency ceiling, and append-
 events with normalized request/response digests.
 TLS termination, gateway rate limiting, and broader identity management still belong to the
 deployment environment.
+"""
+
+
+def http_audit_operations_guide() -> str:
+    return """# HTTP Audit Operations Guide
+
+Use this guide when a remote `streamable-http` deployment needs retention planning, replay,
+or request-level debugging without persisting raw request bodies.
+
+## What every event carries
+
+- `requestId`: echoed back through `X-Exposure-Audit-Request-Id` for incident correlation.
+- `normalizedInputDigestSha256`: stable digest over a redacted, canonical JSON request payload
+  that ignores the top-level JSON-RPC `id`.
+- `outputDigestSha256`: digest over the JSON-RPC response body for change detection.
+- `qualityFlagCodes`, `limitationCodes`, and `manualReviewRequired`: the high-signal trust surface
+  needed for screening review without reopening the whole tool payload first.
+- `reproducibility.defaultsVersion` and `reproducibility.defaultsHashSha256`: the exact defaults
+  pack fingerprint needed to confirm replay compatibility.
+- `reproducibility.releaseVersion`, `reproducibility.releaseMetadataPath`, and
+  `reproducibility.releaseMetadataSha256`: the release snapshot that should match
+  `release://metadata-report` or the checked-in release metadata file.
+
+## Retention and rotation
+
+- Treat the JSONL sink as append-only application evidence, not as a transient debug log.
+- Rotate externally with host tooling such as `logrotate`, container log rotation, or explicit
+  per-day/per-release paths.
+- Keep write permissions narrow because the audit file becomes part of the operational evidence
+  trail for HTTP requests.
+- Retain enough history to support incident review, release rollback checks, and benchmark drift
+  investigation. A reviewed 30- to 90-day retention window is a reasonable default.
+
+## Replay workflow
+
+```bash
+python scripts/summarize_http_audit.py /path/to/http-audit.jsonl
+python scripts/replay_http_audit.py /path/to/http-audit.jsonl --request-id <request-id>
+python scripts/replay_http_audit.py /path/to/http-audit.jsonl --input-digest <sha256>
+```
+
+## Reproducibility checklist
+
+1. Match `requestId` to the client-visible response header.
+2. Match `defaultsVersion` and `defaultsHashSha256` to `defaults://manifest`.
+3. Match `releaseVersion` and the release metadata fields to `release://metadata-report`.
+4. Confirm `qualityFlagCodes`, `limitationCodes`, and `manualReviewRequired` still align with the
+   downstream interpretation you plan to make.
+5. Treat `normalizedInputDigestSha256` as an equivalence key for redacted replay, not as a
+   substitute for validated scenario inputs.
 """
 
 
