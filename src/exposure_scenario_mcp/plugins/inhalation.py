@@ -37,6 +37,7 @@ from exposure_scenario_mcp.solvers.two_zone import (
     TwoZoneParams,
     solve_two_zone_piecewise_constant,
 )
+from exposure_scenario_mcp.tier1_autorouting import can_auto_select_two_zone
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 from exposure_scenario_mcp.worker_routing import apply_worker_task_semantics
 
@@ -54,10 +55,6 @@ IDEAL_GAS_CONSTANT_J_PER_MOL_K = 8.314462618
 STANDARD_TEMPERATURE_K = 298.15
 STANDARD_PRESSURE_PA = 101325.0
 STANDARD_PRESSURE_MMHG = 760.0
-
-# Hard-coded gate for auto-routing to the two-zone solver.
-# Remains False until formal benchmark migration is signed off.
-TIER1_TWO_ZONE_AUTO_ENABLED = False
 
 
 def tier_1_input_requirements() -> list[TierUpgradeInputRequirement]:
@@ -1305,19 +1302,6 @@ def _build_inhalation_tier_1_two_zone_scenario(
     return apply_worker_task_semantics(scenario, request, registry=registry)
 
 
-def _can_auto_select_two_zone(
-    request: InhalationTier1ScenarioRequest,
-    matched_profile,
-    saturation_cap_applied: bool,
-) -> bool:
-    """Return True only when all migration gating conditions are satisfied."""
-    if request.product_use_profile.application_method not in TIER_1_SPRAY_METHODS:
-        return False
-    if saturation_cap_applied:
-        return False
-    return matched_profile is not None and matched_profile.supports_two_zone
-
-
 def build_inhalation_tier_1_screening_scenario(
     request: InhalationTier1ScenarioRequest,
     registry: DefaultsRegistry,
@@ -1336,8 +1320,10 @@ def build_inhalation_tier_1_screening_scenario(
         matched_profile = matched_profiles[0] if matched_profiles else None
         # Note: saturation_cap_applied is not known yet here; we conservatively
         # assume False for the auto gate. The two-zone builder will re-evaluate.
-        if TIER1_TWO_ZONE_AUTO_ENABLED and _can_auto_select_two_zone(
-            request, matched_profile, saturation_cap_applied=False
+        if can_auto_select_two_zone(
+            request,
+            matched_profile,
+            saturation_cap_applied=False,
         ):
             variant = "two_zone_v1"
         else:

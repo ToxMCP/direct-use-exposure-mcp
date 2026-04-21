@@ -6,9 +6,16 @@ import argparse
 import logging
 
 from exposure_scenario_mcp.healthcheck import run_startup_healthcheck
+from exposure_scenario_mcp.http_security import (
+    DEFAULT_HTTP_MAX_CONCURRENCY,
+    DEFAULT_HTTP_MAX_REQUEST_BYTES,
+    DEFAULT_HTTP_REQUEST_TIMEOUT_SECONDS,
+    build_http_boundary_security_config,
+    describe_http_boundary_security,
+)
 from exposure_scenario_mcp.logging_config import configure_logging
 from exposure_scenario_mcp.package_metadata import __version__
-from exposure_scenario_mcp.server import create_mcp_server
+from exposure_scenario_mcp.server import create_mcp_server, run_streamable_http
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -44,6 +51,60 @@ def main(argv: list[str] | None = None) -> None:
             "starting a transport."
         ),
     )
+    parser.add_argument(
+        "--http-bearer-token",
+        default=None,
+        help=(
+            "Shared bearer token for streamable-http access. Prefer the "
+            "`EXPOSURE_SCENARIO_MCP_HTTP_BEARER_TOKEN` environment variable for "
+            "long-lived deployments."
+        ),
+    )
+    parser.add_argument(
+        "--http-allowed-origin",
+        action="append",
+        default=None,
+        help=(
+            "Trusted Origin allowed to access streamable-http from browser-based clients. "
+            "Repeat to allow multiple origins."
+        ),
+    )
+    parser.add_argument(
+        "--http-max-request-bytes",
+        type=int,
+        default=None,
+        help=(
+            "Maximum streamable-http request size in bytes. Defaults to "
+            f"{DEFAULT_HTTP_MAX_REQUEST_BYTES}. Set to 0 to disable the in-process limit."
+        ),
+    )
+    parser.add_argument(
+        "--http-audit-log-path",
+        default=None,
+        help=(
+            "Append one JSONL audit record per streamable-http request to this path. Prefer "
+            "the `EXPOSURE_SCENARIO_MCP_HTTP_AUDIT_LOG_PATH` environment variable for "
+            "long-lived deployments."
+        ),
+    )
+    parser.add_argument(
+        "--http-request-timeout-seconds",
+        type=float,
+        default=None,
+        help=(
+            "Maximum end-to-end streamable-http request duration in seconds. Defaults to "
+            f"{DEFAULT_HTTP_REQUEST_TIMEOUT_SECONDS}. Set to 0 to disable the in-process timeout."
+        ),
+    )
+    parser.add_argument(
+        "--http-max-concurrency",
+        type=int,
+        default=None,
+        help=(
+            "Maximum number of concurrent in-process streamable-http requests. Defaults to "
+            f"{DEFAULT_HTTP_MAX_CONCURRENCY}. Set to 0 to disable the in-process limit."
+        ),
+    )
     args = parser.parse_args(argv)
 
     configure_logging(level=getattr(logging, args.log_level))
@@ -75,6 +136,22 @@ def main(argv: list[str] | None = None) -> None:
     server = create_mcp_server()
     server.settings.host = args.host
     server.settings.port = args.port
+    if args.transport == "streamable-http":
+        security_config = build_http_boundary_security_config(
+            bearer_token=args.http_bearer_token,
+            allowed_origins=args.http_allowed_origin,
+            max_request_bytes=args.http_max_request_bytes,
+            audit_log_path=args.http_audit_log_path,
+            request_timeout_seconds=args.http_request_timeout_seconds,
+            max_concurrency=args.http_max_concurrency,
+        )
+        logger.info(
+            "Streamable-http boundary controls: %s",
+            describe_http_boundary_security(security_config),
+        )
+        run_streamable_http(server, security_config)
+        return
+
     server.run(transport=args.transport)
 
 

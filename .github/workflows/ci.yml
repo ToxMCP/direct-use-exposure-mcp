@@ -48,6 +48,8 @@ jobs:
             src/exposure_scenario_mcp/contracts.py \
             src/exposure_scenario_mcp/examples.py \
             src/exposure_scenario_mcp/guidance.py \
+            src/exposure_scenario_mcp/http_security.py \
+            src/exposure_scenario_mcp/integrations.py \
             src/exposure_scenario_mcp/__main__.py \
             src/exposure_scenario_mcp/healthcheck.py \
             src/exposure_scenario_mcp/server.py \
@@ -61,7 +63,11 @@ jobs:
             src/exposure_scenario_mcp/server_resources.py \
             src/exposure_scenario_mcp/server_tools_core.py \
             src/exposure_scenario_mcp/server_tools_integration.py \
-            src/exposure_scenario_mcp/server_tools_worker.py
+            src/exposure_scenario_mcp/server_tools_worker.py \
+            src/exposure_scenario_mcp/http_audit.py \
+            src/exposure_scenario_mcp/tier1_autorouting.py
+      - name: Mypy (full-tree debt baseline)
+        run: uv run python scripts/check_mypy_baseline.py
 
   security:
     runs-on: ubuntu-latest

@@ -74,7 +74,7 @@ def test_validate_release_metadata_report_detects_integrity_mismatch(tmp_path: P
     assert "sha256 mismatch" in errors[0]
 
 
-def test_validate_release_metadata_report_allows_present_sdist_without_digest(
+def test_validate_release_metadata_report_allows_present_artifacts_without_pinned_digests(
     tmp_path: Path,
 ) -> None:
     dist_dir = tmp_path / "dist"
@@ -93,15 +93,11 @@ def test_validate_release_metadata_report_allows_present_sdist_without_digest(
         "releaseVersion": CURRENT_VERSION,
         "packageVersion": CURRENT_VERSION,
         "distributionArtifacts": [
-            (
-                {
-                    **artifact.model_dump(mode="json", by_alias=True),
-                    "sha256": None,
-                    "sizeBytes": None,
-                }
-                if artifact.kind == "sdist"
-                else artifact.model_dump(mode="json", by_alias=True)
-            )
+            {
+                **artifact.model_dump(mode="json", by_alias=True),
+                "sha256": None,
+                "sizeBytes": None,
+            }
             for artifact in artifacts
         ],
     }

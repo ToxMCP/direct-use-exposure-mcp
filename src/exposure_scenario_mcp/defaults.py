@@ -17,7 +17,10 @@ from exposure_scenario_mcp.models import (
     DefaultsCurationReport,
     DefaultsCurationStatus,
 )
-from exposure_scenario_mcp.source_classification import is_heuristic_source_id
+from exposure_scenario_mcp.source_classification import (
+    is_route_semantic_source_id,
+    is_warning_heuristic_source_id,
+)
 
 DEFAULTS_REPO_RELATIVE_PATH = Path("defaults/v1/core_defaults.json")
 DEFAULTS_PACKAGE_RELATIVE_PATH = "data/defaults/v1/core_defaults.json"
@@ -1234,14 +1237,14 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  as `air_space_insecticide`, where solvent-propellant style product families are",
             "  not well represented by the generic liquid screening density.",
             "",
-            "### Pressurized Aerosol Volume Interpretation Heuristics 2026",
+            "### Pressurized Aerosol Volume Interpretation Screening Boundary 2026",
             "",
-            "- `pressurized_aerosol_volume_interpretation_heuristics_2026` applies a bounded",
-            "  conversion factor when volumetric `aerosol_spray` scenarios rely on default",
-            "  density. This prevents pressurized aerosol cans from being treated as fully",
-            "  condensed liquid volume in screening mode while preserving subtype-specific",
-            "  branches such as `air_space_insecticide` where the emitted active mass is",
-            "  already handled as a whole-room aerosol release boundary. The current pack now",
+            "- `pressurized_aerosol_volume_interpretation_heuristics_2026` applies an explicit",
+            "  bounded screening boundary when volumetric `aerosol_spray` scenarios rely on",
+            "  default density. This prevents pressurized aerosol cans from being treated as",
+            "  fully condensed liquid volume in screening mode while preserving subtype-",
+            "  specific branches such as `air_space_insecticide` where the emitted active mass",
+            "  is already handled as a whole-room aerosol release boundary. The current pack now",
             "  distinguishes broader propellant-rich personal-care aerosols from less extreme",
             "  cleaner and disinfectant aerosol families, and also tightens subtype-specific",
             "  personal-care branches such as deodorant/body sprays, hair sprays, and spray",
@@ -1514,13 +1517,13 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  `0.1` crawling-insect trigger-spray family, and keeps the branch heuristic until",
             "  broader use-subtype-specific packs are published.",
             "",
-            "### Heuristic Pest-Control Aerosol Airborne Fraction Bridge 2026",
+            "### Pest-Control Aerosol Airborne Boundary Bridge 2026",
             "",
             "- `heuristic_consexpo_pest_control_aerosol_airborne_fraction_bridge_2026` is an",
-            "  explicit interim bridge for `air_space_insecticide` aerosol scenarios. The",
-            "  current `aerosol_spray=1.0` branch treats the emitted active mass as a whole-room",
-            "  airborne release boundary for screening, while keeping the pack heuristic until a",
-            "  richer aerosol-use determinant set is published.",
+            "  explicit air-space release boundary for `air_space_insecticide` aerosol",
+            "  scenarios. The current `aerosol_spray=1.0` branch treats the emitted active mass",
+            "  as a whole-room airborne release boundary for screening, while keeping richer",
+            "  product-family and aerosol-use determinants out of scope for now.",
             "",
             "### Heuristic Spray Airborne Fraction Defaults",
             "",
@@ -1570,10 +1573,10 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
 
 
 def _curation_status(source_id: str) -> DefaultsCurationStatus:
-    if is_heuristic_source_id(source_id):
-        return DefaultsCurationStatus.HEURISTIC
-    if source_id.startswith("screening_"):
+    if is_route_semantic_source_id(source_id):
         return DefaultsCurationStatus.ROUTE_SEMANTIC
+    if is_warning_heuristic_source_id(source_id):
+        return DefaultsCurationStatus.HEURISTIC
     return DefaultsCurationStatus.CURATED
 
 
@@ -1589,15 +1592,15 @@ def _entry_note(
     source_id: str,
     applicability: dict[str, object],
 ) -> str | None:
-    if is_heuristic_source_id(source_id):
-        return (
-            f"`{parameter_name}` still resolves from a heuristic screening family for this "
-            "applicability branch."
-        )
-    if source_id.startswith("screening_"):
+    if is_route_semantic_source_id(source_id):
         return (
             f"`{parameter_name}` is treated as a route-semantic boundary condition for this "
             "branch rather than an empirical fitted factor."
+        )
+    if is_warning_heuristic_source_id(source_id):
+        return (
+            f"`{parameter_name}` still resolves from a heuristic screening family for this "
+            "applicability branch."
         )
     if applicability:
         selectors = ", ".join(f"{key}={value}" for key, value in sorted(applicability.items()))

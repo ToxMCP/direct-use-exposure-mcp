@@ -36,7 +36,7 @@ def test_call_core_tool_verification_checks(server):
     assert not result.isError
     assert result.content[0].text.startswith("Built verification summary")
     payload = result.structuredContent
-    assert payload["status"] in {"ok", "warning"}
+    assert payload["status"] in {"pass", "warning"}
 
 
 def test_call_core_tool_compare_jurisdictional_scenarios(server):
@@ -83,6 +83,14 @@ def test_read_resource_contracts_manifest(server):
     assert len(payload["tools"]) >= 35
 
 
+def test_read_resource_http_audit_operations_guide(server):
+    contents = _run(server.read_resource("docs://http-audit-operations-guide"))
+    assert len(contents) == 1
+    text = contents[0].content
+    assert "HTTP Audit Operations Guide" in text
+    assert "normalizedInputDigestSha256" in text
+
+
 def test_read_resource_invalid_schema_returns_error_json(server):
     with pytest.raises(McpError) as exc_info:
         _run(server.read_resource("schemas://nonexistent_schema"))
@@ -112,6 +120,18 @@ def test_get_prompt_refinement_playbook(server):
     )
     text = prompt.messages[0].content.text
     assert "dermal" in text
+
+
+def test_get_prompt_integrated_workflow_operator(server):
+    prompt = _run(
+        server.get_prompt(
+            "exposure_integrated_workflow_operator",
+            arguments={"route": "dermal"},
+        )
+    )
+    text = prompt.messages[0].content.text
+    assert "PBPK handoff package" in text
+    assert "manual-review gates" in text
 
 
 def test_call_worker_route_alias(server):

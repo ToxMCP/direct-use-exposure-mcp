@@ -220,7 +220,11 @@ def operator_guide() -> str:
 ## Runtime Modes
 
 - Use `stdio` for local agent-to-server execution. This is the safest default.
-- Use `streamable-http` only when the server is behind trusted network controls.
+- Use `streamable-http` only when you can configure boundary controls intentionally.
+- For remote HTTP, prefer shared bearer-token auth, an explicit origin allow-list, and a request
+  size limit even before you add gateway TLS or rate limiting.
+- For remote HTTP, enable the built-in JSONL audit sink, request timeout, and concurrency ceiling
+  before relying on gateway-only observability.
 - Prefer deterministic screening tools for route-specific scenario construction and use export tools
   only after the scenario is auditable.
 
@@ -259,8 +263,19 @@ uv run check-exposure-release-artifacts
 - Confirm the defaults manifest version and SHA256 before benchmark or release runs.
 - Run the release artifact verifier after `uv build` so published metadata matches `dist/`.
 - Regenerate contracts whenever public schemas, examples, tools, or resources change.
+- If `streamable-http` is exposed, configure `EXPOSURE_SCENARIO_MCP_HTTP_BEARER_TOKEN`, set
+  `EXPOSURE_SCENARIO_MCP_HTTP_ALLOWED_ORIGINS` for browser clients, and keep the default request
+  size limit unless you have a reviewed reason to widen it.
+- Set `EXPOSURE_SCENARIO_MCP_HTTP_AUDIT_LOG_PATH`, keep the default request timeout unless a
+  reviewed workload needs longer execution, and only widen concurrency deliberately.
+- Follow `docs/release_runbook.md` for releases and `docs/maintainer_operating_model.md` for the
+  monthly triage and release-buddy cadence.
 - Keep downstream orchestration-layer and PBPK handoffs explicit;
   do not add hidden transformation logic in clients.
+- Use `python scripts/summarize_http_audit.py <path>` for fleet-level counts and
+  `python scripts/replay_http_audit.py <path> --request-id <id>` for request-level debugging.
+- Keep `docs://http-audit-operations-guide` available to operators who need to trace a result
+  back to a defaults manifest and release metadata snapshot.
 """
 
 
@@ -271,7 +286,8 @@ Use this checklist before treating the current public build as ready for broad e
 
 ## Required posture
 
-- Keep the release label at `ready_with_known_limitations`.
+- Keep the release label at `ready` only while heuristic defaults and partial validation
+  families remain explicit through warnings, curation reports, and validation gaps.
 - Keep worker extension layers described as bounded expert features, not mature solver replacements.
 - Keep heuristic defaults and partial validation families visible through warnings
   and validation gaps.
@@ -300,7 +316,7 @@ uv run check-exposure-release-artifacts
 
 - Which branches are benchmarked versus only context-anchored?
 - Which defaults remain heuristic?
-- Are remote deployment controls handled outside the MCP?
+- Are remote deployment controls configured in the MCP and, where needed, reinforced at the gateway?
 - Are any downstream clients hiding warning-level trust findings?
 """
 
@@ -308,11 +324,12 @@ uv run check-exposure-release-artifacts
 def deployment_hardening_guide() -> str:
     return """# Deployment Hardening Guide
 
-Use `stdio` by default. Treat `streamable-http` as an externally hardened deployment mode.
+Use `stdio` by default. If you expose `streamable-http`, enable the built-in boundary controls
+first and then layer gateway controls on top.
 
 ## Minimum controls
 
-- authentication in front of the MCP service
+- shared bearer-token auth for every non-local client
 - TLS termination
 - explicit origin allow-list
 - rate limiting
@@ -323,13 +340,91 @@ Use `stdio` by default. Treat `streamable-http` as an externally hardened deploy
 
 - Bind to `127.0.0.1` for local development whenever possible.
 - Do not expose unauthenticated public endpoints.
+- Set `EXPOSURE_SCENARIO_MCP_HTTP_BEARER_TOKEN` or `--http-bearer-token` for
+  authenticated access.
+- Set `EXPOSURE_SCENARIO_MCP_HTTP_ALLOWED_ORIGINS` or `--http-allowed-origin` for
+  browser-based clients.
+- Keep the default `EXPOSURE_SCENARIO_MCP_HTTP_MAX_REQUEST_BYTES=10485760` unless a reviewed
+  workload genuinely needs larger request bodies.
+- Set `EXPOSURE_SCENARIO_MCP_HTTP_AUDIT_LOG_PATH` or `--http-audit-log-path` to retain a
+  request-level JSONL audit trail without persisting raw bodies.
+- Keep the default request timeout and concurrency ceiling unless you have benchmark evidence that
+  a wider setting is necessary for your deployment.
+- Rotate audit JSONL externally with `logrotate`, container log rotation, or explicit
+  per-day/per-release file paths. The server intentionally appends and never truncates in-process.
+- Retain enough JSONL history to cover incident review, release rollback, and benchmark drift
+  analysis. A reviewed 30- to 90-day retention window is a reasonable default for remote HTTP.
 - Re-run release verification after transport or deployment changes.
 - Keep warning-level security and provenance findings visible to downstream users.
 
+## Replay and forensic workflow
+
+- Capture the `X-Exposure-Audit-Request-Id` response header from the calling client or access log.
+- Use `python scripts/replay_http_audit.py /path/to/http-audit.jsonl --request-id <id>` to isolate
+  a single exchange without storing the raw request body.
+- Use `python scripts/replay_http_audit.py /path/to/http-audit.jsonl --input-digest <sha256>` to
+  group logically identical JSON-RPC requests that differ only in key order or redacted secrets.
+- Match the event defaults and release fingerprints against `defaults://manifest` and
+  `release://metadata-report` before replaying a scenario downstream.
+
 ## Boundary note
 
-This MCP does not provide built-in identity management or gateway policy enforcement.
-Those controls belong to the deployment environment, not the deterministic exposure engine.
+This MCP now provides first-party bearer-token auth, explicit origin allow-list enforcement, and
+an in-process request-size limit for `streamable-http`.
+It also provides an in-process request timeout, concurrency ceiling, and append-only JSONL audit
+events with normalized request/response digests.
+TLS termination, gateway rate limiting, and broader identity management still belong to the
+deployment environment.
+"""
+
+
+def http_audit_operations_guide() -> str:
+    return """# HTTP Audit Operations Guide
+
+Use this guide when a remote `streamable-http` deployment needs retention planning, replay,
+or request-level debugging without persisting raw request bodies.
+
+## What every event carries
+
+- `requestId`: echoed back through `X-Exposure-Audit-Request-Id` for incident correlation.
+- `normalizedInputDigestSha256`: stable digest over a redacted, canonical JSON request payload
+  that ignores the top-level JSON-RPC `id`.
+- `outputDigestSha256`: digest over the JSON-RPC response body for change detection.
+- `qualityFlagCodes`, `limitationCodes`, and `manualReviewRequired`: the high-signal trust surface
+  needed for screening review without reopening the whole tool payload first.
+- `reproducibility.defaultsVersion` and `reproducibility.defaultsHashSha256`: the exact defaults
+  pack fingerprint needed to confirm replay compatibility.
+- `reproducibility.releaseVersion`, `reproducibility.releaseMetadataPath`, and
+  `reproducibility.releaseMetadataSha256`: the release snapshot that should match
+  `release://metadata-report` or the checked-in release metadata file.
+
+## Retention and rotation
+
+- Treat the JSONL sink as append-only application evidence, not as a transient debug log.
+- Rotate externally with host tooling such as `logrotate`, container log rotation, or explicit
+  per-day/per-release paths.
+- Keep write permissions narrow because the audit file becomes part of the operational evidence
+  trail for HTTP requests.
+- Retain enough history to support incident review, release rollback checks, and benchmark drift
+  investigation. A reviewed 30- to 90-day retention window is a reasonable default.
+
+## Replay workflow
+
+```bash
+python scripts/summarize_http_audit.py /path/to/http-audit.jsonl
+python scripts/replay_http_audit.py /path/to/http-audit.jsonl --request-id <request-id>
+python scripts/replay_http_audit.py /path/to/http-audit.jsonl --input-digest <sha256>
+```
+
+## Reproducibility checklist
+
+1. Match `requestId` to the client-visible response header.
+2. Match `defaultsVersion` and `defaultsHashSha256` to `defaults://manifest`.
+3. Match `releaseVersion` and the release metadata fields to `release://metadata-report`.
+4. Confirm `qualityFlagCodes`, `limitationCodes`, and `manualReviewRequired` still align with the
+   downstream interpretation you plan to make.
+5. Treat `normalizedInputDigestSha256` as an equivalence key for redacted replay, not as a
+   substitute for validated scenario inputs.
 """
 
 
@@ -2298,6 +2393,12 @@ def troubleshooting_guide() -> str:
   rather than expecting an HTTP listener.
 - If `streamable-http` is exposed, confirm the port mapping and pass
   `--host 0.0.0.0 --port 8000` or your chosen bound port explicitly.
+- If `streamable-http` is exposed remotely, set `--http-bearer-token` or
+  `EXPOSURE_SCENARIO_MCP_HTTP_BEARER_TOKEN` before binding beyond localhost.
+- For browser-based clients, set `--http-allowed-origin` or
+  `EXPOSURE_SCENARIO_MCP_HTTP_ALLOWED_ORIGINS`.
+- Keep the default request-size limit unless you have a reviewed reason to widen it with
+  `--http-max-request-bytes`.
 - The bundled container health check now boots the packaged server, loads defaults, and verifies
   representative tools, resources, and prompts.
 - Add gateway or endpoint probes when you need transport-level liveness checks for
@@ -2305,8 +2406,10 @@ def troubleshooting_guide() -> str:
 
 ## Remote Deployment Caution
 
-- The server does not add authentication or origin enforcement on its own.
-- If you expose `streamable-http`, put it behind trusted network controls or a gateway.
+- The server now supports first-party bearer-token auth, origin allow-lists, and request-size
+  limits for `streamable-http`.
+- If you expose `streamable-http` remotely, still keep TLS termination, rate limiting, and network
+  scoping at a trusted gateway or host boundary.
 """
 
 

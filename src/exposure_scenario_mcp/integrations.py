@@ -1618,8 +1618,8 @@ def build_product_use_evidence_from_sccs(
         retention_types=list(record.retention_types),
         region_scopes=list(record.region_scopes),
         jurisdictions=list(record.jurisdictions),
-        product_use_profile_overrides=product_use_profile_overrides,
-        population_profile_overrides=population_profile_overrides,
+        productUseProfileOverrides=product_use_profile_overrides,
+        populationProfileOverrides=population_profile_overrides,
         evidence_sources=evidence_sources,
         notes=notes,
     )
@@ -1660,7 +1660,7 @@ def build_product_use_evidence_from_sccs_opinion(
         retention_types=list(record.retention_types),
         region_scopes=list(record.region_scopes),
         jurisdictions=list(record.jurisdictions),
-        particle_material_context=record.particle_material_context,
+        particleMaterialContext=record.particle_material_context,
         evidence_sources=evidence_sources,
         notes=notes,
     )
@@ -1696,7 +1696,7 @@ def build_product_use_evidence_from_cosing(
         product_use_categories=["personal_care"],
         region_scopes=list(record.region_scopes),
         jurisdictions=list(record.jurisdictions),
-        particle_material_context=record.particle_material_context,
+        particleMaterialContext=record.particle_material_context,
         evidence_sources=evidence_sources,
         notes=notes,
     )
@@ -1739,7 +1739,7 @@ def build_product_use_evidence_from_nanomaterial(
         retention_types=list(record.retention_types),
         region_scopes=list(record.region_scopes),
         jurisdictions=list(record.jurisdictions),
-        particle_material_context=record.particle_material_context,
+        particleMaterialContext=record.particle_material_context,
         evidence_sources=evidence_sources,
         notes=notes,
     )
@@ -1769,7 +1769,7 @@ def build_product_use_evidence_from_synthetic_polymer_microparticle(
         retention_types=list(record.retention_types),
         region_scopes=list(record.region_scopes),
         jurisdictions=list(record.jurisdictions),
-        particle_material_context=record.particle_material_context,
+        particleMaterialContext=record.particle_material_context,
         evidence_sources=evidence_sources,
         notes=notes,
     )
@@ -2402,19 +2402,19 @@ def reconcile_product_use_evidence(
         return ProductUseEvidenceReconciliationReport(
             chemical_id=request.chemical_id,
             request_region=request.population_profile.region,
-            considered_sources=considered_sources,
-            compatible_sources=[],
-            recommended_source_name=None,
-            recommended_source_kind=None,
+            consideredSources=considered_sources,
+            compatibleSources=[],
+            recommendedSourceName=None,
+            recommendedSourceKind=None,
             recommendation="reject",
-            manual_review_required=True,
+            manualReviewRequired=True,
             conflicts=[],
             rationale=[
                 "No supplied evidence record was compatible with the current request.",
             ],
-            field_sources={},
-            fit_reports=[report for _, report in fit_pairs],
-            merged_request=None,
+            fieldSources={},
+            fitReports=[report for _, report in fit_pairs],
+            mergedRequest=None,
         )
 
     ranked_pairs = sorted(
@@ -2586,17 +2586,17 @@ def reconcile_product_use_evidence(
     return ProductUseEvidenceReconciliationReport(
         chemical_id=request.chemical_id,
         request_region=request.population_profile.region,
-        considered_sources=considered_sources,
-        compatible_sources=compatible_sources,
-        recommended_source_name=primary_evidence.source_name,
-        recommended_source_kind=primary_evidence.source_kind,
+        consideredSources=considered_sources,
+        compatibleSources=compatible_sources,
+        recommendedSourceName=primary_evidence.source_name,
+        recommendedSourceKind=primary_evidence.source_kind,
         recommendation=recommendation,
-        manual_review_required=manual_review_required,
+        manualReviewRequired=manual_review_required,
         conflicts=conflicts,
         rationale=rationale,
-        field_sources=field_sources,
-        fit_reports=[report for _, report in fit_pairs],
-        merged_request=merged_request,
+        fieldSources=field_sources,
+        fitReports=[report for _, report in fit_pairs],
+        mergedRequest=merged_request,
     )
 
 
@@ -2692,32 +2692,32 @@ def build_toxclaw_evidence_bundle(
         }
     )
     evidence_record = ToxClawEvidenceRecord(
-        case_id=params.case_id,
-        content_hash=content_hash,
-        data_classification=params.data_classification,
-        evidence_id=evidence_id,
-        quality_flag=scenario.quality_flags[0].code if scenario.quality_flags else None,
-        retrieved_at=scenario.provenance.generated_at,
-        run_id=params.run_id,
+        caseId=params.case_id,
+        contentHash=content_hash,
+        dataClassification=params.data_classification,
+        evidenceId=evidence_id,
+        qualityFlag=scenario.quality_flags[0].code if scenario.quality_flags else None,
+        retrievedAt=scenario.provenance.generated_at,
+        runId=params.run_id,
         source="exposure-scenario-mcp",
-        source_ref=scenario.scenario_id,
+        sourceRef=scenario.scenario_id,
         summary=summary,
         tags=tags,
-        trust_label=params.trust_label,
+        trustLabel=params.trust_label,
         type="exposure-scenario",
     )
     evidence_reference = ToxClawReportEvidenceReference(
-        content_hash=evidence_record.content_hash,
-        evidence_id=evidence_record.evidence_id,
-        quality_flag=evidence_record.quality_flag,
-        raw_pointer=evidence_record.raw_pointer,
-        redaction_status=evidence_record.redaction_status,
-        retrieved_at=evidence_record.retrieved_at,
+        contentHash=evidence_record.content_hash,
+        evidenceId=evidence_record.evidence_id,
+        qualityFlag=evidence_record.quality_flag,
+        rawPointer=evidence_record.raw_pointer,
+        redactionStatus=evidence_record.redaction_status,
+        retrievedAt=evidence_record.retrieved_at,
         source=evidence_record.source,
-        source_ref=evidence_record.source_ref,
+        sourceRef=evidence_record.source_ref,
         summary=evidence_record.summary,
         tags=evidence_record.tags,
-        trust_label=evidence_record.trust_label,
+        trustLabel=evidence_record.trust_label,
         type=evidence_record.type,
     )
 
@@ -2746,12 +2746,12 @@ def build_toxclaw_evidence_bundle(
     section_key = _normalize_section_key(params.section_key)
     claims = [
         ToxClawReportClaim(
-            claim_id=_deterministic_id(
+            claimId=_deterministic_id(
                 "claim",
                 [params.report_id, section_key, str(index), _hash_text(text)],
             ),
             confidence="supported",
-            evidence_ids=[evidence_id],
+            evidenceIds=[evidence_id],
             text=text,
         )
         for index, text in enumerate(claim_texts, start=1)
@@ -2759,18 +2759,18 @@ def build_toxclaw_evidence_bundle(
     report_section = ToxClawReportSection(
         body="\n".join(f"- {text}" for text in claim_texts),
         claims=claims,
-        evidence_ids=[evidence_id],
-        section_key=section_key,
+        evidenceIds=[evidence_id],
+        sectionKey=section_key,
         title=params.section_title,
     )
     return ToxClawEvidenceBundle(
-        case_id=params.case_id,
-        report_id=params.report_id,
-        context_of_use=params.context_of_use,
+        caseId=params.case_id,
+        reportId=params.report_id,
+        contextOfUse=params.context_of_use,
         summary=summary,
-        evidence_record=evidence_record,
-        report_evidence_reference=evidence_reference,
-        report_section=report_section,
+        evidenceRecord=evidence_record,
+        reportEvidenceReference=evidence_reference,
+        reportSection=report_section,
     )
 
 
@@ -2823,32 +2823,32 @@ def build_toxclaw_refinement_bundle(
     )
     source_ref = f"{params.baseline.scenario_id}::{params.comparison.scenario_id}"
     evidence_record = ToxClawEvidenceRecord(
-        case_id=params.case_id,
-        content_hash=content_hash,
-        data_classification=params.data_classification,
-        evidence_id=evidence_id,
-        quality_flag=None,
-        retrieved_at=comparison.provenance.generated_at,
-        run_id=params.run_id,
+        caseId=params.case_id,
+        contentHash=content_hash,
+        dataClassification=params.data_classification,
+        evidenceId=evidence_id,
+        qualityFlag=None,
+        retrievedAt=comparison.provenance.generated_at,
+        runId=params.run_id,
         source="exposure-scenario-mcp",
-        source_ref=source_ref,
+        sourceRef=source_ref,
         summary=summary,
         tags=tags,
-        trust_label=params.trust_label,
+        trustLabel=params.trust_label,
         type="exposure-refinement",
     )
     evidence_reference = ToxClawReportEvidenceReference(
-        content_hash=evidence_record.content_hash,
-        evidence_id=evidence_record.evidence_id,
-        quality_flag=evidence_record.quality_flag,
-        raw_pointer=evidence_record.raw_pointer,
-        redaction_status=evidence_record.redaction_status,
-        retrieved_at=evidence_record.retrieved_at,
+        contentHash=evidence_record.content_hash,
+        evidenceId=evidence_record.evidence_id,
+        qualityFlag=evidence_record.quality_flag,
+        rawPointer=evidence_record.raw_pointer,
+        redactionStatus=evidence_record.redaction_status,
+        retrievedAt=evidence_record.retrieved_at,
         source=evidence_record.source,
-        source_ref=evidence_record.source_ref,
+        sourceRef=evidence_record.source_ref,
         summary=evidence_record.summary,
         tags=evidence_record.tags,
-        trust_label=evidence_record.trust_label,
+        trustLabel=evidence_record.trust_label,
         type=evidence_record.type,
     )
     claim_texts = [
@@ -2875,12 +2875,12 @@ def build_toxclaw_refinement_bundle(
     section_key = _normalize_section_key(params.section_key)
     claims = [
         ToxClawReportClaim(
-            claim_id=_deterministic_id(
+            claimId=_deterministic_id(
                 "claim",
                 [params.report_id, section_key, str(index), _hash_text(text)],
             ),
             confidence="supported",
-            evidence_ids=[evidence_id],
+            evidenceIds=[evidence_id],
             text=text,
         )
         for index, text in enumerate(claim_texts, start=1)
@@ -2888,28 +2888,28 @@ def build_toxclaw_refinement_bundle(
     report_section = ToxClawReportSection(
         body="\n".join(f"- {text}" for text in claim_texts),
         claims=claims,
-        evidence_ids=[evidence_id],
-        section_key=section_key,
+        evidenceIds=[evidence_id],
+        sectionKey=section_key,
         title=params.section_title,
     )
     workflow_hooks = [
         ExposureWorkflowHook(
             action="scenario_comparison",
-            tool_name="exposure_compare_exposure_scenarios",
-            when_to_use=(
+            toolName="exposure_compare_exposure_scenarios",
+            whenToUse=(
                 "Use after generating a revised scenario to quantify the external-dose delta "
                 "without making risk or PBPK claims."
             ),
-            required_inputs=["baseline scenario", "comparison scenario"],
+            requiredInputs=["baseline scenario", "comparison scenario"],
         ),
         ExposureWorkflowHook(
             action="route_recalculation",
-            tool_name=_route_recalculation_tool_name(params.comparison),
-            when_to_use=(
+            toolName=_route_recalculation_tool_name(params.comparison),
+            whenToUse=(
                 "Use when ToxClaw needs a route-specific recomputation of the candidate "
                 "scenario before comparing it against the current screening baseline."
             ),
-            required_inputs=[
+            requiredInputs=[
                 "chemical_id",
                 "route-specific product_use_profile",
                 "population_profile",
@@ -2917,54 +2917,54 @@ def build_toxclaw_refinement_bundle(
         ),
         ExposureWorkflowHook(
             action="aggregate_variant",
-            tool_name="exposure_build_aggregate_exposure_scenario",
-            when_to_use=(
+            toolName="exposure_build_aggregate_exposure_scenario",
+            whenToUse=(
                 "Use when the refinement question depends on a combined multi-component "
                 "or multi-route screening variant."
             ),
-            required_inputs=["shared chemical_id", "component scenarios", "aggregate label"],
+            requiredInputs=["shared chemical_id", "component scenarios", "aggregate label"],
         ),
         ExposureWorkflowHook(
             action="pbpk_export",
-            tool_name="exposure_export_pbpk_external_import_bundle",
-            when_to_use=(
+            toolName="exposure_export_pbpk_external_import_bundle",
+            whenToUse=(
                 "Use only after selecting the scenario that should advance from external-dose "
                 "refinement into PBPK translation."
             ),
-            required_inputs=["selected source scenario"],
+            requiredInputs=["selected source scenario"],
         ),
     ]
     refinement_signal = ToxClawExposureRefinementSignal(
-        workflow_action=params.workflow_action,
-        route_changed=params.baseline.route != params.comparison.route,
-        changed_assumption_names=changed_assumption_names,
-        changed_assumption_count=len(changed_assumption_names),
-        dose_delta_direction=_comparison_delta_direction(comparison),
-        percent_delta=comparison.percent_delta,
-        material_change=bool(
+        workflowAction=params.workflow_action,
+        routeChanged=params.baseline.route != params.comparison.route,
+        changedAssumptionNames=changed_assumption_names,
+        changedAssumptionCount=len(changed_assumption_names),
+        doseDeltaDirection=_comparison_delta_direction(comparison),
+        percentDelta=comparison.percent_delta,
+        materialChange=bool(
             comparison.absolute_delta
             or changed_assumption_names
             or params.baseline.route != params.comparison.route
         ),
-        boundary_note=(
+        boundaryNote=(
             "This bundle supports exposure-context refinement only. ToxClaw still owns "
             "line-of-evidence synthesis and the final recommendation."
         ),
-        workflow_hooks=workflow_hooks,
+        workflowHooks=workflow_hooks,
     )
     return ToxClawExposureRefinementBundle(
-        case_id=params.case_id,
-        report_id=params.report_id,
-        context_of_use=params.context_of_use,
-        workflow_action=params.workflow_action,
+        caseId=params.case_id,
+        reportId=params.report_id,
+        contextOfUse=params.context_of_use,
+        workflowAction=params.workflow_action,
         summary=summary,
-        baseline_scenario=params.baseline,
-        comparison_scenario=params.comparison,
-        comparison_record=comparison,
-        evidence_record=evidence_record,
-        report_evidence_reference=evidence_reference,
-        report_section=report_section,
-        refinement_signal=refinement_signal,
+        baselineScenario=params.baseline,
+        comparisonScenario=params.comparison,
+        comparisonRecord=comparison,
+        evidenceRecord=evidence_record,
+        reportEvidenceReference=evidence_reference,
+        reportSection=report_section,
+        refinementSignal=refinement_signal,
     )
 
 
@@ -3128,23 +3128,23 @@ def build_pbpk_external_import_package(
         "targetOutput": params.requested_output or scenario.external_dose.metric,
     }
     bundle = PbpkExternalImportBundle(
-        source_platform=params.source_platform,
-        source_version=params.source_version,
-        model_name=params.model_name or f"{scenario.scenario_id}-upstream-context",
-        model_type="exposure-scenario-context",
-        execution_date=scenario.provenance.generated_at,
-        run_id=f"{scenario.scenario_id}-external-context",
+        sourcePlatform=params.source_platform,
+        sourceVersion=params.source_version,
+        modelName=params.model_name or f"{scenario.scenario_id}-upstream-context",
+        modelType="exposure-scenario-context",
+        executionDate=scenario.provenance.generated_at,
+        runId=f"{scenario.scenario_id}-external-context",
         operator=params.operator,
         sponsor=params.sponsor,
-        raw_artifacts=[],
-        assessment_context=assessment_context,
-        chemical_identity=_chemical_identity_context(scenario),
-        supporting_handoffs={
+        rawArtifacts=[],
+        assessmentContext=assessment_context,
+        chemicalIdentity=_chemical_identity_context(scenario),
+        supportingHandoffs={
             "exposureScenario": scenario.model_dump(mode="json", by_alias=True),
             "pbpkScenarioInput": pbpk_input.model_dump(mode="json", by_alias=True),
             "upstreamUncertaintySummary": uncertainty_summary,
         },
-        internal_exposure={},
+        internalExposure={},
         qualification={
             "summary": (
                 "Imported upstream external-exposure context only; PBPK execution and "
@@ -3164,7 +3164,7 @@ def build_pbpk_external_import_package(
             "residualUncertainty": "upstream-exposure-scenario-assumptions",
             "bundleMetadata": {"sourceScenarioId": scenario.scenario_id},
         },
-        uncertainty_register={
+        uncertaintyRegister={
             "source": "Direct-Use Exposure MCP",
             "scope": "upstream-external-exposure-context",
             "summary": (
@@ -3173,43 +3173,43 @@ def build_pbpk_external_import_package(
             ),
         },
         pod={},
-        true_dose_adjustment={
+        trueDoseAdjustment={
             "applied": False,
             "summary": "Not applicable at the upstream external-exposure stage.",
         },
-        comparison_metric=params.comparison_metric,
+        comparisonMetric=params.comparison_metric,
     )
     request_payload = PbpkExternalImportRequest(
-        source_platform=bundle.source_platform,
-        source_version=bundle.source_version,
-        model_name=bundle.model_name,
-        model_type=bundle.model_type,
-        execution_date=bundle.execution_date,
-        run_id=bundle.run_id,
+        sourcePlatform=bundle.source_platform,
+        sourceVersion=bundle.source_version,
+        modelName=bundle.model_name,
+        modelType=bundle.model_type,
+        executionDate=bundle.execution_date,
+        runId=bundle.run_id,
         operator=bundle.operator,
         sponsor=bundle.sponsor,
-        raw_artifacts=bundle.raw_artifacts,
-        assessment_context=bundle.assessment_context,
-        internal_exposure=bundle.internal_exposure,
+        rawArtifacts=bundle.raw_artifacts,
+        assessmentContext=bundle.assessment_context,
+        internalExposure=bundle.internal_exposure,
         qualification=bundle.qualification,
         uncertainty=bundle.uncertainty,
-        uncertainty_register=bundle.uncertainty_register,
+        uncertaintyRegister=bundle.uncertainty_register,
         pod=bundle.pod,
-        true_dose_adjustment=bundle.true_dose_adjustment,
-        comparison_metric=bundle.comparison_metric,
+        trueDoseAdjustment=bundle.true_dose_adjustment,
+        comparisonMetric=bundle.comparison_metric,
     )
     tool_call = PbpkExternalImportToolCall(arguments=request_payload)
     toxclaw_module_params = ToxClawPbpkModuleParams(
         arguments=request_payload,
-        chemical_identity=bundle.chemical_identity,
-        supporting_handoffs=bundle.supporting_handoffs,
+        chemicalIdentity=bundle.chemical_identity,
+        supportingHandoffs=bundle.supporting_handoffs,
     )
     return PbpkExternalImportPackage(
         bundle=bundle,
-        request_payload=request_payload,
-        tool_call=tool_call,
-        toxclaw_module_params=toxclaw_module_params,
-        compatibility_report=check_pbpk_compatibility(scenario),
+        requestPayload=request_payload,
+        toolCall=tool_call,
+        toxclawModuleParams=toxclaw_module_params,
+        compatibilityReport=check_pbpk_compatibility(scenario),
     )
 
 
@@ -3504,21 +3504,21 @@ def run_integrated_exposure_workflow(
         )
 
     return IntegratedExposureWorkflowResult(
-        chemical_id=scenario.chemical_id,
-        source_request=source_request,
-        effective_request=effective_request,
-        evidence_strategy=evidence_strategy,
-        normalized_evidence_records=normalized_evidence_records,
-        reconciliation_report=reconciliation_report,
-        selected_evidence_source_name=selected_evidence_source_name,
-        selected_evidence_source_kind=selected_evidence_source_kind,
-        manual_review_required=manual_review_required,
+        chemicalId=scenario.chemical_id,
+        sourceRequest=source_request,
+        effectiveRequest=effective_request,
+        evidenceStrategy=evidence_strategy,
+        normalizedEvidenceRecords=normalized_evidence_records,
+        reconciliationReport=reconciliation_report,
+        selectedEvidenceSourceName=selected_evidence_source_name,
+        selectedEvidenceSourceKind=selected_evidence_source_kind,
+        manualReviewRequired=manual_review_required,
         scenario=scenario,
-        pbpk_compatibility_report=pbpk_compatibility_report,
-        pbpk_scenario_input=pbpk_scenario_input,
-        pbpk_external_import_package=pbpk_external_import_package,
-        workflow_notes=workflow_notes,
-        quality_flags=quality_flags,
+        pbpkCompatibilityReport=pbpk_compatibility_report,
+        pbpkScenarioInput=pbpk_scenario_input,
+        pbpkExternalImportPackage=pbpk_external_import_package,
+        workflowNotes=workflow_notes,
+        qualityFlags=quality_flags,
         limitations=limitations,
         provenance=_workflow_provenance(registry, generated_at=generated_at),
     )

@@ -36,6 +36,7 @@ from exposure_scenario_mcp.guidance import (
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
     herbal_medicinal_routing_guide,
+    http_audit_operations_guide,
     inhalation_residual_air_reentry_guide,
     inhalation_tier_upgrade_guide,
     integrated_exposure_workflow_guide,
@@ -200,6 +201,12 @@ def register_resources(mcp: FastMCP, context_provider: ServerContextProvider) ->
         """Guide to externally hardening remote streamable-http deployments."""
 
         return deployment_hardening_guide()
+
+    @mcp.resource("docs://http-audit-operations-guide")
+    def docs_http_audit_operations_guide() -> str:
+        """Guide to replaying, retaining, and debugging HTTP audit events."""
+
+        return http_audit_operations_guide()
 
     @mcp.resource("docs://provenance-policy")
     def docs_provenance_policy() -> str:
@@ -631,4 +638,77 @@ def register_prompts(mcp: FastMCP) -> None:
             "handoff: canonical dose units, explicit timing semantics, "
             "resolved population context, and a machine-readable "
             "assumption ledger."
+        )
+
+    @mcp.prompt(name="exposure_evidence_reconciliation_brief")
+    def exposure_evidence_reconciliation_brief(
+        primary_source: str,
+        target_region: str = "EU",
+    ) -> str:
+        """Prompt template for reconciling reviewed evidence into one request."""
+
+        return (
+            f"Reconcile {primary_source} as the primary reviewed evidence source for a "
+            f"{target_region} direct-use screening request. Compare every incoming source "
+            "record, preserve field-level provenance, flag model-family mismatches, keep "
+            "`manualReviewRequired`, `qualityFlags`, and `limitations` explicit, and do not "
+            "add live external API calls."
+        )
+
+    @mcp.prompt(name="exposure_integrated_workflow_operator")
+    def exposure_integrated_workflow_operator(
+        route: str,
+        outcome_goal: str = "PBPK handoff package",
+    ) -> str:
+        """Prompt template for running the integrated workflow safely."""
+
+        return (
+            f"Operate the integrated {route} workflow and produce a {outcome_goal}. "
+            "Normalize only caller-supplied typed evidence records, review reconciliation fit, "
+            "call out manual-review gates, keep solver and tier semantics visible, and make "
+            "the final output auditable enough for downstream orchestration."
+        )
+
+    @mcp.prompt(name="exposure_inhalation_tier1_triage")
+    def exposure_inhalation_tier1_triage(
+        product_family: str,
+        application_method: str = "trigger_spray",
+    ) -> str:
+        """Prompt template for deciding whether a spray case is Tier 1 ready."""
+
+        return (
+            f"Triage a Tier 1 inhalation scenario for {product_family} using {application_method}. "
+            "Check whether the case should stay on heuristic screening, request explicit "
+            "near-field inputs, or escalate to worker tooling; preserve benchmark-backed "
+            "routing rationale; and keep auto-selection default-off unless the approved two-zone "
+            "benchmark gate is explicitly met."
+        )
+
+    @mcp.prompt(name="exposure_worker_bridge_handoff")
+    def exposure_worker_bridge_handoff(
+        route: str,
+        target_model_family: str = "external worker model",
+    ) -> str:
+        """Prompt template for packaging worker bridge handoffs."""
+
+        return (
+            f"Prepare a worker {route} bridge handoff for a {target_model_family}. "
+            "List missing task-context fields, keep routing and compatibility reports attached, "
+            "summarize the screening assumptions that downstream experts must review, and do not "
+            "hide adapter quality flags or manual-review requirements."
+        )
+
+    @mcp.prompt(name="exposure_jurisdictional_review")
+    def exposure_jurisdictional_review(
+        jurisdiction_a: str,
+        jurisdiction_b: str = "china",
+    ) -> str:
+        """Prompt template for comparing one scenario across jurisdictions."""
+
+        return (
+            f"Compare the same scenario across {jurisdiction_a} and {jurisdiction_b}. "
+            "Identify which defaults and evidence records drive the dose delta, preserve the "
+            "comparison as an audit trace rather than a final regulatory conclusion, and call "
+            "out where a reviewer would need jurisdiction-specific evidence before refining "
+            "the case."
         )

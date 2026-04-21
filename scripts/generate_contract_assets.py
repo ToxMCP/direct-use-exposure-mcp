@@ -85,7 +85,7 @@ def _normalize_committed_distribution_artifacts(release_metadata: dict) -> dict:
             normalized_artifacts.append(artifact)
             continue
 
-        if artifact.get("kind") == "sdist" and artifact.get("present") is True:
+        if artifact.get("present") is True and artifact.get("kind") in {"wheel", "sdist"}:
             normalized_artifacts.append({**artifact, "sha256": None, "sizeBytes": None})
             continue
 

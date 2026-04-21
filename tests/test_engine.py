@@ -2059,13 +2059,13 @@ def test_generic_volumetric_aerosol_spray_applies_pressurized_interpretation_fac
     )
     assert (
         assumptions["pressurized_aerosol_volume_interpretation_factor"].governance.evidence_basis
-        == EvidenceBasis.HEURISTIC_DEFAULT
+        == EvidenceBasis.CURATED_DEFAULT
     )
     assert (
         assumptions[
             "pressurized_aerosol_volume_interpretation_factor"
         ].governance.default_visibility
-        == DefaultVisibility.WARN
+        == DefaultVisibility.SILENT_TRACEABLE
     )
     assert constrained.external_dose.value == pytest.approx(
         baseline.external_dose.value * 0.35,
@@ -2079,11 +2079,9 @@ def test_generic_volumetric_aerosol_spray_applies_pressurized_interpretation_fac
         item.code == "pressurized_aerosol_volume_interpretation_defaulted"
         for item in constrained.quality_flags
     )
-    assert any(item.code == "heuristic_default_source" for item in constrained.quality_flags)
     assert constrained.validation_summary is not None
     assert set(constrained.validation_summary.heuristic_assumption_names) == {
         "extrathoracic_swallow_fraction",
-        "pressurized_aerosol_volume_interpretation_factor",
     }
     assert "heuristic_defaults_active" in constrained.validation_summary.validation_gap_ids
 

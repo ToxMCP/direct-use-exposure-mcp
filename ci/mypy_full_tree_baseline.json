@@ -1,0 +1,19 @@
+{
+  "description": "Temporary full-tree mypy debt baseline. The baseline may shrink, but CI must fail if any file count or the total count grows.",
+  "fileErrorCounts": {
+    "src/exposure_scenario_mcp/archetypes.py": 1,
+    "src/exposure_scenario_mcp/defaults.py": 4,
+    "src/exposure_scenario_mcp/models.py": 2,
+    "src/exposure_scenario_mcp/probability_bounds.py": 41,
+    "src/exposure_scenario_mcp/probability_profiles.py": 1,
+    "src/exposure_scenario_mcp/runtime.py": 18,
+    "src/exposure_scenario_mcp/scenario_probability_packages.py": 1,
+    "src/exposure_scenario_mcp/tier1_inhalation_profiles.py": 1,
+    "src/exposure_scenario_mcp/uncertainty.py": 189,
+    "src/exposure_scenario_mcp/validation.py": 35,
+    "src/exposure_scenario_mcp/worker_dermal.py": 205,
+    "src/exposure_scenario_mcp/worker_tier2.py": 211
+  },
+  "mypyCommand": "uv run mypy --no-incremental --hide-error-context --no-pretty src/exposure_scenario_mcp",
+  "totalErrors": 709
+}

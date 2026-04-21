@@ -250,7 +250,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+          "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -280,7 +280,7 @@
           "title": "Direct-Use Exposure MCP curated screening route-semantics defaults",
           "locator": "docs://defaults-evidence-map#screening-route-semantics",
           "version": "2026.03.25.v6",
-          "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+          "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -313,7 +313,7 @@
           "title": "RIVM Cosmetics Fact Sheet hand-cream direct-application defaults",
           "locator": "https://www.rivm.nl/bibliotheek/rapporten/2025-0099.pdf",
           "version": "RIVM report 2025-0099 / 2025",
-          "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+          "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -383,7 +383,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+          "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -518,7 +518,7 @@
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.2.0",
       "defaults_version": "2026.04.15.v35",
-      "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+      "defaults_hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first exposure engine.",
@@ -993,7 +993,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+          "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1126,7 +1126,7 @@
           "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
           "locator": "docs://defaults-evidence-map#population-defaults",
           "version": "2026.03.25.v6",
-          "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+          "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
         },
         "confidence": "registry_default",
         "default_applied": true,
@@ -1261,7 +1261,7 @@
       "plugin_id": "screening_scenario_plugin",
       "plugin_version": "0.2.0",
       "defaults_version": "2026.04.15.v35",
-      "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+      "defaults_hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first exposure engine.",
@@ -1534,7 +1534,7 @@
       "plugin_id": "scenario_comparison_service",
       "plugin_version": "0.2.0",
       "defaults_version": "2026.04.15.v35",
-      "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+      "defaults_hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb",
       "generated_at": "2026-03-24T00:00:00+00:00",
       "notes": [
         "Deterministic-first exposure engine.",
@@ -1545,9 +1545,9 @@
   "evidenceRecord": {
     "schemaVersion": "toxclawEvidenceRecord.v1",
     "caseId": "case-example-001",
-    "contentHash": "d5b92983fb08ead93f8d4868fa2bc083bfd88fa09626134687aa5e62aff7f8c8",
+    "contentHash": "cd3edbe3e92f7c9e1647ac09a19119d64c86e5061c9c4b1c9e59a557bf0dea70",
     "dataClassification": "internal",
-    "evidenceId": "evidence-5ff9c5edc8f2fd78",
+    "evidenceId": "evidence-bb35387dee0ddbab",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1569,8 +1569,8 @@
   },
   "reportEvidenceReference": {
     "schemaVersion": "toxclawReportEvidenceReference.v1",
-    "contentHash": "d5b92983fb08ead93f8d4868fa2bc083bfd88fa09626134687aa5e62aff7f8c8",
-    "evidenceId": "evidence-5ff9c5edc8f2fd78",
+    "contentHash": "cd3edbe3e92f7c9e1647ac09a19119d64c86e5061c9c4b1c9e59a557bf0dea70",
+    "evidenceId": "evidence-bb35387dee0ddbab",
     "qualityFlag": null,
     "rawPointer": null,
     "redactionStatus": null,
@@ -1598,7 +1598,7 @@
         "claimId": "claim-e1d4880e484aa82b",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-5ff9c5edc8f2fd78"
+          "evidence-bb35387dee0ddbab"
         ],
         "text": "Baseline scenario exp-example-dermal-001 estimates 1.125 mg/kg-day; comparison scenario exp-example-dermal-refined-001 estimates 0.585 mg/kg-day."
       },
@@ -1607,7 +1607,7 @@
         "claimId": "claim-f056e8490cf5cc2b",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-5ff9c5edc8f2fd78"
+          "evidence-bb35387dee0ddbab"
         ],
         "text": "Comparison dose decreased by 48.00% relative to baseline."
       },
@@ -1616,7 +1616,7 @@
         "claimId": "claim-98be2d7dd8221ca2",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-5ff9c5edc8f2fd78"
+          "evidence-bb35387dee0ddbab"
         ],
         "text": "Changed assumptions: external_mass_mg_per_day, normalized_external_dose_mg_per_kg_day, retention_factor, transfer_efficiency."
       },
@@ -1625,13 +1625,13 @@
         "claimId": "claim-0409d2d114518ff0",
         "confidence": "supported",
         "evidenceIds": [
-          "evidence-5ff9c5edc8f2fd78"
+          "evidence-bb35387dee0ddbab"
         ],
         "text": "This comparison should inform exposure refinement only; ToxClaw remains responsible for the final recommendation."
       }
     ],
     "evidenceIds": [
-      "evidence-5ff9c5edc8f2fd78"
+      "evidence-bb35387dee0ddbab"
     ],
     "sectionKey": "exposure-refinement",
     "title": "Exposure Refinement Delta"

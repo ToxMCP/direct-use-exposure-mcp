@@ -18,6 +18,7 @@ from exposure_scenario_mcp.guidance import (
     exposure_platform_architecture_guide,
     goldset_benchmark_guide,
     herbal_medicinal_routing_guide,
+    http_audit_operations_guide,
     inhalation_residual_air_reentry_guide,
     inhalation_tier_upgrade_guide,
     integrated_exposure_workflow_guide,
@@ -97,6 +98,7 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     verification_summary = verification_summary_guide()
     release_trust = release_trust_checklist_guide()
     deployment_hardening = deployment_hardening_guide()
+    http_audit_ops = http_audit_operations_guide()
     test_evidence = build_test_evidence_summary_guide()
     capability_matrix = capability_maturity_matrix_guide()
     slug_decision = repository_slug_decision_guide()
@@ -195,9 +197,16 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Verification Summary" in verification_summary
     assert "verification://summary" in verification_summary
     assert "Release Trust Checklist" in release_trust
-    assert "ready_with_known_limitations" in release_trust
+    assert "`ready`" in release_trust
     assert "Deployment Hardening Guide" in deployment_hardening
     assert "streamable-http" in deployment_hardening
+    assert "EXPOSURE_SCENARIO_MCP_HTTP_BEARER_TOKEN" in deployment_hardening
+    assert "request-size limit" in deployment_hardening
+    assert "X-Exposure-Audit-Request-Id" in deployment_hardening
+    assert "python scripts/replay_http_audit.py" in deployment_hardening
+    assert "HTTP Audit Operations Guide" in http_audit_ops
+    assert "normalizedInputDigestSha256" in http_audit_ops
+    assert "release://metadata-report" in http_audit_ops
     assert "Test Evidence Summary" in test_evidence
     assert "uv run check-exposure-release-artifacts" in test_evidence
     assert "contract-surface-alignment" in verification_summary

@@ -301,6 +301,10 @@
       "description": "Guide to hardening remote streamable-http deployments with external auth, TLS, origin controls, and logging."
     },
     {
+      "uri": "docs://http-audit-operations-guide",
+      "description": "Guide to retaining, replaying, and debugging streamable-http audit events."
+    },
+    {
       "uri": "docs://provenance-policy",
       "description": "Provenance and assumption-emission policy for auditability."
     },
@@ -509,6 +513,26 @@
     {
       "name": "exposure_pbpk_handoff_checklist",
       "description": "Checklist for validating PBPK handoff readiness from a source scenario."
+    },
+    {
+      "name": "exposure_evidence_reconciliation_brief",
+      "description": "Checklist for reconciling reviewed evidence packs into one auditable request."
+    },
+    {
+      "name": "exposure_integrated_workflow_operator",
+      "description": "Checklist for running the evidence-to-scenario-to-PBPK workflow safely."
+    },
+    {
+      "name": "exposure_inhalation_tier1_triage",
+      "description": "Checklist for deciding whether a spray scenario is Tier 1 ready."
+    },
+    {
+      "name": "exposure_worker_bridge_handoff",
+      "description": "Checklist for packaging worker bridge exports without losing review context."
+    },
+    {
+      "name": "exposure_jurisdictional_review",
+      "description": "Checklist for preserving auditability during jurisdictional comparison."
     }
   ],
   "schemas": {

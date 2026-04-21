@@ -6,8 +6,8 @@
   "serverName": "exposure_scenario_mcp",
   "serverVersion": "0.2.0",
   "defaultsVersion": "2026.04.15.v35",
-  "readinessStatus": "ready_with_known_limitations",
-  "securityReviewStatus": "acceptable_with_warnings",
+  "readinessStatus": "ready",
+  "securityReviewStatus": "acceptable",
   "benchmarkCaseCount": 43,
   "benchmarkCaseIds": [
     "dermal_hand_cream_screening",
@@ -62,8 +62,8 @@
       "filename": "exposure_scenario_mcp-0.2.0-py3-none-any.whl",
       "relativePath": "dist/exposure_scenario_mcp-0.2.0-py3-none-any.whl",
       "present": true,
-      "sha256": "b04eeb3c1922bb671abb83d4b8e2e6275ff1c2f888d0b1ff851a4854ddb92ab1",
-      "sizeBytes": 377771
+      "sha256": null,
+      "sizeBytes": null
     },
     {
       "kind": "sdist",
@@ -80,6 +80,7 @@
     "docs://release-readiness",
     "docs://release-trust-checklist",
     "docs://deployment-hardening-guide",
+    "docs://http-audit-operations-guide",
     "docs://security-provenance-review",
     "docs://test-evidence-summary",
     "docs://verification-summary",
@@ -105,7 +106,7 @@
   "knownLimitations": [
     "This is a deterministic-first public server; no probabilistic population engine is shipped.",
     "The module does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.",
-    "Remote `streamable-http` deployment requires external authentication and origin controls.",
+    "Remote `streamable-http` deployment now supports built-in bearer-token auth, origin allow-lists, and request-size limits, but still relies on gateway- or host-layer TLS, rate limiting, and network scoping.",
     "Some screening factors still resolve from heuristic defaults packs and should be treated as flagged screening-level assumptions until curated replacements are added.",
     "PBPK request alignment should be re-validated whenever PBPK MCP changes its published contract version or request model."
   ]

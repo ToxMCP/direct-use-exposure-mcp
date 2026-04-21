@@ -5,8 +5,9 @@ from __future__ import annotations
 import math
 
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest, load_goldset_manifest
-from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.defaults import DefaultsRegistry, build_defaults_curation_report
 from exposure_scenario_mcp.models import (
+    DefaultsCurationStatus,
     ExecutedValidationCheck,
     ExposureScenario,
     ExternalValidationDataset,
@@ -27,7 +28,7 @@ from exposure_scenario_mcp.models import (
     ValidationStatus,
     ValidationSummary,
 )
-from exposure_scenario_mcp.source_classification import is_heuristic_source_id
+from exposure_scenario_mcp.source_classification import is_warning_heuristic_source_id
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
 from exposure_scenario_mcp.validation_time_series import ValidationTimeSeriesReferenceRegistry
 
@@ -810,10 +811,13 @@ EXTERNAL_VALIDATION_DATASETS = [
 
 
 def _heuristic_source_ids(registry: DefaultsRegistry) -> list[str]:
+    report = build_defaults_curation_report(registry)
     return sorted(
-        source["source_id"]
-        for source in registry.payload.get("sources", [])
-        if is_heuristic_source_id(str(source.get("source_id", "")))
+        {
+            entry.source_id
+            for entry in report.entries
+            if entry.curation_status == DefaultsCurationStatus.HEURISTIC
+        }
     )
 
 
@@ -997,14 +1001,12 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
             appliesToDomains=["global"],
             relatedSourceIds=heuristic_source_ids,
             note=(
-                "Some screening factor families still resolve from heuristic defaults rather "
-                "than curated, evidence-linked source packs."
+                "Some published screening branches still resolve from heuristic bridge defaults "
+                "rather than direct curated subtype packs."
             ),
             recommendation=(
-                "Prioritize curated replacements for residual transfer-efficiency fallbacks, "
-                "surface-contact retention, density, residual non-cleaner spray airborne "
-                "fractions, incidental oral defaults, and time-limited release duration "
-                "defaults."
+                "Prioritize curated replacements for the remaining pest-control trigger-spray "
+                "airborne-fraction bridge and subtype-specific aerosol density bridge."
             ),
         ),
     ]
@@ -2313,7 +2315,9 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
     ]
     external_dataset_ids = [item.dataset_id for item in matched_datasets]
     heuristic_assumption_names = sorted(
-        item.name for item in scenario.assumptions if is_heuristic_source_id(item.source.source_id)
+        item.name
+        for item in scenario.assumptions
+        if is_warning_heuristic_source_id(item.source.source_id)
     )
     executed_validation_checks = _executed_validation_checks(scenario)
     validation_status = (
