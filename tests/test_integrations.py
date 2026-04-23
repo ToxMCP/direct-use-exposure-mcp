@@ -4,6 +4,8 @@ import importlib.util
 import sys
 from pathlib import Path
 
+import pytest
+
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.integrations import (
     CompToxChemicalRecord,
@@ -1509,7 +1511,12 @@ def test_pbpk_external_import_package_validates_against_sibling_pbpk_request_whe
         raise RuntimeError(f"Unable to load upstream PBPK tool from {PBPK_TOOL_PATH}")
     module = importlib.util.module_from_spec(spec)
     sys.modules.setdefault("pbpk_external_bundle_upstream_check", module)
-    spec.loader.exec_module(module)
+    try:
+        spec.loader.exec_module(module)
+    except ModuleNotFoundError as exc:
+        pytest.skip(
+            f"Skipping optional sibling PBPK MCP integration; missing dependency `{exc.name}`."
+        )
 
     engine = build_engine()
     scenario = engine.build(

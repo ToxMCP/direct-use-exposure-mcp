@@ -659,7 +659,7 @@ def test_defaults_curation_report_matches_schema_and_surface() -> None:
     assert any(
         item["pathId"]
         == "pressurized_aerosol_volume_interpretation_factor:application_method=aerosol_spray"
-        and item["curationStatus"] == "heuristic"
+        and item["curationStatus"] == "route_semantic"
         for item in report["entries"]
     )
     assert any(
@@ -668,7 +668,7 @@ def test_defaults_curation_report_matches_schema_and_surface() -> None:
             "aerosolized_fraction:application_method=aerosol_spray,"
             "product_subtype=air_space_insecticide"
         )
-        and item["curationStatus"] == "heuristic"
+        and item["curationStatus"] == "route_semantic"
         for item in report["entries"]
     )
     assert any(
@@ -705,7 +705,7 @@ def test_release_readiness_report_matches_schema_and_manifest_counts() -> None:
     assert report["publicSurface"]["toolCount"] == len(manifest["tools"])
     assert report["publicSurface"]["resourceCount"] == len(manifest["resources"])
     assert report["publicSurface"]["promptCount"] == len(manifest["prompts"])
-    assert report["status"] == "ready_with_known_limitations"
+    assert report["status"] == "ready"
 
 
 def test_security_provenance_review_report_matches_schema_and_surface() -> None:
@@ -719,13 +719,17 @@ def test_security_provenance_review_report_matches_schema_and_surface() -> None:
     )
 
     validate(instance=report, schema=schema)
-    assert report["status"] == "acceptable_with_warnings"
+    assert report["status"] == "acceptable"
     assert len(report["reviewedSurface"]["toolNames"]) == len(manifest["tools"])
     assert len(report["reviewedSurface"]["resourceUris"]) == len(manifest["resources"])
     assert len(report["reviewedSurface"]["promptNames"]) == len(manifest["prompts"])
     finding_ids = {finding["findingId"] for finding in report["findings"]}
-    assert "heuristic-defaults-remain" in finding_ids
-    assert "remote-transport-controls-externalized" in finding_ids
+    assert "heuristic-defaults-visible" in finding_ids
+    assert "remote-transport-controls-published" in finding_ids
+    warning_ids = {
+        finding["findingId"] for finding in report["findings"] if finding["status"] == "warning"
+    }
+    assert warning_ids == set()
 
 
 def test_release_metadata_report_matches_schema_and_published_artifact() -> None:

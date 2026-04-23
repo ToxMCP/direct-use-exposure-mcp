@@ -29,6 +29,11 @@ REQUIRED_PROMPT_NAMES = frozenset(
     {
         "exposure_refinement_playbook",
         "exposure_pbpk_handoff_checklist",
+        "exposure_evidence_reconciliation_brief",
+        "exposure_integrated_workflow_operator",
+        "exposure_inhalation_tier1_triage",
+        "exposure_worker_bridge_handoff",
+        "exposure_jurisdictional_review",
     }
 )
 

@@ -1,0 +1,588 @@
+{
+  "applicabilityItems": [
+    {
+      "affectedObjectIds": [
+        "exp-fate-surface-water-001"
+      ],
+      "dimensionAssessments": [
+        {
+          "dimension": "exposure_metric",
+          "evidenceValue": "mg/kg-day",
+          "rationale": "The bridge emits an explicit external dose in mg/kg-day derived from the surface-water concentration surface.",
+          "status": "direct",
+          "targetValue": "mg/kg-day"
+        },
+        {
+          "dimension": "route",
+          "evidenceValue": "oral",
+          "rationale": "Surface-water route hint has been translated into an explicit oral screening route.",
+          "status": "direct",
+          "targetValue": "oral"
+        },
+        {
+          "bridgingRationale": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.",
+          "dimension": "matrix",
+          "evidenceValue": "surface_water",
+          "rationale": "The bridge still represents surface-water environmental context and should not be mistaken for food-mediated residue intake.",
+          "status": "partial",
+          "targetValue": "environmental_media_oral_screening"
+        }
+      ],
+      "evidenceClass": "exposure",
+      "intendedUse": "bounded_environmental_oral_screening",
+      "materiality": "material",
+      "originalId": "exp-fate-surface-water-app-001",
+      "overallStatus": "partial",
+      "provenance": {
+        "createdAt": "2026-04-21T14:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-water-oral-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "4ad66251d251ed65fedfb7f5b20ab5f3b654b61216e2927fac2ca4852382ad98"
+          }
+        ],
+        "toolRunId": "exp-fate-surface-water-app-001-run"
+      }
+    }
+  ],
+  "bundleId": "fate-water-oral-exposure-handoff-001",
+  "claimItems": [
+    {
+      "applicabilityRecordId": "exp-fate-surface-water-app-001",
+      "claimText": "Surface-water concentration-to-intake bridge preserves bounded environmental oral context at 0.000000091517848 mg/kg-day.",
+      "claimType": "qualitative",
+      "confidence": "moderate",
+      "evidenceObjectIds": [
+        "exp-fate-surface-water-001"
+      ],
+      "lineOfEvidenceId": "loe-fate-water-oral-bridge",
+      "originalId": "exp-fate-surface-water-claim-001",
+      "provenance": {
+        "createdAt": "2026-04-21T14:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-water-oral-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "c4404fb98bd0507b2b20194b6275dee9b8d654171480e9fef012790a16c06e75"
+          }
+        ],
+        "toolRunId": "exp-fate-surface-water-claim-001-run"
+      },
+      "rationale": "surface_water concentration precursor remains concentration-only at 3.20312469355e-06 mg/L and still requires downstream route and dose translation. The exposure bridge converts surface-water concentration into an external oral dose using explicit drinking-water assumptions and preserves the upstream concentration surface lineage.",
+      "supportStatus": "supports"
+    }
+  ],
+  "createdAt": "2026-04-21T14:00:00.000Z",
+  "createdBy": "direct-use-exposure-fate-water-oral-fixture-builder",
+  "evidenceItems": [
+    {
+      "aggregateExposure": false,
+      "biologicalLevel": "organism",
+      "doseUnit": "mg/kg-day",
+      "doseValue": 9.151784838711232e-08,
+      "endpointFamily": "environmental_oral_external_dose",
+      "evidenceClass": "exposure",
+      "exposureMetric": "external_dose_screening",
+      "exposureScenario": "environmental_media_oral_screening",
+      "intendedUseFamily": "environmental",
+      "methodDescription": "Surface-water concentration-to-intake screening bridge derived from Fate governed handoff output with explicit drinking-water assumptions.",
+      "methodMaturity": "governed_concentration_to_intake_bridge",
+      "oralExposureContext": "environmental_media",
+      "originalId": "exp-fate-surface-water-001",
+      "populationGroup": "adult",
+      "productCategory": "environmental_drinking_water_screening",
+      "provenance": {
+        "createdAt": "2026-04-21T14:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-water-oral-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "40a2959fdb535de27daed78ee2c913fb14962fa274aa4e0f5e510fcd960fb722"
+          }
+        ],
+        "toolRunId": "exp-fate-surface-water-001-run"
+      },
+      "region": "eu_screening_default",
+      "route": "oral",
+      "routeMetricKeys": [
+        "drinking_water_intake_l_per_day",
+        "events_per_day",
+        "external_mass_mg_per_day",
+        "surface_water_concentration_mg_per_l",
+        "source_concentration_surface_ids"
+      ],
+      "schemaVersion": "1.1.0",
+      "sourceModule": "exposure_ingress_v1",
+      "sourceScenarioId": "exp-fate-surface-water-definition-001",
+      "studyIdentifiers": [
+        {
+          "identifierType": "scenario_definition_id",
+          "identifierValue": "exp-fate-surface-water-definition-001"
+        },
+        {
+          "identifierType": "route_dose_artifact_id",
+          "identifierValue": "exp-fate-surface-water-route-dose-001"
+        },
+        {
+          "identifierType": "source_bundle_id",
+          "identifierValue": "fate-exposure-woe-roundtrip-001"
+        },
+        {
+          "identifierType": "source_scenario_id",
+          "identifierValue": "fate-environmental-scenario-001"
+        },
+        {
+          "identifierType": "source_concentration_surface_id",
+          "identifierValue": "fate-surface-water-001"
+        },
+        {
+          "identifierType": "pathway_semantics",
+          "identifierValue": "concentration_to_intake"
+        },
+        {
+          "identifierType": "route_hint",
+          "identifierValue": "water_contact_or_drinking_water_precursor"
+        },
+        {
+          "identifierType": "route_mechanism",
+          "identifierValue": "drinking_water_concentration_to_intake"
+        },
+        {
+          "identifierType": "time_window_mode",
+          "identifierValue": "steady_state"
+        }
+      ],
+      "upstreamArtifactRefs": [
+        {
+          "artifactId": "exp-fate-surface-water-definition-001",
+          "cachedSnapshot": {
+            "assumptionOverrides": {
+              "bodyWeightKg": 70.0,
+              "drinkingWaterIntakeLPerDay": 2.0,
+              "eventsPerDay": 1.0
+            },
+            "chemicalIdentity": {
+              "casrn": null,
+              "chemicalId": "FATE-CROSS-SUITE-EXAMPLE-001",
+              "dtxsid": null,
+              "externalIdentifiers": {
+                "fateScenarioId": "fate-environmental-scenario-001"
+              },
+              "inchiKey": null,
+              "notes": [
+                "Fixture-local stable chemical identifier used because the upstream Fate snapshot does not carry a richer suite identity object."
+              ],
+              "preferredName": "Example Fate Compound",
+              "schema_version": "chemicalIdentity.v1",
+              "smiles": null
+            },
+            "notes": [
+              "Scenario definition is driven by surface-water concentration from Fate MCP rather than a product-use or food-residue regimen.",
+              "The exposure layer acts here as an explicit concentration-to-intake consumer, not as a direct-use or dietary model."
+            ],
+            "pathwaySemantics": "concentration_to_intake",
+            "populationProfile": {
+              "body_weight_kg": 70.0,
+              "demographic_tags": [
+                "general_population",
+                "environmental_screening"
+              ],
+              "exposed_surface_area_cm2": null,
+              "inhalation_rate_m3_per_hour": null,
+              "population_group": "adult",
+              "region": "eu_screening_default",
+              "schema_version": "populationProfile.v1"
+            },
+            "productUseProfile": null,
+            "route": "oral",
+            "scenarioClass": "screening",
+            "scenarioDefinitionId": "exp-fate-surface-water-definition-001",
+            "schema_version": "exposureScenarioDefinition.v1",
+            "sourceConcentrationSurfaceIds": [
+              "fate-surface-water-001"
+            ]
+          },
+          "integrityHash": "sha256:40ca39968a9b609e8f1d8f61da008526620c4706288c12f82be5aebd6f95f75f",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ExposureScenarioDefinition",
+          "producerModule": "direct_use_exposure",
+          "producerVersion": "0.2.1",
+          "retrievalEndpoint": "exposure-scenario://cross-suite/fate-water-oral/scenario-definition",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "exp-fate-surface-water-route-dose-001",
+          "cachedSnapshot": {
+            "chemicalIdentity": {
+              "casrn": null,
+              "chemicalId": "FATE-CROSS-SUITE-EXAMPLE-001",
+              "dtxsid": null,
+              "externalIdentifiers": {
+                "fateScenarioId": "fate-environmental-scenario-001"
+              },
+              "inchiKey": null,
+              "notes": [
+                "Fixture-local stable chemical identifier used because the upstream Fate snapshot does not carry a richer suite identity object."
+              ],
+              "preferredName": "Example Fate Compound",
+              "schema_version": "chemicalIdentity.v1",
+              "smiles": null
+            },
+            "dose": {
+              "metric": "external_dose_screening",
+              "unit": "mg/kg-day",
+              "value": 9.151784838711232e-08
+            },
+            "fitForPurpose": {
+              "label": "bounded_environmental_oral_translation",
+              "not_suitable_for": [
+                "Food-mediated dietary residue interpretation.",
+                "Internal dose interpretation without downstream TK/PBPK review.",
+                "Soil or crop-uptake environmental-media translation."
+              ],
+              "suitable_for": [
+                "Surface-water concentration to external-dose screening translation.",
+                "Traceable Fate -> Exposure -> IVIVE/WoE integration testing."
+              ]
+            },
+            "limitations": [
+              {
+                "code": "surface_water_screening_translation",
+                "message": "Route-dose estimate uses explicit screening assumptions for drinking-water intake, body weight, and daily intake frequency.",
+                "severity": "warning"
+              },
+              {
+                "code": "environmental_context_not_food_mediated",
+                "message": "Surface-water concentration remains environmental-media context and does not represent food-mediated residue intake.",
+                "severity": "warning"
+              }
+            ],
+            "notes": [
+              "External dose is bounded screening output only and must not be interpreted as internal dose.",
+              "Soil and crop-uptake environmental oral scenarios remain out of scope for this surface-water bridge fixture."
+            ],
+            "populationProfile": {
+              "body_weight_kg": 70.0,
+              "demographic_tags": [
+                "general_population",
+                "environmental_screening"
+              ],
+              "exposed_surface_area_cm2": null,
+              "inhalation_rate_m3_per_hour": null,
+              "population_group": "adult",
+              "region": "eu_screening_default",
+              "schema_version": "populationProfile.v1"
+            },
+            "provenance": {
+              "algorithm_id": "concentration_to_intake.drinking_water_screening.v1",
+              "defaults_hash_sha256": "eea7cfd6f2e91ba76d9ca915ab33e3f02bf72caa1d5a987c7604c2e4eefa2668",
+              "defaults_version": "cross_suite_fixture_v1",
+              "generated_at": "2026-04-21T14:00:00.000Z",
+              "notes": [
+                "This deterministic fixture translates surface-water concentration into a bounded external oral dose using explicit screening assumptions.",
+                "Concentration 0.000003203124694 mg/L x drinking-water intake 2.0 L/day / 70.0 kg."
+              ],
+              "plugin_id": "fate_surface_water_concentration_to_intake_fixture",
+              "plugin_version": "0.2.1",
+              "schema_version": "provenanceBundle.v1"
+            },
+            "qualityFlags": [
+              {
+                "code": "fate_lineage_preserved",
+                "message": "Source concentration surface lineage and route-hint context are preserved downstream.",
+                "severity": "info"
+              }
+            ],
+            "route": "oral",
+            "scenarioClass": "screening",
+            "schema_version": "routeDoseEstimate.v1",
+            "sourceConcentrationSurfaceIds": [
+              "fate-surface-water-001"
+            ],
+            "sourceScenarioDefinitionId": "exp-fate-surface-water-definition-001",
+            "sourceScenarioId": null
+          },
+          "integrityHash": "sha256:b3d2a867a49354dda2132049df9f9aa0a203ba8967eb4d1c6c6163a64e072d0f",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RouteDoseEstimate",
+          "producerModule": "direct_use_exposure",
+          "producerVersion": "0.2.1",
+          "retrievalEndpoint": "exposure-scenario://cross-suite/fate-water-oral/route-dose",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-environmental-scenario-001",
+          "cachedSnapshot": {
+            "durationDays": 10.0,
+            "objectType": "EnvironmentalReleaseScenario",
+            "preferredName": "Example Fate Compound",
+            "regionId": "eu_screening_default",
+            "releaseFractions": [
+              {
+                "fraction": 0.3,
+                "medium": "air"
+              },
+              {
+                "fraction": 0.4,
+                "medium": "water"
+              },
+              {
+                "fraction": 0.3,
+                "medium": "soil"
+              }
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "substanceClass": "organic chemical"
+          },
+          "integrityHash": "sha256:c5dfbd65934ce22132fb9f1a74afde992fafd37ddc559f2349f6d528e48c2842",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "EnvironmentalReleaseScenario",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/environmental-release-scenario",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-surface-water-001",
+          "cachedSnapshot": {
+            "compartment": "surface_water",
+            "concentrationUnit": "mg/L",
+            "concentrationValue": 3.2031246935489315e-06,
+            "medium": "water",
+            "objectType": "ConcentrationSurface",
+            "scenarioId": "fate-environmental-scenario-001",
+            "timeWindowMode": "steady_state"
+          },
+          "integrityHash": "sha256:9e70bc1fb2546f5db9e21888efdfe465e458c4c88948d89a0866a861bc0c3b74",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurface",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface/water",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-concentration-surface-bundle-001",
+          "cachedSnapshot": {
+            "bundleId": "fate-concentration-surface-bundle-001",
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "modelFamily": "reference_mass_balance",
+            "objectType": "ConcentrationSurfaceBundle",
+            "regulatoryUseDisclaimer": "This output is a concentration surface. It is not a human dose, risk quotient, or regulatory decision. Downstream translation to dose requires Direct-Use Exposure MCP or equivalent.",
+            "runMode": "steady_state",
+            "scenarioId": "fate-environmental-scenario-001",
+            "surfaceCount": 3
+          },
+          "integrityHash": "sha256:be1e2efb0787e23bbceea6b4d835dbd6308718a8a7986e2c9902f497d885373d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurfaceBundle",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface-bundle",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001",
+          "cachedSnapshot": {
+            "blockers": [],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "limitations": [
+              {
+                "code": "concentration_only",
+                "message": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation."
+              },
+              {
+                "code": "suite_handoff_semantics",
+                "message": "Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions."
+              },
+              {
+                "code": "handoff_profile",
+                "message": "Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1."
+              },
+              {
+                "code": "handoff_profile_resolution",
+                "message": "Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+              }
+            ],
+            "objectType": "RegulatoryHandoffPackage",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "sourceModelFamily": "reference_mass_balance",
+            "targetModules": [
+              "Direct-Use Exposure MCP"
+            ]
+          },
+          "integrityHash": "sha256:424c33ebd2c2aac871f4324c24dc6308a0fca123a6b73e65f60e66fdcdbd95db",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackage",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001:summary",
+          "cachedSnapshot": {
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "downstreamField": "environmental_media_concentration",
+            "entryCount": 3,
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "objectType": "RegulatoryHandoffPackageSummary",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "summaryLines": [
+              "Return the regulatory handoff package and call out route_hint, concentration_value, concentration_unit, time_window, and any limitation or quality-flag context that the downstream direct-use exposure module must preserve.",
+              "Target module Direct-Use Exposure MCP receives 3 crosswalk entries via governed profile exposure_scenario_mcp_v1.",
+              "Downstream field environmental_media_concentration carries media concentrations for agricultural_soil, ambient_air, surface_water.",
+              "Route hints present: inhalation_precursor, soil_contact_or_crop_uptake_precursor, water_contact_or_drinking_water_precursor.",
+              "Time semantics present: steady_state.",
+              "Limitations: Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.; Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions.; Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1.; Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+            ],
+            "targetModule": "Direct-Use Exposure MCP",
+            "timeWindowModes": [
+              "steady_state"
+            ]
+          },
+          "integrityHash": "sha256:ecdc19275feb40f73af859921e4da3d9771a875d8924f73d174f6a6b3af8f3d1",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackageSummary",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package-summary",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-review-001",
+          "cachedSnapshot": {
+            "applicabilityLines": [
+              "Model family reference_mass_balance is declared for fit-for-purpose values: screening, benchmark, downstream_export.",
+              "Requested fit-for-purpose: screening.",
+              "Resolved substance class: missing from scenario chemical_identity.",
+              "Supported scope examples: neutral or weakly sorbing organic chemicals under screening-level multimedia assumptions; release scenarios that can be approximated as regional mass loading into air, water, soil, or sediment compartments.",
+              "Escalate or reject when scope resembles: metals and metal species requiring speciation-aware fate treatment; nanomaterials or particulate systems requiring size-resolved transport behavior.",
+              "Reference mass balance is appropriate for transparent deterministic screening workflows inside the declared Fate MCP boundary.",
+              "When not to use this MCP: explicit spatial dispersion and gradients; intermedia transfer coefficient modeling; probabilistic uncertainty propagation; transformation-product tracking."
+            ],
+            "equationLines": [
+              "agricultural_soil: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "ambient_air: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "surface_water: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))"
+            ],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "objectType": "RegulatoryHandoffReviewPacket",
+            "parameterQualityLines": [
+              "15 parameters were consumed by runtime reference_mass_balance; 0 remain provenance-only for review.",
+              "Applicability context follows reference_mass_balance for fit-for-purpose screening.",
+              "15 entries rely on governed curated-default or derived assumptions; 0 entries remain heuristic.",
+              "Default evidence posture: source_backed_defaults with 6 runtime-consumed core default assumption(s).",
+              "Run default proof posture: rebaselined_shipped_defaults.",
+              "Runtime consumed 6 governed core default parameter(s).",
+              "Source-backed defaults consumed: agricultural_soil_mass_kg, air_half_life_days, ambient_air_volume_m3, soil_half_life_days, surface_water_volume_m3, water_half_life_days.",
+              "No governed user overrides displaced the shipped core defaults in this run.",
+              "No legacy continuity defaults were consumed by runtime."
+            ],
+            "reviewPacketId": "fate-regulatory-handoff-review-001",
+            "reviewStatus": "ready_for_assessor_review",
+            "scenarioId": "fate-environmental-scenario-001",
+            "targetModule": "Direct-Use Exposure MCP",
+            "uncertaintyLines": [
+              "7 deterministic uncertainty drivers were ranked for reference_mass_balance.",
+              "These drivers explain reviewer attention points only; they are not probabilistic confidence intervals.",
+              "Top drivers: release_fractions (multi_medium_simplification_burden), agricultural_soil_mass_kg (default_screening_capacity), ambient_air_volume_m3 (default_screening_capacity), surface_water_volume_m3 (default_screening_capacity), air_half_life_days (default_heavy_parameter)."
+            ]
+          },
+          "integrityHash": "sha256:58e587d2187a7a2a858aafcdbfaf62744ff001358faa06af2c1613a431ab0b2d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffReviewPacket",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-review",
+          "schemaVersion": "1.1.0"
+        }
+      ]
+    }
+  ],
+  "linkItems": [
+    {
+      "bidirectional": false,
+      "originalId": "exp-fate-surface-water-link-001",
+      "provenance": {
+        "createdAt": "2026-04-21T14:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-water-oral-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "107f7b51822a8a462ffb00c8527eb535e973af07472cbce7039e3d05fd2ab6d2"
+          }
+        ],
+        "toolRunId": "exp-fate-surface-water-link-001-run"
+      },
+      "rationale": "The translated oral screening dose directly supports the bridge claim.",
+      "relationType": "supports",
+      "sourceId": "exp-fate-surface-water-001",
+      "sourceType": "evidence",
+      "strength": "direct",
+      "targetId": "exp-fate-surface-water-claim-001",
+      "targetType": "claim"
+    }
+  ],
+  "schemaVersion": "1.1.0",
+  "sourceFormat": "structured_json_bundle",
+  "sourceVersion": "1.1.0",
+  "targetConsumer": "woe_ngra",
+  "uncertaintyItems": [
+    {
+      "affectedObjectIds": [
+        "exp-fate-surface-water-001"
+      ],
+      "burdenLevel": "moderate",
+      "directionality": "bidirectional",
+      "mitigationPath": "Replace screening defaults with population-specific water-ingestion parameters or measured downstream intake data when available.",
+      "originalId": "exp-fate-surface-water-unc-001",
+      "provenance": {
+        "createdAt": "2026-04-21T14:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-water-oral-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "97bca81f5c17a54dd4d9455ffee7f5180aaded6673adcee6b9935bbc89ab58f5"
+          }
+        ],
+        "toolRunId": "exp-fate-surface-water-unc-001-run"
+      },
+      "rationale": "External dose depends on explicit screening assumptions for drinking-water intake and body weight, while the upstream surface-water concentration remains environmental-media context rather than food-mediated intake.",
+      "reducibility": "partially_reducible",
+      "uncertaintyClass": "comparability_indirectness"
+    }
+  ]
+}

@@ -56,10 +56,59 @@ summarized in `docs://cross-mcp-contract-guide`.
 
 - Environmental-media oral intake from water or soil is intentionally not routed into
   Direct-Use Exposure MCP by default.
-- That seam should start from Fate MCP `concentrationSurface.v1` outputs and move into a future
-  concentration-to-intake consumer.
+- That seam should start from Fate MCP `concentrationSurface.v1` outputs and move into an explicit
+  concentration-to-intake consumer rather than silently reusing direct-use or dietary semantics.
+- The first bounded implementation now exists as the checked-in
+  `Fate surface_water -> Exposure -> WoE` and
+  `Fate surface_water -> Exposure -> IVIVE -> WoE` round-trip fixtures.
+- A second bounded implementation now also exists as the checked-in
+  `Fate agricultural_soil -> Exposure -> WoE` and
+  `Fate agricultural_soil -> Exposure -> IVIVE -> WoE` round-trip fixtures.
+- That bridge is intentionally narrow: it uses transparent drinking-water screening assumptions
+  and preserves `environmental_media` oral context, rather than claiming a full dietary or
+  individualized drinking-water model.
+- The soil bridge is intentionally just as narrow: it resolves only the soil-contact branch with
+  explicit soil-ingestion screening assumptions and does not claim crop-uptake or food-residue
+  semantics.
 - It should only enter Dietary MCP when the workflow becomes food-mediated residue plus
   consumption rather than generic media ingestion.
+
+## Checked-in cross-suite fixtures
+
+- `tests/fixtures/cross_suite/woe_ngra/direct_use_exposure_handoff.v1.1.0.json`
+  freezes the direct `Direct-Use Exposure -> WoE` oral-context lane.
+- `tests/fixtures/cross_suite/woe_ngra/fate_inhalation_exposure_handoff.v1.1.0.json`
+  freezes the explicit `Fate ambient_air -> Exposure -> WoE` concentration-to-dose lane.
+- The ambient-air bridge proves this repo can act as a bounded concentration-to-dose consumer
+  without pretending Fate concentration surfaces are already PBPK-ready or product-use scenarios.
+- The checked-in bridge preserves:
+  - `pathwaySemantics=concentration_to_dose`
+  - upstream `ConcentrationSurface` and `EnvironmentalReleaseScenario` refs
+  - a typed `RouteDoseEstimate` handoff
+  - explicit screening assumptions for inhalation rate, duration, and body weight
+- `tests/fixtures/cross_suite/woe_ngra/fate_water_oral_exposure_handoff.v1.1.0.json`
+  freezes the explicit `Fate surface_water -> Exposure -> WoE` concentration-to-intake lane.
+- That surface-water bridge proves this repo can act as a bounded concentration-to-intake
+  consumer without collapsing environmental-media oral context into `food_mediated` dietary
+  intake or direct-use oral semantics.
+- The checked-in surface-water bridge preserves:
+  - `pathwaySemantics=concentration_to_intake`
+  - `oralExposureContext=environmental_media`
+  - upstream `ConcentrationSurface` and `EnvironmentalReleaseScenario` refs
+  - a typed `RouteDoseEstimate` handoff
+  - explicit screening assumptions for drinking-water intake and body weight
+- `tests/fixtures/cross_suite/woe_ngra/fate_soil_oral_exposure_handoff.v1.1.0.json`
+  freezes the explicit `Fate agricultural_soil -> Exposure -> WoE` concentration-to-intake lane.
+- That soil bridge proves this repo can resolve the soil-contact branch of the Fate route hint
+  into a bounded environmental oral screening dose without collapsing the case into dietary or
+  direct-use semantics.
+- The checked-in soil-contact bridge preserves:
+  - `pathwaySemantics=concentration_to_intake`
+  - `oralExposureContext=environmental_media`
+  - upstream `ConcentrationSurface` and `EnvironmentalReleaseScenario` refs
+  - a typed `RouteDoseEstimate` handoff
+  - explicit screening assumptions for soil ingestion and body weight
+  - an explicit unresolved boundary for crop uptake / food-mediated intake
 
 ## Herbal, TCM, and supplement split
 
@@ -70,7 +119,10 @@ summarized in `docs://cross-mcp-contract-guide`.
 - Herbal teas, nutrition-style supplement intake, and other food-mediated herbal consumption
   belong in Dietary MCP.
 - Environmental-media oral intake from contaminated water or soil is not a Direct-Use request
-  and is not Dietary by default; it should start from Fate MCP concentration outputs.
+  and is not Dietary by default; it should start from Fate MCP concentration outputs and move
+  through an explicit concentration-to-intake consumer when the workflow needs a bounded oral
+  screening dose. The checked-in soil-contact bridge only resolves incidental soil-contact style
+  intake; crop uptake remains a later seam.
 
 See [herbal_medicinal_routing.md](./herbal_medicinal_routing.md) for the detailed routing note.
 

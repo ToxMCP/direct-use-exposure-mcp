@@ -6,7 +6,8 @@ The following versions of Direct-Use Exposure MCP are currently supported with s
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
+| 0.2.x   | :white_check_mark: |
+| 0.1.x   | :x:                |
 | < 0.1.0 | :x:                |
 
 ## Reporting a Vulnerability
@@ -23,6 +24,9 @@ We aim to acknowledge reports within 5 business days and will coordinate fixes a
 ## Security Considerations
 
 - This MCP is designed to run as a deterministic, stateless screening engine.
-- For remote deployment, external authentication, TLS termination, and origin allow-listing are required. See [docs/deployment_hardening.md](./docs/deployment_hardening.md).
+- For remote deployment, configure bearer-token auth, TLS termination, rate limiting, network
+  scoping, and explicit origin allow-listing for browser clients. Streamable HTTP rejects
+  present unconfigured `Origin` headers by default. See
+  [docs/deployment_hardening.md](./docs/deployment_hardening.md).
 - The server does not ship built-in identity management or API gateway policy enforcement.
 - Input payloads are validated against published JSON Schemas; unbounded inputs should be rate-limited at the deployment boundary.

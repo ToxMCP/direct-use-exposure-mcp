@@ -3,7 +3,7 @@
 [![CI](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![Release](https://img.shields.io/github/v/release/ToxMCP/direct-use-exposure-mcp?sort=semver)](https://github.com/ToxMCP/direct-use-exposure-mcp/releases)
-[![Status](https://img.shields.io/badge/Status-Ready%20with%20Known%20Limitations-2E8B57)](#release-verification)
+[![Status](https://img.shields.io/badge/Status-Ready-2E8B57)](#release-verification)
 [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
 > Part of **ToxMCP** Suite → https://github.com/ToxMCP/toxmcp
@@ -112,7 +112,7 @@ umbrella repo:
 That distinction matters for the README and contract story: this MCP should read as one
 module in a growing suite, not as the whole ToxMCP platform.
 
-## What's in v0.2.0
+## What's in v0.2.1
 
 - Deterministic dermal plus direct-use/incidental oral screening scenario construction
 - Deterministic inhalation screening with room-volume, ventilation, saturation-cap, and deposition semantics
@@ -206,7 +206,7 @@ The detailed maturity matrix is in
 
 1. [Architecture](#architecture)
 2. [ToxMCP suite fit](#toxmcp-suite-fit)
-3. [What's in v0.2.0](#whats-in-v020)
+3. [What's in v0.2.1](#whats-in-v021)
 4. [Why this project exists](#why-this-project-exists)
 5. [Who this is for](#who-this-is-for)
 6. [Capability maturity](#capability-maturity)
@@ -353,6 +353,11 @@ left out of the public overview until the downstream consumer ships.
 
 - `exposure_refinement_playbook`
 - `exposure_pbpk_handoff_checklist`
+- `exposure_evidence_reconciliation_brief`
+- `exposure_integrated_workflow_operator`
+- `exposure_inhalation_tier1_triage`
+- `exposure_worker_bridge_handoff`
+- `exposure_jurisdictional_review`
 
 ## Quick start
 
@@ -400,9 +405,15 @@ Current published surface from `docs/contracts/contract_manifest.json`:
 
 - `39` tools
 - `65` resources
-- `2` prompts
+- `7` prompts
 - `153` schemas
 - `98` examples
+
+Starter operator material:
+
+- [Guided Tutorial](./docs/tutorials/regulatory_screening_walkthrough.md)
+- [Release Runbook](./docs/release_runbook.md)
+- [Maintainer Operating Model](./docs/maintainer_operating_model.md)
 
 Legacy root-level planning and PRD artifacts are intentionally excluded from the public repo
 surface and are not part of the live implementation backlog.
@@ -427,7 +438,7 @@ The MCP also publishes a consolidated runtime trust surface through:
 - `docs://test-evidence-summary`
 - `docs://herbal-medicinal-routing-guide`
 
-Current published package version: `0.2.0`
+Current published package version: `0.2.1`
 
 Repository-facing release docs:
 
@@ -449,7 +460,7 @@ Repository-facing release docs:
 
 ## Current limitations
 
-The current `v0.2.0` release is intentionally honest about what it does not do:
+The current `v0.2.1` release is intentionally honest about what it does not do:
 
 - It is deterministic-first and does not ship a probabilistic population engine.
 - It does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.
@@ -457,7 +468,9 @@ The current `v0.2.0` release is intentionally honest about what it does not do:
 - Inhalation branches now apply bounded volatility saturation caps and deposition sinks, but they are still screening-scale first-order physics rather than full aerosol dynamics.
 - Worker inhalation Tier 2 execution is a governed surrogate plus external ART exchange boundary, not a native ART solver.
 - Worker dermal execution is bounded, chemistry/material aware, finite-loading capped, and now includes bounded breakthrough-lag and evaporation-competition logic, but it is not a full glove-permeation or chemical-specific dermal kinetics engine.
-- Remote `streamable-http` deployment still requires external authentication and origin hardening.
+- Remote `streamable-http` deployment validates present `Origin` headers fail-closed by default,
+  but still requires explicit bearer-token auth, TLS termination, rate limiting, and network
+  scoping for exposed deployments.
 - PBPK request alignment should be re-validated whenever PBPK MCP changes its published contract version.
 
 ## Scientific boundaries

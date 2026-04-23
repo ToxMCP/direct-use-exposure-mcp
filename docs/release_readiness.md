@@ -1,6 +1,6 @@
 # Release Readiness
 
-Release gating for `v0.2.0` is benchmark-first, contract-first, and provenance-first.
+Release gating for `v0.2.1` is benchmark-first, contract-first, and provenance-first.
 
 ## Required Gates
 
@@ -71,6 +71,8 @@ Release gating for `v0.2.0` is benchmark-first, contract-first, and provenance-f
 
 ## Known Cautions
 
-- Remote `streamable-http` deployment requires external authentication and origin controls.
+- Remote `streamable-http` deployment now supports built-in bearer-token auth, fail-closed
+  Origin validation, origin allow-lists, and request-size limits, but still relies on gateway-
+  or host-layer TLS, rate limiting, and network scoping.
 - The module remains deterministic-first and does not ship a probabilistic population engine.
 - The module does not own PBPK execution, internal dose estimation, BER, PoD derivation, or final risk decisions.

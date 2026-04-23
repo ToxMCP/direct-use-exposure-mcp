@@ -2095,7 +2095,7 @@
       "type": "string"
     },
     "source_version": {
-      "default": "0.2.0",
+      "default": "0.2.1",
       "description": "Source platform version written into the PBPK import request.",
       "title": "Source Version",
       "type": "string"

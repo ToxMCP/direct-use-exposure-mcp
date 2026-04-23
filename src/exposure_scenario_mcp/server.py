@@ -6,10 +6,17 @@ import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+import anyio
+import uvicorn
 from mcp.server.fastmcp import FastMCP
 from mcp.types import CallToolResult, TextContent
+from starlette.types import ASGIApp
 
 from exposure_scenario_mcp.errors import ExposureScenarioError
+from exposure_scenario_mcp.http_security import (
+    HttpBoundarySecurityConfig,
+    apply_http_boundary_security,
+)
 from exposure_scenario_mcp.package_metadata import package_version
 from exposure_scenario_mcp.result_meta import build_tool_result_meta
 from exposure_scenario_mcp.server_resources import register_prompts, register_resources
@@ -40,6 +47,44 @@ def _error_result(error: ExposureScenarioError) -> CallToolResult:
         isError=True,
         content=[TextContent(type="text", text=error.as_text())],
     )
+
+
+def create_streamable_http_app(
+    mcp: FastMCP,
+    security_config: HttpBoundarySecurityConfig | None = None,
+) -> ASGIApp:
+    """Create the streamable-http ASGI app with optional first-party boundary controls."""
+
+    base_app = mcp.streamable_http_app()
+    if security_config is None:
+        return base_app
+    return apply_http_boundary_security(base_app, security_config)
+
+
+async def run_streamable_http_async(
+    mcp: FastMCP,
+    security_config: HttpBoundarySecurityConfig | None = None,
+) -> None:
+    """Run the streamable-http transport with optional first-party boundary controls."""
+
+    app = create_streamable_http_app(mcp, security_config)
+    config = uvicorn.Config(
+        app,
+        host=mcp.settings.host,
+        port=mcp.settings.port,
+        log_level=mcp.settings.log_level.lower(),
+    )
+    server = uvicorn.Server(config)
+    await server.serve()
+
+
+def run_streamable_http(
+    mcp: FastMCP,
+    security_config: HttpBoundarySecurityConfig | None = None,
+) -> None:
+    """Synchronously run the streamable-http transport with boundary controls."""
+
+    anyio.run(lambda: run_streamable_http_async(mcp, security_config))
 
 
 def create_mcp_server() -> FastMCP:

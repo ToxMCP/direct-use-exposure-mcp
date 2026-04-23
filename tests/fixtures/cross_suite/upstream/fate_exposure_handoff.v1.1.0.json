@@ -1,0 +1,1201 @@
+{
+  "applicabilityItems": [
+    {
+      "affectedObjectIds": [
+        "fate-exp-soil-001"
+      ],
+      "dimensionAssessments": [
+        {
+          "dimension": "exposure_metric",
+          "rationale": "The governed handoff preserves medium, compartment, concentration value, concentration unit, and steady-state time semantics.",
+          "status": "direct"
+        },
+        {
+          "bridgingRationale": "Route hint soil_contact_or_crop_uptake_precursor is precursor context only.",
+          "dimension": "internal_dose_metric",
+          "rationale": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.",
+          "status": "not_comparable"
+        },
+        {
+          "dimension": "route",
+          "rationale": "Route hint soil_contact_or_crop_uptake_precursor remains bounded guidance and must not be treated as a final human route estimate.",
+          "status": "indirect"
+        }
+      ],
+      "evidenceClass": "exposure",
+      "intendedUse": "bounded_environmental_context",
+      "materiality": "material",
+      "originalId": "fate-exp-soil-app-001",
+      "overallStatus": "partial",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "6c5d5e5e7d352a5443b1ed323be6aae05a95d3edaafa8346cc0354eb21fdd93b"
+          }
+        ],
+        "toolRunId": "fate-exp-soil-app-001-run"
+      }
+    },
+    {
+      "affectedObjectIds": [
+        "fate-exp-air-001"
+      ],
+      "dimensionAssessments": [
+        {
+          "dimension": "exposure_metric",
+          "rationale": "The governed handoff preserves medium, compartment, concentration value, concentration unit, and steady-state time semantics.",
+          "status": "direct"
+        },
+        {
+          "bridgingRationale": "Route hint inhalation_precursor is precursor context only.",
+          "dimension": "internal_dose_metric",
+          "rationale": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.",
+          "status": "not_comparable"
+        },
+        {
+          "dimension": "route",
+          "rationale": "Route hint inhalation_precursor remains bounded guidance and must not be treated as a final human route estimate.",
+          "status": "indirect"
+        }
+      ],
+      "evidenceClass": "exposure",
+      "intendedUse": "bounded_environmental_context",
+      "materiality": "material",
+      "originalId": "fate-exp-air-app-001",
+      "overallStatus": "partial",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "0def2d446c96e36259fab55860b21eb3909550489143122311c6e450f470ac78"
+          }
+        ],
+        "toolRunId": "fate-exp-air-app-001-run"
+      }
+    },
+    {
+      "affectedObjectIds": [
+        "fate-exp-water-001"
+      ],
+      "dimensionAssessments": [
+        {
+          "dimension": "exposure_metric",
+          "rationale": "The governed handoff preserves medium, compartment, concentration value, concentration unit, and steady-state time semantics.",
+          "status": "direct"
+        },
+        {
+          "bridgingRationale": "Route hint water_contact_or_drinking_water_precursor is precursor context only.",
+          "dimension": "internal_dose_metric",
+          "rationale": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.",
+          "status": "not_comparable"
+        },
+        {
+          "dimension": "route",
+          "rationale": "Route hint water_contact_or_drinking_water_precursor remains bounded guidance and must not be treated as a final human route estimate.",
+          "status": "indirect"
+        }
+      ],
+      "evidenceClass": "exposure",
+      "intendedUse": "bounded_environmental_context",
+      "materiality": "material",
+      "originalId": "fate-exp-water-app-001",
+      "overallStatus": "partial",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "0acf24ae8e439f8b1ff9b9a56a94a836eb7a28fcd56883891e6c52d2425f1328"
+          }
+        ],
+        "toolRunId": "fate-exp-water-app-001-run"
+      }
+    }
+  ],
+  "bundleId": "fate-exposure-woe-roundtrip-001",
+  "claimItems": [
+    {
+      "applicabilityRecordId": "fate-exp-soil-app-001",
+      "claimText": "agricultural_soil concentration precursor remains concentration-only at 0.000535729010581 mg/kg and still requires downstream route and dose translation.",
+      "claimType": "qualitative",
+      "confidence": "moderate",
+      "evidenceObjectIds": [
+        "fate-exp-soil-001"
+      ],
+      "lineOfEvidenceId": "loe-fate-soil",
+      "originalId": "fate-exp-soil-claim-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "67e9ca8502088e8c8bdd68573ddcd5853b5cdcf04ef795bd41b862b94596036d"
+          }
+        ],
+        "toolRunId": "fate-exp-soil-claim-001-run"
+      },
+      "rationale": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation. Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions.",
+      "supportStatus": "supports"
+    },
+    {
+      "applicabilityRecordId": "fate-exp-air-app-001",
+      "claimText": "ambient_air concentration precursor remains concentration-only at 0.000419283246258 mg/m3 and still requires downstream route and dose translation.",
+      "claimType": "qualitative",
+      "confidence": "moderate",
+      "evidenceObjectIds": [
+        "fate-exp-air-001"
+      ],
+      "lineOfEvidenceId": "loe-fate-air",
+      "originalId": "fate-exp-air-claim-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "7168dd04af61bb06d3bc560a095dfda55e62cf10467ba1dd2ddf53fb6d8f9469"
+          }
+        ],
+        "toolRunId": "fate-exp-air-claim-001-run"
+      },
+      "rationale": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation. Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions.",
+      "supportStatus": "supports"
+    },
+    {
+      "applicabilityRecordId": "fate-exp-water-app-001",
+      "claimText": "surface_water concentration precursor remains concentration-only at 3.20312469355e-06 mg/L and still requires downstream route and dose translation.",
+      "claimType": "qualitative",
+      "confidence": "moderate",
+      "evidenceObjectIds": [
+        "fate-exp-water-001"
+      ],
+      "lineOfEvidenceId": "loe-fate-water",
+      "originalId": "fate-exp-water-claim-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "5e206b3cf9b0a4cf364dfdf6d0555a19653544992661c8a771958180b2a6e37a"
+          }
+        ],
+        "toolRunId": "fate-exp-water-claim-001-run"
+      },
+      "rationale": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation. Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions.",
+      "supportStatus": "supports"
+    }
+  ],
+  "createdAt": "2026-04-21T12:00:00.000Z",
+  "createdBy": "environmental-fate-cross-suite-fixture-builder",
+  "evidenceItems": [
+    {
+      "aggregateExposure": false,
+      "biologicalLevel": "environment",
+      "doseUnit": "mg/kg",
+      "doseValue": 0.0005357290105813334,
+      "endpointFamily": "environmental_media_concentration",
+      "evidenceClass": "exposure",
+      "exposureMetric": "environmental_media_concentration",
+      "exposureScenario": "environmental_media_precursor",
+      "intendedUseFamily": "environmental",
+      "methodDescription": "agricultural_soil concentration precursor exported from Fate governed handoff profile exposure_scenario_mcp_v1.",
+      "methodMaturity": "governed_concentration_handoff",
+      "originalId": "fate-exp-soil-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "23ec6fb68ea3488c2cda64a9fb6c0a542c4c3ac4913a5c9e2fc80177cf581075"
+          }
+        ],
+        "toolRunId": "fate-exp-soil-001-run"
+      },
+      "region": "eu_screening_default",
+      "route": "soil_contact_or_crop_uptake_precursor",
+      "routeMetricKeys": [
+        "concentration_value",
+        "concentration_unit",
+        "route_hint",
+        "requires_dose_translation"
+      ],
+      "schemaVersion": "1.1.0",
+      "sourceModule": "environmental_fate",
+      "sourceScenarioId": "fate-environmental-scenario-001",
+      "studyIdentifiers": [
+        {
+          "identifierType": "scenario_id",
+          "identifierValue": "fate-environmental-scenario-001"
+        },
+        {
+          "identifierType": "handoff_profile_id",
+          "identifierValue": "exposure_scenario_mcp_v1"
+        },
+        {
+          "identifierType": "medium",
+          "identifierValue": "soil"
+        },
+        {
+          "identifierType": "compartment",
+          "identifierValue": "agricultural_soil"
+        },
+        {
+          "identifierType": "time_window_mode",
+          "identifierValue": "steady_state"
+        },
+        {
+          "identifierType": "route_hint",
+          "identifierValue": "soil_contact_or_crop_uptake_precursor"
+        },
+        {
+          "identifierType": "requires_dose_translation",
+          "identifierValue": "true"
+        }
+      ],
+      "upstreamArtifactRefs": [
+        {
+          "artifactId": "fate-environmental-scenario-001",
+          "cachedSnapshot": {
+            "durationDays": 10.0,
+            "objectType": "EnvironmentalReleaseScenario",
+            "preferredName": "Example Fate Compound",
+            "regionId": "eu_screening_default",
+            "releaseFractions": [
+              {
+                "fraction": 0.3,
+                "medium": "air"
+              },
+              {
+                "fraction": 0.4,
+                "medium": "water"
+              },
+              {
+                "fraction": 0.3,
+                "medium": "soil"
+              }
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "substanceClass": "organic chemical"
+          },
+          "integrityHash": "sha256:c5dfbd65934ce22132fb9f1a74afde992fafd37ddc559f2349f6d528e48c2842",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "EnvironmentalReleaseScenario",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/environmental-release-scenario",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-surface-soil-001",
+          "cachedSnapshot": {
+            "compartment": "agricultural_soil",
+            "concentrationUnit": "mg/kg",
+            "concentrationValue": 0.0005357290105813334,
+            "medium": "soil",
+            "objectType": "ConcentrationSurface",
+            "scenarioId": "fate-environmental-scenario-001",
+            "timeWindowMode": "steady_state"
+          },
+          "integrityHash": "sha256:5031560321e5136f40efafbe1ed3464a2d499318c0a155efadd9ceea813630da",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurface",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface/soil",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-concentration-surface-bundle-001",
+          "cachedSnapshot": {
+            "bundleId": "fate-concentration-surface-bundle-001",
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "modelFamily": "reference_mass_balance",
+            "objectType": "ConcentrationSurfaceBundle",
+            "regulatoryUseDisclaimer": "This output is a concentration surface. It is not a human dose, risk quotient, or regulatory decision. Downstream translation to dose requires Direct-Use Exposure MCP or equivalent.",
+            "runMode": "steady_state",
+            "scenarioId": "fate-environmental-scenario-001",
+            "surfaceCount": 3
+          },
+          "integrityHash": "sha256:be1e2efb0787e23bbceea6b4d835dbd6308718a8a7986e2c9902f497d885373d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurfaceBundle",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface-bundle",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001",
+          "cachedSnapshot": {
+            "blockers": [],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "limitations": [
+              {
+                "code": "concentration_only",
+                "message": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation."
+              },
+              {
+                "code": "suite_handoff_semantics",
+                "message": "Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions."
+              },
+              {
+                "code": "handoff_profile",
+                "message": "Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1."
+              },
+              {
+                "code": "handoff_profile_resolution",
+                "message": "Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+              }
+            ],
+            "objectType": "RegulatoryHandoffPackage",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "sourceModelFamily": "reference_mass_balance",
+            "targetModules": [
+              "Direct-Use Exposure MCP"
+            ]
+          },
+          "integrityHash": "sha256:424c33ebd2c2aac871f4324c24dc6308a0fca123a6b73e65f60e66fdcdbd95db",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackage",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001:summary",
+          "cachedSnapshot": {
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "downstreamField": "environmental_media_concentration",
+            "entryCount": 3,
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "objectType": "RegulatoryHandoffPackageSummary",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "summaryLines": [
+              "Return the regulatory handoff package and call out route_hint, concentration_value, concentration_unit, time_window, and any limitation or quality-flag context that the downstream direct-use exposure module must preserve.",
+              "Target module Direct-Use Exposure MCP receives 3 crosswalk entries via governed profile exposure_scenario_mcp_v1.",
+              "Downstream field environmental_media_concentration carries media concentrations for agricultural_soil, ambient_air, surface_water.",
+              "Route hints present: inhalation_precursor, soil_contact_or_crop_uptake_precursor, water_contact_or_drinking_water_precursor.",
+              "Time semantics present: steady_state.",
+              "Limitations: Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.; Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions.; Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1.; Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+            ],
+            "targetModule": "Direct-Use Exposure MCP",
+            "timeWindowModes": [
+              "steady_state"
+            ]
+          },
+          "integrityHash": "sha256:ecdc19275feb40f73af859921e4da3d9771a875d8924f73d174f6a6b3af8f3d1",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackageSummary",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package-summary",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-review-001",
+          "cachedSnapshot": {
+            "applicabilityLines": [
+              "Model family reference_mass_balance is declared for fit-for-purpose values: screening, benchmark, downstream_export.",
+              "Requested fit-for-purpose: screening.",
+              "Resolved substance class: missing from scenario chemical_identity.",
+              "Supported scope examples: neutral or weakly sorbing organic chemicals under screening-level multimedia assumptions; release scenarios that can be approximated as regional mass loading into air, water, soil, or sediment compartments.",
+              "Escalate or reject when scope resembles: metals and metal species requiring speciation-aware fate treatment; nanomaterials or particulate systems requiring size-resolved transport behavior.",
+              "Reference mass balance is appropriate for transparent deterministic screening workflows inside the declared Fate MCP boundary.",
+              "When not to use this MCP: explicit spatial dispersion and gradients; intermedia transfer coefficient modeling; probabilistic uncertainty propagation; transformation-product tracking."
+            ],
+            "equationLines": [
+              "agricultural_soil: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "ambient_air: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "surface_water: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))"
+            ],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "objectType": "RegulatoryHandoffReviewPacket",
+            "parameterQualityLines": [
+              "15 parameters were consumed by runtime reference_mass_balance; 0 remain provenance-only for review.",
+              "Applicability context follows reference_mass_balance for fit-for-purpose screening.",
+              "15 entries rely on governed curated-default or derived assumptions; 0 entries remain heuristic.",
+              "Default evidence posture: source_backed_defaults with 6 runtime-consumed core default assumption(s).",
+              "Run default proof posture: rebaselined_shipped_defaults.",
+              "Runtime consumed 6 governed core default parameter(s).",
+              "Source-backed defaults consumed: agricultural_soil_mass_kg, air_half_life_days, ambient_air_volume_m3, soil_half_life_days, surface_water_volume_m3, water_half_life_days.",
+              "No governed user overrides displaced the shipped core defaults in this run.",
+              "No legacy continuity defaults were consumed by runtime."
+            ],
+            "reviewPacketId": "fate-regulatory-handoff-review-001",
+            "reviewStatus": "ready_for_assessor_review",
+            "scenarioId": "fate-environmental-scenario-001",
+            "targetModule": "Direct-Use Exposure MCP",
+            "uncertaintyLines": [
+              "7 deterministic uncertainty drivers were ranked for reference_mass_balance.",
+              "These drivers explain reviewer attention points only; they are not probabilistic confidence intervals.",
+              "Top drivers: release_fractions (multi_medium_simplification_burden), agricultural_soil_mass_kg (default_screening_capacity), ambient_air_volume_m3 (default_screening_capacity), surface_water_volume_m3 (default_screening_capacity), air_half_life_days (default_heavy_parameter)."
+            ]
+          },
+          "integrityHash": "sha256:58e587d2187a7a2a858aafcdbfaf62744ff001358faa06af2c1613a431ab0b2d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffReviewPacket",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-review",
+          "schemaVersion": "1.1.0"
+        }
+      ]
+    },
+    {
+      "aggregateExposure": false,
+      "biologicalLevel": "environment",
+      "doseUnit": "mg/m3",
+      "doseValue": 0.00041928324625835497,
+      "endpointFamily": "environmental_media_concentration",
+      "evidenceClass": "exposure",
+      "exposureMetric": "environmental_media_concentration",
+      "exposureScenario": "environmental_media_precursor",
+      "intendedUseFamily": "environmental",
+      "methodDescription": "ambient_air concentration precursor exported from Fate governed handoff profile exposure_scenario_mcp_v1.",
+      "methodMaturity": "governed_concentration_handoff",
+      "originalId": "fate-exp-air-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "6baf648ac453bea577cf395cc845619a77013d04ae97622742a394c43494d66d"
+          }
+        ],
+        "toolRunId": "fate-exp-air-001-run"
+      },
+      "region": "eu_screening_default",
+      "route": "inhalation_precursor",
+      "routeMetricKeys": [
+        "concentration_value",
+        "concentration_unit",
+        "route_hint",
+        "requires_dose_translation"
+      ],
+      "schemaVersion": "1.1.0",
+      "sourceModule": "environmental_fate",
+      "sourceScenarioId": "fate-environmental-scenario-001",
+      "studyIdentifiers": [
+        {
+          "identifierType": "scenario_id",
+          "identifierValue": "fate-environmental-scenario-001"
+        },
+        {
+          "identifierType": "handoff_profile_id",
+          "identifierValue": "exposure_scenario_mcp_v1"
+        },
+        {
+          "identifierType": "medium",
+          "identifierValue": "air"
+        },
+        {
+          "identifierType": "compartment",
+          "identifierValue": "ambient_air"
+        },
+        {
+          "identifierType": "time_window_mode",
+          "identifierValue": "steady_state"
+        },
+        {
+          "identifierType": "route_hint",
+          "identifierValue": "inhalation_precursor"
+        },
+        {
+          "identifierType": "requires_dose_translation",
+          "identifierValue": "true"
+        }
+      ],
+      "upstreamArtifactRefs": [
+        {
+          "artifactId": "fate-environmental-scenario-001",
+          "cachedSnapshot": {
+            "durationDays": 10.0,
+            "objectType": "EnvironmentalReleaseScenario",
+            "preferredName": "Example Fate Compound",
+            "regionId": "eu_screening_default",
+            "releaseFractions": [
+              {
+                "fraction": 0.3,
+                "medium": "air"
+              },
+              {
+                "fraction": 0.4,
+                "medium": "water"
+              },
+              {
+                "fraction": 0.3,
+                "medium": "soil"
+              }
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "substanceClass": "organic chemical"
+          },
+          "integrityHash": "sha256:c5dfbd65934ce22132fb9f1a74afde992fafd37ddc559f2349f6d528e48c2842",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "EnvironmentalReleaseScenario",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/environmental-release-scenario",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-surface-air-001",
+          "cachedSnapshot": {
+            "compartment": "ambient_air",
+            "concentrationUnit": "mg/m3",
+            "concentrationValue": 0.00041928324625835497,
+            "medium": "air",
+            "objectType": "ConcentrationSurface",
+            "scenarioId": "fate-environmental-scenario-001",
+            "timeWindowMode": "steady_state"
+          },
+          "integrityHash": "sha256:919a30ae323d2a7ffc4777e88f2f0be2811d75c73c81e54910a3eefefcb2fab8",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurface",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface/air",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-concentration-surface-bundle-001",
+          "cachedSnapshot": {
+            "bundleId": "fate-concentration-surface-bundle-001",
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "modelFamily": "reference_mass_balance",
+            "objectType": "ConcentrationSurfaceBundle",
+            "regulatoryUseDisclaimer": "This output is a concentration surface. It is not a human dose, risk quotient, or regulatory decision. Downstream translation to dose requires Direct-Use Exposure MCP or equivalent.",
+            "runMode": "steady_state",
+            "scenarioId": "fate-environmental-scenario-001",
+            "surfaceCount": 3
+          },
+          "integrityHash": "sha256:be1e2efb0787e23bbceea6b4d835dbd6308718a8a7986e2c9902f497d885373d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurfaceBundle",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface-bundle",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001",
+          "cachedSnapshot": {
+            "blockers": [],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "limitations": [
+              {
+                "code": "concentration_only",
+                "message": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation."
+              },
+              {
+                "code": "suite_handoff_semantics",
+                "message": "Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions."
+              },
+              {
+                "code": "handoff_profile",
+                "message": "Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1."
+              },
+              {
+                "code": "handoff_profile_resolution",
+                "message": "Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+              }
+            ],
+            "objectType": "RegulatoryHandoffPackage",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "sourceModelFamily": "reference_mass_balance",
+            "targetModules": [
+              "Direct-Use Exposure MCP"
+            ]
+          },
+          "integrityHash": "sha256:424c33ebd2c2aac871f4324c24dc6308a0fca123a6b73e65f60e66fdcdbd95db",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackage",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001:summary",
+          "cachedSnapshot": {
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "downstreamField": "environmental_media_concentration",
+            "entryCount": 3,
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "objectType": "RegulatoryHandoffPackageSummary",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "summaryLines": [
+              "Return the regulatory handoff package and call out route_hint, concentration_value, concentration_unit, time_window, and any limitation or quality-flag context that the downstream direct-use exposure module must preserve.",
+              "Target module Direct-Use Exposure MCP receives 3 crosswalk entries via governed profile exposure_scenario_mcp_v1.",
+              "Downstream field environmental_media_concentration carries media concentrations for agricultural_soil, ambient_air, surface_water.",
+              "Route hints present: inhalation_precursor, soil_contact_or_crop_uptake_precursor, water_contact_or_drinking_water_precursor.",
+              "Time semantics present: steady_state.",
+              "Limitations: Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.; Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions.; Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1.; Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+            ],
+            "targetModule": "Direct-Use Exposure MCP",
+            "timeWindowModes": [
+              "steady_state"
+            ]
+          },
+          "integrityHash": "sha256:ecdc19275feb40f73af859921e4da3d9771a875d8924f73d174f6a6b3af8f3d1",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackageSummary",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package-summary",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-review-001",
+          "cachedSnapshot": {
+            "applicabilityLines": [
+              "Model family reference_mass_balance is declared for fit-for-purpose values: screening, benchmark, downstream_export.",
+              "Requested fit-for-purpose: screening.",
+              "Resolved substance class: missing from scenario chemical_identity.",
+              "Supported scope examples: neutral or weakly sorbing organic chemicals under screening-level multimedia assumptions; release scenarios that can be approximated as regional mass loading into air, water, soil, or sediment compartments.",
+              "Escalate or reject when scope resembles: metals and metal species requiring speciation-aware fate treatment; nanomaterials or particulate systems requiring size-resolved transport behavior.",
+              "Reference mass balance is appropriate for transparent deterministic screening workflows inside the declared Fate MCP boundary.",
+              "When not to use this MCP: explicit spatial dispersion and gradients; intermedia transfer coefficient modeling; probabilistic uncertainty propagation; transformation-product tracking."
+            ],
+            "equationLines": [
+              "agricultural_soil: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "ambient_air: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "surface_water: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))"
+            ],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "objectType": "RegulatoryHandoffReviewPacket",
+            "parameterQualityLines": [
+              "15 parameters were consumed by runtime reference_mass_balance; 0 remain provenance-only for review.",
+              "Applicability context follows reference_mass_balance for fit-for-purpose screening.",
+              "15 entries rely on governed curated-default or derived assumptions; 0 entries remain heuristic.",
+              "Default evidence posture: source_backed_defaults with 6 runtime-consumed core default assumption(s).",
+              "Run default proof posture: rebaselined_shipped_defaults.",
+              "Runtime consumed 6 governed core default parameter(s).",
+              "Source-backed defaults consumed: agricultural_soil_mass_kg, air_half_life_days, ambient_air_volume_m3, soil_half_life_days, surface_water_volume_m3, water_half_life_days.",
+              "No governed user overrides displaced the shipped core defaults in this run.",
+              "No legacy continuity defaults were consumed by runtime."
+            ],
+            "reviewPacketId": "fate-regulatory-handoff-review-001",
+            "reviewStatus": "ready_for_assessor_review",
+            "scenarioId": "fate-environmental-scenario-001",
+            "targetModule": "Direct-Use Exposure MCP",
+            "uncertaintyLines": [
+              "7 deterministic uncertainty drivers were ranked for reference_mass_balance.",
+              "These drivers explain reviewer attention points only; they are not probabilistic confidence intervals.",
+              "Top drivers: release_fractions (multi_medium_simplification_burden), agricultural_soil_mass_kg (default_screening_capacity), ambient_air_volume_m3 (default_screening_capacity), surface_water_volume_m3 (default_screening_capacity), air_half_life_days (default_heavy_parameter)."
+            ]
+          },
+          "integrityHash": "sha256:58e587d2187a7a2a858aafcdbfaf62744ff001358faa06af2c1613a431ab0b2d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffReviewPacket",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-review",
+          "schemaVersion": "1.1.0"
+        }
+      ]
+    },
+    {
+      "aggregateExposure": false,
+      "biologicalLevel": "environment",
+      "doseUnit": "mg/L",
+      "doseValue": 3.2031246935489315e-06,
+      "endpointFamily": "environmental_media_concentration",
+      "evidenceClass": "exposure",
+      "exposureMetric": "environmental_media_concentration",
+      "exposureScenario": "environmental_media_precursor",
+      "intendedUseFamily": "environmental",
+      "methodDescription": "surface_water concentration precursor exported from Fate governed handoff profile exposure_scenario_mcp_v1.",
+      "methodMaturity": "governed_concentration_handoff",
+      "originalId": "fate-exp-water-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "75d04d549ecae26863d003031de6b37d74493fe97b902f4c3a85c9f835bbb9bc"
+          }
+        ],
+        "toolRunId": "fate-exp-water-001-run"
+      },
+      "region": "eu_screening_default",
+      "route": "water_contact_or_drinking_water_precursor",
+      "routeMetricKeys": [
+        "concentration_value",
+        "concentration_unit",
+        "route_hint",
+        "requires_dose_translation"
+      ],
+      "schemaVersion": "1.1.0",
+      "sourceModule": "environmental_fate",
+      "sourceScenarioId": "fate-environmental-scenario-001",
+      "studyIdentifiers": [
+        {
+          "identifierType": "scenario_id",
+          "identifierValue": "fate-environmental-scenario-001"
+        },
+        {
+          "identifierType": "handoff_profile_id",
+          "identifierValue": "exposure_scenario_mcp_v1"
+        },
+        {
+          "identifierType": "medium",
+          "identifierValue": "water"
+        },
+        {
+          "identifierType": "compartment",
+          "identifierValue": "surface_water"
+        },
+        {
+          "identifierType": "time_window_mode",
+          "identifierValue": "steady_state"
+        },
+        {
+          "identifierType": "route_hint",
+          "identifierValue": "water_contact_or_drinking_water_precursor"
+        },
+        {
+          "identifierType": "requires_dose_translation",
+          "identifierValue": "true"
+        }
+      ],
+      "upstreamArtifactRefs": [
+        {
+          "artifactId": "fate-environmental-scenario-001",
+          "cachedSnapshot": {
+            "durationDays": 10.0,
+            "objectType": "EnvironmentalReleaseScenario",
+            "preferredName": "Example Fate Compound",
+            "regionId": "eu_screening_default",
+            "releaseFractions": [
+              {
+                "fraction": 0.3,
+                "medium": "air"
+              },
+              {
+                "fraction": 0.4,
+                "medium": "water"
+              },
+              {
+                "fraction": 0.3,
+                "medium": "soil"
+              }
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "substanceClass": "organic chemical"
+          },
+          "integrityHash": "sha256:c5dfbd65934ce22132fb9f1a74afde992fafd37ddc559f2349f6d528e48c2842",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "EnvironmentalReleaseScenario",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/environmental-release-scenario",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-surface-water-001",
+          "cachedSnapshot": {
+            "compartment": "surface_water",
+            "concentrationUnit": "mg/L",
+            "concentrationValue": 3.2031246935489315e-06,
+            "medium": "water",
+            "objectType": "ConcentrationSurface",
+            "scenarioId": "fate-environmental-scenario-001",
+            "timeWindowMode": "steady_state"
+          },
+          "integrityHash": "sha256:9e70bc1fb2546f5db9e21888efdfe465e458c4c88948d89a0866a861bc0c3b74",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurface",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface/water",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-concentration-surface-bundle-001",
+          "cachedSnapshot": {
+            "bundleId": "fate-concentration-surface-bundle-001",
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "modelFamily": "reference_mass_balance",
+            "objectType": "ConcentrationSurfaceBundle",
+            "regulatoryUseDisclaimer": "This output is a concentration surface. It is not a human dose, risk quotient, or regulatory decision. Downstream translation to dose requires Direct-Use Exposure MCP or equivalent.",
+            "runMode": "steady_state",
+            "scenarioId": "fate-environmental-scenario-001",
+            "surfaceCount": 3
+          },
+          "integrityHash": "sha256:be1e2efb0787e23bbceea6b4d835dbd6308718a8a7986e2c9902f497d885373d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurfaceBundle",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface-bundle",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001",
+          "cachedSnapshot": {
+            "blockers": [],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "limitations": [
+              {
+                "code": "concentration_only",
+                "message": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation."
+              },
+              {
+                "code": "suite_handoff_semantics",
+                "message": "Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions."
+              },
+              {
+                "code": "handoff_profile",
+                "message": "Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1."
+              },
+              {
+                "code": "handoff_profile_resolution",
+                "message": "Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+              }
+            ],
+            "objectType": "RegulatoryHandoffPackage",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "sourceModelFamily": "reference_mass_balance",
+            "targetModules": [
+              "Direct-Use Exposure MCP"
+            ]
+          },
+          "integrityHash": "sha256:424c33ebd2c2aac871f4324c24dc6308a0fca123a6b73e65f60e66fdcdbd95db",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackage",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001:summary",
+          "cachedSnapshot": {
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "downstreamField": "environmental_media_concentration",
+            "entryCount": 3,
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "objectType": "RegulatoryHandoffPackageSummary",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "summaryLines": [
+              "Return the regulatory handoff package and call out route_hint, concentration_value, concentration_unit, time_window, and any limitation or quality-flag context that the downstream direct-use exposure module must preserve.",
+              "Target module Direct-Use Exposure MCP receives 3 crosswalk entries via governed profile exposure_scenario_mcp_v1.",
+              "Downstream field environmental_media_concentration carries media concentrations for agricultural_soil, ambient_air, surface_water.",
+              "Route hints present: inhalation_precursor, soil_contact_or_crop_uptake_precursor, water_contact_or_drinking_water_precursor.",
+              "Time semantics present: steady_state.",
+              "Limitations: Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.; Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions.; Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1.; Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+            ],
+            "targetModule": "Direct-Use Exposure MCP",
+            "timeWindowModes": [
+              "steady_state"
+            ]
+          },
+          "integrityHash": "sha256:ecdc19275feb40f73af859921e4da3d9771a875d8924f73d174f6a6b3af8f3d1",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackageSummary",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package-summary",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-review-001",
+          "cachedSnapshot": {
+            "applicabilityLines": [
+              "Model family reference_mass_balance is declared for fit-for-purpose values: screening, benchmark, downstream_export.",
+              "Requested fit-for-purpose: screening.",
+              "Resolved substance class: missing from scenario chemical_identity.",
+              "Supported scope examples: neutral or weakly sorbing organic chemicals under screening-level multimedia assumptions; release scenarios that can be approximated as regional mass loading into air, water, soil, or sediment compartments.",
+              "Escalate or reject when scope resembles: metals and metal species requiring speciation-aware fate treatment; nanomaterials or particulate systems requiring size-resolved transport behavior.",
+              "Reference mass balance is appropriate for transparent deterministic screening workflows inside the declared Fate MCP boundary.",
+              "When not to use this MCP: explicit spatial dispersion and gradients; intermedia transfer coefficient modeling; probabilistic uncertainty propagation; transformation-product tracking."
+            ],
+            "equationLines": [
+              "agricultural_soil: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "ambient_air: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "surface_water: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))"
+            ],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "objectType": "RegulatoryHandoffReviewPacket",
+            "parameterQualityLines": [
+              "15 parameters were consumed by runtime reference_mass_balance; 0 remain provenance-only for review.",
+              "Applicability context follows reference_mass_balance for fit-for-purpose screening.",
+              "15 entries rely on governed curated-default or derived assumptions; 0 entries remain heuristic.",
+              "Default evidence posture: source_backed_defaults with 6 runtime-consumed core default assumption(s).",
+              "Run default proof posture: rebaselined_shipped_defaults.",
+              "Runtime consumed 6 governed core default parameter(s).",
+              "Source-backed defaults consumed: agricultural_soil_mass_kg, air_half_life_days, ambient_air_volume_m3, soil_half_life_days, surface_water_volume_m3, water_half_life_days.",
+              "No governed user overrides displaced the shipped core defaults in this run.",
+              "No legacy continuity defaults were consumed by runtime."
+            ],
+            "reviewPacketId": "fate-regulatory-handoff-review-001",
+            "reviewStatus": "ready_for_assessor_review",
+            "scenarioId": "fate-environmental-scenario-001",
+            "targetModule": "Direct-Use Exposure MCP",
+            "uncertaintyLines": [
+              "7 deterministic uncertainty drivers were ranked for reference_mass_balance.",
+              "These drivers explain reviewer attention points only; they are not probabilistic confidence intervals.",
+              "Top drivers: release_fractions (multi_medium_simplification_burden), agricultural_soil_mass_kg (default_screening_capacity), ambient_air_volume_m3 (default_screening_capacity), surface_water_volume_m3 (default_screening_capacity), air_half_life_days (default_heavy_parameter)."
+            ]
+          },
+          "integrityHash": "sha256:58e587d2187a7a2a858aafcdbfaf62744ff001358faa06af2c1613a431ab0b2d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffReviewPacket",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-review",
+          "schemaVersion": "1.1.0"
+        }
+      ]
+    }
+  ],
+  "linkItems": [
+    {
+      "bidirectional": false,
+      "originalId": "fate-exp-soil-link-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "5037ec250520fe6a794dac36b5a8479c5c033bf72dd8ae008ac0422ae71c4420"
+          }
+        ],
+        "toolRunId": "fate-exp-soil-link-001-run"
+      },
+      "rationale": "The claim restates the Fate crosswalk entry as bounded contextual concentration evidence only.",
+      "relationType": "supports",
+      "sourceId": "fate-exp-soil-001",
+      "sourceType": "evidence",
+      "strength": "strong",
+      "targetId": "fate-exp-soil-claim-001",
+      "targetType": "claim"
+    },
+    {
+      "bidirectional": false,
+      "originalId": "fate-exp-air-link-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "e84d2d18abbde7c7ec7145e536e3bc75a970b6f339312d59bfe158e3666ac93d"
+          }
+        ],
+        "toolRunId": "fate-exp-air-link-001-run"
+      },
+      "rationale": "The claim restates the Fate crosswalk entry as bounded contextual concentration evidence only.",
+      "relationType": "supports",
+      "sourceId": "fate-exp-air-001",
+      "sourceType": "evidence",
+      "strength": "strong",
+      "targetId": "fate-exp-air-claim-001",
+      "targetType": "claim"
+    },
+    {
+      "bidirectional": false,
+      "originalId": "fate-exp-water-link-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "ac561c0f4d13707ef32eed340d135cfd5121d3e3102a2f5702514e5c0beebe87"
+          }
+        ],
+        "toolRunId": "fate-exp-water-link-001-run"
+      },
+      "rationale": "The claim restates the Fate crosswalk entry as bounded contextual concentration evidence only.",
+      "relationType": "supports",
+      "sourceId": "fate-exp-water-001",
+      "sourceType": "evidence",
+      "strength": "strong",
+      "targetId": "fate-exp-water-claim-001",
+      "targetType": "claim"
+    }
+  ],
+  "schemaVersion": "1.1.0",
+  "sourceFormat": "structured_json_bundle",
+  "sourceVersion": "1.1.0",
+  "targetConsumer": "woe_ngra",
+  "uncertaintyItems": [
+    {
+      "affectedObjectIds": [
+        "fate-exp-soil-001"
+      ],
+      "burdenLevel": "major",
+      "directionality": "unknown",
+      "mitigationPath": "Route the concentration surface into a concentration-to-dose or scenario module before quantitative downstream comparison.",
+      "originalId": "fate-exp-soil-unc-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "9610dea629b30000b0f94721db26175e841be34c0e3320e166c9a61900d81d7a"
+          }
+        ],
+        "toolRunId": "fate-exp-soil-unc-001-run"
+      },
+      "rationale": "7 deterministic uncertainty drivers were ranked for reference_mass_balance. Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.",
+      "reducibility": "partially_reducible",
+      "uncertaintyClass": "comparability_indirectness"
+    },
+    {
+      "affectedObjectIds": [
+        "fate-exp-air-001"
+      ],
+      "burdenLevel": "major",
+      "directionality": "unknown",
+      "mitigationPath": "Route the concentration surface into a concentration-to-dose or scenario module before quantitative downstream comparison.",
+      "originalId": "fate-exp-air-unc-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "834fa55b4a033990e4e98e86e135755fd4764400f1f01b7ba901d5504ddf5c48"
+          }
+        ],
+        "toolRunId": "fate-exp-air-unc-001-run"
+      },
+      "rationale": "7 deterministic uncertainty drivers were ranked for reference_mass_balance. Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.",
+      "reducibility": "partially_reducible",
+      "uncertaintyClass": "comparability_indirectness"
+    },
+    {
+      "affectedObjectIds": [
+        "fate-exp-water-001"
+      ],
+      "burdenLevel": "major",
+      "directionality": "unknown",
+      "mitigationPath": "Route the concentration surface into a concentration-to-dose or scenario module before quantitative downstream comparison.",
+      "originalId": "fate-exp-water-unc-001",
+      "provenance": {
+        "createdAt": "2026-04-21T12:00:00.000Z",
+        "createdBy": "environmental-fate-cross-suite-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "35e89c225044638b56bd1e049d5c216d31b61ba7536c0797576f959afecd46cf"
+          }
+        ],
+        "toolRunId": "fate-exp-water-unc-001-run"
+      },
+      "rationale": "7 deterministic uncertainty drivers were ranked for reference_mass_balance. Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.",
+      "reducibility": "partially_reducible",
+      "uncertaintyClass": "comparability_indirectness"
+    }
+  ]
+}

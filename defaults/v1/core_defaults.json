@@ -117,8 +117,8 @@
     },
     {
       "source_id": "heuristic_consexpo_pest_control_aerosol_airborne_fraction_bridge_2026",
-      "title": "Direct-Use Exposure MCP heuristic pest-control aerosol airborne-fraction bridge informed by RIVM ConsExpo air-space spray families",
-      "locator": "docs://defaults-evidence-map#heuristic-pest-control-aerosol-airborne-fraction-bridge",
+      "title": "Direct-Use Exposure MCP pest-control aerosol whole-room airborne-boundary bridge informed by RIVM ConsExpo air-space spray families",
+      "locator": "docs://defaults-evidence-map#pest-control-aerosol-airborne-boundary-bridge-2026",
       "version": "2026.04.07.v1"
     },
     {
@@ -279,8 +279,8 @@
     },
     {
       "source_id": "pressurized_aerosol_volume_interpretation_heuristics_2026",
-      "title": "Direct-Use Exposure MCP bounded pressurized-aerosol volume interpretation heuristics",
-      "locator": "docs://defaults-evidence-map#pressurized-aerosol-volume-interpretation-heuristics-2026",
+      "title": "Direct-Use Exposure MCP bounded pressurized-aerosol volume interpretation screening boundary",
+      "locator": "docs://defaults-evidence-map#pressurized-aerosol-volume-interpretation-screening-boundary-2026",
       "version": "2026.04.12.v1"
     },
     {

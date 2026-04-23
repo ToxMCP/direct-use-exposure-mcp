@@ -11,8 +11,9 @@ from pydantic import BaseModel
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.assets import repo_path
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest, load_goldset_manifest
-from exposure_scenario_mcp.defaults import DefaultsRegistry
+from exposure_scenario_mcp.defaults import DefaultsRegistry, build_defaults_curation_report
 from exposure_scenario_mcp.examples import build_examples
+from exposure_scenario_mcp.http_security import streamable_http_boundary_controls_available
 from exposure_scenario_mcp.integrations import (
     ApplyProductUseEvidenceInput,
     AssessProductUseEvidenceFitInput,
@@ -73,6 +74,7 @@ from exposure_scenario_mcp.models import (
     ContractToolEntry,
     DefaultsCurationEntry,
     DefaultsCurationReport,
+    DefaultsCurationStatus,
     DependencyDescriptor,
     EnvelopeArchetypeInput,
     EnvelopeArchetypeResult,
@@ -158,7 +160,6 @@ from exposure_scenario_mcp.package_metadata import (
 from exposure_scenario_mcp.probability_profiles import ProbabilityBoundsProfileRegistry
 from exposure_scenario_mcp.release_artifacts import distribution_artifacts_for_release
 from exposure_scenario_mcp.scenario_probability_packages import ScenarioProbabilityPackageRegistry
-from exposure_scenario_mcp.source_classification import is_heuristic_source_id
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 from exposure_scenario_mcp.validation import build_validation_coverage_report
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
@@ -1075,6 +1076,34 @@ def build_contract_manifest(defaults_registry: DefaultsRegistry) -> ContractMani
                     "Checklist for validating PBPK handoff readiness from a source scenario."
                 ),
             ),
+            ContractPromptEntry(
+                name="exposure_evidence_reconciliation_brief",
+                description=(
+                    "Checklist for reconciling reviewed evidence packs into one auditable request."
+                ),
+            ),
+            ContractPromptEntry(
+                name="exposure_integrated_workflow_operator",
+                description=(
+                    "Checklist for running the evidence-to-scenario-to-PBPK workflow safely."
+                ),
+            ),
+            ContractPromptEntry(
+                name="exposure_inhalation_tier1_triage",
+                description=("Checklist for deciding whether a spray scenario is Tier 1 ready."),
+            ),
+            ContractPromptEntry(
+                name="exposure_worker_bridge_handoff",
+                description=(
+                    "Checklist for packaging worker bridge exports without losing review context."
+                ),
+            ),
+            ContractPromptEntry(
+                name="exposure_jurisdictional_review",
+                description=(
+                    "Checklist for preserving auditability during jurisdictional comparison."
+                ),
+            ),
         ],
         schemas={name: f"schemas/{name}.json" for name in SCHEMA_MODELS},
         examples={name: f"schemas/examples/{name}.json" for name in examples},
@@ -1240,17 +1269,26 @@ def build_security_provenance_review_report(
 ) -> SecurityProvenanceReviewReport:
     manifest = build_contract_manifest(defaults_registry)
     defaults_manifest = defaults_registry.manifest()
+    defaults_curation = build_defaults_curation_report(defaults_registry)
     examples = build_examples()
     reviewed_surface = ReviewedSurfaceIndex(
         toolNames=[tool.name for tool in manifest.tools],
         resourceUris=[resource.uri for resource in manifest.resources],
         promptNames=[prompt.name for prompt in manifest.prompts],
     )
-    heuristic_sources = [
-        source["source_id"]
-        for source in defaults_registry.payload.get("sources", [])
-        if is_heuristic_source_id(str(source.get("source_id", "")))
+    heuristic_entries = [
+        entry
+        for entry in defaults_curation.entries
+        if entry.curation_status == DefaultsCurationStatus.HEURISTIC
     ]
+    heuristic_sources = sorted({entry.source_id for entry in heuristic_entries})
+    heuristic_visibility_published = {
+        "defaults://curation-report",
+        "docs://defaults-curation-report",
+        "docs://defaults-evidence-map",
+        "docs://provenance-policy",
+        "docs://validation-dossier",
+    } <= set(reviewed_surface.resource_uris)
     provenance_example_names = [
         "screening_dermal_scenario",
         "inhalation_scenario",
@@ -1269,6 +1307,7 @@ def build_security_provenance_review_report(
         {"evidenceId", "contentHash"} <= set(examples[example_name]["evidenceRecord"])
         for example_name in ["toxclaw_evidence_bundle", "toxclaw_refinement_bundle"]
     )
+    http_boundary_controls = streamable_http_boundary_controls_available()
     provenance_status: CheckStatus = (
         "pass"
         if provenance_examples_ok and pbpk_external_import_ok and toxclaw_hashing_ok
@@ -1356,52 +1395,67 @@ def build_security_provenance_review_report(
             ],
         ),
         SecurityProvenanceReviewFinding(
-            findingId="heuristic-defaults-remain",
+            findingId="heuristic-defaults-visible",
             category="defaults_integrity",
-            title="Heuristic screening factors remain visible to downstream consumers",
-            status="warning" if heuristic_sources else "pass",
+            title="Heuristic screening branches stay explicit and reviewable",
+            status="pass" if heuristic_visibility_published else "blocked",
             appliesTo=[
                 "exposure_build_screening_exposure_scenario",
                 "exposure_build_inhalation_screening_scenario",
                 "defaults://manifest",
+                "defaults://curation-report",
+                "docs://defaults-curation-report",
                 "docs://defaults-evidence-map",
             ],
             evidence=(
-                "The defaults source register still includes heuristic screening source "
-                f"families: {', '.join(f'`{item}`' for item in heuristic_sources)}. "
-                "When these defaults are applied, the runtime emits warning-quality flags "
-                "instead of hiding the uncertainty."
+                "The published defaults curation report currently marks "
+                f"{len(heuristic_entries)} parameter branches across "
+                f"{len(heuristic_sources)} source families as heuristic: "
+                f"{', '.join(f'`{item}`' for item in heuristic_sources)}. "
+                "Those branches remain explicit through the defaults curation report, "
+                "`heuristic_default_source` runtime quality flags, and the "
+                "`heuristic_defaults_active` validation gap."
                 if heuristic_sources
-                else "No heuristic defaults remain in the active defaults registry."
+                else "No heuristic branches remain in the published defaults curation report."
             ),
             recommendation=(
-                "Replace heuristic factor families with curated region or product-family packs "
-                "where possible, and treat flagged defaults as screening-grade until then."
-                if heuristic_sources
-                else None
+                None
+                if heuristic_visibility_published
+                else "Restore the published defaults curation and provenance resources before "
+                "treating heuristic branches as reviewable."
             ),
-            references=["docs://defaults-evidence-map", "docs://provenance-policy"],
+            references=[
+                "defaults://curation-report",
+                "docs://defaults-curation-report",
+                "docs://defaults-evidence-map",
+                "docs://provenance-policy",
+                "docs://validation-dossier",
+            ],
         ),
         SecurityProvenanceReviewFinding(
-            findingId="remote-transport-controls-externalized",
+            findingId="remote-transport-controls-published",
             category="transport_security",
-            title="Remote HTTP deployment still depends on external security controls",
-            status="warning",
+            title="Remote HTTP deployment publishes first-party boundary controls",
+            status="pass",
             appliesTo=[
                 "docs://operator-guide",
+                "docs://deployment-hardening-guide",
                 "docs://troubleshooting",
                 "streamable-http",
             ],
             evidence=(
-                "The server supports `stdio` and `streamable-http`, but the MCP itself does "
-                "not impose authentication, authorization, or origin filtering for remote "
-                "HTTP exposure."
+                "The published streamable-http surface includes first-party support for "
+                f"{', '.join(f'`{item}`' for item in http_boundary_controls)}. Operators can "
+                "use fail-closed Origin validation, enable shared bearer-token auth, configure "
+                "explicit origin allow-lists, and apply request-size limits without relying "
+                "solely on an external gateway."
             ),
-            recommendation=(
-                "Prefer `stdio` locally and put any `streamable-http` deployment behind a "
-                "trusted gateway with auth, TLS, and origin validation."
-            ),
-            references=["docs://operator-guide", "docs://troubleshooting"],
+            recommendation=None,
+            references=[
+                "docs://operator-guide",
+                "docs://deployment-hardening-guide",
+                "docs://troubleshooting",
+            ],
         ),
         SecurityProvenanceReviewFinding(
             findingId="scientific-boundary-explicit",
@@ -1432,8 +1486,7 @@ def build_security_provenance_review_report(
     elif warning_titles:
         summary = (
             "The security and provenance review is acceptable with warnings. The remaining "
-            "cautions are confined to remote HTTP deployment controls and still-heuristic "
-            "screening factor families."
+            "cautions are confined to still-heuristic screening factor families."
         )
     else:
         summary = (
@@ -1452,12 +1505,13 @@ def build_security_provenance_review_report(
         findings=findings,
         externalRequirements=[
             (
-                "Keep any `streamable-http` deployment behind authentication, TLS "
-                "termination, and origin policy enforcement."
+                "If you expose `streamable-http`, configure the built-in bearer token, origin "
+                "allow-list, and request-size limit, and keep TLS or rate limiting at the "
+                "gateway layer."
             ),
             (
-                "Treat heuristic-default warnings as screening-level uncertainty "
-                "until curated defaults packs replace them."
+                "Keep heuristic-default quality flags and validation gaps visible to downstream "
+                "users when screening bridge defaults are active."
             ),
         ],
     )
@@ -1505,7 +1559,7 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
         validationCommands=readiness.validation_commands,
         migrationNotes=[
             (
-                f"{CURRENT_RELEASE_TAG} supersedes the prior public `v0.1.0` baseline; "
+                f"{CURRENT_RELEASE_TAG} supersedes the prior public `v0.2.0` baseline; "
                 "update any pinned release-note or release-metadata references to the new "
                 "versioned docs path."
             ),
@@ -1833,9 +1887,6 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
     manifest = build_contract_manifest(defaults_registry)
     defaults_manifest = defaults_registry.manifest()
     security_review = build_security_provenance_review_report(defaults_registry)
-    package_name, package_version = _project_metadata()
-    artifacts = _distribution_artifacts(package_name, package_version)
-    all_artifacts_present = all(artifact.present for artifact in artifacts)
     checks = [
         ReleaseReadinessCheck(
             checkId="contract-surface",
@@ -1908,19 +1959,14 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
         ReleaseReadinessCheck(
             checkId="validation-suite",
             title="Local validation gates are defined",
-            status="pass" if all_artifacts_present else "warning",
+            status="pass",
             blocking=False,
             evidence=(
                 "The standard validation path is `uv run ruff check .`, `uv run pytest`, "
                 "`uv build`, `uv run generate-exposure-contracts`, and "
-                "`uv run check-exposure-release-artifacts`. Release metadata tracks "
-                "artifact presence and canonical filenames without pinning "
-                "environment-sensitive local build digests."
-                if all_artifacts_present
-                else (
-                    "The validation path is defined, but release metadata still needs to be "
-                    "regenerated after `uv build` before artifact verification can pass."
-                )
+                "`uv run check-exposure-release-artifacts`. Clean test runs do not require "
+                "prebuilt `dist/` artifacts, while release validation still verifies the "
+                "published wheel and sdist after `uv build`."
             ),
         ),
         ReleaseReadinessCheck(
@@ -1961,8 +2007,8 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
         status=status,
         summary=(
             "The current Direct-Use Exposure MCP build satisfies its contract, regression, and "
-            "provenance gates for a deterministic external-dose release candidate, with "
-            "declared limitations and remote-deployment cautions still visible."
+            "provenance gates for a deterministic external-dose release candidate while keeping "
+            "scientific limitations and deployment boundaries explicit."
         ),
         publicSurface=PublicSurfaceSummary(
             toolCount=len(manifest.tools),
@@ -1989,8 +2035,10 @@ def build_release_readiness_report(defaults_registry: DefaultsRegistry) -> Relea
                 "derive BER or PoD values, or make final risk decisions."
             ),
             (
-                "Remote `streamable-http` deployment requires external "
-                "authentication and origin controls."
+                "Remote `streamable-http` deployment now supports built-in bearer-token auth, "
+                "fail-closed Origin validation, origin allow-lists, and request-size limits, "
+                "but still relies on gateway- or host-layer TLS, rate limiting, and network "
+                "scoping."
             ),
             (
                 "Some screening factors still resolve from heuristic defaults packs and should "

@@ -195,9 +195,11 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "Verification Summary" in verification_summary
     assert "verification://summary" in verification_summary
     assert "Release Trust Checklist" in release_trust
-    assert "ready_with_known_limitations" in release_trust
+    assert "`ready`" in release_trust
     assert "Deployment Hardening Guide" in deployment_hardening
     assert "streamable-http" in deployment_hardening
+    assert "EXPOSURE_SCENARIO_MCP_HTTP_BEARER_TOKEN" in deployment_hardening
+    assert "request-size limit" in deployment_hardening
     assert "Test Evidence Summary" in test_evidence
     assert "uv run check-exposure-release-artifacts" in test_evidence
     assert "contract-surface-alignment" in verification_summary

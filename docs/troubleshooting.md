@@ -47,6 +47,14 @@
   rather than expecting an HTTP listener.
 - If `streamable-http` is exposed, confirm the port mapping and pass
   `--host 0.0.0.0 --port 8000` or your chosen bound port explicitly.
+- If `streamable-http` is exposed remotely, set `--http-bearer-token` or
+  `EXPOSURE_SCENARIO_MCP_HTTP_BEARER_TOKEN` before binding beyond localhost.
+- For browser-based clients, set `--http-allowed-origin` or
+  `EXPOSURE_SCENARIO_MCP_HTTP_ALLOWED_ORIGINS`.
+- If browser requests return `origin_not_allowed`, add the exact browser origin to the allow-list
+  or remove browser access; non-browser MCP clients normally omit `Origin`.
+- Keep the default request-size limit unless you have a reviewed reason to widen it with
+  `--http-max-request-bytes`.
 - The bundled container health check now boots the packaged server, loads defaults, and verifies
   representative tools, resources, and prompts.
 - Add gateway or endpoint probes when you need transport-level liveness checks for
@@ -54,5 +62,7 @@
 
 ## Remote Deployment Caution
 
-- The server does not add authentication or origin enforcement on its own.
-- If you expose `streamable-http`, put it behind trusted network controls or a gateway.
+- The server now supports first-party bearer-token auth, fail-closed Origin validation, origin
+  allow-lists, and request-size limits for `streamable-http`.
+- If you expose `streamable-http` remotely, still keep TLS termination, rate limiting, and network
+  scoping at a trusted gateway or host boundary.

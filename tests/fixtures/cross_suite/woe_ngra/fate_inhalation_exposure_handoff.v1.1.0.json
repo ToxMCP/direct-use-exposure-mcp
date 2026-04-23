@@ -1,0 +1,589 @@
+{
+  "applicabilityItems": [
+    {
+      "affectedObjectIds": [
+        "exp-fate-ambient-air-001"
+      ],
+      "dimensionAssessments": [
+        {
+          "dimension": "exposure_metric",
+          "evidenceValue": "mg/kg-day",
+          "rationale": "The bridge emits an explicit external dose in mg/kg-day derived from the ambient-air concentration surface.",
+          "status": "direct",
+          "targetValue": "mg/kg-day"
+        },
+        {
+          "dimension": "route",
+          "evidenceValue": "inhalation",
+          "rationale": "Ambient-air route hint has been translated into an explicit inhalation screening route.",
+          "status": "direct",
+          "targetValue": "inhalation"
+        },
+        {
+          "bridgingRationale": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.",
+          "dimension": "matrix",
+          "evidenceValue": "ambient_air",
+          "rationale": "The bridge still represents ambient-air environmental context and should not be mistaken for measured personal-air exposure.",
+          "status": "partial",
+          "targetValue": "environmental_inhalation_screening"
+        }
+      ],
+      "evidenceClass": "exposure",
+      "intendedUse": "bounded_environmental_inhalation_screening",
+      "materiality": "material",
+      "originalId": "exp-fate-ambient-air-app-001",
+      "overallStatus": "partial",
+      "provenance": {
+        "createdAt": "2026-04-21T13:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-inhalation-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "239017b7e7bc627be030c4624c9e45418686d3db7ea087763a841f57c6b6f67a"
+          }
+        ],
+        "toolRunId": "exp-fate-ambient-air-app-001-run"
+      }
+    }
+  ],
+  "bundleId": "fate-inhalation-exposure-handoff-001",
+  "claimItems": [
+    {
+      "applicabilityRecordId": "exp-fate-ambient-air-app-001",
+      "claimText": "Ambient-air concentration-to-dose bridge preserves bounded environmental inhalation context at 0.000119316032364 mg/kg-day.",
+      "claimType": "qualitative",
+      "confidence": "moderate",
+      "evidenceObjectIds": [
+        "exp-fate-ambient-air-001"
+      ],
+      "lineOfEvidenceId": "loe-fate-inhalation-bridge",
+      "originalId": "exp-fate-ambient-air-claim-001",
+      "provenance": {
+        "createdAt": "2026-04-21T13:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-inhalation-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "bf7da6dbaff7952bfc8e0eb077fe5909a0a073834a41a32a13d6f9e2bd00b21a"
+          }
+        ],
+        "toolRunId": "exp-fate-ambient-air-claim-001-run"
+      },
+      "rationale": "ambient_air concentration precursor remains concentration-only at 0.000419283246258 mg/m3 and still requires downstream route and dose translation. The exposure bridge converts ambient-air concentration into an external inhalation dose using explicit screening assumptions and preserves the upstream concentration surface lineage.",
+      "supportStatus": "supports"
+    }
+  ],
+  "createdAt": "2026-04-21T13:00:00.000Z",
+  "createdBy": "direct-use-exposure-fate-inhalation-fixture-builder",
+  "evidenceItems": [
+    {
+      "aggregateExposure": false,
+      "biologicalLevel": "organism",
+      "doseUnit": "mg/kg-day",
+      "doseValue": 0.00011931603236380614,
+      "endpointFamily": "environmental_inhalation_external_dose",
+      "evidenceClass": "exposure",
+      "exposureMetric": "external_dose_screening",
+      "exposureScenario": "environmental_inhalation_screening",
+      "intendedUseFamily": "environmental",
+      "methodDescription": "Ambient-air concentration-to-dose screening bridge derived from Fate governed handoff output with explicit inhalation assumptions.",
+      "methodMaturity": "governed_concentration_to_dose_bridge",
+      "originalId": "exp-fate-ambient-air-001",
+      "populationGroup": "adult",
+      "productCategory": "environmental_air_screening",
+      "provenance": {
+        "createdAt": "2026-04-21T13:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-inhalation-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "3c44544410d848d2a1f31955f842d90b2ab0f0f11e43ca434e32e99d6339cfd2"
+          }
+        ],
+        "toolRunId": "exp-fate-ambient-air-001-run"
+      },
+      "region": "eu_screening_default",
+      "route": "inhalation",
+      "routeMetricKeys": [
+        "ambient_air_concentration_mg_per_m3",
+        "event_duration_hours",
+        "events_per_day",
+        "external_mass_mg_per_day",
+        "inhalation_rate_m3_per_hour",
+        "source_concentration_surface_ids"
+      ],
+      "schemaVersion": "1.1.0",
+      "sourceModule": "exposure_ingress_v1",
+      "sourceScenarioId": "exp-fate-ambient-air-definition-001",
+      "studyIdentifiers": [
+        {
+          "identifierType": "scenario_definition_id",
+          "identifierValue": "exp-fate-ambient-air-definition-001"
+        },
+        {
+          "identifierType": "route_dose_artifact_id",
+          "identifierValue": "exp-fate-ambient-air-route-dose-001"
+        },
+        {
+          "identifierType": "source_bundle_id",
+          "identifierValue": "fate-exposure-woe-roundtrip-001"
+        },
+        {
+          "identifierType": "source_scenario_id",
+          "identifierValue": "fate-environmental-scenario-001"
+        },
+        {
+          "identifierType": "source_concentration_surface_id",
+          "identifierValue": "fate-surface-air-001"
+        },
+        {
+          "identifierType": "pathway_semantics",
+          "identifierValue": "concentration_to_dose"
+        },
+        {
+          "identifierType": "route_hint",
+          "identifierValue": "inhalation_precursor"
+        },
+        {
+          "identifierType": "route_mechanism",
+          "identifierValue": "inhalation_concentration_to_dose"
+        },
+        {
+          "identifierType": "time_window_mode",
+          "identifierValue": "steady_state"
+        }
+      ],
+      "upstreamArtifactRefs": [
+        {
+          "artifactId": "exp-fate-ambient-air-definition-001",
+          "cachedSnapshot": {
+            "assumptionOverrides": {
+              "bodyWeightKg": 70.0,
+              "eventDurationHours": 24.0,
+              "eventsPerDay": 1.0,
+              "inhalationRateM3PerHour": 0.83
+            },
+            "chemicalIdentity": {
+              "casrn": null,
+              "chemicalId": "FATE-CROSS-SUITE-EXAMPLE-001",
+              "dtxsid": null,
+              "externalIdentifiers": {
+                "fateScenarioId": "fate-environmental-scenario-001"
+              },
+              "inchiKey": null,
+              "notes": [
+                "Fixture-local stable chemical identifier used because the upstream Fate snapshot does not carry a richer suite identity object."
+              ],
+              "preferredName": "Example Fate Compound",
+              "schema_version": "chemicalIdentity.v1",
+              "smiles": null
+            },
+            "notes": [
+              "Scenario definition is driven by ambient-air concentration from Fate MCP rather than a product-use regimen.",
+              "The exposure layer acts here as an explicit concentration-to-dose consumer, not as a direct-use product model."
+            ],
+            "pathwaySemantics": "concentration_to_dose",
+            "populationProfile": {
+              "body_weight_kg": 70.0,
+              "demographic_tags": [
+                "general_population",
+                "environmental_screening"
+              ],
+              "exposed_surface_area_cm2": null,
+              "inhalation_rate_m3_per_hour": 0.83,
+              "population_group": "adult",
+              "region": "eu_screening_default",
+              "schema_version": "populationProfile.v1"
+            },
+            "productUseProfile": null,
+            "route": "inhalation",
+            "scenarioClass": "screening",
+            "scenarioDefinitionId": "exp-fate-ambient-air-definition-001",
+            "schema_version": "exposureScenarioDefinition.v1",
+            "sourceConcentrationSurfaceIds": [
+              "fate-surface-air-001"
+            ]
+          },
+          "integrityHash": "sha256:e8a82a5a9439895aa8f4cfb78591802b21756bee8522eb8292517adaca25046b",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ExposureScenarioDefinition",
+          "producerModule": "direct_use_exposure",
+          "producerVersion": "0.2.1",
+          "retrievalEndpoint": "exposure-scenario://cross-suite/fate-inhalation/scenario-definition",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "exp-fate-ambient-air-route-dose-001",
+          "cachedSnapshot": {
+            "chemicalIdentity": {
+              "casrn": null,
+              "chemicalId": "FATE-CROSS-SUITE-EXAMPLE-001",
+              "dtxsid": null,
+              "externalIdentifiers": {
+                "fateScenarioId": "fate-environmental-scenario-001"
+              },
+              "inchiKey": null,
+              "notes": [
+                "Fixture-local stable chemical identifier used because the upstream Fate snapshot does not carry a richer suite identity object."
+              ],
+              "preferredName": "Example Fate Compound",
+              "schema_version": "chemicalIdentity.v1",
+              "smiles": null
+            },
+            "dose": {
+              "metric": "external_dose_screening",
+              "unit": "mg/kg-day",
+              "value": 0.00011931603236380614
+            },
+            "fitForPurpose": {
+              "label": "bounded_environmental_inhalation_translation",
+              "not_suitable_for": [
+                "Measured personal-air dosimetry replacement.",
+                "Internal dose interpretation without downstream TK/PBPK review.",
+                "Oral or dermal environmental-media translation."
+              ],
+              "suitable_for": [
+                "Ambient-air concentration to external-dose screening translation.",
+                "Traceable Fate -> Exposure -> IVIVE/WoE integration testing."
+              ]
+            },
+            "limitations": [
+              {
+                "code": "ambient_air_screening_translation",
+                "message": "Route-dose estimate uses explicit screening assumptions for inhalation rate, body weight, and daily exposure duration.",
+                "severity": "warning"
+              },
+              {
+                "code": "environmental_context_not_personal_monitoring",
+                "message": "Ambient-air concentration remains regional context and does not represent personal breathing-zone monitoring.",
+                "severity": "warning"
+              }
+            ],
+            "notes": [
+              "External dose is bounded screening output only and must not be interpreted as internal dose.",
+              "Water and soil compartments remain out of scope for this inhalation-only bridge fixture."
+            ],
+            "populationProfile": {
+              "body_weight_kg": 70.0,
+              "demographic_tags": [
+                "general_population",
+                "environmental_screening"
+              ],
+              "exposed_surface_area_cm2": null,
+              "inhalation_rate_m3_per_hour": 0.83,
+              "population_group": "adult",
+              "region": "eu_screening_default",
+              "schema_version": "populationProfile.v1"
+            },
+            "provenance": {
+              "algorithm_id": "concentration_to_dose.inhalation_screening.v1",
+              "defaults_hash_sha256": "cdc10c11b8f7af973a9579b45871e9a5964f33f65c1fdb623e25c0b25acac588",
+              "defaults_version": "cross_suite_fixture_v1",
+              "generated_at": "2026-04-21T13:00:00.000Z",
+              "notes": [
+                "This deterministic fixture translates ambient-air concentration into a bounded external inhalation dose using explicit screening assumptions.",
+                "Concentration 0.000419283246258 mg/m3 x inhalation rate 0.83 m3/h x 24.0 h/day / 70.0 kg."
+              ],
+              "plugin_id": "fate_ambient_air_concentration_to_dose_fixture",
+              "plugin_version": "0.2.1",
+              "schema_version": "provenanceBundle.v1"
+            },
+            "qualityFlags": [
+              {
+                "code": "fate_lineage_preserved",
+                "message": "Source concentration surface lineage and route-hint context are preserved downstream.",
+                "severity": "info"
+              }
+            ],
+            "route": "inhalation",
+            "scenarioClass": "screening",
+            "schema_version": "routeDoseEstimate.v1",
+            "sourceConcentrationSurfaceIds": [
+              "fate-surface-air-001"
+            ],
+            "sourceScenarioDefinitionId": "exp-fate-ambient-air-definition-001",
+            "sourceScenarioId": null
+          },
+          "integrityHash": "sha256:5af35298e6a09db9691d260bf44097d404c282822025cab0767a00c4ed0ead01",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RouteDoseEstimate",
+          "producerModule": "direct_use_exposure",
+          "producerVersion": "0.2.1",
+          "retrievalEndpoint": "exposure-scenario://cross-suite/fate-inhalation/route-dose",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-environmental-scenario-001",
+          "cachedSnapshot": {
+            "durationDays": 10.0,
+            "objectType": "EnvironmentalReleaseScenario",
+            "preferredName": "Example Fate Compound",
+            "regionId": "eu_screening_default",
+            "releaseFractions": [
+              {
+                "fraction": 0.3,
+                "medium": "air"
+              },
+              {
+                "fraction": 0.4,
+                "medium": "water"
+              },
+              {
+                "fraction": 0.3,
+                "medium": "soil"
+              }
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "substanceClass": "organic chemical"
+          },
+          "integrityHash": "sha256:c5dfbd65934ce22132fb9f1a74afde992fafd37ddc559f2349f6d528e48c2842",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "EnvironmentalReleaseScenario",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/environmental-release-scenario",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-surface-air-001",
+          "cachedSnapshot": {
+            "compartment": "ambient_air",
+            "concentrationUnit": "mg/m3",
+            "concentrationValue": 0.00041928324625835497,
+            "medium": "air",
+            "objectType": "ConcentrationSurface",
+            "scenarioId": "fate-environmental-scenario-001",
+            "timeWindowMode": "steady_state"
+          },
+          "integrityHash": "sha256:919a30ae323d2a7ffc4777e88f2f0be2811d75c73c81e54910a3eefefcb2fab8",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurface",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface/air",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-concentration-surface-bundle-001",
+          "cachedSnapshot": {
+            "bundleId": "fate-concentration-surface-bundle-001",
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "modelFamily": "reference_mass_balance",
+            "objectType": "ConcentrationSurfaceBundle",
+            "regulatoryUseDisclaimer": "This output is a concentration surface. It is not a human dose, risk quotient, or regulatory decision. Downstream translation to dose requires Direct-Use Exposure MCP or equivalent.",
+            "runMode": "steady_state",
+            "scenarioId": "fate-environmental-scenario-001",
+            "surfaceCount": 3
+          },
+          "integrityHash": "sha256:be1e2efb0787e23bbceea6b4d835dbd6308718a8a7986e2c9902f497d885373d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "ConcentrationSurfaceBundle",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/concentration-surface-bundle",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001",
+          "cachedSnapshot": {
+            "blockers": [],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "limitations": [
+              {
+                "code": "concentration_only",
+                "message": "Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation."
+              },
+              {
+                "code": "suite_handoff_semantics",
+                "message": "Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions."
+              },
+              {
+                "code": "handoff_profile",
+                "message": "Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1."
+              },
+              {
+                "code": "handoff_profile_resolution",
+                "message": "Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+              }
+            ],
+            "objectType": "RegulatoryHandoffPackage",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "sourceModelFamily": "reference_mass_balance",
+            "targetModules": [
+              "Direct-Use Exposure MCP"
+            ]
+          },
+          "integrityHash": "sha256:424c33ebd2c2aac871f4324c24dc6308a0fca123a6b73e65f60e66fdcdbd95db",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackage",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-package-001:summary",
+          "cachedSnapshot": {
+            "compartments": [
+              "agricultural_soil",
+              "ambient_air",
+              "surface_water"
+            ],
+            "downstreamField": "environmental_media_concentration",
+            "entryCount": 3,
+            "mediums": [
+              "air",
+              "soil",
+              "water"
+            ],
+            "objectType": "RegulatoryHandoffPackageSummary",
+            "packageId": "fate-regulatory-handoff-package-001",
+            "requiresDoseTranslation": true,
+            "routeHints": [
+              "inhalation_precursor",
+              "soil_contact_or_crop_uptake_precursor",
+              "water_contact_or_drinking_water_precursor"
+            ],
+            "scenarioId": "fate-environmental-scenario-001",
+            "summaryLines": [
+              "Return the regulatory handoff package and call out route_hint, concentration_value, concentration_unit, time_window, and any limitation or quality-flag context that the downstream direct-use exposure module must preserve.",
+              "Target module Direct-Use Exposure MCP receives 3 crosswalk entries via governed profile exposure_scenario_mcp_v1.",
+              "Downstream field environmental_media_concentration carries media concentrations for agricultural_soil, ambient_air, surface_water.",
+              "Route hints present: inhalation_precursor, soil_contact_or_crop_uptake_precursor, water_contact_or_drinking_water_precursor.",
+              "Time semantics present: steady_state.",
+              "Limitations: Crosswalk exports concentrations only; downstream modules must perform route translation and dose calculation.; Crosswalk fields express ToxMCP handoff semantics, not final regulatory conclusions.; Crosswalk exported using governed handoff profile exposure_scenario_mcp_v1.; Handoff profile was resolved via default_profile using exposure_scenario_mcp_v1."
+            ],
+            "targetModule": "Direct-Use Exposure MCP",
+            "timeWindowModes": [
+              "steady_state"
+            ]
+          },
+          "integrityHash": "sha256:ecdc19275feb40f73af859921e4da3d9771a875d8924f73d174f6a6b3af8f3d1",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffPackageSummary",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-package-summary",
+          "schemaVersion": "1.1.0"
+        },
+        {
+          "artifactId": "fate-regulatory-handoff-review-001",
+          "cachedSnapshot": {
+            "applicabilityLines": [
+              "Model family reference_mass_balance is declared for fit-for-purpose values: screening, benchmark, downstream_export.",
+              "Requested fit-for-purpose: screening.",
+              "Resolved substance class: missing from scenario chemical_identity.",
+              "Supported scope examples: neutral or weakly sorbing organic chemicals under screening-level multimedia assumptions; release scenarios that can be approximated as regional mass loading into air, water, soil, or sediment compartments.",
+              "Escalate or reject when scope resembles: metals and metal species requiring speciation-aware fate treatment; nanomaterials or particulate systems requiring size-resolved transport behavior.",
+              "Reference mass balance is appropriate for transparent deterministic screening workflows inside the declared Fate MCP boundary.",
+              "When not to use this MCP: explicit spatial dispersion and gradients; intermedia transfer coefficient modeling; probabilistic uncertainty propagation; transformation-product tracking."
+            ],
+            "equationLines": [
+              "agricultural_soil: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "ambient_air: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))",
+              "surface_water: finite_duration_continuous_release_first_order -> C(t) = (R / (k * V)) * (1 - exp(-k * t))"
+            ],
+            "handoffProfileId": "exposure_scenario_mcp_v1",
+            "objectType": "RegulatoryHandoffReviewPacket",
+            "parameterQualityLines": [
+              "15 parameters were consumed by runtime reference_mass_balance; 0 remain provenance-only for review.",
+              "Applicability context follows reference_mass_balance for fit-for-purpose screening.",
+              "15 entries rely on governed curated-default or derived assumptions; 0 entries remain heuristic.",
+              "Default evidence posture: source_backed_defaults with 6 runtime-consumed core default assumption(s).",
+              "Run default proof posture: rebaselined_shipped_defaults.",
+              "Runtime consumed 6 governed core default parameter(s).",
+              "Source-backed defaults consumed: agricultural_soil_mass_kg, air_half_life_days, ambient_air_volume_m3, soil_half_life_days, surface_water_volume_m3, water_half_life_days.",
+              "No governed user overrides displaced the shipped core defaults in this run.",
+              "No legacy continuity defaults were consumed by runtime."
+            ],
+            "reviewPacketId": "fate-regulatory-handoff-review-001",
+            "reviewStatus": "ready_for_assessor_review",
+            "scenarioId": "fate-environmental-scenario-001",
+            "targetModule": "Direct-Use Exposure MCP",
+            "uncertaintyLines": [
+              "7 deterministic uncertainty drivers were ranked for reference_mass_balance.",
+              "These drivers explain reviewer attention points only; they are not probabilistic confidence intervals.",
+              "Top drivers: release_fractions (multi_medium_simplification_burden), agricultural_soil_mass_kg (default_screening_capacity), ambient_air_volume_m3 (default_screening_capacity), surface_water_volume_m3 (default_screening_capacity), air_half_life_days (default_heavy_parameter)."
+            ]
+          },
+          "integrityHash": "sha256:58e587d2187a7a2a858aafcdbfaf62744ff001358faa06af2c1613a431ab0b2d",
+          "objectType": "typedHandoffRef",
+          "objectTypeRef": "RegulatoryHandoffReviewPacket",
+          "producerModule": "environmental_fate",
+          "producerVersion": "0.1.0",
+          "retrievalEndpoint": "fate://cross-suite/regulatory-handoff-review",
+          "schemaVersion": "1.1.0"
+        }
+      ]
+    }
+  ],
+  "linkItems": [
+    {
+      "bidirectional": false,
+      "originalId": "exp-fate-ambient-air-link-001",
+      "provenance": {
+        "createdAt": "2026-04-21T13:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-inhalation-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "153b2d33f4ec5d7fa9e4488e1ad61f2c8d9606d0a7f1ff76276de0c70b363938"
+          }
+        ],
+        "toolRunId": "exp-fate-ambient-air-link-001-run"
+      },
+      "rationale": "The translated inhalation screening dose directly supports the bridge claim.",
+      "relationType": "supports",
+      "sourceId": "exp-fate-ambient-air-001",
+      "sourceType": "evidence",
+      "strength": "direct",
+      "targetId": "exp-fate-ambient-air-claim-001",
+      "targetType": "claim"
+    }
+  ],
+  "schemaVersion": "1.1.0",
+  "sourceFormat": "structured_json_bundle",
+  "sourceVersion": "1.1.0",
+  "targetConsumer": "woe_ngra",
+  "uncertaintyItems": [
+    {
+      "affectedObjectIds": [
+        "exp-fate-ambient-air-001"
+      ],
+      "burdenLevel": "moderate",
+      "directionality": "bidirectional",
+      "mitigationPath": "Replace screening defaults with population-specific inhalation parameters or measured personal-air data when available.",
+      "originalId": "exp-fate-ambient-air-unc-001",
+      "provenance": {
+        "createdAt": "2026-04-21T13:00:00.000Z",
+        "createdBy": "direct-use-exposure-fate-inhalation-fixture-builder",
+        "sourceHashes": [
+          {
+            "algorithm": "sha256",
+            "value": "0cac9077b39c6f6eb057ae3e16f84a6c8bfc2b076e7698d52f8d0c77e340b080"
+          }
+        ],
+        "toolRunId": "exp-fate-ambient-air-unc-001-run"
+      },
+      "rationale": "External dose depends on explicit screening assumptions for inhalation rate, body weight, and daily duration, while the upstream ambient-air concentration remains regional rather than personal monitoring context.",
+      "reducibility": "partially_reducible",
+      "uncertaintyClass": "comparability_indirectness"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: E501
 """Collect live MCP showcase artifacts for the Direct-Use Exposure MCP report."""
 
 from __future__ import annotations
@@ -7,9 +8,10 @@ import argparse
 import asyncio
 import hashlib
 import json
+import shutil
 import subprocess
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -142,8 +144,11 @@ def _sha256(path: Path) -> str:
 
 
 def _git_output(*args: str) -> str:
-    completed = subprocess.run(
-        ["git", *args],
+    git_executable = shutil.which("git")
+    if git_executable is None:
+        return ""
+    completed = subprocess.run(  # noqa: S603
+        [git_executable, *args],
         cwd=ROOT,
         check=False,
         capture_output=True,
@@ -374,7 +379,9 @@ def _scenario_comparison_summary(
     payload = result["structuredContent"]
     surface_loading_ratio = None
     if baseline_payload and comparison_payload:
-        baseline_surface = baseline_payload.get("route_metrics", {}).get("surface_loading_mg_per_cm2_day")
+        baseline_surface = baseline_payload.get("route_metrics", {}).get(
+            "surface_loading_mg_per_cm2_day"
+        )
         comparison_surface = comparison_payload.get("route_metrics", {}).get(
             "surface_loading_mg_per_cm2_day"
         )
@@ -501,7 +508,9 @@ def _applied_request_summary(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _selected_domain_summary(validation_coverage: dict[str, Any], domain: str) -> dict[str, Any] | None:
+def _selected_domain_summary(
+    validation_coverage: dict[str, Any], domain: str
+) -> dict[str, Any] | None:
     for item in validation_coverage.get("domainSummaries", []):
         if item.get("domain") == domain:
             return {
@@ -610,7 +619,9 @@ def _benchmark_replication_summary(
         "benchmarkCaseId": benchmark_case.get("id"),
         "description": benchmark_case.get("description"),
         "requestRoute": benchmark_case.get("request", {}).get("route"),
-        "productName": benchmark_case.get("request", {}).get("product_use_profile", {}).get("product_name"),
+        "productName": benchmark_case.get("request", {})
+        .get("product_use_profile", {})
+        .get("product_name"),
         "expectedExternalDose": {
             "value": expected_dose_value,
             "unit": expected.get("external_dose_unit"),
@@ -734,7 +745,9 @@ async def _collect_tier1_benchmark_replication(
     session: ClientSession,
     artifacts_dir: Path,
 ) -> dict[str, Any]:
-    benchmark_case = _benchmark_fixture_case("inhalation_tier1_disinfectant_trigger_spray_external_2015")
+    benchmark_case = _benchmark_fixture_case(
+        "inhalation_tier1_disinfectant_trigger_spray_external_2015"
+    )
     request_payload = benchmark_case["request"]
     _write_json(artifacts_dir / "170_benchmark_tier1_disinfectant_request.json", request_payload)
 
@@ -748,7 +761,9 @@ async def _collect_tier1_benchmark_replication(
     )
 
     comparison_summary = _benchmark_replication_summary(benchmark_case, result.structuredContent)
-    _write_json(artifacts_dir / "172_benchmark_tier1_disinfectant_comparison.json", comparison_summary)
+    _write_json(
+        artifacts_dir / "172_benchmark_tier1_disinfectant_comparison.json", comparison_summary
+    )
     return comparison_summary
 
 
@@ -757,57 +772,63 @@ async def _collect_live_artifacts(showcase_dir: Path, server_url: str, server_co
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
     git_info = _git_info()
-    collected_at = datetime.now(timezone.utc).isoformat()
+    collected_at = datetime.now(UTC).isoformat()
 
-    async with streamablehttp_client(server_url) as (read_stream, write_stream, _session_id):
-        async with ClientSession(read_stream, write_stream) as session:
-            initialize_result = await session.initialize()
-            list_tools_result = await session.list_tools()
-            list_resources_result = await session.list_resources()
-            list_prompts_result = await session.list_prompts()
+    async with (
+        streamablehttp_client(server_url) as (
+            read_stream,
+            write_stream,
+            _session_id,
+        ),
+        ClientSession(read_stream, write_stream) as session,
+    ):
+        initialize_result = await session.initialize()
+        list_tools_result = await session.list_tools()
+        list_resources_result = await session.list_resources()
+        list_prompts_result = await session.list_prompts()
 
+        _write_json(
+            artifacts_dir / "010_initialize.json",
+            initialize_result.model_dump(mode="json"),
+        )
+        surface_inventory = {
+            "toolCount": len(list_tools_result.tools),
+            "resourceCount": len(list_resources_result.resources),
+            "promptCount": len(list_prompts_result.prompts),
+            "toolNames": [tool.name for tool in list_tools_result.tools],
+            "resourceUris": [str(resource.uri) for resource in list_resources_result.resources],
+            "promptNames": [prompt.name for prompt in list_prompts_result.prompts],
+        }
+        _write_json(artifacts_dir / "020_surface_inventory.json", surface_inventory)
+
+        for filename, uri in RESOURCE_URIS.items():
+            resource_result = await session.read_resource(uri)
+            payload = json.loads(_extract_resource_text(resource_result))
+            _write_json(artifacts_dir / filename, payload)
+
+        for run in TOOL_RUNS:
+            request_artifact = artifacts_dir / run["request_artifact"]
+            if run["request_file"] == "NONE":
+                request_payload: dict[str, Any] = {}
+            else:
+                request_payload = _read_json(ROOT / run["request_file"])
+            if run["tool_name"] == "exposure_compare_jurisdictional_scenarios":
+                request_payload["jurisdictions"] = ["global", "eu", "china"]
+            _write_json(request_artifact, request_payload)
+            tool_result = await session.call_tool(
+                run["tool_name"],
+                {"params": request_payload} if request_payload else {},
+            )
             _write_json(
-                artifacts_dir / "010_initialize.json",
-                initialize_result.model_dump(mode="json"),
+                artifacts_dir / run["result_artifact"],
+                tool_result.model_dump(mode="json"),
             )
-            surface_inventory = {
-                "toolCount": len(list_tools_result.tools),
-                "resourceCount": len(list_resources_result.resources),
-                "promptCount": len(list_prompts_result.prompts),
-                "toolNames": [tool.name for tool in list_tools_result.tools],
-                "resourceUris": [str(resource.uri) for resource in list_resources_result.resources],
-                "promptNames": [prompt.name for prompt in list_prompts_result.prompts],
-            }
-            _write_json(artifacts_dir / "020_surface_inventory.json", surface_inventory)
 
-            for filename, uri in RESOURCE_URIS.items():
-                resource_result = await session.read_resource(uri)
-                payload = json.loads(_extract_resource_text(resource_result))
-                _write_json(artifacts_dir / filename, payload)
-
-            for run in TOOL_RUNS:
-                request_artifact = artifacts_dir / run["request_artifact"]
-                if run["request_file"] == "NONE":
-                    request_payload: dict[str, Any] = {}
-                else:
-                    request_payload = _read_json(ROOT / run["request_file"])
-                if run["tool_name"] == "exposure_compare_jurisdictional_scenarios":
-                    request_payload["jurisdictions"] = ["global", "eu", "china"]
-                _write_json(request_artifact, request_payload)
-                tool_result = await session.call_tool(
-                    run["tool_name"],
-                    {"params": request_payload} if request_payload else {},
-                )
-                _write_json(
-                    artifacts_dir / run["result_artifact"],
-                    tool_result.model_dump(mode="json"),
-                )
-
-            sccs_face_cream_case_study = await _collect_sccs_face_cream_case_study(
-                session,
-                artifacts_dir,
-            )
-            await _collect_tier1_benchmark_replication(session, artifacts_dir)
+        sccs_face_cream_case_study = await _collect_sccs_face_cream_case_study(
+            session,
+            artifacts_dir,
+        )
+        await _collect_tier1_benchmark_replication(session, artifacts_dir)
 
     run_metadata = {
         "generatedAtUtc": collected_at,
@@ -832,7 +853,9 @@ async def _collect_live_artifacts(showcase_dir: Path, server_url: str, server_co
     comparison_result = _read_json(artifacts_dir / "131_jurisdiction_compare_result.json")
     integrated_result = _read_json(artifacts_dir / "141_integrated_workflow_result.json")
     verification_tool_result = _read_json(artifacts_dir / "151_verification_checks_result.json")
-    tier1_benchmark_replication = _read_json(artifacts_dir / "172_benchmark_tier1_disinfectant_comparison.json")
+    tier1_benchmark_replication = _read_json(
+        artifacts_dir / "172_benchmark_tier1_disinfectant_comparison.json"
+    )
 
     validation_domain_highlights = [
         item
@@ -845,7 +868,9 @@ async def _collect_live_artifacts(showcase_dir: Path, server_url: str, server_co
         if item is not None
     ]
     face_cream_goldset = _goldset_case_summary("consumer_face_cream_sccs_guidance_alignment")
-    disinfectant_goldset = _goldset_case_summary("consumer_disinfectant_trigger_spray_tier1_monitoring")
+    disinfectant_goldset = _goldset_case_summary(
+        "consumer_disinfectant_trigger_spray_tier1_monitoring"
+    )
     published_reconciliation_example = _published_reconciliation_example_summary()
 
     initialize_server_info = initialize_payload.get("serverInfo", {})

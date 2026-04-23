@@ -1,6 +1,6 @@
 # Benchmark Corpus
 
-The deterministic benchmark corpus for `v0.2.0` is stored in `tests/fixtures/benchmark_cases.json`.
+The deterministic benchmark corpus for `v0.2.1` is stored in `tests/fixtures/benchmark_cases.json`.
 The showcase goldset is stored separately in `tests/fixtures/goldset_cases.json`.
 
 ## Purpose

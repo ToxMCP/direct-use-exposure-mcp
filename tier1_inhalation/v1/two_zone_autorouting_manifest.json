@@ -1,0 +1,25 @@
+{
+  "manifestVersion": "2026.04.21.v1",
+  "decisionStatus": "benchmark_pending_release_signoff",
+  "defaultEnabled": false,
+  "benchmarkCaseIds": [
+    "inhalation_tier1_trigger_spray_nf_ff",
+    "inhalation_tier1_disinfectant_trigger_spray_external_2015",
+    "inhalation_tier1_coarse_spray_settling_sensitivity",
+    "inhalation_tier1_two_zone_steady_state_identity",
+    "inhalation_tier1_two_zone_pbpk_export"
+  ],
+  "approvedProfileIds": [
+    "household_cleaner_trigger_spray_tier1",
+    "personal_care_pump_spray_tier1",
+    "disinfectant_trigger_spray_tier1",
+    "pest_control_indoor_surface_trigger_spray_tier1",
+    "pest_control_targeted_spot_trigger_spray_tier1",
+    "pest_control_air_space_aerosol_tier1"
+  ],
+  "notes": [
+    "The current release keeps Tier 1 two-zone auto-selection disabled by default.",
+    "Approved profile IDs define the narrow candidate set that may be enabled only after benchmark sign-off.",
+    "Saturation-cap-limited scenarios remain ineligible for auto-selection because volatility clipping changes the inhalation interpretation surface."
+  ]
+}

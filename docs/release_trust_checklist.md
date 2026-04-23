@@ -1,21 +1,24 @@
 # Release Trust Checklist
 
-Use this checklist before calling the current public release "ready with known limitations."
+Use this checklist before treating the current public build as ready for broad external use.
 
-## Release posture
+## Required posture
 
-- Release label remains `ready_with_known_limitations`.
-- Public messaging does not imply decision-grade risk conclusions.
-- Worker inhalation and worker dermal surfaces stay described as bounded expert layers.
+- Keep the release label at `ready` only while heuristic defaults and partial validation
+  families remain explicit through warnings, curation reports, and validation gaps.
+- Keep worker extension layers described as bounded expert features, not mature solver replacements.
+- Keep heuristic defaults and partial validation families visible through warnings
+  and validation gaps.
 
-## Required trust artifacts
+## Required trust resources
 
-- `docs/contracts/contract_manifest.json`
-- `docs/releases/v0.2.0.release_metadata.json`
-- `docs/release_readiness.md`
-- `docs/security_provenance_review.md`
-- `docs/test_evidence_summary.md`
-- `docs/deployment_hardening.md`
+- `contracts://manifest`
+- `release://metadata-report`
+- `release://readiness-report`
+- `release://security-provenance-review-report`
+- `verification://summary`
+- `validation://coverage-report`
+- `defaults://curation-report`
 
 ## Required release commands
 
@@ -28,17 +31,9 @@ uv run validate-evals
 uv run check-exposure-release-artifacts
 ```
 
-## Human review questions
+## Human sign-off questions
 
-- What is benchmarked versus only context-anchored?
+- Which branches are benchmarked versus only context-anchored?
 - Which defaults branches remain heuristic?
-- Are any warning-level trust findings being hidden in downstream UX?
-- Are remote deployment controls documented and enforced outside the MCP?
-
-## Do not claim
-
-- final risk conclusions
-- PBPK execution
-- full occupational solver equivalence
-- probabilistic population modeling
-- broad route-family validation where the validation dossier still marks partial coverage
+- Are remote deployment controls configured in the MCP and, where needed, reinforced at the gateway?
+- Are any downstream clients hiding warning-level trust findings?

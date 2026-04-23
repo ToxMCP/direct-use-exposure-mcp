@@ -96,9 +96,7 @@ def register_integration_tools(
         except ExposureScenarioError as error:
             return error_result(error)
         except Exception as error:
-            return error_result(
-                unexpected_tool_error("exposure_apply_product_use_evidence", error)
-            )
+            return error_result(unexpected_tool_error("exposure_apply_product_use_evidence", error))
 
     @mcp.tool(
         name="exposure_build_product_use_evidence_from_consexpo",

@@ -55,6 +55,10 @@ from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin
 from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
 from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine
+from exposure_scenario_mcp.source_classification import (
+    is_benchmark_source_id,
+    is_warning_heuristic_source_id,
+)
 from exposure_scenario_mcp.tier1_inhalation_profiles import Tier1InhalationProfileRegistry
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
 from exposure_scenario_mcp.worker_routing import route_worker_task
@@ -1468,7 +1472,10 @@ def _build_worker_inhalation_validation_summary(
     heuristic_assumption_names = sorted(
         item.name
         for item in result.assumptions
-        if ("heuristic" in item.source.source_id or item.source.source_id.startswith("benchmark_"))
+        if (
+            is_warning_heuristic_source_id(item.source.source_id)
+            or is_benchmark_source_id(item.source.source_id)
+        )
     )
     benchmark_case_ids: list[str] = []
     executed_validation_checks: list[ExecutedValidationCheck] = []
@@ -1621,7 +1628,10 @@ def _build_worker_inhalation_external_import_validation_summary(
     heuristic_assumption_names = sorted(
         item.name
         for item in result.assumptions
-        if ("heuristic" in item.source.source_id or item.source.source_id.startswith("benchmark_"))
+        if (
+            is_warning_heuristic_source_id(item.source.source_id)
+            or is_benchmark_source_id(item.source.source_id)
+        )
     )
     dataset_id = (
         f"{external_result.source_system}:{external_result.source_run_id}"
@@ -1692,7 +1702,9 @@ def _assumption_governance(
             applicability_domain=applicability_domain or {},
         )
 
-    heuristic = "heuristic" in source.source_id or source.source_id.startswith("benchmark_")
+    heuristic = is_warning_heuristic_source_id(source.source_id) or is_benchmark_source_id(
+        source.source_id
+    )
     return AssumptionGovernance(
         evidence_grade=EvidenceGrade.GRADE_1 if heuristic else EvidenceGrade.GRADE_3,
         evidence_basis=(
@@ -1738,7 +1750,10 @@ def _assumption_record(
             else "external_system"
             if source_kind == SourceKind.SYSTEM
             else "heuristic_default"
-            if "heuristic" in source.source_id or source.source_id.startswith("benchmark_")
+            if (
+                is_warning_heuristic_source_id(source.source_id)
+                or is_benchmark_source_id(source.source_id)
+            )
             else "curated_default"
         ),
         default_applied=source_kind == SourceKind.DEFAULT_REGISTRY,

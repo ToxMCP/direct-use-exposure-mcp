@@ -81,7 +81,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -117,7 +117,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -153,7 +153,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -189,7 +189,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -225,7 +225,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -258,7 +258,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -291,7 +291,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -324,7 +324,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -354,7 +354,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -384,7 +384,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -420,7 +420,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -452,7 +452,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -485,7 +485,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -518,7 +518,7 @@
         "title": "ECHA consumer inhalation room-default benchmark",
         "locator": "https://echa.europa.eu/sk/registration-dossier/-/registered-dossier/14128/7/1",
         "version": "public ECHA dossier entry accessed 2026-03-24",
-        "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+        "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -554,7 +554,7 @@
         "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+        "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -590,7 +590,7 @@
         "title": "Direct-Use Exposure MCP volatility saturation-cap policy for room-air screening",
         "locator": "docs://defaults-evidence-map#inhalation-physical-caps-2026",
         "version": "2026.04.11.v1",
-        "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+        "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -625,7 +625,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -659,7 +659,7 @@
         "title": "Benchmark population defaults mapped to EPA exposure-factor source families",
         "locator": "docs://defaults-evidence-map#population-defaults",
         "version": "2026.03.25.v6",
-        "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+        "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -689,7 +689,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -727,7 +727,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "explicit_user_input",
@@ -759,7 +759,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -799,7 +799,7 @@
         "title": "RIVM General Fact Sheet unspecified-room defaults for consumer exposure",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/090013003.pdf",
         "version": "RIVM report 090013003 / 2014",
-        "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+        "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -834,7 +834,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -871,7 +871,7 @@
         "title": "RIVM General Fact Sheet unspecified-room defaults for consumer exposure",
         "locator": "https://www.rivm.nl/bibliotheek/rapporten/090013003.pdf",
         "version": "RIVM report 090013003 / 2014",
-        "hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48"
+        "hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb"
       },
       "confidence": "registry_default",
       "default_applied": true,
@@ -906,7 +906,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -942,7 +942,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -975,7 +975,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -1014,7 +1014,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -1053,7 +1053,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -1089,7 +1089,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -1122,7 +1122,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -1161,7 +1161,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -1200,7 +1200,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -1239,7 +1239,7 @@
         "source_id": "exposure_scenario_mcp",
         "title": "Direct-Use Exposure MCP runtime",
         "locator": "docs://algorithm-notes",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "hash_sha256": null
       },
       "confidence": "deterministic_derived",
@@ -1273,9 +1273,9 @@
     "schema_version": "provenanceBundle.v1",
     "algorithm_id": "inhalation.residual_air_reentry.v1",
     "plugin_id": "inhalation_residual_air_reentry_plugin",
-    "plugin_version": "0.2.0",
+    "plugin_version": "0.2.1",
     "defaults_version": "2026.04.15.v35",
-    "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+    "defaults_hash_sha256": "5138cbbca5cb9354f358fd4129e2776b171851ee575e4ff1eee9e9bfd41458fb",
     "generated_at": "2026-03-24T00:00:00+00:00",
     "notes": [
       "Deterministic-first exposure engine.",

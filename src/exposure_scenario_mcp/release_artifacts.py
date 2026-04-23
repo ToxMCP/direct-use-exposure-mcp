@@ -101,12 +101,12 @@ def validate_release_metadata_report(metadata_path: Path, repo_root: Path) -> li
         if declared_sha is not None and declared_sha != actual_sha:
             errors.append(
                 f"artifact `{kind}` sha256 mismatch for `{relative_path}`: "
-                f"expected `{actual_sha}`, found `{declared_sha}`"
+                f"declared `{declared_sha}`, actual `{actual_sha}`"
             )
         if declared_size is not None and declared_size != actual_size:
             errors.append(
                 f"artifact `{kind}` size mismatch for `{relative_path}`: "
-                f"expected `{actual_size}`, found `{declared_size}`"
+                f"declared `{declared_size}`, actual `{actual_size}`"
             )
 
     return errors
