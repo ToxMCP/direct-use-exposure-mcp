@@ -199,6 +199,34 @@ jobs:
           assert build_release_metadata_report(registry).package_version == __version__
           PY
 
+  scientific-invariants:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          cache-suffix: py3.12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Sync dependencies
+        run: uv sync --extra dev --locked
+      - name: Verify vendored schema-spine engine integrity (digest-pinned)
+        run: uv run python scripts/vendor_verify.py
+      - name: Check golden corpus matches the real producer emission
+        run: |
+          uv run python scripts/build_scientific_invariants_corpus.py
+          git diff --exit-code -- tests/fixtures/governance
+      - name: Run Track-B scientific-invariants gate (pristine corpus is green)
+        run: uv run python scripts/scientific_invariants_gate.py
+      - name: Governance regression + adversarial tests
+        run: uv run pytest tests/governance -q
+
   docker-build:
     runs-on: ubuntu-latest
     steps:

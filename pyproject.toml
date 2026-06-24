@@ -23,6 +23,9 @@ exposure-scenario-mcp = "exposure_scenario_mcp.__main__:main"
 generate-exposure-contracts = "scripts.generate_contract_assets:main"
 check-exposure-release-artifacts = "scripts.check_release_artifacts:main"
 validate-evals = "scripts.validate_evals:main"
+exposure-scientific-invariants-gate = "scripts.scientific_invariants_gate:main"
+exposure-vendor-verify = "scripts.vendor_verify:main"
+build-scientific-invariants-corpus = "scripts.build_scientific_invariants_corpus:main"
 
 [build-system]
 requires = ["hatchling"]

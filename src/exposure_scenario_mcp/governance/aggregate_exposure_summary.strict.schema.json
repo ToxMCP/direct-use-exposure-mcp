@@ -1,0 +1,362 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.ngra.ai/direct-use-exposure/aggregateExposureSummary.v1.strict.schema.json",
+  "title": "AggregateExposureSummary.v1 — STRICT producer emission contract",
+  "description": "Dependency-free Draft-07 SUBSET mirror of the AggregateExposureSummary pydantic StrictModel (extra='forbid') serializer (model_dump(mode='json', by_alias=True)). Authored from the REAL producer's emitted bytes (exposure_scenario_mcp.examples.build_examples -> aggregate_summary / aggregate_internal_equivalent_summary), NOT the laxer published docs/contracts schema (whose 'required' omits the always-stamped schema_version / scenario_class / aggregationMode / uncertaintyTier and the default-factory list fields). additionalProperties:false at every object level is the load-bearing strict guard that closes the producer-emission-contract dead-arm class. Expressed only in the keyword subset the dependency-free source_contract validator enforces (type/properties/required/enum/const/additionalProperties/items/minItems/minLength/format).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scenario_id",
+    "chemical_id",
+    "scenario_class",
+    "component_scenarios",
+    "aggregationMode",
+    "aggregation_method",
+    "per_route_totals",
+    "perRouteInternalEquivalentTotals",
+    "routeBioavailabilityAdjustments",
+    "dominant_contributors",
+    "limitations",
+    "quality_flags",
+    "uncertaintyTier",
+    "uncertaintyRegister",
+    "dependencyMetadata",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "aggregateExposureSummary.v1"
+    },
+    "scenario_id": { "type": "string", "minLength": 1 },
+    "chemical_id": { "type": "string", "minLength": 1 },
+    "scenario_class": { "type": "string", "const": "aggregate" },
+    "component_scenarios": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/AggregateComponentReference" }
+    },
+    "aggregationMode": {
+      "type": "string",
+      "enum": ["external_summary", "internal_equivalent"]
+    },
+    "aggregation_method": { "type": "string", "minLength": 1 },
+    "normalized_total_external_dose": { "$ref": "#/$defs/ScenarioDoseOrNull" },
+    "internalEquivalentTotalDose": { "$ref": "#/$defs/ScenarioDoseOrNull" },
+    "per_route_totals": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/RouteDoseTotal" }
+    },
+    "perRouteInternalEquivalentTotals": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/RouteDoseTotal" }
+    },
+    "routeBioavailabilityAdjustments": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/RouteBioavailabilityAdjustment" }
+    },
+    "dominant_contributors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/AggregateContributor" }
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/SeverityNote" }
+    },
+    "quality_flags": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/SeverityNote" }
+    },
+    "uncertaintyTier": {
+      "type": "string",
+      "enum": ["tier_a", "tier_b", "tier_c", "tier_d", "tier_e"]
+    },
+    "uncertaintyRegister": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/UncertaintyRegisterEntry" }
+    },
+    "dependencyMetadata": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/DependencyDescriptor" }
+    },
+    "validationSummary": { "$ref": "#/$defs/ValidationSummaryOrNull" },
+    "provenance": { "$ref": "#/$defs/ProvenanceBundle" }
+  },
+  "$defs": {
+    "ScenarioDose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "value", "unit"],
+      "properties": {
+        "metric": { "type": "string", "minLength": 1 },
+        "value": { "type": "number" },
+        "unit": {
+          "type": "string",
+          "enum": ["mg/day", "mg/event", "mg/kg-day", "mg/m3"]
+        }
+      }
+    },
+    "ScenarioDoseOrNull": {
+      "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/ScenarioDose" }]
+    },
+    "AggregateComponentReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenario_id", "route", "dose"],
+      "properties": {
+        "scenario_id": { "type": "string", "minLength": 1 },
+        "route": { "type": "string", "enum": ["dermal", "oral", "inhalation"] },
+        "dose": { "$ref": "#/$defs/ScenarioDose" }
+      }
+    },
+    "RouteDoseTotal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "total_dose"],
+      "properties": {
+        "route": { "type": "string", "enum": ["dermal", "oral", "inhalation"] },
+        "total_dose": { "$ref": "#/$defs/ScenarioDose" }
+      }
+    },
+    "RouteBioavailabilityAdjustment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "bioavailabilityFraction"],
+      "properties": {
+        "route": { "type": "string", "enum": ["dermal", "oral", "inhalation"] },
+        "bioavailabilityFraction": { "type": "number" }
+      }
+    },
+    "AggregateContributor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenario_id", "contribution_fraction", "dose_value"],
+      "properties": {
+        "scenario_id": { "type": "string", "minLength": 1 },
+        "contribution_fraction": { "type": "number" },
+        "dose_value": { "type": "number" }
+      }
+    },
+    "SeverityNote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "severity": { "type": "string", "enum": ["info", "warning", "error"] },
+        "message": { "type": "string" }
+      }
+    },
+    "UncertaintyRegisterEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entryId",
+        "title",
+        "uncertaintyTypes",
+        "relatedAssumptions",
+        "quantificationStatus",
+        "biasDirection",
+        "impactLevel",
+        "summary"
+      ],
+      "properties": {
+        "entryId": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "uncertaintyTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "variability",
+              "parameter_uncertainty",
+              "model_uncertainty",
+              "scenario_uncertainty"
+            ]
+          }
+        },
+        "relatedAssumptions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "quantificationStatus": {
+          "type": "string",
+          "enum": [
+            "qualitative_only",
+            "bounded",
+            "probability_bounds",
+            "probabilistic"
+          ]
+        },
+        "biasDirection": {
+          "type": "string",
+          "enum": [
+            "likely_overestimate",
+            "likely_underestimate",
+            "bidirectional",
+            "unknown"
+          ]
+        },
+        "impactLevel": { "type": "string", "enum": ["low", "medium", "high"] },
+        "summary": { "type": "string" },
+        "recommendation": {
+          "anyOf": [{ "type": "null" }, { "type": "string" }]
+        }
+      }
+    },
+    "DependencyDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependencyId",
+        "title",
+        "relationshipType",
+        "assumptionNames",
+        "handlingStrategy",
+        "note"
+      ],
+      "properties": {
+        "dependencyId": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "relationshipType": {
+          "type": "string",
+          "enum": [
+            "structural",
+            "physiological",
+            "behavioral",
+            "mechanistic",
+            "scenario_package"
+          ]
+        },
+        "assumptionNames": { "type": "array", "items": { "type": "string" } },
+        "handlingStrategy": {
+          "type": "string",
+          "enum": [
+            "scenario_packaged",
+            "conditional_model_required",
+            "joint_model_required",
+            "not_quantified"
+          ]
+        },
+        "note": { "type": "string" }
+      }
+    },
+    "ExecutedValidationCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkId",
+        "title",
+        "referenceDatasetId",
+        "status",
+        "comparedMetric",
+        "observedValue",
+        "referenceLower",
+        "referenceUpper",
+        "unit",
+        "note"
+      ],
+      "properties": {
+        "checkId": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "referenceDatasetId": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["pass", "warning", "out_of_domain"]
+        },
+        "comparedMetric": { "type": "string" },
+        "observedValue": { "type": "number" },
+        "referenceLower": { "type": "number" },
+        "referenceUpper": { "type": "number" },
+        "unit": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "ValidationSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validationStatus",
+        "routeMechanism",
+        "benchmarkCaseIds",
+        "externalDatasetIds",
+        "evidenceReadiness",
+        "heuristicAssumptionNames",
+        "validationGapIds",
+        "executedValidationChecks",
+        "highestSupportedUncertaintyTier",
+        "probabilisticEnablement",
+        "notes"
+      ],
+      "properties": {
+        "validationStatus": {
+          "type": "string",
+          "enum": [
+            "verification_only",
+            "benchmark_regression",
+            "external_validation_partial",
+            "calibrated"
+          ]
+        },
+        "routeMechanism": { "type": "string" },
+        "benchmarkCaseIds": { "type": "array", "items": { "type": "string" } },
+        "externalDatasetIds": { "type": "array", "items": { "type": "string" } },
+        "evidenceReadiness": {
+          "type": "string",
+          "enum": [
+            "benchmark_only",
+            "benchmark_plus_external_candidates",
+            "external_candidates_only",
+            "external_partial",
+            "calibrated"
+          ]
+        },
+        "heuristicAssumptionNames": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "validationGapIds": { "type": "array", "items": { "type": "string" } },
+        "executedValidationChecks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ExecutedValidationCheck" }
+        },
+        "highestSupportedUncertaintyTier": {
+          "type": "string",
+          "enum": ["tier_a", "tier_b", "tier_c", "tier_d", "tier_e"]
+        },
+        "probabilisticEnablement": {
+          "type": "string",
+          "enum": ["blocked", "gated", "enabled"]
+        },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "ValidationSummaryOrNull": {
+      "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/ValidationSummary" }]
+    },
+    "ProvenanceBundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "algorithm_id",
+        "plugin_id",
+        "plugin_version",
+        "defaults_version",
+        "defaults_hash_sha256",
+        "generated_at",
+        "notes"
+      ],
+      "properties": {
+        "schema_version": { "type": "string", "const": "provenanceBundle.v1" },
+        "algorithm_id": { "type": "string", "minLength": 1 },
+        "plugin_id": { "type": "string", "minLength": 1 },
+        "plugin_version": { "type": "string", "minLength": 1 },
+        "defaults_version": { "type": "string", "minLength": 1 },
+        "defaults_hash_sha256": { "type": "string", "minLength": 1 },
+        "generated_at": { "type": "string", "minLength": 1 },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
