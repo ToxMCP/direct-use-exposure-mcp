@@ -26,7 +26,7 @@ from exposure_scenario_mcp.server import create_mcp_server
 
 def main() -> None:
     """Start Direct-Use Exposure MCP on the streamable-HTTP transport."""
-    host = os.environ.get("HOST", "0.0.0.0")
+    host = os.environ.get("HOST", "0.0.0.0")  # noqa: S104
     port = int(os.environ.get("PORT", "8000"))
     log_level_name = os.environ.get("LOG_LEVEL", "INFO").upper()
 

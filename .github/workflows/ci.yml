@@ -235,7 +235,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
         run: docker build -t exposure-scenario-mcp:ci .
-      - name: Docker smoke test
-        run: docker run --rm exposure-scenario-mcp:ci --help >/dev/null
-      - name: Docker startup healthcheck
-        run: docker run --rm exposure-scenario-mcp:ci --healthcheck >/dev/null
+      - name: Docker smoke test (stdio entrypoint --help)
+        run: docker run --rm --entrypoint exposure-scenario-mcp exposure-scenario-mcp:ci --help >/dev/null
+      - name: Docker startup healthcheck (stdio entrypoint --healthcheck)
+        run: docker run --rm --entrypoint exposure-scenario-mcp exposure-scenario-mcp:ci --healthcheck >/dev/null
