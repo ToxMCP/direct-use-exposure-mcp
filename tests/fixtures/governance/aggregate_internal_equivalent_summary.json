@@ -1,0 +1,178 @@
+{
+  "aggregationMode": "internal_equivalent",
+  "aggregation_method": "route_bioavailability_adjusted_internal_equivalent_screening",
+  "chemical_id": "DTXSID7020182",
+  "component_scenarios": [
+    {
+      "dose": {
+        "metric": "normalized_external_dose",
+        "unit": "mg/kg-day",
+        "value": 1.125
+      },
+      "route": "dermal",
+      "scenario_id": "exp-example-dermal-001"
+    },
+    {
+      "dose": {
+        "metric": "normalized_external_dose",
+        "unit": "mg/kg-day",
+        "value": 0.01813117
+      },
+      "route": "inhalation",
+      "scenario_id": "inh-example-room-001"
+    }
+  ],
+  "dependencyMetadata": [
+    {
+      "assumptionNames": [
+        "component_scenarios",
+        "route_totals"
+      ],
+      "dependencyId": "aggregate-stacking-cluster",
+      "handlingStrategy": "not_quantified",
+      "note": "The aggregate output is a deterministic stacking summary and does not encode behavioral co-use correlations.",
+      "relationshipType": "scenario_package",
+      "title": "Aggregate totals preserve route-specific dependence rather than joint sampling"
+    }
+  ],
+  "dominant_contributors": [
+    {
+      "contribution_fraction": 0.861203,
+      "dose_value": 0.1125,
+      "scenario_id": "exp-example-dermal-001"
+    },
+    {
+      "contribution_fraction": 0.138797,
+      "dose_value": 0.01813117,
+      "scenario_id": "inh-example-room-001"
+    }
+  ],
+  "internalEquivalentTotalDose": {
+    "metric": "aggregate_internal_equivalent_dose",
+    "unit": "mg/kg-day",
+    "value": 0.13063117
+  },
+  "limitations": [
+    {
+      "code": "internal_equivalent_bioavailability_user_supplied",
+      "message": "Internal-equivalent totals depend on the supplied route bioavailability fractions and do not replace route-specific kinetic modeling.",
+      "severity": "warning"
+    },
+    {
+      "code": "cross_route_aggregate",
+      "message": "Aggregate total spans multiple exposure routes and should be interpreted as a screening summary rather than a PBPK-ready collapse.",
+      "severity": "warning"
+    }
+  ],
+  "normalized_total_external_dose": {
+    "metric": "aggregate_external_dose",
+    "unit": "mg/kg-day",
+    "value": 1.14313117
+  },
+  "perRouteInternalEquivalentTotals": [
+    {
+      "route": "dermal",
+      "total_dose": {
+        "metric": "route_internal_equivalent_dose",
+        "unit": "mg/kg-day",
+        "value": 0.1125
+      }
+    },
+    {
+      "route": "inhalation",
+      "total_dose": {
+        "metric": "route_internal_equivalent_dose",
+        "unit": "mg/kg-day",
+        "value": 0.01813117
+      }
+    }
+  ],
+  "per_route_totals": [
+    {
+      "route": "dermal",
+      "total_dose": {
+        "metric": "route_total_external_dose",
+        "unit": "mg/kg-day",
+        "value": 1.125
+      }
+    },
+    {
+      "route": "inhalation",
+      "total_dose": {
+        "metric": "route_total_external_dose",
+        "unit": "mg/kg-day",
+        "value": 0.01813117
+      }
+    }
+  ],
+  "provenance": {
+    "algorithm_id": "aggregate.simple_additive.v1",
+    "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
+    "defaults_version": "2026.04.15.v35",
+    "generated_at": "2026-03-24T00:00:00+00:00",
+    "notes": [
+      "Deterministic-first exposure engine.",
+      "All defaults are surfaced through exposureAssumptionRecord entries."
+    ],
+    "plugin_id": "aggregate_summary_service",
+    "plugin_version": "0.2.0",
+    "schema_version": "provenanceBundle.v1"
+  },
+  "quality_flags": [
+    {
+      "code": "aggregate_internal_equivalent_screening",
+      "message": "Internal-equivalent aggregation applies caller-supplied route bioavailability fractions to external doses. It remains a screening transformation, not a PBPK substitute.",
+      "severity": "info"
+    }
+  ],
+  "routeBioavailabilityAdjustments": [
+    {
+      "bioavailabilityFraction": 0.1,
+      "route": "dermal"
+    },
+    {
+      "bioavailabilityFraction": 1.0,
+      "route": "inhalation"
+    }
+  ],
+  "scenario_class": "aggregate",
+  "scenario_id": "agg-example-couse-internal-001",
+  "schema_version": "aggregateExposureSummary.v1",
+  "uncertaintyRegister": [
+    {
+      "biasDirection": "bidirectional",
+      "entryId": "aggregate-screening-summary",
+      "impactLevel": "high",
+      "quantificationStatus": "qualitative_only",
+      "recommendation": "Use Tier B scenario packages or a future population engine before interpreting aggregate totals as realistic population behavior.",
+      "relatedAssumptions": [],
+      "summary": "The aggregate output preserves route totals but does not model co-use dependencies or population correlations.",
+      "title": "Aggregate result remains a Tier A additive screening summary",
+      "uncertaintyTypes": [
+        "model_uncertainty",
+        "scenario_uncertainty"
+      ]
+    }
+  ],
+  "uncertaintyTier": "tier_a",
+  "validationSummary": {
+    "benchmarkCaseIds": [
+      "cross_route_aggregate_summary"
+    ],
+    "evidenceReadiness": "benchmark_plus_external_candidates",
+    "executedValidationChecks": [],
+    "externalDatasetIds": [
+      "aggregate_external_proxy_candidate"
+    ],
+    "heuristicAssumptionNames": [],
+    "highestSupportedUncertaintyTier": "tier_b",
+    "notes": [
+      "Aggregate outputs are benchmarked as deterministic screening summaries only.",
+      "Cross-route co-use dependencies are not modeled probabilistically in v0.1."
+    ],
+    "probabilisticEnablement": "blocked",
+    "routeMechanism": "aggregate_cross_route_screening",
+    "validationGapIds": [],
+    "validationStatus": "benchmark_regression"
+  }
+}
