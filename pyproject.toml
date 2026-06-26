@@ -20,6 +20,7 @@ dev = [
 
 [project.scripts]
 exposure-scenario-mcp = "exposure_scenario_mcp.__main__:main"
+exposure-scenario-mcp-http = "exposure_scenario_mcp.transport.http:main"
 generate-exposure-contracts = "scripts.generate_contract_assets:main"
 check-exposure-release-artifacts = "scripts.check_release_artifacts:main"
 validate-evals = "scripts.validate_evals:main"
