@@ -56,11 +56,7 @@ EXPOSE 8000
 # Health check: confirm the MCP endpoint is reachable and not returning 5xx.
 # GET /mcp without Accept headers returns 406 (the server is up and speaking MCP).
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD python -c "import urllib.request, urllib.error, sys; \
-try: urllib.request.urlopen('http://localhost:8000/mcp') \
-except urllib.error.HTTPError as e: sys.exit(0 if e.code < 500 else 1) \
-except Exception: sys.exit(1) \
-else: sys.exit(0)"
+  CMD python -c "import http.client, sys; c=http.client.HTTPConnection('localhost', 8000, timeout=2); c.request('GET', '/mcp'); r=c.getresponse(); sys.exit(0 if r.status < 500 else 1)"
 
 # Default: serve the streamable-HTTP transport (hosted mode).
 # For local stdio: docker run --rm -i <image> exposure-scenario-mcp
