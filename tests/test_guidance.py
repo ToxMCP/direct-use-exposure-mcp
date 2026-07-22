@@ -293,6 +293,9 @@ def test_uncertainty_and_validation_guidance_expose_tier_a_b_posture() -> None:
     assert "ADMETlab MCP" in suite_index
     assert "AOP MCP" in suite_index
     assert "O-QT MCP" in suite_index
+    assert "Dietary Exposure MCP" in suite_index
+    assert "released screening sibling, `v0.1.0`" in suite_index
+    assert "planned sibling" not in suite_index
     assert "docs://cross-mcp-contract-guide" in suite_index
     assert "docs/toxmcp_suite_index.md" in suite_index
     assert "Worker Exposure Mode" in architecture

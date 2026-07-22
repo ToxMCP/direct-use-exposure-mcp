@@ -76,13 +76,13 @@ The core engine is intentionally narrow, even though the released MCP also publi
 bounded worker, exchange, and validation surfaces:
 
 - `Direct-Use Exposure MCP` owns external-dose construction only.
-- Current suite interoperability is with `CompTox MCP`, `ADMETlab MCP`, `AOP MCP`,
-  `O-QT MCP`, and `PBPK MCP`.
+- Current public suite routing includes `CompTox MCP`, `ADMETlab MCP`, `AOP MCP`,
+  `O-QT MCP`, `PBPK MCP`, `Environmental Fate MCP`, and `Dietary Exposure MCP`.
 - `PBPK MCP` owns kinetic translation and internal-dose interpretation.
 - Defaults, assumptions, provenance, and limitations are first-class outputs, not hidden internals.
-- Dietary and fate seams are still explicit: medicinal or product-centric oral regimens stay
-  here, while food-mediated intake and multimedia release/concentration workflows remain
-  separate future module boundaries.
+- Dietary and fate boundaries remain explicit: medicinal or product-centric oral regimens stay
+  here, while food-mediated intake and multimedia release/concentration workflows route to
+  their released sibling modules.
 
 For a one-page maturity framing of the full released surface, see
 [docs/capability_maturity_matrix.md](./docs/capability_maturity_matrix.md).
@@ -102,15 +102,12 @@ This repo is the public exposure-construction module inside the broader
 | `AOP MCP` | Mechanistic pathway and AOP workflows | Adjacent mechanistic module |
 | `O-QT MCP` | OECD QSAR Toolbox workflows and reporting | Adjacent modeling module |
 | `PBPK MCP` | Internal-dose and TK simulation | Downstream handoff target |
+| `Environmental Fate MCP` | Environmental release, multimedia transfer, and concentration surfaces | Public sibling ([`v0.5.0`](https://github.com/ToxMCP/environmental-fate-mcp/releases/tag/v0.5.0)) |
+| `Dietary Exposure MCP` | Food-mediated oral screening, commodity residues, and consumption mappings | Public screening sibling ([`v0.1.0`](https://github.com/ToxMCP/dietary-exposure-mcp/releases/tag/v0.1.0)) |
 
-Two additional seams are already documented here but are not current public modules in the
-umbrella repo:
-
-- `Fate MCP`: environmental release, multimedia transfer, and concentration surfaces
-- `Dietary MCP`: food-mediated intake, commodity residue, and dietary oral workflows
-
-That distinction matters for the README and contract story: this MCP should read as one
-module in a growing suite, not as the whole ToxMCP platform.
+The exposure split is pathway-based: product-use scenarios stay here, food-mediated intake
+routes to Dietary Exposure MCP, and environmental source-to-concentration questions route to
+Environmental Fate MCP. Each sibling keeps its own applicability and validation boundaries.
 
 ## What's in v0.2.0
 
@@ -199,7 +196,7 @@ The detailed maturity matrix is in
 | `🧷 Curated dermal contact packs` | Replaces the highest-volume transfer and surface-contact-retention heuristics with RIVM-backed screening defaults for `personal_care` hand application and `household_cleaner` wipe contact while preserving explicit applicability domains and remaining evidence gaps. |
 | `🗃️ Defaults curation report` | Publishes a typed branch-level report showing which defaults paths are curated, route-semantic, or still heuristic, so downstream clients can target the strongest scenario branches deliberately. |
 | `📚 Contract publication` | Publishes schemas, examples, manifest metadata, docs resources, release metadata, and result-status conventions. |
-| `🔗 Shared suite contracts` | Publishes governed cross-MCP schemas for shared chemical identity, scenario definition, route-dose handoff, and future Fate concentration handoffs. |
+| `🔗 Shared suite contracts` | Publishes governed cross-MCP schemas for shared chemical identity, scenario definition, route-dose handoff, and Fate concentration handoffs. |
 | `🚧 Scientific guardrails` | Keeps BER, PoD derivation, PBPK execution, and final risk conclusions outside this server while publishing assumption governance and tier semantics on every scenario. |
 
 ## Table of contents
@@ -474,7 +471,7 @@ That means:
   non-Direct-Use dietary semantics
 - it now supports explicit oral-solid regimen semantics for counted tablets, capsules,
   pills, and similar discrete-dose direct-use products
-- it can publish shared suite contracts for future Fate and Dietary handoffs without taking
+- it can publish shared suite contracts for released Fate and Dietary handoffs without taking
   ownership of those runtimes
 
 It does **not**:
