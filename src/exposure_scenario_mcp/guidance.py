@@ -617,8 +617,8 @@ Use this guide when routing a question to the right ToxMCP service.
 
 ## Current Exposure MCP Scope
 
-- Exposure MCP already publishes the shared schemas needed to coordinate with future Fate and
-  Dietary siblings.
+- Exposure MCP publishes the shared schemas needed to coordinate with the released Environmental
+  Fate and Dietary Exposure siblings.
 - EU cosmetic nanomaterial, microplastic, and non-plastic particle direct-use questions stay in
   Direct-Use Exposure MCP while the workflow is about direct-use assumptions and external dose,
   not multimedia fate or final toxicology interpretation.
@@ -716,13 +716,14 @@ Use this guide as the one-page orientation layer for the current ToxMCP family.
   owns OECD QSAR Toolbox workflows and reporting.
 - `PBPK MCP`
   owns toxicokinetic simulation, internal-dose translation, and downstream TK-facing outputs.
+- `Environmental Fate MCP` (released sibling, `v0.5.0`)
+  owns environmental release, multimedia transfer, and compartment concentration surfaces.
+- `Dietary Exposure MCP` (released screening sibling, `v0.1.0`)
+  owns food-mediated oral screening, commodity residues, consumption mappings, and dietary oral
+  dose handoffs.
 
-## Planned Boundary Modules
+## Planned Adjacent Services
 
-- `Fate MCP` (planned sibling)
-  should own environmental release, multimedia transfer, and compartment concentration surfaces.
-- `Dietary MCP` (planned sibling)
-  should own commodity residues, food-consumption mappings, and dietary oral intake.
 - planned orchestration/reporting layer
   should own orchestration, evidence handling, refinement policy, and final NGRA-facing
   reporting.
@@ -752,8 +753,9 @@ across domain boundaries.
 - Rapid ADMET prediction or utility question -> `ADMETlab MCP`
 - Mechanistic pathway or AOP question -> `AOP MCP`
 - OECD QSAR Toolbox workflow question -> `O-QT MCP`
-- Environmental source term or multimedia concentration question -> `Fate MCP`
-- Dietary oral intake, food-mediated herbal intake, or food-residue question -> `Dietary MCP`
+- Environmental source term or multimedia concentration question -> `Environmental Fate MCP`
+- Dietary oral intake, food-mediated herbal intake, or food-residue question ->
+  `Dietary Exposure MCP`
 - Internal dose or TK simulation question -> `PBPK MCP`
 - Cross-service case assembly, refinement choice, or reporting question ->
   planned orchestration/reporting layer

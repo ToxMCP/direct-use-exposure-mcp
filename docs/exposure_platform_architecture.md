@@ -26,7 +26,7 @@ Owns human external-dose construction for direct-use and near-field scenarios.
 
 This is the current repo and should remain the deterministic external-dose backbone.
 
-### Fate MCP
+### Environmental Fate MCP
 
 Owns environmental release, multimedia fate, and compartment concentrations.
 
@@ -41,9 +41,11 @@ Candidate tool families:
 - EUSES
 - ChemFate-style environmental fate engines
 
-This should be a sibling MCP, not an internal subsystem of Direct-Use Exposure MCP.
+This boundary is implemented by the released
+[Environmental Fate MCP](https://github.com/ToxMCP/environmental-fate-mcp), not by an internal
+Direct-Use Exposure MCP subsystem.
 
-### Dietary MCP
+### Dietary Exposure MCP
 
 Owns food-residue and diet-intake workflows.
 
@@ -57,8 +59,10 @@ Candidate tool families:
 - EFSA PRIMo concepts and templates
 - EPA DEEM-aligned workflows
 
-This should also be a sibling MCP because dietary models have different input taxonomies,
-different validation regimes, and different regulatory semantics than product-use exposure.
+This boundary is implemented by the released screening-only
+[Dietary Exposure MCP `v0.1.0`](https://github.com/ToxMCP/dietary-exposure-mcp/releases/tag/v0.1.0)
+because dietary models have different input taxonomies, validation regimes, and regulatory
+semantics than product-use exposure.
 
 ### Worker Exposure Mode or Worker MCP
 
@@ -81,8 +85,8 @@ make the shared abstractions stop paying off.
 
 Every MCP should exchange typed objects instead of model-specific blobs.
 
-The shared suite contracts are now published from this repo as governed schemas so sibling MCPs
-can build against them before Fate MCP and Dietary MCP are fully implemented.
+The shared suite contracts are published from this repo as governed schemas and remain the
+stable exchange boundary used by the released Environmental Fate and Dietary Exposure siblings.
 
 - `chemical_identity`
   DTXSID, CASRN, preferred name, synonyms, source provenance
@@ -124,7 +128,7 @@ Route by domain, not by brand name.
 - Internal dose is downstream of exposure; PBPK remains a separate MCP boundary.
 - Probabilistic mode should reuse deterministic kernels rather than replace them.
 
-## Build Order
+## Delivery Sequence and Current Status
 
 ### Phase 1
 
@@ -138,7 +142,7 @@ Strengthen the current Direct-Use Exposure MCP.
 
 ### Phase 2
 
-Expand human direct-use scope before adding new sibling MCPs.
+Continue expanding human direct-use scope alongside the released sibling MCPs.
 
 - Mature the current worker router and Tier 1 worker path
 - Add a structured worker Tier 2 bridge export and ART-side ingest boundary before wiring a
@@ -147,17 +151,17 @@ Expand human direct-use scope before adding new sibling MCPs.
 - Better dermal absorbed-dose hooks
 - Stronger inhalation/indoor air refinement
 
-### Phase 3
+### Phase 3 (released)
 
-Add Fate MCP.
+Environmental Fate MCP is now released as a sibling service.
 
 - Environmental release scenarios
 - Multimedia concentration outputs
 - Concentration surfaces that Direct-Use Exposure MCP can consume
 
-### Phase 4
+### Phase 4 (released screening baseline)
 
-Add Dietary MCP.
+Dietary Exposure MCP `v0.1.0` is now released for screening-only use.
 
 - Commodity and consumption abstractions
 - Population-specific oral intake outputs

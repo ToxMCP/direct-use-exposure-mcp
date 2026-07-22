@@ -22,19 +22,19 @@ Use it when you need to answer three questions quickly:
 | `AOP MCP` | Mechanistic pathway workflows and AOP-centered exploration | Adjacent mechanistic module |
 | `O-QT MCP` | OECD QSAR Toolbox workflows and reports | Adjacent modeling module |
 | `PBPK MCP` | Toxicokinetic simulation, internal-dose translation, downstream TK-facing outputs | Downstream handoff target |
+| `Environmental Fate MCP` | Environmental release, multimedia transfer, and concentration surfaces | Released public sibling ([`v0.5.0`](https://github.com/ToxMCP/environmental-fate-mcp/releases/tag/v0.5.0)) |
+| `Dietary Exposure MCP` | Food-mediated oral screening, commodity residues, consumption mappings, and PBPK-ready oral dose handoffs | Released public screening sibling ([`v0.1.0`](https://github.com/ToxMCP/dietary-exposure-mcp/releases/tag/v0.1.0)) |
 
-If the question is "which public ToxMCP module can produce a trustworthy, reviewable
-exposure object today?", the answer is `Direct-Use Exposure MCP`.
+Choose the exposure module by pathway: product-use and near-field scenarios belong here,
+food-mediated intake belongs in `Dietary Exposure MCP`, and environmental source-to-concentration
+questions belong in `Environmental Fate MCP`.
 
-## Planned Boundary Modules
+## Planned Adjacent Services
 
-These seams are still important in this repo's architecture and routing docs, but they are
-not current public modules in the umbrella repo:
+These adjacent services remain planned rather than current public modules in the umbrella repo:
 
 | Module | Intended role |
 | --- | --- |
-| `Fate MCP` | Environmental release, multimedia transfer, concentration surfaces |
-| `Dietary MCP` | Commodity residues, food-consumption mappings, dietary oral intake |
 | `Literature MCP` | Source normalization, extraction review, evidence-pack curation |
 | `Orchestration/reporting layer` | Cross-service orchestration, evidence handling, refinement policy, reporting |
 
@@ -49,8 +49,8 @@ not current public modules in the umbrella repo:
 - Rapid ADMET prediction or utility question -> `ADMETlab MCP`
 - Mechanistic pathway or AOP question -> `AOP MCP`
 - OECD QSAR Toolbox workflow question -> `O-QT MCP`
-- Environmental source term or multimedia concentration question -> `Fate MCP`
-- Dietary oral intake, food-mediated herbal intake, or food-residue question -> `Dietary MCP`
+- Environmental source term or multimedia concentration question -> `Environmental Fate MCP`
+- Dietary oral intake, food-mediated herbal intake, or food-residue question -> `Dietary Exposure MCP`
 - Internal dose or TK simulation question -> `PBPK MCP`
 - Case assembly, refinement choice, or final reporting question -> planned orchestration/reporting layer
 
