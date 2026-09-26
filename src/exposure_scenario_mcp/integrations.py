@@ -41,6 +41,10 @@ from exposure_scenario_mcp.models import (
 from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
+from exposure_scenario_mcp.population_plausibility import (
+    pbpk_population_context_findings,
+    pbpk_population_context_message,
+)
 from exposure_scenario_mcp.runtime import (
     PluginRegistry,
     ScenarioEngine,
@@ -2992,7 +2996,8 @@ def check_pbpk_compatibility(scenario: ExposureScenario) -> PbpkCompatibilityRep
                 message="PBPK handoff requires a positive use_events_per_day value.",
             )
         )
-    if _resolved_body_weight_kg(scenario) is None:
+    body_weight_kg = _resolved_body_weight_kg(scenario)
+    if body_weight_kg is None:
         missing_fields.append("assessmentContext.doseScenario.bodyWeightKg")
         issues.append(
             LimitationNote(
@@ -3001,6 +3006,19 @@ def check_pbpk_compatibility(scenario: ExposureScenario) -> PbpkCompatibilityRep
                 message=(
                     "PBPK handoff requires a resolved body_weight_kg in the population profile."
                 ),
+            )
+        )
+    implausible_context = pbpk_population_context_findings(
+        scenario.population_profile.population_group,
+        body_weight_kg=body_weight_kg,
+        inhalation_rate_m3_per_hour=scenario.population_profile.inhalation_rate_m3_per_hour,
+    )
+    if implausible_context:
+        issues.append(
+            LimitationNote(
+                code="pbpk_population_context_implausible",
+                severity=Severity.ERROR,
+                message=pbpk_population_context_message(implausible_context),
             )
         )
     if (

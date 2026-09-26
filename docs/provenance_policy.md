@@ -18,6 +18,13 @@
 - Heuristic defaults must emit warning-quality flags so downstream users know they are still screening-level factors.
 - Downstream evidence/refinement exports use deterministic content hashes and stable IDs.
 
+## Population Plausibility
+
+- Resolved `body_weight_kg`, `exposed_surface_area_cm2`, and `inhalation_rate_m3_per_hour` values are screened against population-group bands anchored to the shipped population defaults; `docs://defaults-evidence-map` publishes the bands and their anchors.
+- Values outside the typical band emit a `population_<field>_atypical` warning flag.
+- Values outside the physiological envelope (for exposed area: above the whole-body maximum) emit a `population_<field>_implausible` error flag and limitation, set `tier_semantics.assumption_checks_passed` to false, add a `validationSummary` note, and are named in the tool-result text.
+- Builds are not blocked, so flagged scenarios stay auditable. Aggregates, PBPK compatibility checks, and PBPK scenario exports re-screen the resolved component values and carry the finding forward instead of trusting component flags.
+
 ## Boundary
 
 - Provenance demonstrates how external-dose outputs were produced.

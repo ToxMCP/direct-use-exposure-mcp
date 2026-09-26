@@ -40,6 +40,12 @@ from exposure_scenario_mcp.models import (
     UncertaintyRegisterEntry,
     VarianceDriver,
 )
+from exposure_scenario_mcp.population_plausibility import (
+    evaluate_population_value,
+    evaluate_scenario_population,
+    pbpk_population_context_findings,
+    pbpk_population_context_message,
+)
 from exposure_scenario_mcp.provenance import AssumptionTracker
 from exposure_scenario_mcp.uncertainty import (
     build_aggregate_uncertainty,
@@ -329,6 +335,16 @@ def resolve_population_value(
         tracker.add_user(field_name, resolved, unit, rationale)
     else:
         tracker.add_default(field_name, resolved, unit, source, rationale)
+    finding = evaluate_population_value(
+        field_name,
+        resolved,
+        population_group,
+        value_source="user-supplied" if supplied_value is not None else "population-default",
+    )
+    if finding is not None:
+        tracker.add_quality_flag(finding.code, finding.message, severity=finding.severity)
+        if finding.severity == Severity.ERROR:
+            tracker.add_limitation(finding.code, finding.message, severity=Severity.ERROR)
     return resolved
 
 
@@ -497,6 +513,36 @@ def aggregate_scenarios(
             ),
         )
 
+    # Re-screen the resolved component values instead of trusting component flags, so a
+    # component whose quality flags were dropped in transit still surfaces here.
+    population_findings = [
+        (item.scenario_id, finding)
+        for item in params.component_scenarios
+        for finding in evaluate_scenario_population(item)
+    ]
+    for scenario_id, finding in population_findings:
+        tracker.add_quality_flag(
+            finding.code,
+            f"Component scenario `{scenario_id}`: {finding.message}",
+            severity=finding.severity,
+        )
+    implausible_components = [
+        f"`{scenario_id}` ({finding.field_name})"
+        for scenario_id, finding in population_findings
+        if finding.severity == Severity.ERROR
+    ]
+    if implausible_components:
+        tracker.add_limitation(
+            "aggregate_component_population_implausible",
+            (
+                "Component scenarios carry population inputs outside their physiological "
+                f"plausibility envelope: {', '.join(implausible_components)}. The aggregate "
+                "total inherits their non-interpretable normalized doses; correct or justify "
+                "those inputs and rebuild the components before using this aggregate."
+            ),
+            severity=Severity.ERROR,
+        )
+
     dominant_contributors = []
     dominant_total = sum(contributor_values.values())
     if dominant_total and dominant_total > 0:
@@ -516,7 +562,10 @@ def aggregate_scenarios(
             for item in ranked[:3]
         ]
 
-    diagnostics = build_aggregate_uncertainty(params.component_scenarios)
+    diagnostics = build_aggregate_uncertainty(
+        params.component_scenarios,
+        population_findings=population_findings,
+    )
 
     return AggregateExposureSummary(
         scenario_id=f"agg-{uuid4().hex[:12]}",
@@ -674,6 +723,26 @@ def export_pbpk_input(
             "Transient concentration-profile point count derived for additive PBPK export.",
         )
 
+    population_context = PbpkPopulationContext(
+        population_group=scenario.population_profile.population_group,
+        body_weight_kg=scenario.population_profile.body_weight_kg
+        if scenario.population_profile.body_weight_kg is not None
+        else next(item.value for item in scenario.assumptions if item.name == "body_weight_kg"),
+        inhalation_rate_m3_per_hour=scenario.population_profile.inhalation_rate_m3_per_hour,
+        region=scenario.population_profile.region,
+    )
+    implausible_context = pbpk_population_context_findings(
+        population_context.population_group,
+        body_weight_kg=population_context.body_weight_kg,
+        inhalation_rate_m3_per_hour=population_context.inhalation_rate_m3_per_hour,
+    )
+    if implausible_context:
+        tracker.add_limitation(
+            "pbpk_population_context_implausible",
+            pbpk_population_context_message(implausible_context),
+            severity=Severity.ERROR,
+        )
+
     return PbpkScenarioInput(
         source_scenario_id=scenario.scenario_id,
         chemical_id=scenario.chemical_id,
@@ -686,14 +755,7 @@ def export_pbpk_input(
         event_duration_hours=duration,
         timing_pattern=params.regimen_name
         or f"{scenario.product_use_profile.use_events_per_day:g} events/day",
-        population_context=PbpkPopulationContext(
-            population_group=scenario.population_profile.population_group,
-            body_weight_kg=scenario.population_profile.body_weight_kg
-            if scenario.population_profile.body_weight_kg is not None
-            else next(item.value for item in scenario.assumptions if item.name == "body_weight_kg"),
-            inhalation_rate_m3_per_hour=scenario.population_profile.inhalation_rate_m3_per_hour,
-            region=scenario.population_profile.region,
-        ),
+        population_context=population_context,
         transient_concentration_profile=transient_profile,
         supporting_assumption_names=[item.name for item in scenario.assumptions],
         provenance=tracker.provenance(

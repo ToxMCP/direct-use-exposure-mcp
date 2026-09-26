@@ -10,6 +10,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import CallToolResult, TextContent
 
 from exposure_scenario_mcp.errors import ExposureScenarioError
+from exposure_scenario_mcp.models import Severity
 from exposure_scenario_mcp.package_metadata import package_version
 from exposure_scenario_mcp.result_meta import build_tool_result_meta
 from exposure_scenario_mcp.server_resources import register_prompts, register_resources
@@ -25,10 +26,23 @@ from exposure_scenario_mcp.server_tools_worker import register_worker_tools
 _logger = logging.getLogger("exposure_scenario_mcp.server")
 
 
+def _error_flag_notice(payload_model) -> str:
+    """Name error-severity quality flags so text-only clients cannot miss them."""
+
+    quality_flags = getattr(payload_model, "quality_flags", None) or []
+    codes = sorted({flag.code for flag in quality_flags if flag.severity == Severity.ERROR})
+    if not codes:
+        return ""
+    return (
+        f" Error-severity quality flags raised: {', '.join(codes)}. Review the quality flags "
+        "and limitations before using this result."
+    )
+
+
 def _success_result(message: str, payload_model) -> CallToolResult:
     return CallToolResult(
         _meta=build_tool_result_meta(result_status="completed", payload_model=payload_model),
-        content=[TextContent(type="text", text=message)],
+        content=[TextContent(type="text", text=message + _error_flag_notice(payload_model))],
         structuredContent=payload_model.model_dump(mode="json", by_alias=True),
     )
 
