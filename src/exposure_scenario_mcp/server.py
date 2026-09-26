@@ -12,6 +12,7 @@ from mcp.types import CallToolResult, TextContent
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.package_metadata import package_version
 from exposure_scenario_mcp.result_meta import build_tool_result_meta
+from exposure_scenario_mcp.server_errors import preserve_tool_error_results
 from exposure_scenario_mcp.server_resources import register_prompts, register_resources
 from exposure_scenario_mcp.server_runtime import (
     ServerRuntimeProvider,
@@ -74,6 +75,7 @@ def create_mcp_server() -> FastMCP:
     register_core_tools(mcp, context_provider, _success_result, _error_result)
     register_integration_tools(mcp, context_provider, _success_result, _error_result)
     register_worker_tools(mcp, context_provider, _success_result, _error_result)
+    preserve_tool_error_results(mcp)
     register_resources(mcp, context_provider)
     register_prompts(mcp)
     _logger.info("MCP server initialized")

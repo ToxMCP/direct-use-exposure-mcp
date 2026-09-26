@@ -7,8 +7,11 @@ import json
 
 import pytest
 from mcp.shared.exceptions import McpError
-from mcp.types import INTERNAL_ERROR, INVALID_PARAMS
+from mcp.shared.memory import create_connected_server_and_client_session
+from mcp.types import INTERNAL_ERROR, INVALID_PARAMS, CallToolResult
+from pydantic import ValidationError
 
+from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.examples import build_examples
 from exposure_scenario_mcp.models import (
     CompareJurisdictionalScenariosInput,
@@ -19,7 +22,7 @@ from exposure_scenario_mcp.models import (
     ScenarioClass,
     WorkerTaskRoutingInput,
 )
-from exposure_scenario_mcp.server import create_mcp_server
+from exposure_scenario_mcp.server import _error_result, create_mcp_server
 
 
 @pytest.fixture
@@ -150,6 +153,73 @@ def test_call_worker_route_alias(server):
     assert payload["recommended_tool"] == "worker_export_dermal_absorbed_dose_bridge"
 
 
+def test_aggregate_duplicate_component_error_reaches_mcp_client(server):
+    request = ExposureScenarioRequest(
+        chemical_id="AGGREGATE-DUPLICATE-001",
+        route=Route.DERMAL,
+        scenario_class=ScenarioClass.SCREENING,
+        product_use_profile=ProductUseProfile(
+            product_category="personal_care",
+            physical_form="cream",
+            application_method="hand_application",
+            retention_type="leave_on",
+            concentration_fraction=0.02,
+            use_amount_per_event=1.5,
+            use_amount_unit="g",
+            use_events_per_day=2,
+        ),
+        population_profile=PopulationProfile(population_group="adult", region="EU"),
+    )
+
+    async def call_aggregate_with_duplicate_component():
+        async with create_connected_server_and_client_session(server) as client:
+            scenario_result = await client.call_tool(
+                "exposure_build_screening_exposure_scenario",
+                {"params": request.model_dump(mode="json", by_alias=True)},
+            )
+            assert not scenario_result.isError
+            scenario = scenario_result.structuredContent
+            return await client.call_tool(
+                "exposure_build_aggregate_exposure_scenario",
+                {
+                    "params": {
+                        "chemical_id": request.chemical_id,
+                        "label": "Duplicate component aggregate",
+                        "component_scenarios": [scenario, scenario],
+                    }
+                },
+            )
+
+    result = _run(call_aggregate_with_duplicate_component())
+
+    assert result.isError
+    text = result.content[0].text
+    assert text.startswith(
+        "aggregate_duplicate_component: "
+        "Aggregate requests cannot contain duplicate component scenario IDs."
+    )
+    assert "Suggestion: Deduplicate component scenarios before building an aggregate" in text
+    assert "validation error" not in text
+    assert result.structuredContent is None
+    assert result.meta["resultStatus"] == "failed"
+    assert result.meta["errorCode"] == "aggregate_duplicate_component"
+    assert result.meta["mcpErrorCode"] == INVALID_PARAMS
+
+
+def test_failed_tool_results_skip_success_output_validation(server):
+    failed = _error_result(
+        ExposureScenarioError(code="example_failure", message="Illustrative failure.")
+    )
+
+    tools = server._tool_manager.list_tools()
+    assert tools
+    for tool in tools:
+        assert tool.fn_metadata.convert_result(failed) is failed, tool.name
+        if tool.output_schema is not None:
+            with pytest.raises(ValidationError):
+                tool.fn_metadata.convert_result(CallToolResult(content=[]))
+
+
 def test_export_toxclaw_evidence_bundle_unexpected_error_returns_failed_tool_result(
     server, monkeypatch
 ):
@@ -186,7 +256,7 @@ def test_export_toxclaw_evidence_bundle_unexpected_error_returns_failed_tool_res
     )
 
     result = _run(
-        server._tool_manager.call_tool(
+        server.call_tool(
             "exposure_export_toxclaw_evidence_bundle",
             {
                 "params": {
@@ -195,7 +265,6 @@ def test_export_toxclaw_evidence_bundle_unexpected_error_returns_failed_tool_res
                     "report_id": "report-1",
                 }
             },
-            convert_result=False,
         )
     )
 
@@ -219,10 +288,9 @@ def test_build_product_use_evidence_from_nanomaterial_unexpected_error_returns_f
     )
 
     result = _run(
-        server._tool_manager.call_tool(
+        server.call_tool(
             "exposure_build_product_use_evidence_from_nanomaterial",
             {"params": {"evidence": payloads["nanomaterial_evidence_record"]}},
-            convert_result=False,
         )
     )
 
@@ -244,10 +312,9 @@ def test_worker_route_task_unexpected_error_returns_failed_tool_result(server, m
     )
 
     result = _run(
-        server._tool_manager.call_tool(
+        server.call_tool(
             "worker_route_task",
             {"params": payloads["worker_task_routing_request"]},
-            convert_result=False,
         )
     )
 
