@@ -322,26 +322,47 @@ class DefaultsRegistry:
     ) -> tuple[float, AssumptionSourceReference]:
         key = application_method.lower()
         values = self.payload["transfer_efficiency_defaults"]
+        category_overrides: dict[str, dict[str, Any]] = {}
+        category_values: dict[str, Any] = {}
         if "global" in values:
-            resolved = values["global"]
+            category_overrides = values.get("product_category_overrides", {})
             if product_category:
-                category_values = values.get("product_category_overrides", {}).get(
-                    product_category.lower(),
-                    {},
-                )
+                category_values = category_overrides.get(product_category.lower(), {})
                 if key in category_values:
                     entry = category_values[key]
                     return float(entry["value"]), self._source(entry["source_id"])
-            values = resolved
-        ensure(
-            key in values,
-            "application_method_unsupported",
-            (
-                f"Application method '{application_method}' is not supported "
-                "for transfer efficiency defaults."
-            ),
-            suggestion=f"Use one of: {', '.join(sorted(values))}.",
-        )
+            values = values["global"]
+        if key not in values:
+            # Methods declared only under a category override (e.g. the SCCS personal_care
+            # methods) stay fail-closed elsewhere; list what resolves for this category.
+            supported = sorted({*values, *category_values})
+            scoped_categories = sorted(
+                category for category, methods in category_overrides.items() if key in methods
+            )
+            scope_note = (
+                f" Defaults for '{key}' are scoped to product_category "
+                f"{', '.join(scoped_categories)}."
+                if scoped_categories
+                else ""
+            )
+            category_note = f" in product_category '{product_category}'" if product_category else ""
+            raise ExposureScenarioError(
+                code="application_method_unsupported",
+                message=(
+                    f"Application method '{application_method}' is not supported "
+                    f"for transfer efficiency defaults{category_note}."
+                ),
+                suggestion=(
+                    f"Use one of: {', '.join(supported)}.{scope_note} Otherwise supply "
+                    "product_use_profile.transfer_efficiency explicitly."
+                ),
+                details={
+                    "application_method": application_method,
+                    "product_category": product_category,
+                    "supported_application_methods": supported,
+                    "scoped_product_categories": scoped_categories,
+                },
+            )
         entry = values[key]
         return float(entry["value"]), self._source(entry["source_id"])
 
@@ -1461,6 +1482,29 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  the skin boundary, so the transfer efficiency defaults to `1.0` and the",
             "  retention factor carries the wash-off distinction separately.",
             "",
+            "### SCCS Cosmetics Applied-Amount Transfer Defaults 2023",
+            "",
+            "- `sccs_cosmetics_applied_amount_transfer_defaults_2023` anchors the",
+            "  `personal_care` transfer-efficiency branches for `direct_application`,",
+            "  `applicator`, `pad_application`, `brushing`, and `oral_rinse` to the SCCS",
+            "  Notes of Guidance 12th revision (SCCS/1647/22, section 3-3.4.2.1). The",
+            "  tabulated daily amounts `qx` (Table 3A P90 use-study values, Table 3B",
+            "  conservative SCCNFP use levels) are amounts applied to the skin, and SCCS",
+            "  derives `Eproduct = qx x fret` without a separate transfer term, so the",
+            "  transfer efficiency is `1.0` and rinse-off, wipe-off, or expectoration is",
+            "  carried by the retention factor.",
+            "- Product-specific SCCS retention factors outside the `leave_on` and `rinse_off`",
+            "  classes (`0.10` for hair styling products, make-up remover, and mouthwash;",
+            "  `0.05` for toothpaste) are not defaulted and must be supplied as an explicit",
+            "  `retention_factor`.",
+            "- The `brushing` and `oral_rinse` branches follow the SCCS Table 5 convention that",
+            "  oral-care `Eproduct` represents dermal (mucosal) exposure. Swallowed oral",
+            "  exposure must be calculated separately, so oral-route requests for these",
+            "  methods still fail closed on ingestion defaults.",
+            "- The branches are scoped to `personal_care`. The same method labels in other",
+            "  product categories, such as paint `brushing`, keep failing closed until a",
+            "  category-specific pack or an explicit `transfer_efficiency` is supplied.",
+            "",
             "### RIVM Cleaning Wet-Cloth Transfer Defaults 2018",
             "",
             "- `rivm_cleaning_wet_cloth_transfer_defaults_2018` maps the RIVM Cleaning",
@@ -1558,6 +1602,9 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  and form defaults when they are available.",
             "- Transfer efficiency uses method-specific global defaults with product-category",
             "  overrides applied only where the defaults pack declares them explicitly.",
+            "  Methods declared only under a product-category override, such as the SCCS",
+            "  `personal_care` cosmetic methods, resolve only for that category and fail",
+            "  closed elsewhere.",
             "- Aerosolized fraction resolves in the order `product_subtype -> product category",
             "  -> global` for each application method, so subtype-specific ConsExpo branches can",
             "  override broad family defaults without changing the caller-supplied scenario class.",

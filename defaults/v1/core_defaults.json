@@ -1,5 +1,5 @@
 {
-  "defaults_version": "2026.04.15.v35",
+  "defaults_version": "2026.09.26.v36",
   "sources": [
     {
       "source_id": "epa_exposure_factors_handbook_2011",
@@ -348,6 +348,12 @@
       "title": "NMPA Technical Guidelines for Risk Assessment of Heavy Metals in Traditional Chinese Medicines",
       "locator": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10245643/",
       "version": "Chinese Medicine 18:69, 2023"
+    },
+    {
+      "source_id": "sccs_cosmetics_applied_amount_transfer_defaults_2023",
+      "title": "SCCS Notes of Guidance 12th revision daily amounts applied to the skin (qx, Tables 3A/3B) mapped to cosmetic screening transfer efficiency",
+      "locator": "https://health.ec.europa.eu/document/download/32a999f7-d820-496a-b659-d8c296cc99c1_en?filename=sccs_o_273_final.pdf",
+      "version": "SCCS/1647/22, adopted 15 May 2023, corrigendum 2 on 21 December 2023; section 3-3.4.2.1 Tables 3A/3B and section 3-3.4.3 Table 5"
     }
   ],
   "conversion_defaults": {
@@ -756,6 +762,26 @@
         "hand_application": {
           "value": 1.0,
           "source_id": "rivm_cosmetics_hand_cream_direct_application_defaults_2025"
+        },
+        "direct_application": {
+          "value": 1.0,
+          "source_id": "sccs_cosmetics_applied_amount_transfer_defaults_2023"
+        },
+        "applicator": {
+          "value": 1.0,
+          "source_id": "sccs_cosmetics_applied_amount_transfer_defaults_2023"
+        },
+        "pad_application": {
+          "value": 1.0,
+          "source_id": "sccs_cosmetics_applied_amount_transfer_defaults_2023"
+        },
+        "brushing": {
+          "value": 1.0,
+          "source_id": "sccs_cosmetics_applied_amount_transfer_defaults_2023"
+        },
+        "oral_rinse": {
+          "value": 1.0,
+          "source_id": "sccs_cosmetics_applied_amount_transfer_defaults_2023"
         }
       },
       "herbal_topical_product": {

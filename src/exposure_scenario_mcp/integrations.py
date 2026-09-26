@@ -2366,7 +2366,16 @@ def _assess_model_compatibility(
 
     if source_kind in {"sccs", "sccs_opinion"} and route == Route.DERMAL:
         app_method = request.product_use_profile.application_method
-        if app_method not in {"hand_application", "direct_application", "rinse_off", "leave_on"}:
+        if app_method not in {
+            "hand_application",
+            "direct_application",
+            "applicator",
+            "pad_application",
+            "brushing",
+            "oral_rinse",
+            "rinse_off",
+            "leave_on",
+        }:
             concerns.append(
                 f"SCCS assumptions are strongest for standard cosmetic application methods. "
                 f"The request uses '{app_method}', which may not align with SCCS defaults."

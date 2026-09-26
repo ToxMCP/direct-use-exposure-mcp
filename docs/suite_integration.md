@@ -120,6 +120,15 @@ See [herbal_medicinal_routing.md](./herbal_medicinal_routing.md) for the detaile
 - Preserve the underlying guidance identifier, version, locator, and table references in
   source metadata so downstream review can distinguish Notes of Guidance revisions and
   ingredient-specific SCCS opinions.
+- Model SCCS cosmetic products with `product_category=personal_care`. SCCS daily amounts
+  (`qx`) are amounts applied to the skin, so the defaults pack resolves a transfer
+  efficiency of `1.0` for `hand_application`, `direct_application`, `applicator`,
+  `pad_application`, `brushing`, and `oral_rinse`.
+- Supply product-specific SCCS retention factors explicitly when they differ from the
+  `leave_on` (`1.0`) and `rinse_off` (`0.01`) classes, for example `0.10` for hair styling
+  products, make-up remover, and mouthwash, or `0.05` for toothpaste.
+- Build toothpaste and mouthwash on the dermal route to follow the SCCS Table 5 convention
+  that oral-care exposure is mucosal. Swallowed oral exposure needs a separate calculation.
 
 ## SCCS opinions and CosIng
 
