@@ -277,16 +277,23 @@ class DefaultsRegistry:
             suggestion=f"Use one of: {', '.join(sorted(global_pop))}.",
         )
         entry = global_pop[population_group]
-        regional_overrides = populations.get("regional_overrides", {})
-        if region_key != "global" and region_key in regional_overrides:
-            regional_pop = regional_overrides[region_key]
-            if population_group in regional_pop:
-                entry = regional_pop[population_group]
+        if region_key in self.population_override_regions(population_group):
+            entry = populations["regional_overrides"][region_key][population_group]
         return {
             "body_weight_kg": float(entry["body_weight_kg"]),
             "inhalation_rate_m3_per_hour": float(entry["inhalation_rate_m3_per_hour"]),
             "exposed_surface_area_cm2": float(entry["exposed_surface_area_cm2"]),
         }, self._source(entry["source_id"])
+
+    def population_override_regions(self, population_group: str) -> list[str]:
+        """Regions whose population overrides replace the global defaults for this group."""
+        population_group = population_group.lower()
+        regional_overrides = self.payload["population_defaults"].get("regional_overrides", {})
+        return sorted(
+            region
+            for region, regional_pop in regional_overrides.items()
+            if region != "global" and population_group in regional_pop
+        )
 
     def retention_factor(
         self,
