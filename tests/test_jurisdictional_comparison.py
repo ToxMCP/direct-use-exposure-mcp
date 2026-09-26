@@ -93,6 +93,7 @@ def test_compare_global_and_china() -> None:
     flag_codes = {item.code for item in result.quality_flags}
     assert "china_regional_population_override_active" in flag_codes
     assert "jurisdictional_variance_detected" in flag_codes
+    assert not any(code.startswith("global_regional_population") for code in flag_codes)
 
 
 def test_compare_three_jurisdictions() -> None:
@@ -113,6 +114,20 @@ def test_compare_three_jurisdictions() -> None:
     china_dose = result.external_dose_by_jurisdiction["china"].value
     assert global_dose == pytest.approx(eu_dose, rel=1e-6)
     assert china_dose > global_dose
+
+    # EU resolves the global population defaults, so it must not claim a regional override
+    # and instead reports the global fallback.
+    flags_by_code: dict[str, list[str]] = {}
+    for flag in result.quality_flags:
+        flags_by_code.setdefault(flag.code, []).append(flag.message)
+    assert "eu_regional_population_override_active" not in flags_by_code
+    assert flags_by_code["eu_regional_population_override_unavailable"] == [
+        "Jurisdiction 'eu': Population default 'body_weight_kg' uses the global default "
+        "(80.0 kg) because no 'adult' population override exists for region='eu'. Regions "
+        "with 'adult' population overrides: china."
+    ]
+    assert "china_regional_population_override_active" in flags_by_code
+    assert "china_regional_population_override_unavailable" not in flags_by_code
 
 
 def test_unsupported_jurisdiction_raises_error() -> None:

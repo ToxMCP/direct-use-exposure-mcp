@@ -535,9 +535,9 @@
         "limitations": [],
         "quality_flags": [
           {
-            "code": "regional_population_override_active",
+            "code": "regional_population_override_unavailable",
             "severity": "info",
-            "message": "Population default 'body_weight_kg' uses region='EU' override (80.0 kg). Global default would differ."
+            "message": "Population default 'body_weight_kg' uses the global default (80.0 kg) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
           },
           {
             "code": "default_applied",
@@ -555,9 +555,9 @@
             "message": "Default value applied for 'transfer_efficiency'."
           },
           {
-            "code": "regional_population_override_active",
+            "code": "regional_population_override_unavailable",
             "severity": "info",
-            "message": "Population default 'exposed_surface_area_cm2' uses region='EU' override (5700.0 cm2). Global default would differ."
+            "message": "Population default 'exposed_surface_area_cm2' uses the global default (5700.0 cm2) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
           },
           {
             "code": "default_applied",
@@ -1283,9 +1283,9 @@
         "limitations": [],
         "quality_flags": [
           {
-            "code": "regional_population_override_active",
+            "code": "regional_population_override_unavailable",
             "severity": "info",
-            "message": "Population default 'body_weight_kg' uses region='EU' override (80.0 kg). Global default would differ."
+            "message": "Population default 'body_weight_kg' uses the global default (80.0 kg) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
           },
           {
             "code": "default_applied",
@@ -1293,9 +1293,9 @@
             "message": "Default value applied for 'body_weight_kg'."
           },
           {
-            "code": "regional_population_override_active",
+            "code": "regional_population_override_unavailable",
             "severity": "info",
-            "message": "Population default 'exposed_surface_area_cm2' uses region='EU' override (5700.0 cm2). Global default would differ."
+            "message": "Population default 'exposed_surface_area_cm2' uses the global default (5700.0 cm2) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
           },
           {
             "code": "default_applied",
@@ -2021,9 +2021,9 @@
         "limitations": [],
         "quality_flags": [
           {
-            "code": "regional_population_override_active",
+            "code": "regional_population_override_unavailable",
             "severity": "info",
-            "message": "Population default 'body_weight_kg' uses region='EU' override (80.0 kg). Global default would differ."
+            "message": "Population default 'body_weight_kg' uses the global default (80.0 kg) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
           },
           {
             "code": "default_applied",
@@ -2041,9 +2041,9 @@
             "message": "Default value applied for 'transfer_efficiency'."
           },
           {
-            "code": "regional_population_override_active",
+            "code": "regional_population_override_unavailable",
             "severity": "info",
-            "message": "Population default 'exposed_surface_area_cm2' uses region='EU' override (5700.0 cm2). Global default would differ."
+            "message": "Population default 'exposed_surface_area_cm2' uses the global default (5700.0 cm2) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
           },
           {
             "code": "default_applied",
