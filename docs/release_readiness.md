@@ -40,6 +40,9 @@ Release gating for `v0.2.0` is benchmark-first, contract-first, and provenance-f
   household-cleaner wipe contact, and curated spray airborne-fraction defaults are
   published for household-cleaner and personal-care spray contexts instead of relying
   only on generic transfer, retention, and spray heuristics.
+- SCCS Notes of Guidance-anchored transfer defaults are published for personal-care
+  direct application, applicator, pad, tooth-brushing, and oral-rinse methods; the same
+  method labels keep failing closed outside `personal_care`.
 - Scenario, aggregate, comparison, and PBPK export outputs carry provenance.
 - Scenario outputs publish Tier A uncertainty diagnostics, and Tier B support is limited to
   deterministic envelopes, packaged archetype-library sets, and explicit parameter-bounds propagation.

@@ -3,6 +3,10 @@
 ## Common Failures
 
 - `comparison_chemical_mismatch`: the compared scenarios do not share the same `chemical_id`.
+- `application_method_unsupported`: no transfer-efficiency default exists for the application
+  method in the requested `product_category`. The error details list the methods that resolve
+  for that category and any categories that scope the method; otherwise supply
+  `product_use_profile.transfer_efficiency` explicitly.
 - `pbpk_body_weight_missing`: the scenario does not resolve `body_weight_kg`.
 - `pbpk_inhalation_duration_missing`: inhalation PBPK export needs explicit event duration.
 - `aggregate_internal_equivalent_bioavailability_missing`: internal-equivalent aggregation needs
