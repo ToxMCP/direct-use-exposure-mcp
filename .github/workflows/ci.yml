@@ -146,6 +146,8 @@ jobs:
           python -m exposure_scenario_mcp --help >/dev/null
           python - <<'PY'
           import json
+          import os
+          import tempfile
           from pathlib import Path
 
           from exposure_scenario_mcp import __version__
@@ -159,6 +161,8 @@ jobs:
           )
 
           repo_root = Path.cwd()
+          # Exercise packaged assets without the checkout masking missing wheel data.
+          os.chdir(tempfile.mkdtemp(prefix="exposure-wheel-smoke-"))
           defaults_manifest = json.loads(
               (repo_root / "defaults" / "manifest.json").read_text(encoding="utf-8")
           )
@@ -199,8 +203,13 @@ jobs:
           assert build_release_metadata_report(registry).package_version == __version__
           PY
 
-  scientific-invariants:
+  scientific-invariants-matrix:
+    name: scientific-invariants (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["22", "24"]
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
@@ -213,7 +222,7 @@ jobs:
           python-version: "3.12"
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: ${{ matrix.node-version }}
       - name: Sync dependencies
         run: uv sync --extra dev --locked
       - name: Verify vendored schema-spine engine integrity (digest-pinned)
@@ -226,6 +235,18 @@ jobs:
         run: uv run python scripts/scientific_invariants_gate.py
       - name: Governance regression + adversarial tests
         run: uv run pytest tests/governance -q
+
+  scientific-invariants:
+    runs-on: ubuntu-latest
+    needs: scientific-invariants-matrix
+    if: ${{ always() }}
+    steps:
+      - name: Require every scientific-invariants matrix run to pass
+        env:
+          MATRIX_RESULT: ${{ needs['scientific-invariants-matrix'].result }}
+        run: |
+          echo "Scientific-invariants matrix result: $MATRIX_RESULT"
+          test "$MATRIX_RESULT" = success
 
   docker-build:
     runs-on: ubuntu-latest

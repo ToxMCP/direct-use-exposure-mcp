@@ -1,13 +1,18 @@
 [project]
 name = "exposure-scenario-mcp"
-version = "0.2.0"
+version = "0.2.1"
 description = "Direct-Use Exposure MCP for deterministic direct-use and near-field external exposure construction in the ToxMCP suite."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+  # Security floors also apply to installations from the published wheel.
+  "anyio>=4.14.2",
+  "cryptography>=50.0.1",
   "jsonschema>=4.23.0",
   "mcp[cli]>=1.28.1,<2.0.0",
   "pydantic>=2.8.2",
+  "pydantic-settings>=2.14.2",
+  "PyJWT>=2.15.0,<3.0.0",
 ]
 
 [project.optional-dependencies]
@@ -62,6 +67,7 @@ exclude = [
 "probability_bounds/v1/driver_probability_profiles.json" = "exposure_scenario_mcp/data/probability_bounds/v1/driver_probability_profiles.json"
 "probability_bounds/v1/scenario_package_probability_profiles.json" = "exposure_scenario_mcp/data/probability_bounds/v1/scenario_package_probability_profiles.json"
 "validation/v1/executable_reference_bands.json" = "exposure_scenario_mcp/data/validation/v1/executable_reference_bands.json"
+"validation/v1/executable_time_series_reference_packs.json" = "exposure_scenario_mcp/data/validation/v1/executable_time_series_reference_packs.json"
 "tests/fixtures/benchmark_cases.json" = "exposure_scenario_mcp/data/benchmarks/benchmark_cases.json"
 "tests/fixtures/goldset_cases.json" = "exposure_scenario_mcp/data/benchmarks/goldset_cases.json"
 
@@ -90,3 +96,7 @@ python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
+
+[tool.uv]
+# urllib3 is used by development audit tooling, not the MCP runtime.
+constraint-dependencies = ["urllib3>=2.8.0,<3.0.0"]

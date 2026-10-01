@@ -77,7 +77,7 @@ ARTIFACT_DESCRIPTIONS: dict[str, str] = {
     "030_contracts_manifest.json": "Published contract manifest served by the MCP.",
     "040_defaults_manifest.json": "Versioned defaults manifest and SHA256 served by the MCP.",
     "050_verification_summary.json": "Published verification summary resource.",
-    "051_release_metadata_report.json": "Release metadata resource for v0.2.0.",
+    "051_release_metadata_report.json": "Release metadata resource for v0.2.1.",
     "052_release_readiness_report.json": "Release readiness resource.",
     "053_security_provenance_review_report.json": "Security and provenance review resource.",
     "054_validation_coverage_report.json": "Validation coverage resource.",

@@ -1,7 +1,7 @@
 # Capability Maturity Matrix
 
 This matrix is the short-form answer to "how mature is each part of the released
-`0.2.0` surface?"
+`0.2.1` surface?"
 
 Direct-Use Exposure MCP is no longer only a small deterministic scenario builder.
 It is a governed exposure platform surface with a narrow core engine and several
@@ -16,7 +16,7 @@ Use this document together with:
 
 - [README](../README.md)
 - [Exposure Platform Architecture](./exposure_platform_architecture.md)
-- [Release Notes v0.2.0](./releases/v0.2.0.md)
+- [Release Notes v0.2.1](./releases/v0.2.1.md)
 - [ADR 0004: Repository Slug Decision](./adr/0004-repository-slug.md)
 
 ## Maturity Labels

@@ -115,7 +115,7 @@
       "All defaults are surfaced through exposureAssumptionRecord entries."
     ],
     "plugin_id": "aggregate_summary_service",
-    "plugin_version": "0.2.0",
+    "plugin_version": "0.2.1",
     "schema_version": "provenanceBundle.v1"
   },
   "quality_flags": [

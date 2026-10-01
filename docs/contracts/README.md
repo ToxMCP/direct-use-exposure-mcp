@@ -11,5 +11,5 @@ This folder documents the public contract surface for Direct-Use Exposure MCP.
 
 - Every outward-facing object is versioned.
 - All public scenario outputs include provenance, limitations, quality flags, fit-for-purpose metadata, and assumption records.
-- All essential tools are deterministic and synchronous in `v0.2.0`.
+- All essential tools are deterministic and synchronous in `v0.2.1`.
 - Resources are read-only and safe for orchestration-time discovery.
