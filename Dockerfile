@@ -16,7 +16,7 @@ WORKDIR /app
 COPY --from=ghcr.io/astral-sh/uv:0.8.15 /uv /uvx /bin/
 
 # Copy project files required to build a non-editable locked environment.
-COPY pyproject.toml uv.lock README.md LICENSE CITATION.cff hatch_build.py ./
+COPY pyproject.toml uv.lock README.md LICENSE CITATION.cff ./
 COPY src/ ./src/
 COPY scripts/ ./scripts/
 COPY defaults/ ./defaults/

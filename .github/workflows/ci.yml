@@ -148,6 +148,7 @@ jobs:
           import json
           import os
           import tempfile
+          from importlib.metadata import distribution
           from pathlib import Path
 
           from exposure_scenario_mcp import __version__
@@ -163,6 +164,15 @@ jobs:
           repo_root = Path.cwd()
           # Exercise packaged assets without the checkout masking missing wheel data.
           os.chdir(tempfile.mkdtemp(prefix="exposure-wheel-smoke-"))
+          console_scripts = [
+              entry
+              for entry in distribution("exposure-scenario-mcp").entry_points
+              if entry.group == "console_scripts"
+          ]
+          assert console_scripts
+          for entry in console_scripts:
+              assert callable(entry.load()), entry.name
+          print("Installed console entrypoints:", sorted(entry.name for entry in console_scripts))
           defaults_manifest = json.loads(
               (repo_root / "defaults" / "manifest.json").read_text(encoding="utf-8")
           )
