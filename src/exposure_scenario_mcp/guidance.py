@@ -2433,6 +2433,9 @@ def release_notes_markdown(report: ReleaseMetadataReport) -> str:
         "dependency audits. It also packages the existing executable time-series validation "
         "reference data so installed-wheel inhalation scenarios work outside the checkout. "
         "Console diagnostics now use stderr to preserve the stdio JSON-RPC stream. "
+        "The Python MCP SDK is patched to 1.30 with bounded HTTP request bodies and "
+        "session lifecycle coverage. All eight installed commands are verified, "
+        "and the pinned build backend preserves reproducible package bytes. "
         "Exposure models, scientific datasets, qualification boundaries, "
         "and public tool contracts retain their `v0.2.0` semantics.",
         "",
