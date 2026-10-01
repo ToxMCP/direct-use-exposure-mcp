@@ -8,6 +8,8 @@ import sys
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
+from exposure_scenario_mcp.package_metadata import package_version
+
 
 def test_stdio_cli_preserves_jsonrpc_through_shutdown() -> None:
     async def exercise_transport() -> None:
@@ -19,7 +21,8 @@ def test_stdio_cli_preserves_jsonrpc_through_shutdown() -> None:
             stdio_client(parameters) as (read, write),
             ClientSession(read, write) as session,
         ):
-            await session.initialize()
+            initialized = await session.initialize()
+            assert initialized.serverInfo.version == package_version()
             tools = await session.list_tools()
             assert "exposure_run_verification_checks" in {tool.name for tool in tools.tools}
 
