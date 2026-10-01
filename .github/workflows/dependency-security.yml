@@ -31,6 +31,8 @@ jobs:
           enable-cache: true
           cache-dependency-glob: uv.lock
       - name: Export all locked runtime and development dependencies
-        run: uv export --locked --all-extras --no-dev --no-emit-project --output-file /tmp/direct-use-requirements.txt
+        run: |
+          uv lock --check
+          uv export --frozen --all-extras --all-groups --no-emit-project --output-file /tmp/direct-use-requirements.txt
       - name: Audit the dependency lock against current vulnerability records
-        run: uvx pip-audit --requirement /tmp/direct-use-requirements.txt --no-deps --disable-pip
+        run: uvx pip-audit==2.10.1 --strict --desc --requirement /tmp/direct-use-requirements.txt --no-deps --disable-pip

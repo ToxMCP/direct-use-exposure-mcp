@@ -18,6 +18,8 @@ repo_concat_*.txt
 # One-off fix and generate scripts
 fix_*.py
 generate_*.py
+# Keep the tracked public contract generator in distribution builds.
+!scripts/generate_contract_assets.py
 
 # Root-level planning / PRD artifacts that should stay out of the public repo surface
 /*_tasks.json

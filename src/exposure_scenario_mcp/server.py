@@ -66,6 +66,8 @@ def create_mcp_server() -> FastMCP:
             _logger.info("MCP server shutdown complete")
 
     mcp = FastMCP("exposure_scenario_mcp", lifespan=lifespan)
+    # FastMCP v1 otherwise advertises the SDK version as the application version.
+    mcp._mcp_server.version = package_version()
     mcp._server_runtime_provider = runtime_provider  # type: ignore[attr-defined]
 
     def context_provider():
