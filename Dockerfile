@@ -5,7 +5,7 @@
 # for hosted / ToxMCP-Gateway deployments out of the box.
 # For local stdio use: docker run --rm -i <image> exposure-scenario-mcp
 
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim AS builder
 
 ENV UV_LINK_MODE=copy \
     UV_PROJECT_ENVIRONMENT=/opt/venv
@@ -30,7 +30,7 @@ COPY tests/fixtures/ ./tests/fixtures/
 RUN uv sync --frozen --no-dev --no-editable --compile-bytecode
 
 # ── Runtime image ─────────────────────────────────────────────────────────────
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
