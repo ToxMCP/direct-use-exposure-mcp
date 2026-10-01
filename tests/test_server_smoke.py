@@ -1,4 +1,4 @@
-"""End-to-end smoke tests through the FastMCP server object."""
+"""End-to-end smoke tests through the MCPServer server object."""
 
 from __future__ import annotations
 
@@ -6,8 +6,8 @@ import asyncio
 import json
 
 import pytest
-from mcp.shared.exceptions import McpError
-from mcp.types import INTERNAL_ERROR, INVALID_PARAMS
+from mcp.shared.exceptions import MCPError
+from mcp_types import INTERNAL_ERROR, INVALID_PARAMS
 
 from exposure_scenario_mcp.examples import build_examples
 from exposure_scenario_mcp.models import (
@@ -33,9 +33,9 @@ def _run(coro):
 
 def test_call_core_tool_verification_checks(server):
     result = _run(server.call_tool("exposure_run_verification_checks", {}))
-    assert not result.isError
+    assert not result.is_error
     assert result.content[0].text.startswith("Built verification summary")
-    payload = result.structuredContent
+    payload = result.structured_content
     assert payload["status"] in {"ok", "warning"}
 
 
@@ -67,9 +67,9 @@ def test_call_core_tool_compare_jurisdictional_scenarios(server):
         )
     )
 
-    assert not result.isError
+    assert not result.is_error
     assert result.content[0].text.startswith("Compared 2 jurisdictions.")
-    payload = result.structuredContent
+    payload = result.structured_content
     assert payload["comparedJurisdictions"] == ["global", "china"]
     assert payload["fitForPurpose"]["label"] == "jurisdictional_comparison_screening"
     assert payload["provenance"]["algorithm_id"] == "scenario.compare_jurisdictional.v1"
@@ -84,7 +84,7 @@ def test_read_resource_contracts_manifest(server):
 
 
 def test_read_resource_invalid_schema_returns_error_json(server):
-    with pytest.raises(McpError) as exc_info:
+    with pytest.raises(MCPError) as exc_info:
         _run(server.read_resource("schemas://nonexistent_schema"))
 
     assert exc_info.value.error.code == INVALID_PARAMS
@@ -94,7 +94,7 @@ def test_read_resource_invalid_schema_returns_error_json(server):
 
 
 def test_read_resource_invalid_example_returns_error_json(server):
-    with pytest.raises(McpError) as exc_info:
+    with pytest.raises(MCPError) as exc_info:
         _run(server.read_resource("examples://nonexistent_example"))
 
     assert exc_info.value.error.code == INVALID_PARAMS
@@ -144,9 +144,9 @@ def test_call_worker_route_alias(server):
         )
     )
 
-    assert not result.isError
+    assert not result.is_error
     assert result.content[0].text.startswith("Routed worker task for route dermal.")
-    payload = result.structuredContent
+    payload = result.structured_content
     assert payload["recommended_tool"] == "worker_export_dermal_absorbed_dose_bridge"
 
 
@@ -175,7 +175,7 @@ def test_export_toxclaw_evidence_bundle_unexpected_error_returns_failed_tool_res
             {"params": request.model_dump(mode="json", by_alias=True)},
         )
     )
-    assert not scenario_result.isError
+    assert not scenario_result.is_error
 
     def boom(_params):
         raise ValueError("boom")
@@ -186,20 +186,19 @@ def test_export_toxclaw_evidence_bundle_unexpected_error_returns_failed_tool_res
     )
 
     result = _run(
-        server._tool_manager.call_tool(
+        server.call_tool(
             "exposure_export_toxclaw_evidence_bundle",
             {
                 "params": {
-                    "scenario": scenario_result.structuredContent,
+                    "scenario": scenario_result.structured_content,
                     "case_id": "case-1",
                     "report_id": "report-1",
                 }
             },
-            convert_result=False,
         )
     )
 
-    assert result.isError
+    assert result.is_error
     assert result.meta["errorCode"] == "InternalError"
     assert result.meta["mcpErrorCode"] == INTERNAL_ERROR
     assert "Unexpected failure while executing" in result.content[0].text
@@ -219,14 +218,13 @@ def test_build_product_use_evidence_from_nanomaterial_unexpected_error_returns_f
     )
 
     result = _run(
-        server._tool_manager.call_tool(
+        server.call_tool(
             "exposure_build_product_use_evidence_from_nanomaterial",
             {"params": {"evidence": payloads["nanomaterial_evidence_record"]}},
-            convert_result=False,
         )
     )
 
-    assert result.isError
+    assert result.is_error
     assert result.meta["errorCode"] == "InternalError"
     assert result.meta["mcpErrorCode"] == INTERNAL_ERROR
     assert "Unexpected failure while executing" in result.content[0].text
@@ -244,14 +242,13 @@ def test_worker_route_task_unexpected_error_returns_failed_tool_result(server, m
     )
 
     result = _run(
-        server._tool_manager.call_tool(
+        server.call_tool(
             "worker_route_task",
             {"params": payloads["worker_task_routing_request"]},
-            convert_result=False,
         )
     )
 
-    assert result.isError
+    assert result.is_error
     assert result.meta["errorCode"] == "InternalError"
     assert result.meta["mcpErrorCode"] == INTERNAL_ERROR
     assert "Unexpected failure while executing" in result.content[0].text

@@ -13,7 +13,7 @@ ENV UV_LINK_MODE=copy \
 WORKDIR /app
 
 # Install uv for locked dependency sync during the build.
-COPY --from=ghcr.io/astral-sh/uv:0.8.15 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.12.21 /uv /uvx /bin/
 
 # Copy project files required to build a non-editable locked environment.
 COPY pyproject.toml uv.lock README.md LICENSE CITATION.cff ./

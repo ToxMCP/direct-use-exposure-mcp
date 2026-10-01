@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server import MCPServer
 
 from exposure_scenario_mcp.server import create_mcp_server
 from exposure_scenario_mcp.server_runtime import ServerRuntimeProvider
@@ -48,7 +48,7 @@ def _missing_items(observed: set[str], required: frozenset[str]) -> list[str]:
     return sorted(required.difference(observed))
 
 
-def validate_server_startup(server: FastMCP) -> StartupHealthSummary:
+def validate_server_startup(server: MCPServer) -> StartupHealthSummary:
     """Validate that the packaged runtime and published MCP surface are available."""
 
     provider_candidate = getattr(server, "_server_runtime_provider", None)
@@ -85,4 +85,4 @@ def run_startup_healthcheck() -> StartupHealthSummary:
     """Build the server and validate startup health in one call."""
 
     server = create_mcp_server()
-    return validate_server_startup(cast(FastMCP, server))
+    return validate_server_startup(cast(MCPServer, server))

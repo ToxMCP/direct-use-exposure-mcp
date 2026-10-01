@@ -22,7 +22,7 @@ def test_stdio_cli_preserves_jsonrpc_through_shutdown() -> None:
             ClientSession(read, write) as session,
         ):
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == package_version()
+            assert initialized.server_info.version == package_version()
             tools = await session.list_tools()
             assert "exposure_run_verification_checks" in {tool.name for tool in tools.tools}
 

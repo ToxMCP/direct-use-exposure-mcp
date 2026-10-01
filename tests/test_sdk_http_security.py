@@ -12,19 +12,16 @@ from exposure_scenario_mcp.server import create_mcp_server
 
 
 @pytest.fixture
-def server(monkeypatch: pytest.MonkeyPatch):
-    instance = create_mcp_server()
-    # A manager has a single lifespan; restore any previous singleton manager.
-    monkeypatch.setattr(instance, "_session_manager", None)
-    monkeypatch.setattr(instance.settings, "max_request_body_size", 512)
-    monkeypatch.setattr(instance.settings, "max_sessions", 1)
-    monkeypatch.setattr(instance.settings, "session_idle_timeout", 0.5)
-    monkeypatch.setattr(instance.settings, "json_response", True)
-    return instance
+def app():
+    return create_mcp_server().streamable_http_app(
+        max_request_body_size=512,
+        max_sessions=1,
+        session_idle_timeout=0.5,
+        json_response=True,
+    )
 
 
-def test_http_rejects_declared_and_streamed_oversized_bodies(server) -> None:
-    app = server.streamable_http_app()
+def test_http_rejects_declared_and_streamed_oversized_bodies(app) -> None:
     path = "/mcp"
     query = b""
     scope = {
@@ -88,7 +85,7 @@ def test_http_rejects_declared_and_streamed_oversized_bodies(server) -> None:
     asyncio.run(exercise_app())
 
 
-def test_stateful_http_reclaims_deleted_and_idle_sessions(server) -> None:
+def test_stateful_http_reclaims_deleted_and_idle_sessions(app) -> None:
     initialize = {
         "jsonrpc": "2.0",
         "id": 1,
@@ -101,7 +98,7 @@ def test_stateful_http_reclaims_deleted_and_idle_sessions(server) -> None:
     }
     headers = {"Accept": "application/json, text/event-stream"}
 
-    with TestClient(server.streamable_http_app(), base_url="http://localhost:8000") as client:
+    with TestClient(app, base_url="http://localhost:8000") as client:
         first = client.post("/mcp", json=initialize, headers=headers)
         assert first.status_code == 200
         first_id = first.headers["mcp-session-id"]
