@@ -97,8 +97,8 @@ jobs:
           uv build --wheel
           uv export --frozen --no-dev --no-default-groups --no-emit-project --output-file /tmp/exposure-runtime.txt
           uv venv .protocol-runtime
-          uv pip install --python .protocol-runtime/bin/python --require-hashes -r /tmp/exposure-runtime.txt
-          uv pip install --python .protocol-runtime/bin/python --no-deps dist/*.whl
+          uv pip install --no-config --python .protocol-runtime/bin/python --require-hashes -r /tmp/exposure-runtime.txt
+          uv pip install --no-config --python .protocol-runtime/bin/python --no-deps dist/*.whl
           uv pip check --python .protocol-runtime/bin/python
       - name: Real SDK1 and SDK2 clients over stdio and HTTP
         run: |
