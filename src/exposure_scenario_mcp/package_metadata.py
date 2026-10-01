@@ -7,7 +7,7 @@ from importlib.metadata import PackageNotFoundError, version
 PACKAGE_NAME = "exposure-scenario-mcp"
 SERVER_NAME = "exposure_scenario_mcp"
 PRODUCT_NAME = "Direct-Use Exposure MCP"
-CURRENT_VERSION = "0.2.0"
+CURRENT_VERSION = "0.2.1"
 CURRENT_RELEASE_TAG = f"v{CURRENT_VERSION}"
 CURRENT_RELEASE_NOTES_RELATIVE_PATH = f"docs/releases/{CURRENT_RELEASE_TAG}.md"
 CURRENT_RELEASE_METADATA_RELATIVE_PATH = (

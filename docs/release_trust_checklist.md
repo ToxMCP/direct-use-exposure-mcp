@@ -11,7 +11,7 @@ Use this checklist before calling the current public release "ready with known l
 ## Required trust artifacts
 
 - `docs/contracts/contract_manifest.json`
-- `docs/releases/v0.2.0.release_metadata.json`
+- `docs/releases/v0.2.1.release_metadata.json`
 - `docs/release_readiness.md`
 - `docs/security_provenance_review.md`
 - `docs/test_evidence_summary.md`

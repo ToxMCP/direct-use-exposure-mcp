@@ -2426,11 +2426,15 @@ def release_notes_markdown(report: ReleaseMetadataReport) -> str:
     lines = [
         f"# Direct-Use Exposure MCP v{report.release_version}",
         "",
-        f"Direct-Use Exposure MCP `v{report.release_version}` is the first public release "
-        "positioned as an auditable, deterministic exposure-screening MCP for regulatory "
-        "and scientific AI workflows. This cut hardens the public external-dose surface "
-        "for regulatory-facing use with stricter jurisdictional-comparison auditability, "
-        "deterministic comparison semantics, and enforced release-artifact verification.",
+        f"Direct-Use Exposure MCP `v{report.release_version}` is a maintenance patch to "
+        "`v0.2.0` for the auditable, deterministic exposure-screening MCP. It adds explicit "
+        "runtime security dependency floors, refreshes affected dependency locks, moves "
+        "scientific-invariants CI to supported Node.js LTS versions, and schedules weekly "
+        "dependency audits. It also packages the existing executable time-series validation "
+        "reference data so installed-wheel inhalation scenarios work outside the checkout. "
+        "Console diagnostics now use stderr to preserve the stdio JSON-RPC stream. "
+        "Exposure models, scientific datasets, qualification boundaries, "
+        "and public tool contracts retain their `v0.2.0` semantics.",
         "",
         "## Public Positioning",
         "",

@@ -109,7 +109,13 @@ The exposure split is pathway-based: product-use scenarios stay here, food-media
 routes to Dietary Exposure MCP, and environmental source-to-concentration questions route to
 Environmental Fate MCP. Each sibling keeps its own applicability and validation boundaries.
 
-## What's in v0.2.0
+## What's in v0.2.1
+
+This maintenance patch adds runtime dependency security floors, refreshed dependency locks,
+weekly security audits, and supported Node.js LTS coverage for scientific-invariants CI.
+It also includes the existing time-series validation reference data in installed wheels.
+Console diagnostics use stderr so the stdio transport contains valid JSON-RPC messages.
+The exposure capabilities and scientific qualification boundaries below are unchanged.
 
 - Deterministic dermal plus direct-use/incidental oral screening scenario construction
 - Deterministic inhalation screening with room-volume, ventilation, saturation-cap, and deposition semantics
@@ -203,7 +209,7 @@ The detailed maturity matrix is in
 
 1. [Architecture](#architecture)
 2. [ToxMCP suite fit](#toxmcp-suite-fit)
-3. [What's in v0.2.0](#whats-in-v020)
+3. [What's in v0.2.1](#whats-in-v021)
 4. [Why this project exists](#why-this-project-exists)
 5. [Who this is for](#who-this-is-for)
 6. [Capability maturity](#capability-maturity)
@@ -424,7 +430,7 @@ The MCP also publishes a consolidated runtime trust surface through:
 - `docs://test-evidence-summary`
 - `docs://herbal-medicinal-routing-guide`
 
-Current published package version: `0.2.0`
+Current package version: `0.2.1`
 
 Repository-facing release docs:
 
@@ -446,7 +452,7 @@ Repository-facing release docs:
 
 ## Current limitations
 
-The current `v0.2.0` release is intentionally honest about what it does not do:
+The current `v0.2.1` release is intentionally honest about what it does not do:
 
 - It is deterministic-first and does not ship a probabilistic population engine.
 - It does not execute PBPK, estimate internal dose, derive BER or PoD values, or make final risk decisions.

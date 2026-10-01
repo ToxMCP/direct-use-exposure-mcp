@@ -2,7 +2,7 @@
 
 This is the shortest public-facing map of the current ToxMCP service family.
 
-As of `v0.2.0`, `Direct-Use Exposure MCP` is the public ToxMCP module for auditable,
+As of `v0.2.1`, `Direct-Use Exposure MCP` is the public ToxMCP module for auditable,
 deterministic external-exposure scenario construction. It is the service to reach for when
 the workflow needs a reviewable exposure object before TK, WoE, or final risk interpretation.
 

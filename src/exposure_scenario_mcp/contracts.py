@@ -1505,12 +1505,12 @@ def build_release_metadata_report(defaults_registry: DefaultsRegistry) -> Releas
         validationCommands=readiness.validation_commands,
         migrationNotes=[
             (
-                f"{CURRENT_RELEASE_TAG} supersedes the prior public `v0.1.0` baseline; "
+                f"{CURRENT_RELEASE_TAG} is a maintenance patch to the public `v0.2.0` baseline; "
                 "update any pinned release-note or release-metadata references to the new "
                 "versioned docs path."
             ),
             (
-                "Jurisdictional comparison clients should preserve the new audit fields "
+                "Jurisdictional comparison clients should continue preserving the audit fields "
                 "(`provenance`, `limitations`, `qualityFlags`, `fitForPurpose`) and treat "
                 "unsupported or duplicate jurisdictions as request-validation errors."
             ),

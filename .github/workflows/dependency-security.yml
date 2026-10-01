@@ -1,0 +1,36 @@
+name: Dependency security
+
+on:
+  schedule:
+    - cron: "31 5 * * 1"
+  workflow_dispatch:
+  push:
+    paths:
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/dependency-security.yml
+  pull_request:
+    paths:
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/dependency-security.yml
+
+permissions:
+  contents: read
+
+jobs:
+  locked-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Export all locked runtime and development dependencies
+        run: uv export --locked --all-extras --no-dev --no-emit-project --output-file /tmp/direct-use-requirements.txt
+      - name: Audit the dependency lock against current vulnerability records
+        run: uvx pip-audit --requirement /tmp/direct-use-requirements.txt --no-deps --disable-pip
