@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from mcp.client.session import ClientSession
-from mcp.client.streamable_http import streamablehttp_client
+from mcp.client.streamable_http import streamable_http_client
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SHOWCASE_DIR = ROOT / "output" / "showcase_report"
@@ -77,7 +77,7 @@ ARTIFACT_DESCRIPTIONS: dict[str, str] = {
     "030_contracts_manifest.json": "Published contract manifest served by the MCP.",
     "040_defaults_manifest.json": "Versioned defaults manifest and SHA256 served by the MCP.",
     "050_verification_summary.json": "Published verification summary resource.",
-    "051_release_metadata_report.json": "Release metadata resource for v0.2.1.",
+    "051_release_metadata_report.json": "Release metadata resource for the current candidate.",
     "052_release_readiness_report.json": "Release readiness resource.",
     "053_security_provenance_review_report.json": "Security and provenance review resource.",
     "054_validation_coverage_report.json": "Validation coverage resource.",
@@ -659,7 +659,7 @@ async def _collect_sccs_face_cream_case_study(
         {
             "params": {
                 "request": base_request,
-                "evidence": evidence_result.structuredContent,
+                "evidence": evidence_result.structured_content,
             }
         },
     )
@@ -668,26 +668,26 @@ async def _collect_sccs_face_cream_case_study(
         {
             "params": {
                 "request": base_request,
-                "evidence": evidence_result.structuredContent,
+                "evidence": evidence_result.structured_content,
                 "require_auto_apply_safe": False,
             }
         },
     )
     scenario_result = await session.call_tool(
         "exposure_build_screening_exposure_scenario",
-        {"params": applied_request_result.structuredContent},
+        {"params": applied_request_result.structured_content},
     )
     compare_result = await session.call_tool(
         "exposure_compare_exposure_scenarios",
         {
             "params": {
-                "baseline": baseline_result.structuredContent,
-                "comparison": scenario_result.structuredContent,
+                "baseline": baseline_result.structured_content,
+                "comparison": scenario_result.structured_content,
             }
         },
     )
     pbpk_request = {
-        "scenario": scenario_result.structuredContent,
+        "scenario": scenario_result.structured_content,
         "regimen_name": "screening_daily_use",
         "includeTransientConcentrationProfile": False,
     }
@@ -705,11 +705,11 @@ async def _collect_sccs_face_cream_case_study(
         ("167_sccs_face_cream_compare_result.json", compare_result),
         ("169_sccs_face_cream_pbpk_export_result.json", pbpk_result),
     ]:
-        _write_json(artifacts_dir / filename, result.model_dump(mode="json"))
+        _write_json(artifacts_dir / filename, result.model_dump(mode="json", by_alias=True))
     _write_json(artifacts_dir / "168_sccs_face_cream_pbpk_export_request.json", pbpk_request)
 
-    baseline_payload = baseline_result.structuredContent
-    scenario_payload = scenario_result.structuredContent
+    baseline_payload = baseline_result.structured_content
+    scenario_payload = scenario_result.structured_content
     return {
         "title": "EU SCCS Face Cream Evidence Application",
         "baselineRequest": {
@@ -727,17 +727,19 @@ async def _collect_sccs_face_cream_case_study(
             "tableReferences": raw_record.get("tableReferences", []),
             "evidenceSources": raw_record.get("evidence_sources", []),
         },
-        "mappedEvidence": _case_study_evidence_summary(evidence_result.structuredContent),
-        "fitReport": _fit_report_summary(fit_result.structuredContent),
-        "appliedRequest": _applied_request_summary(applied_request_result.structuredContent),
-        "baselineScenario": _scenario_summary(baseline_result.model_dump(mode="json")),
-        "finalScenario": _scenario_summary(scenario_result.model_dump(mode="json")),
+        "mappedEvidence": _case_study_evidence_summary(evidence_result.structured_content),
+        "fitReport": _fit_report_summary(fit_result.structured_content),
+        "appliedRequest": _applied_request_summary(applied_request_result.structured_content),
+        "baselineScenario": _scenario_summary(
+            baseline_result.model_dump(mode="json", by_alias=True)
+        ),
+        "finalScenario": _scenario_summary(scenario_result.model_dump(mode="json", by_alias=True)),
         "comparisonToBaseline": _scenario_comparison_summary(
-            compare_result.model_dump(mode="json"),
+            compare_result.model_dump(mode="json", by_alias=True),
             baseline_payload=baseline_payload,
             comparison_payload=scenario_payload,
         ),
-        "pbpkExport": _pbpk_export_summary(pbpk_result.model_dump(mode="json")),
+        "pbpkExport": _pbpk_export_summary(pbpk_result.model_dump(mode="json", by_alias=True)),
     }
 
 
@@ -757,10 +759,10 @@ async def _collect_tier1_benchmark_replication(
     )
     _write_json(
         artifacts_dir / "171_benchmark_tier1_disinfectant_result.json",
-        result.model_dump(mode="json"),
+        result.model_dump(mode="json", by_alias=True),
     )
 
-    comparison_summary = _benchmark_replication_summary(benchmark_case, result.structuredContent)
+    comparison_summary = _benchmark_replication_summary(benchmark_case, result.structured_content)
     _write_json(
         artifacts_dir / "172_benchmark_tier1_disinfectant_comparison.json", comparison_summary
     )
@@ -775,10 +777,9 @@ async def _collect_live_artifacts(showcase_dir: Path, server_url: str, server_co
     collected_at = datetime.now(UTC).isoformat()
 
     async with (
-        streamablehttp_client(server_url) as (
+        streamable_http_client(server_url) as (
             read_stream,
             write_stream,
-            _session_id,
         ),
         ClientSession(read_stream, write_stream) as session,
     ):
@@ -789,7 +790,7 @@ async def _collect_live_artifacts(showcase_dir: Path, server_url: str, server_co
 
         _write_json(
             artifacts_dir / "010_initialize.json",
-            initialize_result.model_dump(mode="json"),
+            initialize_result.model_dump(mode="json", by_alias=True),
         )
         surface_inventory = {
             "toolCount": len(list_tools_result.tools),
@@ -821,7 +822,7 @@ async def _collect_live_artifacts(showcase_dir: Path, server_url: str, server_co
             )
             _write_json(
                 artifacts_dir / run["result_artifact"],
-                tool_result.model_dump(mode="json"),
+                tool_result.model_dump(mode="json", by_alias=True),
             )
 
         sccs_face_cream_case_study = await _collect_sccs_face_cream_case_study(
@@ -919,7 +920,9 @@ async def _collect_live_artifacts(showcase_dir: Path, server_url: str, server_co
             "benchmarkShowcases": [face_cream_goldset, disinfectant_goldset],
             "benchmarkReplication": tier1_benchmark_replication,
             "publishedEvidenceReconciliationExample": published_reconciliation_example,
-            "toolMetaExample": verification_tool_result.get("meta"),
+            "toolMetaExample": verification_tool_result.get(
+                "_meta", verification_tool_result.get("meta")
+            ),
         },
         "examples": {
             "dermalScreening": _scenario_summary(dermal_result),

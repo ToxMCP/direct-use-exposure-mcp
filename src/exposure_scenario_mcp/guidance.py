@@ -2426,18 +2426,16 @@ def release_notes_markdown(report: ReleaseMetadataReport) -> str:
     lines = [
         f"# Direct-Use Exposure MCP v{report.release_version}",
         "",
-        f"Direct-Use Exposure MCP `v{report.release_version}` is a maintenance patch to "
-        "`v0.2.0` for the auditable, deterministic exposure-screening MCP. It adds explicit "
-        "runtime security dependency floors, refreshes affected dependency locks, moves "
-        "scientific-invariants CI to supported Node.js LTS versions, and schedules weekly "
-        "dependency audits. It also packages the existing executable time-series validation "
-        "reference data so installed-wheel inhalation scenarios work outside the checkout. "
-        "Console diagnostics now use stderr to preserve the stdio JSON-RPC stream. "
-        "The Python MCP SDK is patched to 1.30 with bounded HTTP request bodies and "
-        "session lifecycle coverage. All eight installed commands are verified, "
-        "and the pinned build backend preserves reproducible package bytes. "
-        "Exposure models, scientific datasets, qualification boundaries, "
-        "and public tool contracts retain their `v0.2.0` semantics.",
+        f"Direct-Use Exposure MCP `v{report.release_version}` is an unreleased SDK2 candidate. "
+        "It pins stable Python MCP SDK 2.2.0, preserves older MCP clients, and adds "
+        "2026-07-28 discovery, stateless HTTP requests, and private catalog cache hints. "
+        "Sync handlers use SDK worker threads; runtime initialization is serialized. "
+        "Domain failures now preserve their intended error codes instead of the SDK1 "
+        "output-validation failure that could mask them. Scientific algorithms, units, "
+        "datasets, defaults, and qualification limits retain their v0.2.1 meanings. "
+        "The published release remains v0.2.1 until a separate release is approved. "
+        "See [SDK2 migration](../mcp-sdk2-migration.md) for hosted Host/Origin allowlists, "
+        "Python embedding changes, and the installed-wheel compatibility gates.",
         "",
         "## Public Positioning",
         "",

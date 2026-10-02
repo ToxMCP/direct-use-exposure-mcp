@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Annotated, cast
 
-from mcp.server.fastmcp import FastMCP
-from mcp.types import CallToolResult
+from mcp.server import MCPServer
+from mcp_types import CallToolResult
 
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.models import WorkerTaskRoutingDecision, WorkerTaskRoutingInput
@@ -47,7 +47,7 @@ from exposure_scenario_mcp.worker_tier2 import (
 
 
 def register_worker_tools(
-    mcp: FastMCP,
+    mcp: MCPServer,
     context_provider: ServerContextProvider,
     success_result: ToolSuccessResult,
     error_result: ToolErrorResult,

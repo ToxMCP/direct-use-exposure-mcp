@@ -5,10 +5,11 @@ from __future__ import annotations
 import json
 from types import MethodType
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server import MCPServer
 from mcp.server.lowlevel.helper_types import ReadResourceContents
-from mcp.shared.exceptions import McpError
-from mcp.types import INTERNAL_ERROR, INVALID_PARAMS, ErrorData
+from mcp.server.mcpserver.exceptions import ResourceNotFoundError, UnexpectedResourceError
+from mcp.shared.exceptions import MCPError
+from mcp_types import INTERNAL_ERROR, INVALID_PARAMS
 
 from exposure_scenario_mcp.benchmarks import load_benchmark_manifest, load_goldset_manifest
 from exposure_scenario_mcp.contracts import (
@@ -89,7 +90,7 @@ def _resource_error(
     resource_type: str | None = None,
     resource_name: str | None = None,
     exception_type: str | None = None,
-) -> McpError:
+) -> MCPError:
     data: dict[str, str] = {"resourceUri": uri}
     if resource_type is not None:
         data["resourceType"] = resource_type
@@ -97,10 +98,10 @@ def _resource_error(
         data["resourceName"] = resource_name
     if exception_type is not None:
         data["exceptionType"] = exception_type
-    return McpError(ErrorData(code=code, message=message, data=data))
+    return MCPError(code=code, message=message, data=data)
 
 
-def register_resources(mcp: FastMCP, context_provider: ServerContextProvider) -> None:
+def register_resources(mcp: MCPServer, context_provider: ServerContextProvider) -> None:
     """Register machine-readable and human-readable resource endpoints."""
 
     def active_defaults_registry():
@@ -531,7 +532,9 @@ def register_resources(mcp: FastMCP, context_provider: ServerContextProvider) ->
         payload = build_examples()
         return json.dumps(payload[example_name], indent=2)
 
-    async def read_resource_with_protocol_errors(_self, uri) -> list[ReadResourceContents]:
+    original_read_resource = mcp.read_resource
+
+    async def read_resource_with_protocol_errors(_self, uri, context=None):
         uri_str = str(uri)
 
         if uri_str.startswith("schemas://"):
@@ -571,40 +574,27 @@ def register_resources(mcp: FastMCP, context_provider: ServerContextProvider) ->
             ]
 
         try:
-            resource = await mcp._resource_manager.get_resource(uri, context=mcp.get_context())
-        except ValueError as error:
+            return await original_read_resource(uri, context)
+        except ResourceNotFoundError as error:
             raise _resource_error(
                 code=INVALID_PARAMS,
                 message=str(error),
                 uri=uri_str,
             ) from error
-
-        if resource is None:  # pragma: no cover
-            raise _resource_error(
-                code=INVALID_PARAMS,
-                message=f"Unknown resource: {uri_str}",
-                uri=uri_str,
-            )
-
-        try:
-            content = await resource.read()
-        except McpError:
-            raise
-        except Exception as error:  # pragma: no cover
+        except UnexpectedResourceError as error:  # pragma: no cover
+            cause = error.__cause__ or error
             raise _resource_error(
                 code=INTERNAL_ERROR,
                 message=f"Error reading resource '{uri_str}'.",
                 uri=uri_str,
-                exception_type=type(error).__name__,
+                exception_type=type(cause).__name__,
             ) from error
 
-        return [ReadResourceContents(content=content, mime_type=resource.mime_type)]
-
     mcp.read_resource = MethodType(read_resource_with_protocol_errors, mcp)  # type: ignore[method-assign]
-    mcp._mcp_server.read_resource()(mcp.read_resource)
+    # SDK2's registered resource handler calls the public read_resource method.
 
 
-def register_prompts(mcp: FastMCP) -> None:
+def register_prompts(mcp: MCPServer) -> None:
     """Register prompt templates published by the MCP server."""
 
     @mcp.prompt(name="exposure_refinement_playbook")

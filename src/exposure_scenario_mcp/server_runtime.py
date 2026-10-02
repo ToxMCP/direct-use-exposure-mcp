@@ -1,11 +1,12 @@
-"""Provider-backed runtime state for FastMCP lifecycle and direct-call usage."""
+"""Provider-backed runtime state for MCPServer lifecycle and direct-call usage."""
 
 from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from threading import RLock
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server import MCPServer
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
@@ -34,7 +35,7 @@ class ServerRuntimeState:
 
 
 def build_server_runtime_state() -> ServerRuntimeState:
-    """Build the shared runtime state used by the FastMCP server."""
+    """Build the shared runtime state used by the MCPServer server."""
 
     defaults_registry = DefaultsRegistry.load()
     archetype_library = ArchetypeLibraryRegistry.load()
@@ -73,29 +74,19 @@ class ServerRuntimeProvider:
     def __init__(self, factory: Callable[[], ServerRuntimeState]) -> None:
         self._factory = factory
         self._runtime_state: ServerRuntimeState | None = None
+        self._lock = RLock()
 
-    def _lifespan_runtime_state(self, mcp: FastMCP | None) -> ServerRuntimeState | None:
-        if mcp is None:
-            return None
-        try:
-            request_context = mcp.get_context().request_context
-        except ValueError:
-            return None
-        if request_context is None:
-            return None
-        runtime_state = request_context.lifespan_context
-        return runtime_state if isinstance(runtime_state, ServerRuntimeState) else None
+    def get_runtime_state(self, mcp: MCPServer | None = None) -> ServerRuntimeState:
+        # The provider belongs to one server. Lifespan and direct calls share the
+        # same immutable registries; SDK2 sync handlers can initialize concurrently.
+        with self._lock:
+            if self._runtime_state is None:
+                self._runtime_state = self._factory()
+            return self._runtime_state
 
-    def get_runtime_state(self, mcp: FastMCP | None = None) -> ServerRuntimeState:
-        runtime_state = self._lifespan_runtime_state(mcp)
-        if runtime_state is not None:
-            return runtime_state
-        if self._runtime_state is None:
-            self._runtime_state = self._factory()
-        return self._runtime_state
-
-    def get_context(self, mcp: FastMCP | None = None) -> ServerContext:
+    def get_context(self, mcp: MCPServer | None = None) -> ServerContext:
         return self.get_runtime_state(mcp).server_context
 
     def clear(self) -> None:
-        self._runtime_state = None
+        with self._lock:
+            self._runtime_state = None

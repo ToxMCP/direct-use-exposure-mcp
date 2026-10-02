@@ -80,6 +80,38 @@ jobs:
       - name: pip-audit
         run: uv run pip-audit --desc
 
+  protocol-compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Sync SDK2 server and isolated SDK1 client
+        run: |
+          uv sync --extra dev --locked
+          uv sync --project tests/compatibility/legacy-client --locked
+      - name: Build and install frozen wheel outside checkout
+        run: |
+          uv build --wheel
+          uv export --frozen --no-dev --no-default-groups --no-emit-project --output-file /tmp/exposure-runtime.txt
+          uv venv .protocol-runtime
+          uv pip install --no-config --python .protocol-runtime/bin/python --require-hashes -r /tmp/exposure-runtime.txt
+          uv pip install --no-config --python .protocol-runtime/bin/python --no-deps dist/*.whl
+          uv pip check --python .protocol-runtime/bin/python
+      - name: Real SDK1 and SDK2 clients over stdio and HTTP
+        run: |
+          uv run python scripts/verify_protocol_clients.py \
+            --server-python "$PWD/.protocol-runtime/bin/python" \
+            --legacy-python "$PWD/tests/compatibility/legacy-client/.venv/bin/python" \
+            --modern-python "$PWD/.venv/bin/python" \
+            --output-dir /tmp/exposure-protocol-results
+      - name: Audit isolated compatibility client
+        run: |
+          uv export --project tests/compatibility/legacy-client --frozen --no-emit-project --no-hashes --output-file /tmp/exposure-legacy-client.txt
+          uv run pip-audit --strict --disable-pip --no-deps -r /tmp/exposure-legacy-client.txt
+
   test:
     runs-on: ubuntu-latest
     strategy:

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from mcp.server.fastmcp import FastMCP
-from mcp.types import CallToolResult
+from mcp.server import MCPServer
+from mcp_types import CallToolResult
 
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.integrations import (
@@ -45,7 +45,7 @@ from exposure_scenario_mcp.server_errors import unexpected_tool_error
 
 
 def register_integration_tools(
-    mcp: FastMCP,
+    mcp: MCPServer,
     context_provider: ServerContextProvider,
     success_result: ToolSuccessResult,
     error_result: ToolErrorResult,

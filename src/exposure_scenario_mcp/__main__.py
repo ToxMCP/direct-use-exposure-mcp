@@ -73,9 +73,12 @@ def main(argv: list[str] | None = None) -> None:
     )
 
     server = create_mcp_server()
-    server.settings.host = args.host
-    server.settings.port = args.port
-    server.run(transport=args.transport)
+    if args.transport == "streamable-http":
+        from exposure_scenario_mcp.transport.http import run_http_server
+
+        run_http_server(server, host=args.host, port=args.port, log_level=args.log_level.lower())
+    else:
+        server.run(transport="stdio")
 
 
 if __name__ == "__main__":

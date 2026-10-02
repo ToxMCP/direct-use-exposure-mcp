@@ -1,4 +1,4 @@
-"""FastMCP server definition for Direct-Use Exposure MCP."""
+"""MCPServer server definition for Direct-Use Exposure MCP."""
 
 from __future__ import annotations
 
@@ -6,8 +6,9 @@ import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from mcp.server.fastmcp import FastMCP
-from mcp.types import CallToolResult, TextContent
+from mcp.server import MCPServer
+from mcp.server.caching import CacheHint
+from mcp_types import CallToolResult, TextContent
 
 from exposure_scenario_mcp.errors import ExposureScenarioError
 from exposure_scenario_mcp.package_metadata import package_version
@@ -29,7 +30,7 @@ def _success_result(message: str, payload_model) -> CallToolResult:
     return CallToolResult(
         _meta=build_tool_result_meta(result_status="completed", payload_model=payload_model),
         content=[TextContent(type="text", text=message)],
-        structuredContent=payload_model.model_dump(mode="json", by_alias=True),
+        structured_content=payload_model.model_dump(mode="json", by_alias=True),
     )
 
 
@@ -37,18 +38,18 @@ def _error_result(error: ExposureScenarioError) -> CallToolResult:
     _logger.warning("Tool error: %s - %s", error.code, error.message)
     return CallToolResult(
         _meta=build_tool_result_meta(result_status="failed", error=error),
-        isError=True,
+        is_error=True,
         content=[TextContent(type="text", text=error.as_text())],
     )
 
 
-def create_mcp_server() -> FastMCP:
-    """Create the FastMCP server and register the published domain surfaces."""
+def create_mcp_server() -> MCPServer:
+    """Create the MCPServer server and register the published domain surfaces."""
 
     runtime_provider = ServerRuntimeProvider(build_server_runtime_state)
 
     @asynccontextmanager
-    async def lifespan(_mcp: FastMCP) -> AsyncIterator[ServerRuntimeState]:
+    async def lifespan(_mcp: MCPServer) -> AsyncIterator[ServerRuntimeState]:
         runtime_state = runtime_provider.get_runtime_state()
         _logger.info(
             "MCP startup: server=%s defaults=%s archetypes=%s profiles=%s packages=%s tier1=%s",
@@ -65,9 +66,17 @@ def create_mcp_server() -> FastMCP:
             runtime_provider.clear()
             _logger.info("MCP server shutdown complete")
 
-    mcp = FastMCP("exposure_scenario_mcp", lifespan=lifespan)
-    # FastMCP v1 otherwise advertises the SDK version as the application version.
-    mcp._mcp_server.version = package_version()
+    mcp = MCPServer(
+        "exposure_scenario_mcp",
+        version=package_version(),
+        lifespan=lifespan,
+        cache_hints={
+            "tools/list": CacheHint(ttl_ms=60_000),
+            "resources/list": CacheHint(ttl_ms=60_000),
+            "resources/templates/list": CacheHint(ttl_ms=60_000),
+            "prompts/list": CacheHint(ttl_ms=60_000),
+        },
+    )
     mcp._server_runtime_provider = runtime_provider  # type: ignore[attr-defined]
 
     def context_provider():

@@ -1,0 +1,14 @@
+{
+  "releasedVersion": "0.2.1",
+  "releasedMain": "40fcb4b5e82ff98d71b3778b1dbfdb43e8a542c6",
+  "clientSDK": "1.30.0",
+  "catalogSHA256": "cb22c1f3923dc92c431f8c648bfa772c63b5567cabea1b4d336bebf48d4b6402",
+  "applicationIdentityNeutralSHA256": "e36a5c7794023ba4dc7c16f7a131796d023571a99d862e0371874c639244790e",
+  "counts": {
+    "prompts": 2,
+    "resources": 63,
+    "templates": 2,
+    "tools": 39
+  },
+  "identityNormalization": "Only source_version and adapterVersion application-version schema defaults; all other schema fields exact."
+}

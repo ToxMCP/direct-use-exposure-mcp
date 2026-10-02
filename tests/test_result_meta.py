@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from mcp.types import INTERNAL_ERROR, INVALID_PARAMS
+from mcp_types import INTERNAL_ERROR, INVALID_PARAMS
 
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError
@@ -53,7 +53,7 @@ def test_success_result_emits_future_safe_sync_meta() -> None:
     assert result.meta["terminal"] is True
     assert result.meta["queueRequired"] is False
     assert result.meta["responseSchema"] == "exposureScenario.v1"
-    assert result.structuredContent is not None
+    assert result.structured_content is not None
 
 
 def test_error_result_emits_failed_meta_without_queue_semantics() -> None:
@@ -64,7 +64,7 @@ def test_error_result_emits_failed_meta_without_queue_semantics() -> None:
 
     result = _error_result(error)
 
-    assert result.isError is True
+    assert result.is_error is True
     assert result.meta is not None
     assert result.meta["schemaVersion"] == "toolResultMeta.v1"
     assert result.meta["resultStatus"] == "failed"
@@ -83,7 +83,7 @@ def test_internal_error_result_uses_internal_mcp_error_code() -> None:
 
     result = _error_result(error)
 
-    assert result.isError is True
+    assert result.is_error is True
     assert result.meta is not None
     assert result.meta["errorCode"] == "InternalError"
     assert result.meta["mcpErrorCode"] == INTERNAL_ERROR

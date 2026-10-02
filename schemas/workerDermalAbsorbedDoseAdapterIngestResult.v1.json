@@ -135,7 +135,7 @@
           "type": "string"
         },
         "adapterVersion": {
-          "default": "0.2.1",
+          "default": "0.3.0",
           "title": "Adapterversion",
           "type": "string"
         },

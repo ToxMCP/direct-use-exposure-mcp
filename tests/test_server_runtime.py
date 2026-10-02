@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import time
+from concurrent.futures import ThreadPoolExecutor
+from threading import Lock
 
 from exposure_scenario_mcp import server as server_module
+from exposure_scenario_mcp.server_runtime import ServerRuntimeProvider
 
 
 def _run(coro):
@@ -22,7 +26,7 @@ def test_runtime_provider_reuses_lazy_state_and_lifespan_startup(monkeypatch) ->
     server = server_module.create_mcp_server()
 
     direct_result = _run(server.call_tool("exposure_run_verification_checks", {}))
-    assert not direct_result.isError
+    assert not direct_result.is_error
     assert init_count == 1
 
     async def exercise_lifespan() -> None:
@@ -30,12 +34,12 @@ def test_runtime_provider_reuses_lazy_state_and_lifespan_startup(monkeypatch) ->
         cached_state = provider.get_runtime_state()
         assert init_count == 1
 
-        async with server._mcp_server.lifespan(server._mcp_server) as lifespan_state:
+        async with server.settings.lifespan(server) as lifespan_state:
             assert lifespan_state is cached_state
             assert init_count == 1
 
             managed_result = await server.call_tool("exposure_run_verification_checks", {})
-            assert not managed_result.isError
+            assert not managed_result.is_error
             assert init_count == 1
 
         assert provider._runtime_state is None
@@ -43,5 +47,23 @@ def test_runtime_provider_reuses_lazy_state_and_lifespan_startup(monkeypatch) ->
     _run(exercise_lifespan())
 
     post_shutdown_result = _run(server.call_tool("exposure_run_verification_checks", {}))
-    assert not post_shutdown_result.isError
+    assert not post_shutdown_result.is_error
     assert init_count == 2
+
+
+def test_concurrent_cold_start_creates_only_one_runtime():
+    count = 0
+    lock = Lock()
+
+    def factory():
+        nonlocal count
+        with lock:
+            count += 1
+        time.sleep(0.02)
+        return server_module.build_server_runtime_state()
+
+    provider = ServerRuntimeProvider(factory)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        states = list(pool.map(lambda _: provider.get_runtime_state(), range(16)))
+    assert count == 1
+    assert all(state is states[0] for state in states)

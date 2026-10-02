@@ -6,7 +6,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from mcp.types import CallToolResult, ToolAnnotations
+from mcp_types import CallToolResult, ToolAnnotations
 
 from exposure_scenario_mcp.archetypes import ArchetypeLibraryRegistry
 from exposure_scenario_mcp.defaults import DefaultsRegistry
@@ -25,10 +25,10 @@ def read_only_tool_annotations(title: str) -> ToolAnnotations:
 
     return ToolAnnotations(
         title=title,
-        readOnlyHint=True,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     )
 
 

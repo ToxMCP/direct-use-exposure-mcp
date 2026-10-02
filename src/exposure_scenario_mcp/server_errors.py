@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from mcp.types import INTERNAL_ERROR, INVALID_PARAMS
+from mcp_types import INTERNAL_ERROR, INVALID_PARAMS
 
 from exposure_scenario_mcp.errors import ExposureScenarioError
 
