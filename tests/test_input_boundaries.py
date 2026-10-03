@@ -14,6 +14,7 @@ from exposure_scenario_mcp.models import (
     ProductUseProfile,
     Route,
     ScenarioClass,
+    Severity,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine
@@ -126,6 +127,12 @@ def test_extreme_valid_body_weights_build_without_numeric_instability() -> None:
     assert math.isfinite(low_dose)
     assert math.isfinite(high_dose)
     assert low_dose > high_dose > 0.0
+    # Extreme values still build (auditability, sensitivity sweeps) but never look clean.
+    for scenario in (low_weight, high_weight):
+        assert "population_body_weight_implausible" in {
+            flag.code for flag in scenario.quality_flags if flag.severity == Severity.ERROR
+        }
+        assert scenario.tier_semantics.assumption_checks_passed is False
 
 
 def test_oral_supplement_request_requires_explicit_oral_context() -> None:

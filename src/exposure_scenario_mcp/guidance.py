@@ -1525,6 +1525,20 @@ def provenance_policy() -> str:
   screening-level factors.
 - Downstream evidence/refinement exports use deterministic content hashes and stable IDs.
 
+## Population Plausibility
+
+- Resolved `body_weight_kg`, `exposed_surface_area_cm2`, and `inhalation_rate_m3_per_hour`
+  values are screened against population-group bands anchored to the shipped population
+  defaults; `docs://defaults-evidence-map` publishes the bands and their anchors.
+- Values outside the typical band emit a `population_<field>_atypical` warning flag.
+- Values outside the screening review envelope (for exposed area: above the review limit)
+  emit a `population_<field>_implausible` error flag and limitation, set
+  `tier_semantics.assumption_checks_passed` to false, add a `validationSummary` note, and are
+  named in the tool-result text.
+- Builds are not blocked, so flagged scenarios stay auditable. Aggregates, PBPK compatibility
+  checks, and PBPK scenario exports re-screen the resolved component values and carry the
+  finding forward instead of trusting component flags.
+
 ## Boundary
 
 - Provenance demonstrates how external-dose outputs were produced.
@@ -2269,6 +2283,8 @@ def troubleshooting_guide() -> str:
   the active manifest.
 - `scenario_package_probability_template_missing`: a packaged Tier C support point references an
   archetype or template ID that is not available in the active release.
+- `pbpk_population_context_implausible`: the scenario's body weight or inhalation rate lies
+  outside the screening review envelope for its population group, so the PBPK handoff is not ready.
 
 ## Scenario Review Checks
 
@@ -2276,6 +2292,11 @@ def troubleshooting_guide() -> str:
 2. Inspect `assumptions`, `qualityFlags`, and `limitations` before interpreting the dose.
 3. Treat `heuristic_default_source` flags as a cue to inspect the cited defaults branch.
 4. Check `validationSummary` to see whether executable bands or external anchors were applied.
+5. Treat a `population_<field>_implausible` error flag (or an aggregate
+   `aggregate_component_population_implausible` limitation) as an input error: look for grams
+   or pounds entered as kilograms, daily volumes entered as hourly rates, misplaced decimal
+   points, or a value meant for another population group, then rebuild. A
+   `population_<field>_atypical` warning asks you to confirm an unusual but possible value.
 
 ## Troubleshooting Sequence
 

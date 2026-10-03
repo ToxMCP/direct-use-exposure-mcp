@@ -27,6 +27,7 @@ from exposure_scenario_mcp.models import (
     ValidationStatus,
     ValidationSummary,
 )
+from exposure_scenario_mcp.population_plausibility import evaluate_scenario_population
 from exposure_scenario_mcp.source_classification import is_heuristic_source_id
 from exposure_scenario_mcp.validation_reference_bands import ValidationReferenceBandRegistry
 from exposure_scenario_mcp.validation_time_series import ValidationTimeSeriesReferenceRegistry
@@ -2361,5 +2362,6 @@ def build_validation_summary(scenario: ExposureScenario) -> ValidationSummary:
             ]
             if executed_validation_checks
             else []
-        ),
+        )
+        + [finding.validation_note for finding in evaluate_scenario_population(scenario)],
     )

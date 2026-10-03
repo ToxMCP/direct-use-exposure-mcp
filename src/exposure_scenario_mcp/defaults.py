@@ -17,6 +17,7 @@ from exposure_scenario_mcp.models import (
     DefaultsCurationReport,
     DefaultsCurationStatus,
 )
+from exposure_scenario_mcp.population_plausibility import population_plausibility_markdown
 from exposure_scenario_mcp.source_classification import is_heuristic_source_id
 
 DEFAULTS_REPO_RELATIVE_PATH = Path("defaults/v1/core_defaults.json")
@@ -1191,6 +1192,8 @@ def defaults_evidence_map(registry: DefaultsRegistry | None = None) -> str:
             "  screening values to EPA Exposure Factors Handbook source families, while keeping",
             "  exposed skin area as an explicit screening benchmark rather than a total-body",
             "  default.",
+            "",
+            *population_plausibility_markdown(),
             "",
             "### Screening Route Semantics",
             "",
