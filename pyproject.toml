@@ -1,6 +1,6 @@
 [project]
 name = "exposure-scenario-mcp"
-version = "0.3.0"
+version = "0.3.1"
 description = "Direct-Use Exposure MCP for deterministic direct-use and near-field external exposure construction in the ToxMCP suite."
 readme = "README.md"
 requires-python = ">=3.12"

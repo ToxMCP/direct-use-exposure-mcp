@@ -548,12 +548,24 @@ class AssumptionTracker:
         forbidden_interpretations: list[str] | None = None,
         assumption_checks_passed: bool = True,
     ) -> TierSemantics:
+        # Error-severity flags (for example implausible population inputs) mean the minimum
+        # checks did not pass, whatever the caller asserted.
+        error_flag_codes = sorted(
+            {flag.code for flag in self.quality_flags if flag.severity == Severity.ERROR}
+        )
+        caveats = list(required_caveats or [])
+        if error_flag_codes:
+            caveats.append(
+                "Error-severity quality flags were raised while building this result "
+                f"({', '.join(error_flag_codes)}); correct or explicitly justify the flagged "
+                "inputs before interpreting it."
+            )
         return TierSemantics(
             tier_claimed=tier_claimed,
             tier_earned=tier_earned or tier_claimed,
             tier_rationale=tier_rationale,
-            assumption_checks_passed=assumption_checks_passed,
-            required_caveats=required_caveats or [],
+            assumption_checks_passed=assumption_checks_passed and not error_flag_codes,
+            required_caveats=caveats,
             forbidden_interpretations=forbidden_interpretations or [],
         )
 

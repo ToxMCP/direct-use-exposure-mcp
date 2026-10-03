@@ -17,6 +17,8 @@
   the active manifest.
 - `scenario_package_probability_template_missing`: a packaged Tier C support point references an
   archetype or template ID that is not available in the active release.
+- `pbpk_population_context_implausible`: the scenario's body weight or inhalation rate lies
+  outside the screening review envelope for its population group, so the PBPK handoff is not ready.
 
 ## Scenario Review Checks
 
@@ -24,6 +26,11 @@
 2. Inspect `assumptions`, `qualityFlags`, and `limitations` before interpreting the dose.
 3. Treat `heuristic_default_source` flags as a cue to inspect the cited defaults branch.
 4. Check `validationSummary` to see whether executable bands or external anchors were applied.
+5. Treat a `population_<field>_implausible` error flag (or an aggregate
+   `aggregate_component_population_implausible` limitation) as an input error: look for grams
+   or pounds entered as kilograms, daily volumes entered as hourly rates, misplaced decimal
+   points, or a value meant for another population group, then rebuild. A
+   `population_<field>_atypical` warning asks you to confirm an unusual but possible value.
 
 ## Troubleshooting Sequence
 

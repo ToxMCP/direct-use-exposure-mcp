@@ -38,6 +38,7 @@ from exposure_scenario_mcp.models import (
     ScenarioDose,
     SensitivityDirection,
     SensitivityRankingEntry,
+    Severity,
     TierLevel,
     UncertaintyQuantificationStatus,
     UncertaintyRegisterEntry,
@@ -46,6 +47,10 @@ from exposure_scenario_mcp.models import (
     ValidationEvidenceReadiness,
     ValidationStatus,
     ValidationSummary,
+)
+from exposure_scenario_mcp.population_plausibility import (
+    PopulationPlausibilityFinding,
+    evaluate_scenario_population,
 )
 from exposure_scenario_mcp.provenance import AssumptionTracker
 from exposure_scenario_mcp.validation import build_validation_summary
@@ -156,6 +161,21 @@ LIMITATION_UNCERTAINTY_MAP = {
     ),
     "cross_route_aggregate": (
         [UncertaintyType.MODEL_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "high",
+    ),
+    "population_body_weight_implausible": (
+        [UncertaintyType.PARAMETER_UNCERTAINTY, UncertaintyType.SCENARIO_UNCERTAINTY],
+        BiasDirection.BIDIRECTIONAL,
+        "high",
+    ),
+    "population_exposed_surface_area_implausible": (
+        [UncertaintyType.PARAMETER_UNCERTAINTY, UncertaintyType.SCENARIO_UNCERTAINTY],
+        BiasDirection.LIKELY_UNDER,
+        "high",
+    ),
+    "population_inhalation_rate_implausible": (
+        [UncertaintyType.PARAMETER_UNCERTAINTY, UncertaintyType.SCENARIO_UNCERTAINTY],
         BiasDirection.BIDIRECTIONAL,
         "high",
     ),
@@ -947,7 +967,17 @@ def enrich_scenario_uncertainty(engine, scenario: ExposureScenario) -> ExposureS
     )
 
 
-def build_aggregate_uncertainty(component_scenarios: list[ExposureScenario]):
+def build_aggregate_uncertainty(
+    component_scenarios: list[ExposureScenario],
+    *,
+    population_findings: list[tuple[str, PopulationPlausibilityFinding]] | None = None,
+):
+    if population_findings is None:
+        population_findings = [
+            (item.scenario_id, finding)
+            for item in component_scenarios
+            for finding in evaluate_scenario_population(item)
+        ]
     dependency_metadata = [
         DependencyDescriptor(
             dependency_id="aggregate-stacking-cluster",
@@ -974,6 +1004,10 @@ def build_aggregate_uncertainty(component_scenarios: list[ExposureScenario]):
         notes=[
             "Aggregate outputs are benchmarked as deterministic screening summaries only.",
             "Cross-route co-use dependencies are not modeled probabilistically in v0.1.",
+            *(
+                f"Component scenario `{scenario_id}`: {finding.validation_note}"
+                for scenario_id, finding in population_findings
+            ),
         ],
     )
     uncertainty_register = [
@@ -1000,6 +1034,39 @@ def build_aggregate_uncertainty(component_scenarios: list[ExposureScenario]):
             ),
         )
     ]
+    implausible = [
+        (scenario_id, finding)
+        for scenario_id, finding in population_findings
+        if finding.severity == Severity.ERROR
+    ]
+    if implausible:
+        uncertainty_register.append(
+            UncertaintyRegisterEntry(
+                entry_id="aggregate-component-population-implausible",
+                title="Component population inputs fall outside physiological plausibility",
+                uncertainty_types=[
+                    UncertaintyType.PARAMETER_UNCERTAINTY,
+                    UncertaintyType.SCENARIO_UNCERTAINTY,
+                ],
+                related_assumptions=sorted({finding.field_name for _, finding in implausible}),
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.BIDIRECTIONAL,
+                impact_level="high",
+                summary=(
+                    "Component scenarios "
+                    + ", ".join(
+                        f"`{scenario_id}` ({finding.field_name}={finding.value:g})"
+                        for scenario_id, finding in implausible
+                    )
+                    + " resolved population inputs outside their physiological screening "
+                    "envelope, so the aggregate total inherits non-interpretable doses."
+                ),
+                recommendation=(
+                    "Correct or justify the flagged population inputs and rebuild the component "
+                    "scenarios before interpreting the aggregate."
+                ),
+            )
+        )
     return {
         "uncertainty_tier": UncertaintyTier.TIER_A,
         "uncertainty_register": uncertainty_register,

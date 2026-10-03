@@ -252,3 +252,86 @@ def test_worker_route_task_unexpected_error_returns_failed_tool_result(server, m
     assert result.meta["errorCode"] == "InternalError"
     assert result.meta["mcpErrorCode"] == INTERNAL_ERROR
     assert "Unexpected failure while executing" in result.content[0].text
+
+
+def _oral_screening_params(body_weight_kg: float) -> dict:
+    return {
+        "chemical_id": "TCM-PLAUSIBILITY-MCP-001",
+        "route": "oral",
+        "scenario_class": "screening",
+        "product_use_profile": {
+            "product_category": "herbal_medicinal_product",
+            "physical_form": "solid",
+            "application_method": "direct_oral",
+            "retention_type": "leave_on",
+            "concentration_fraction": 0.05,
+            "use_amount_per_event": 0.5,
+            "use_amount_unit": "g",
+            "use_events_per_day": 2,
+            "ingestion_fraction": 1.0,
+        },
+        "population_profile": {
+            "population_group": "adult",
+            "body_weight_kg": body_weight_kg,
+            "region": "EU",
+        },
+    }
+
+
+def test_screening_tool_surfaces_implausible_body_weight_in_scenario_and_aggregate(server):
+    reported = _run(
+        server.call_tool(
+            "exposure_build_screening_exposure_scenario",
+            {"params": _oral_screening_params(6691.76)},
+        )
+    )
+    plausible = _run(
+        server.call_tool(
+            "exposure_build_screening_exposure_scenario",
+            {"params": _oral_screening_params(70.0)},
+        )
+    )
+
+    assert not reported.is_error
+    assert not plausible.is_error
+    notice = "Error-severity quality flags raised: population_body_weight_implausible."
+    assert notice in reported.content[0].text
+    assert "Error-severity" not in plausible.content[0].text
+    assert plausible.structured_content["quality_flags"] == []
+
+    scenario = reported.structured_content
+    assert [(flag["code"], flag["severity"]) for flag in scenario["quality_flags"]] == [
+        ("population_body_weight_implausible", "error")
+    ]
+    assert scenario["tier_semantics"]["assumption_checks_passed"] is False
+    assert any(
+        "population_body_weight_implausible" in note
+        for note in scenario["validationSummary"]["notes"]
+    )
+
+    aggregate = _run(
+        server.call_tool(
+            "exposure_build_aggregate_exposure_scenario",
+            {
+                "params": {
+                    "chemical_id": "TCM-PLAUSIBILITY-MCP-001",
+                    "label": "Implausible component aggregate",
+                    "component_scenarios": [scenario, plausible.structured_content],
+                }
+            },
+        )
+    )
+
+    assert not aggregate.is_error
+    assert notice in aggregate.content[0].text
+    payload = aggregate.structured_content
+    aggregate_flags = [
+        flag
+        for flag in payload["quality_flags"]
+        if flag["code"] == "population_body_weight_implausible"
+    ]
+    assert [flag["severity"] for flag in aggregate_flags] == ["error"]
+    assert scenario["scenario_id"] in aggregate_flags[0]["message"]
+    assert "aggregate_component_population_implausible" in {
+        item["code"] for item in payload["limitations"]
+    }
