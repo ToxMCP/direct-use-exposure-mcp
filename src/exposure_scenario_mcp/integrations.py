@@ -39,6 +39,7 @@ from exposure_scenario_mcp.models import (
     StrictModel,
 )
 from exposure_scenario_mcp.package_metadata import CURRENT_VERSION
+from exposure_scenario_mcp.pbpk_population_context import resolve_pbpk_body_weight
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.plugins.inhalation import build_inhalation_tier_1_screening_scenario
 from exposure_scenario_mcp.population_plausibility import (
@@ -93,12 +94,7 @@ def _normalize_section_key(value: str) -> str:
 
 
 def _resolved_body_weight_kg(scenario: ExposureScenario) -> float | None:
-    if scenario.population_profile.body_weight_kg is not None:
-        return scenario.population_profile.body_weight_kg
-    for assumption in scenario.assumptions:
-        if assumption.name == "body_weight_kg" and assumption.value is not None:
-            return float(assumption.value)
-    return None
+    return resolve_pbpk_body_weight(scenario)[0]
 
 
 def _scenario_summary(scenario: ExposureScenario) -> str:
@@ -3004,18 +3000,10 @@ def check_pbpk_compatibility(scenario: ExposureScenario) -> PbpkCompatibilityRep
                 message="PBPK handoff requires a positive use_events_per_day value.",
             )
         )
-    body_weight_kg = _resolved_body_weight_kg(scenario)
+    body_weight_kg, context_issues = resolve_pbpk_body_weight(scenario)
+    issues.extend(context_issues)
     if body_weight_kg is None:
         missing_fields.append("assessmentContext.doseScenario.bodyWeightKg")
-        issues.append(
-            LimitationNote(
-                code="pbpk_body_weight_missing",
-                severity=Severity.ERROR,
-                message=(
-                    "PBPK handoff requires a resolved body_weight_kg in the population profile."
-                ),
-            )
-        )
     implausible_context = pbpk_population_context_findings(
         scenario.population_profile.population_group,
         body_weight_kg=body_weight_kg,
@@ -3105,7 +3093,9 @@ def check_pbpk_compatibility(scenario: ExposureScenario) -> PbpkCompatibilityRep
         ],
         issues=issues,
         recommended_next_steps=[
-            "Call PBPK MCP `ingest_external_pbpk_bundle` with `toolCall.arguments`.",
+            "Call PBPK MCP `ingest_external_pbpk_bundle` with `toolCall.arguments`."
+            if compatible
+            else "Resolve the error findings and rebuild the source scenario before PBPK import.",
             "Preserve `bundle.supportingHandoffs` and `toxclawModuleParams` as additive "
             "exposure-side context outside the exact PBPK request payload.",
             "Review returned internalExposureEstimate and pbpkQualificationSummary before "

@@ -41,6 +41,7 @@ from exposure_scenario_mcp.models import (
     UncertaintyRegisterEntry,
     VarianceDriver,
 )
+from exposure_scenario_mcp.pbpk_population_context import resolve_pbpk_body_weight
 from exposure_scenario_mcp.population_plausibility import (
     evaluate_population_value,
     evaluate_scenario_population,
@@ -740,11 +741,18 @@ def export_pbpk_input(
             "Transient concentration-profile point count derived for additive PBPK export.",
         )
 
+    body_weight_kg, context_issues = resolve_pbpk_body_weight(scenario)
+    if body_weight_kg is None:
+        raise ExposureScenarioError(
+            code=context_issues[0].code,
+            message=context_issues[0].message,
+            suggestion="Recover the original body-weight denominator and rebuild the scenario.",
+        )
+    for issue in context_issues:
+        tracker.add_limitation(issue.code, issue.message, severity=issue.severity)
     population_context = PbpkPopulationContext(
         population_group=scenario.population_profile.population_group,
-        body_weight_kg=scenario.population_profile.body_weight_kg
-        if scenario.population_profile.body_weight_kg is not None
-        else next(item.value for item in scenario.assumptions if item.name == "body_weight_kg"),
+        body_weight_kg=body_weight_kg,
         inhalation_rate_m3_per_hour=scenario.population_profile.inhalation_rate_m3_per_hour,
         region=scenario.population_profile.region,
     )

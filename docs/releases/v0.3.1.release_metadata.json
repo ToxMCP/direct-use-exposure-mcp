@@ -62,8 +62,8 @@
       "filename": "exposure_scenario_mcp-0.3.1-py3-none-any.whl",
       "relativePath": "dist/exposure_scenario_mcp-0.3.1-py3-none-any.whl",
       "present": true,
-      "sha256": "a1bd177601e00293cbec94124849ef0be453eb8da5ed6a417c4395dc0fe13608",
-      "sizeBytes": 429213
+      "sha256": "2b4af5bdbcbd866665548ed1d5b5dcdd33172a3a19edae4505466bc549703f7c",
+      "sizeBytes": 430530
     },
     {
       "kind": "sdist",
