@@ -1,8 +1,9 @@
 # Direct-Use Exposure MCP
 
-The current branch prepares a v0.3.0 candidate on stable MCP SDK2, with verified
-legacy client compatibility and stateless modern discovery/HTTP support. The
-published release remains v0.2.1. See the [migration guide](docs/mcp-sdk2-migration.md)
+This repository prepares v0.3.2 on stable MCP SDK2, with verified legacy client
+compatibility and stateless modern discovery/HTTP support. This maintenance
+release includes reviewed workflow and PBPK correspondence fixes; package
+publication remains a separate step. See the [migration guide](docs/mcp-sdk2-migration.md)
 for hosted allowlists, Python embedding changes, and the compatibility gates.
 
 [![CI](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ToxMCP/direct-use-exposure-mcp/actions/workflows/ci.yml)

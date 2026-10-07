@@ -1,6 +1,6 @@
 # Release Readiness
 
-Release gating for `v0.2.1` is benchmark-first, contract-first, and provenance-first.
+Release gating for `v0.3.2` is benchmark-first, contract-first, and provenance-first.
 
 ## Required Gates
 

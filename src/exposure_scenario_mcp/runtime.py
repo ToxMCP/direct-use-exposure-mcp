@@ -305,13 +305,27 @@ def resolve_population_value(
         defaults, source = registry.population_defaults(population_group, region=region)
         resolved = float(defaults[field_name])
         rationale = f"Resolved from population defaults for '{population_group}'."
-        if region != "global":
+        region_key = region.lower()
+        override_regions = registry.population_override_regions(population_group)
+        if region_key in override_regions:
+            global_value = registry.population_defaults(population_group)[0][field_name]
             tracker.add_quality_flag(
                 code="regional_population_override_active",
                 severity=Severity.INFO,
                 message=(
-                    f"Population default '{field_name}' uses region='{region}' override "
-                    f"({resolved} {unit}). Global default would differ."
+                    f"Population default '{field_name}' uses the region='{region}' override "
+                    f"({resolved} {unit}); the global default is {global_value} {unit}."
+                ),
+            )
+        elif region_key != "global":
+            tracker.add_quality_flag(
+                code="regional_population_override_unavailable",
+                severity=Severity.INFO,
+                message=(
+                    f"Population default '{field_name}' uses the global default "
+                    f"({resolved} {unit}) because no '{population_group}' population override "
+                    f"exists for region='{region}'. Regions with '{population_group}' "
+                    f"population overrides: {', '.join(override_regions) or 'none'}."
                 ),
             )
     if gt is not None and resolved <= gt:
@@ -1048,6 +1062,7 @@ def compare_jurisdictional_scenarios(
         for quality_flag in scenario.quality_flags:
             if quality_flag.severity == Severity.INFO and quality_flag.code not in {
                 "regional_population_override_active",
+                "regional_population_override_unavailable",
                 "heuristic_default_source",
             }:
                 continue

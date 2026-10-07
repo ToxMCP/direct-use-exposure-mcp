@@ -23,9 +23,9 @@
   "limitations": [],
   "quality_flags": [
     {
-      "code": "regional_population_override_active",
+      "code": "regional_population_override_unavailable",
       "severity": "info",
-      "message": "Population default 'body_weight_kg' uses region='EU' override (80.0 kg). Global default would differ."
+      "message": "Population default 'body_weight_kg' uses the global default (80.0 kg) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
     },
     {
       "code": "default_applied",
@@ -43,9 +43,9 @@
       "message": "Default value applied for 'transfer_efficiency'."
     },
     {
-      "code": "regional_population_override_active",
+      "code": "regional_population_override_unavailable",
       "severity": "info",
-      "message": "Population default 'exposed_surface_area_cm2' uses region='EU' override (5700.0 cm2). Global default would differ."
+      "message": "Population default 'exposed_surface_area_cm2' uses the global default (5700.0 cm2) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
     },
     {
       "code": "default_applied",
@@ -62,7 +62,7 @@
     "schema_version": "provenanceBundle.v1",
     "algorithm_id": "screening.external_dose.v1",
     "plugin_id": "screening_scenario_plugin",
-    "plugin_version": "0.3.1",
+    "plugin_version": "0.3.2",
     "defaults_version": "2026.04.15.v35",
     "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
     "generated_at": "2026-03-24T00:00:00+00:00",
@@ -145,7 +145,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "explicit_user_input",
@@ -177,7 +177,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "deterministic_derived",
@@ -214,7 +214,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "explicit_user_input",
@@ -245,7 +245,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "explicit_user_input",
@@ -276,7 +276,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "deterministic_derived",
@@ -409,7 +409,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "deterministic_derived",
@@ -478,7 +478,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "deterministic_derived",
@@ -513,7 +513,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "deterministic_derived",
@@ -548,7 +548,7 @@
           "source_id": "exposure_scenario_mcp",
           "title": "Direct-Use Exposure MCP runtime",
           "locator": "docs://algorithm-notes",
-          "version": "0.3.1",
+          "version": "0.3.2",
           "hash_sha256": null
         },
         "confidence": "deterministic_derived",
@@ -581,7 +581,7 @@
       "schema_version": "provenanceBundle.v1",
       "algorithm_id": "screening.external_dose.v1",
       "plugin_id": "screening_scenario_plugin",
-      "plugin_version": "0.3.1",
+      "plugin_version": "0.3.2",
       "defaults_version": "2026.04.15.v35",
       "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
       "generated_at": "2026-03-24T00:00:00+00:00",
@@ -593,9 +593,9 @@
     "limitations": [],
     "quality_flags": [
       {
-        "code": "regional_population_override_active",
+        "code": "regional_population_override_unavailable",
         "severity": "info",
-        "message": "Population default 'body_weight_kg' uses region='EU' override (80.0 kg). Global default would differ."
+        "message": "Population default 'body_weight_kg' uses the global default (80.0 kg) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
       },
       {
         "code": "default_applied",
@@ -613,9 +613,9 @@
         "message": "Default value applied for 'transfer_efficiency'."
       },
       {
-        "code": "regional_population_override_active",
+        "code": "regional_population_override_unavailable",
         "severity": "info",
-        "message": "Population default 'exposed_surface_area_cm2' uses region='EU' override (5700.0 cm2). Global default would differ."
+        "message": "Population default 'exposed_surface_area_cm2' uses the global default (5700.0 cm2) because no 'adult' population override exists for region='EU'. Regions with 'adult' population overrides: china."
       },
       {
         "code": "default_applied",

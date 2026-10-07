@@ -222,7 +222,7 @@ def configs(tmp_path: Path, python: str = sys.executable) -> tuple[Path, Path]:
                 "exposure": {
                     "source_checkout": str(ROOT),
                     "python": python,
-                    "expected_version": "0.3.1",
+                    "expected_version": "0.3.2",
                 },
             }
         )
