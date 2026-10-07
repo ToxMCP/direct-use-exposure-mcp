@@ -95,7 +95,13 @@ def source_records(config: ReviewSources, base: Path, output: Path) -> dict[str,
 
 
 def issue(code: str, condition: str, **context: Any) -> dict[str, Any]:
-    return {"code": code, "reopening_condition": condition, **context}
+    return {
+        "code": code,
+        "action_family": "documentary_appraisal",
+        "priority": "before_combining_or_transferring_exposure",
+        "reopening_condition": condition,
+        **context,
+    }
 
 
 def verified(ids: list[str], sources: dict[str, Any]) -> bool:
@@ -127,6 +133,25 @@ def contribution(
                     "Rebuild corresponding material, population, period, duration, "
                     "endpoint and dose-basis components, or keep them separate."
                 ),
+            )
+        )
+    if len({x.nature for x in worksheet.components}) > 1:
+        findings.append(
+            issue(
+                "worksheet_mixed_input_natures",
+                "Separate documented, illustrative and hypothetical scenarios into distinct "
+                "worksheets; sensitivity values do not close documented gaps.",
+            )
+        )
+    if any(
+        str(value).strip().lower() in {"unknown", "unresolved", "unspecified"}
+        for value in component.scope.model_dump().values()
+    ):
+        findings.append(
+            issue(
+                "worksheet_scope_unresolved",
+                "Recover the corresponding material, population, period, duration and dose "
+                "basis before treating contributions as compatible.",
             )
         )
     if component.role != "additive" or component.overlap_with:
@@ -164,6 +189,14 @@ def contribution(
                     "Supply the correctly pinned source files and verify their "
                     "locators before relying on this reconstruction."
                 ),
+            )
+        )
+    if component.nature == "documented" and not component.source_ids:
+        findings.append(
+            issue(
+                "worksheet_documented_source_missing",
+                "Provide the pinned record supporting the documented inputs, or retain them "
+                "as explicitly hypothetical arithmetic in a separate worksheet.",
             )
         )
     if native.get("chemical_id") != component.scope.chemical_id:
@@ -251,6 +284,8 @@ def contribution(
     if findings:
         return None, findings
     amount = Decimal(str(dose["value"]))
+    if not amount.is_finite() or amount < 0:
+        return None, [issue("worksheet_dose_invalid", "Resolve the nonfinite or negative dose.")]
     if worksheet.scope.dose_basis == "absorbed_mg_kg_day":
         selection = component.absorption
         if (
@@ -348,7 +383,9 @@ def resolve_path(value: str, config: Path) -> Path:
 def preflight(servers: ReviewServers, config: Path, output: Path) -> tuple[Path, Path]:
     server = servers.exposure
     checkout = resolve_path(server.source_checkout, config)
-    python = resolve_path(server.python, config)
+    # Preserve a virtual-environment interpreter path: resolving its symlink
+    # selects the base interpreter and loses that environment's dependencies.
+    python = Path(os.path.abspath(config.parent / server.python))
     if not (checkout / "src/exposure_scenario_mcp/__main__.py").is_file() or not python.is_file():
         raise ValueError(
             "Server configuration must identify an existing Exposure source "
@@ -378,6 +415,8 @@ def preflight(servers: ReviewServers, config: Path, output: Path) -> tuple[Path,
         )
     Path(result["module"]).resolve().relative_to(checkout)
     git = shutil.which("git")
+    if server.expected_commit is not None and not (checkout / ".git").exists():
+        raise ValueError("An expected_commit requires a Git source checkout.")
     if git is None and server.expected_commit is not None:
         raise ValueError("Git is required to check expected_commit.")
     if git is not None and (checkout / ".git").exists():
@@ -551,12 +590,18 @@ async def execute(
         "global_findings": unknown_refs
         + [
             issue(
+                "worksheet_material_appraisal_unresolved",
+                "Appraise the assessed batch/specification, constituents and use conditions "
+                "against the tested material. Publication, graph equality and caller review "
+                "labels do not establish correspondence or approval.",
+            ),
+            issue(
                 "worksheet_complete_coverage_unverified",
                 (
                     "Review a complete source/event inventory with quantified "
                     "omissions where evidence permits; unknown bounds remain unknown."
                 ),
-            )
+            ),
         ],
         "approval": None,
         "assessmentStopAuthorized": False,
@@ -649,6 +694,13 @@ def markdown(report: dict[str, Any]) -> str:
     for row in report["components"]:
         for finding in row["findings"]:
             lines.append(f"- {row['id']} / {finding['code']}: {finding['reopening_condition']}")
+        if "pbpk_response" in row:
+            response = row["pbpk_response"]
+            lines.append(
+                f"- {row['id']} / PBPK: inspect the captured readiness, denominator and "
+                f"original limitations in {row['id']}-pbpk-response.json "
+                f"(tool error: {response.get('isError', False)})."
+            )
         for flag in row.get("producer_flags", []) + row.get("producer_limitations", []):
             lines.append(
                 f"- {row['id']} / producer {flag['code']} ({flag['severity']}): "
@@ -702,6 +754,7 @@ def seal(output: Path) -> None:
 def run(worksheet_path: Path, servers_path: Path, sources_path: Path, output: Path) -> int:
     output.mkdir(parents=True, exist_ok=False)
     (output / "inputs").mkdir()
+    (output / "server-diagnostics.log").touch()
     try:
         worksheet_raw = capture(worksheet_path, output / "inputs/worksheet.json")
         servers_raw = capture(servers_path, output / "inputs/servers.json")

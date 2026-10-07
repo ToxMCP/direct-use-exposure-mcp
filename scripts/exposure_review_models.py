@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from decimal import Decimal, InvalidOperation
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class ReviewModel(BaseModel):
@@ -70,6 +71,20 @@ class OmittedSource(ReviewModel):
     unit: str | None = None
     source_ids: list[str] = Field(default_factory=list)
     reopening_condition: str = Field(min_length=1)
+
+    @field_validator("upper_bound")
+    @classmethod
+    def finite_bound(cls, value: str | None) -> str | None:
+        if value is not None:
+            try:
+                number = Decimal(value)
+            except InvalidOperation as error:
+                raise ValueError(
+                    "An omitted-source bound must be finite and nonnegative."
+                ) from error
+            if not number.is_finite() or number < 0:
+                raise ValueError("An omitted-source bound must be finite and nonnegative.")
+        return value
 
 
 class ReviewWorksheet(ReviewModel):
