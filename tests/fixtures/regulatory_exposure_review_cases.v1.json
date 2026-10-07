@@ -142,6 +142,78 @@
       },
       "disposition": "SCCS identified the need for aggregate exposure when the respondent's CEL was based on one product but multiple uses were expected.",
       "lesson": "Systemic mg/kg-day, external skin loading and local sensitisation CEL have different meanings. One-product calculations do not establish multi-product coverage."
+    },
+    {
+      "id": "ehmc-absorption-2025-corrigendum-2026",
+      "source": {
+        "doc_key": "sccs:SCCS/1671/24",
+        "evidence_ids": [
+          1043,
+          1094
+        ],
+        "url": "https://health.ec.europa.eu/document/download/3166a978-06de-4526-b25e-8d5a66943a2e_en?filename=sccs_o_294.pdf",
+        "sha256": "6dac863bc2ab3bbfb0ceaeca07cdbc42b5a5f3edb96ab2829d75f4c26876e17c",
+        "status": "final opinion with corrigendum",
+        "adopted": "2025-06-26",
+        "corrigendum": "2026-03-26",
+        "printed_pages": [
+          24
+        ]
+      },
+      "scope": {
+        "material": "EHMC present at 10% in the representative formulation tested in the opinion",
+        "route": "dermal absorption for systemic MoS calculation",
+        "dose_basis": "percent of applied dose",
+        "transfer_limits": [
+          "No automatic transfer to another formulation, batch, concentration or use condition.",
+          "Mean plus one SD is not an aggregate or marginal P95.",
+          "No standalone safety or TTC qualification is inferred."
+        ]
+      },
+      "selection": {
+        "mean_percent": "0.28",
+        "one_sd_percent": "0.17",
+        "selected_percent": "0.45",
+        "selected_fraction": "0.0045",
+        "statistic": "mean_plus_one_sd",
+        "tested_concentration_percent": "10",
+        "study_method": "OECD TG 428 in vitro dermal absorption"
+      },
+      "disposition": "SCCS used 0.45% absorption in this opinion's MoS calculation.",
+      "lesson": "Preserve original units, statistical construction, tested formulation and exact opinion version. POD_OTHER is an extraction label, not a hazard endpoint designation."
+    },
+    {
+      "id": "basic-blue-99-absorption-rejection-2026",
+      "source": {
+        "doc_key": "sccs:SCCS/1683/25",
+        "evidence_ids": [
+          77209
+        ],
+        "url": "https://health.ec.europa.eu/document/download/10e3d810-e66f-4218-8690-8d01bd03cf20_en?filename=sccs_o_304.pdf",
+        "sha256": "2261c11773d2cb92d1dc786f7b292d8d3d2a6c860282592a03e9aaa5a16c1930",
+        "status": "final scientific advice",
+        "adopted": "2026-02-02",
+        "printed_pages": [
+          51
+        ]
+      },
+      "scope": {
+        "material": "Basic Blue 99 marketed material versus submitted study batches",
+        "route": "dermal absorption",
+        "dose_basis": "percent of applied dose",
+        "transfer_limits": [
+          "The submitted absorption study was not accepted for the assessed material.",
+          "Older-batch toxicology does not automatically characterize the new batches.",
+          "The opinion's fallback is not inserted as a universal software default."
+        ]
+      },
+      "selection": {
+        "submitted_study_accepted": false,
+        "published_fallback_percent": "50",
+        "software_default_created": false
+      },
+      "disposition": "SCCS rejected the absorption study for non-representative batch and major methodological shortcomings; separate genotoxicity concerns remained.",
+      "lesson": "An absorption refinement cannot resolve material correspondence, study quality or independent hazard concerns."
     }
   ]
 }

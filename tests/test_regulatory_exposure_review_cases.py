@@ -38,7 +38,7 @@ def test_tea_tree_oil_table_arithmetic_and_committee_correction() -> None:
 def test_public_reference_scope_and_attribution_are_not_qualification_records() -> None:
     record = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assert record["provenance"]["approval"] is None
-    assert len(record["cases"]) == 4
+    assert len(record["cases"]) == 6
     for case in record["cases"]:
         assert case["source"]["url"].startswith("https://health.ec.europa.eu/")
         assert len(bytes.fromhex(case["source"]["sha256"])) == 32
@@ -49,3 +49,23 @@ def test_public_reference_scope_and_attribution_are_not_qualification_records() 
     assert by_id["kojic-acid-2012"]["source"]["status"] == "historical opinion"
     assert by_id["kojic-acid-2012"]["scope"]["dose_basis"] == "ug/cm2; not a generic fraction"
     assert by_id["cannabidiol-sensitisation-2026"]["scope"]["endpoint"] == "skin sensitisation"
+
+
+def test_ehmc_selected_absorption_preserves_percent_statistic_and_version() -> None:
+    cases = json.loads(FIXTURE.read_text(encoding="utf-8"))["cases"]
+    case = next(item for item in cases if item["id"] == "ehmc-absorption-2025-corrigendum-2026")
+    selection = case["selection"]
+    mean_plus_sd = Decimal(selection["mean_percent"]) + Decimal(selection["one_sd_percent"])
+    assert mean_plus_sd == Decimal(selection["selected_percent"]) == Decimal("0.45")
+    assert mean_plus_sd / 100 == Decimal(selection["selected_fraction"]) == Decimal("0.0045")
+    assert selection["statistic"] == "mean_plus_one_sd"
+    assert case["source"]["adopted"] == "2025-06-26"
+    assert case["source"]["corrigendum"] == "2026-03-26"
+
+
+def test_rejected_basic_blue_study_never_becomes_a_global_default() -> None:
+    cases = json.loads(FIXTURE.read_text(encoding="utf-8"))["cases"]
+    case = next(item for item in cases if item["id"] == "basic-blue-99-absorption-rejection-2026")
+    assert case["selection"]["submitted_study_accepted"] is False
+    assert case["selection"]["software_default_created"] is False
+    assert case["selection"]["published_fallback_percent"] == "50"
