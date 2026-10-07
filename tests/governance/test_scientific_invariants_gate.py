@@ -227,6 +227,36 @@ def test_projection_emits_recognized_schema_ids() -> None:
 def test_external_summary_does_not_authorize_internal_dose() -> None:
     # Positive structured evidence: a coherent external_summary authorizes only
     # external-exposure tokens (no internal_dose token).
-    uses = projector._allowed_downstream_uses(_load(EXTERNAL_FIXTURE))
+    source = _load(EXTERNAL_FIXTURE)
+    # Isolate aggregation-mode interpretation from population review findings.
+    source["quality_flags"] = []
+    source["limitations"] = []
+    uses = projector._allowed_downstream_uses(source)
     assert "internal_dose_estimate" not in uses
     assert "aggregate_exposure_prioritization" in uses
+
+
+@pytest.mark.parametrize("fixture", [EXTERNAL_FIXTURE, INTERNAL_FIXTURE])
+@pytest.mark.parametrize("field", ["quality_flags", "limitations"])
+def test_error_findings_do_not_authorize_downstream_interpretation(fixture, field) -> None:
+    source = _load(fixture)
+    source["quality_flags"] = []
+    source["limitations"] = []
+    source[field] = [{"code": "synthetic-error", "severity": "error"}]
+    assert projector._allowed_downstream_uses(source) == []
+
+
+def test_population_mismatch_corpus_retains_review_boundary() -> None:
+    source = _load(EXTERNAL_FIXTURE)
+    assert any(
+        item["code"] == "aggregate_population_mismatch" and item["severity"] == "error"
+        for item in source["quality_flags"]
+    )
+    assert projector._allowed_downstream_uses(source) == []
+
+
+def test_overlap_warning_does_not_become_population_error() -> None:
+    source = _load(EXTERNAL_FIXTURE)
+    source["quality_flags"] = [{"code": "synthetic-overlap", "severity": "warning"}]
+    source["limitations"] = []
+    assert "aggregate_exposure_prioritization" in projector._allowed_downstream_uses(source)

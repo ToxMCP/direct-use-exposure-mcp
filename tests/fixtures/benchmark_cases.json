@@ -1466,6 +1466,8 @@
           "inhalation": 0.015861
         },
         "limitation_codes": [
+          "aggregate_population_mismatch",
+          "aggregate_scope_unverified",
           "cross_route_aggregate"
         ]
       }
@@ -1560,6 +1562,8 @@
           "inhalation": 0.01813117
         },
         "limitation_codes": [
+          "aggregate_population_mismatch",
+          "aggregate_scope_unverified",
           "internal_equivalent_bioavailability_user_supplied",
           "cross_route_aggregate"
         ]

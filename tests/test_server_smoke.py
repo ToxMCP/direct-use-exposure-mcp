@@ -323,7 +323,9 @@ def test_screening_tool_surfaces_implausible_body_weight_in_scenario_and_aggrega
     )
 
     assert not aggregate.is_error
-    assert notice in aggregate.content[0].text
+    assert "Error-severity quality flags raised:" in aggregate.content[0].text
+    assert "aggregate_population_mismatch" in aggregate.content[0].text
+    assert "population_body_weight_implausible" in aggregate.content[0].text
     payload = aggregate.structured_content
     aggregate_flags = [
         flag

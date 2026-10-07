@@ -2275,6 +2275,8 @@ def troubleshooting_guide() -> str:
   route bioavailability fractions for each represented route.
 - `pbpk_unit_unsupported`: PBPK handoff accepts only canonical external dose units.
 - `aggregate_duplicate_component`: aggregate inputs reused the same component scenario.
+- `aggregate_duplicate_bioavailability_route`: the same route has more than one fraction;
+  resolve the ambiguity against applicable evidence and submit one fraction per route.
 - `pbpk_transient_profile_duration_missing`: transient inhalation PBPK export needs explicit event
   duration.
 - `pbpk_transient_profile_route_metrics_missing`: the source inhalation scenario did not expose
@@ -2297,6 +2299,18 @@ def troubleshooting_guide() -> str:
    or pounds entered as kilograms, daily volumes entered as hourly rates, misplaced decimal
    points, or a value meant for another population group, then rebuild. A
    `population_<field>_atypical` warning asks you to confirm an unusual but possible value.
+6. An aggregate `aggregate_population_mismatch`, `aggregate_population_context_incomplete`,
+   or `aggregate_component_population_inconsistent` error means the arithmetic is retained
+   for inspection but cannot represent one compatible population aggregate. Use the original
+   calculation denominator and keep population-specific results separate.
+7. `aggregate_component_overlap_unresolved` asks you to distinguish repeated records,
+   alternatives and independent source events. IDs and identical numbers do not establish
+   independence. `aggregate_scope_unverified` means only supplied contributions are accounted
+   for; material correspondence, period and complete coverage still need an explicit inventory.
+   Unknown omitted sources stay unknown and marginal P95s do not become an aggregate P95.
+8. Product-use evidence marked `provisional` or `unreviewed` is compatible only with review.
+   Strict automatic-application paths reject it. A caller's `reviewed` label describes input
+   review state; it is not authenticated scientific approval or a risk conclusion.
 
 ## Troubleshooting Sequence
 

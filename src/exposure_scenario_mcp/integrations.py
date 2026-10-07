@@ -2044,6 +2044,13 @@ def assess_product_use_evidence_fit(
     warnings: list[str] = []
     blocking_issues: list[str] = []
 
+    if evidence.review_status != "reviewed":
+        warnings.append(
+            f"Evidence review_status is `{evidence.review_status}`. Technical compatibility "
+            "does not establish scientific applicability; review the source, material, "
+            "formulation, population and exposure basis before automatic application."
+        )
+
     if request.chemical_id != evidence.chemical_id:
         blocking_issues.append(
             "chemical_id does not match between the request and the product-use evidence record."

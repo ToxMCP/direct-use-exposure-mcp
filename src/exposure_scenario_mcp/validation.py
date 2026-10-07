@@ -828,6 +828,24 @@ def _open_validation_gaps(registry: DefaultsRegistry) -> list[ValidationGap]:
     heuristic_source_ids = _heuristic_source_ids(registry)
     gaps = [
         ValidationGap(
+            gapId="aggregate_scope_and_co_use_unverified",
+            title="Aggregate source scope and co-use are not externally validated",
+            severity=ValidationGapSeverity.HIGH,
+            appliesToDomains=["aggregate_cross_route_screening"],
+            relatedSourceIds=[],
+            note=(
+                "Deterministic aggregation is regression-tested bookkeeping over supplied "
+                "components. Population and repeated-profile findings do not establish "
+                "source/event independence, material and period correspondence, complete "
+                "coverage, product-specific absorption or a joint population percentile."
+            ),
+            recommendation=(
+                "Review a source/event inventory and independently benchmark applicability "
+                "and coverage against primary records. Keep unknown omitted sources and "
+                "marginal P95s explicit; do not infer complete aggregate exposure."
+            ),
+        ),
+        ValidationGap(
             gapId="tier1_nf_ff_external_validation_partial_only",
             title="Tier 1 NF/FF external validation is still narrow despite executable support",
             severity=ValidationGapSeverity.HIGH,

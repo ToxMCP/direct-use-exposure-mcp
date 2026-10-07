@@ -54,6 +54,16 @@
   },
   "limitations": [
     {
+      "code": "aggregate_population_mismatch",
+      "message": "Components disagree on demographic_tags, resolved_body_weight_kg: `exp-example-dermal-001` (adult, EU, calculation body weight 80.0 kg, tags=['consumer', 'general_population']); `inh-example-room-001` (adult, EU, calculation body weight 68.0 kg, tags=[]). The sum is retained for inspection only and cannot represent one compatible population aggregate. Rebuild on a common population and dose basis or keep population-specific results separate.",
+      "severity": "error"
+    },
+    {
+      "code": "aggregate_scope_unverified",
+      "message": "This sum accounts for the supplied components only. Source/event independence, material correspondence, compatible periods and complete exposure coverage are not verified by this contract. Review an explicit inventory of additive, alternative, overlapping and omitted sources. Unknown omissions remain unknown; separate marginal P95s do not establish an aggregate P95.",
+      "severity": "info"
+    },
+    {
       "code": "internal_equivalent_bioavailability_user_supplied",
       "message": "Internal-equivalent totals depend on the supplied route bioavailability fractions and do not replace route-specific kinetic modeling.",
       "severity": "warning"
@@ -120,6 +130,16 @@
   },
   "quality_flags": [
     {
+      "code": "aggregate_population_mismatch",
+      "message": "Components disagree on demographic_tags, resolved_body_weight_kg: `exp-example-dermal-001` (adult, EU, calculation body weight 80.0 kg, tags=['consumer', 'general_population']); `inh-example-room-001` (adult, EU, calculation body weight 68.0 kg, tags=[]). The sum is retained for inspection only and cannot represent one compatible population aggregate. Rebuild on a common population and dose basis or keep population-specific results separate.",
+      "severity": "error"
+    },
+    {
+      "code": "aggregate_scope_unverified",
+      "message": "This sum accounts for the supplied components only. Source/event independence, material correspondence, compatible periods and complete exposure coverage are not verified by this contract. Review an explicit inventory of additive, alternative, overlapping and omitted sources. Unknown omissions remain unknown; separate marginal P95s do not establish an aggregate P95.",
+      "severity": "info"
+    },
+    {
       "code": "aggregate_internal_equivalent_screening",
       "message": "Internal-equivalent aggregation applies caller-supplied route bioavailability fractions to external doses. It remains a screening transformation, not a PBPK substitute.",
       "severity": "info"
@@ -144,12 +164,27 @@
       "entryId": "aggregate-screening-summary",
       "impactLevel": "high",
       "quantificationStatus": "qualitative_only",
-      "recommendation": "Use Tier B scenario packages or a future population engine before interpreting aggregate totals as realistic population behavior.",
+      "recommendation": "Review a source/event inventory, material and period correspondence, and population compatibility before interpreting the sum. It accounts only for supplied components; unknown omissions and separate marginal P95s cannot be converted into complete aggregate exposure or an aggregate P95.",
       "relatedAssumptions": [],
       "summary": "The aggregate output preserves route totals but does not model co-use dependencies or population correlations.",
       "title": "Aggregate result remains a Tier A additive screening summary",
       "uncertaintyTypes": [
         "model_uncertainty",
+        "scenario_uncertainty"
+      ]
+    },
+    {
+      "biasDirection": "unknown",
+      "entryId": "aggregate-population-mismatch",
+      "impactLevel": "high",
+      "quantificationStatus": "qualitative_only",
+      "recommendation": "Resolve the identified component correspondence before interpreting this arithmetic as an aggregate exposure result.",
+      "relatedAssumptions": [
+        "component_scenarios"
+      ],
+      "summary": "Components disagree on demographic_tags, resolved_body_weight_kg: `exp-example-dermal-001` (adult, EU, calculation body weight 80.0 kg, tags=['consumer', 'general_population']); `inh-example-room-001` (adult, EU, calculation body weight 68.0 kg, tags=[]). The sum is retained for inspection only and cannot represent one compatible population aggregate. Rebuild on a common population and dose basis or keep population-specific results separate.",
+      "title": "Aggregate component compatibility requires review",
+      "uncertaintyTypes": [
         "scenario_uncertainty"
       ]
     }
@@ -172,7 +207,9 @@
     ],
     "probabilisticEnablement": "blocked",
     "routeMechanism": "aggregate_cross_route_screening",
-    "validationGapIds": [],
+    "validationGapIds": [
+      "aggregate_scope_and_co_use_unverified"
+    ],
     "validationStatus": "benchmark_regression"
   }
 }
