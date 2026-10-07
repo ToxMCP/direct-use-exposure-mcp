@@ -62,6 +62,10 @@ jobs:
             src/exposure_scenario_mcp/server_tools_core.py \
             src/exposure_scenario_mcp/server_tools_integration.py \
             src/exposure_scenario_mcp/server_tools_worker.py
+          uv run mypy \
+            src/exposure_scenario_mcp/pbpk_population_context.py \
+            scripts/exposure_review_models.py \
+            scripts/run_exposure_review.py
 
   security:
     runs-on: ubuntu-latest

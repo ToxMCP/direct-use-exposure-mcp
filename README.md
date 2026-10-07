@@ -307,6 +307,7 @@ left out of the public overview until the downstream consumer ships.
 ### Operator and scientific documentation
 
 See the repository [aggregate and evidence review guide](docs/aggregate_review_guide.md)
+and the runnable [source/application review workflow](docs/exposure_review_workflow.md)
 for population compatibility, overlap, source scope and review-state decisions.
 
 - `docs://algorithm-notes`

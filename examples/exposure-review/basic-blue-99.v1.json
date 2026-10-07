@@ -1,0 +1,86 @@
+{
+  "schema_version": "exposureReviewWorksheet.v1",
+  "id": "basic-blue-99",
+  "title": "Basic Blue 99: rejected absorption study transfer",
+  "scope": {
+    "chemical_id": "review:BasicBlue99",
+    "material": "Hypothetical Basic Blue 99 formulation; tested batch correspondence is unresolved",
+    "population": "adult",
+    "region": "EU",
+    "period": "published opinion review",
+    "duration": "daily arithmetic reconstruction",
+    "endpoint": "systemic exposure worksheet",
+    "dose_basis": "absorbed_mg_kg_day",
+    "body_weight_kg": 60
+  },
+  "reference_cases": [
+    "basic-blue-99-absorption-rejection-2026"
+  ],
+  "components": [
+    {
+      "id": "hypothetical_use",
+      "scope": {
+        "chemical_id": "review:BasicBlue99",
+        "material": "Hypothetical Basic Blue 99 formulation; tested batch correspondence is unresolved",
+        "population": "adult",
+        "region": "EU",
+        "period": "published opinion review",
+        "duration": "daily arithmetic reconstruction",
+        "endpoint": "systemic exposure worksheet",
+        "dose_basis": "absorbed_mg_kg_day",
+        "body_weight_kg": 60
+      },
+      "role": "additive",
+      "nature": "hypothetical",
+      "dose_statistic": "deterministic",
+      "source_ids": [],
+      "producer_request": {
+        "chemical_id": "review:BasicBlue99",
+        "chemical_name": "hypothetical Basic Blue 99 use",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "population_profile": {
+          "population_group": "adult",
+          "region": "EU",
+          "body_weight_kg": 60
+        },
+        "product_use_profile": {
+          "product_name": "Arithmetic worksheet: hypothetical Basic Blue 99 use",
+          "product_category": "personal_care",
+          "physical_form": "liquid",
+          "application_method": "hand_application",
+          "retention_type": "worksheet_post_retention",
+          "concentration_fraction": 0.05,
+          "use_amount_per_event": 1.0,
+          "use_amount_unit": "g",
+          "use_events_per_day": 1,
+          "retention_factor": 1,
+          "transfer_efficiency": 1
+        }
+      },
+      "absorption": {
+        "value": "50",
+        "unit": "percent",
+        "statistic": "bound",
+        "applicability": "rejected",
+        "rationale": "The submitted study was rejected; the opinion-specific fallback is recorded but not transferred as a universal input.",
+        "source_ids": [
+          "basic-blue-99-absorption-rejection-2026"
+        ]
+      }
+    }
+  ],
+  "omitted_sources": [
+    {
+      "id": "outside_defended_inventory",
+      "description": "Sources outside the reviewed contributions remain unresolved.",
+      "upper_bound": null,
+      "unit": null,
+      "reopening_condition": "Appraise a complete inventory and quantify omitted sources where evidence supports bounds."
+    }
+  ],
+  "notes": [
+    "This is a retrospective source review with explicitly labelled producer reconstructions or hypothetical inputs; no actual batch correspondence, complete exposure or approval is established.",
+    "The 5% concentration and use amount are hypothetical and are not attributed to the opinion. Absorption, material correspondence, study quality and separate hazard concerns remain different judgments."
+  ]
+}

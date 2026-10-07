@@ -1,0 +1,292 @@
+{
+  "schema_version": "exposureReviewWorksheet.v1",
+  "id": "tea-tree-oil",
+  "title": "Tea tree oil: published rows and product-specific absorption",
+  "scope": {
+    "chemical_id": "review:TTO",
+    "material": "Published TTO specifications/table inputs; actual material binding unresolved",
+    "population": "adult",
+    "region": "EU",
+    "period": "published opinion review",
+    "duration": "daily arithmetic reconstruction",
+    "endpoint": "systemic exposure worksheet",
+    "dose_basis": "absorbed_mg_kg_day",
+    "body_weight_kg": 60
+  },
+  "reference_cases": [
+    "tea-tree-oil-2025"
+  ],
+  "components": [
+    {
+      "id": "row_1",
+      "scope": {
+        "chemical_id": "review:TTO",
+        "material": "Published TTO specifications/table inputs; actual material binding unresolved",
+        "population": "adult",
+        "region": "EU",
+        "period": "published opinion review",
+        "duration": "daily arithmetic reconstruction",
+        "endpoint": "systemic exposure worksheet",
+        "dose_basis": "absorbed_mg_kg_day",
+        "body_weight_kg": 60
+      },
+      "role": "additive",
+      "overlap_with": [],
+      "independence_review": "Distinct defended product rows in the published table; source/event completeness remains unverified.",
+      "nature": "illustrative_reconstruction",
+      "dose_statistic": "deterministic",
+      "source_ids": [
+        "tea-tree-oil-2025"
+      ],
+      "producer_request": {
+        "chemical_id": "review:TTO",
+        "chemical_name": "shampoo",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "population_profile": {
+          "population_group": "adult",
+          "region": "EU",
+          "body_weight_kg": 60
+        },
+        "product_use_profile": {
+          "product_name": "Arithmetic worksheet: shampoo",
+          "product_category": "personal_care",
+          "physical_form": "liquid",
+          "application_method": "hand_application",
+          "retention_type": "worksheet_post_retention",
+          "concentration_fraction": 0.02,
+          "use_amount_per_event": 0.0906,
+          "use_amount_unit": "g",
+          "use_events_per_day": 1,
+          "retention_factor": 1,
+          "transfer_efficiency": 1
+        }
+      },
+      "absorption": {
+        "value": "20.41",
+        "unit": "percent",
+        "statistic": "mean_plus_one_sd",
+        "applicability": "published_reconstruction",
+        "rationale": "Reconstruct the published product row only; no transfer to another material/formulation.",
+        "source_ids": [
+          "tea-tree-oil-2025"
+        ],
+        "tested_material": "Opinion-specified TTO",
+        "assessed_material": "Published table reconstruction only",
+        "tested_formulation": "As specified in the opinion",
+        "assessed_formulation": "shampoo",
+        "tested_concentration_percent": "2.00",
+        "contact_conditions": "Published row basis; not a new operational protocol",
+        "study_model": "Published dermal absorption record",
+        "quality_appraisal": "Published SCCS selection, restricted to this reconstruction"
+      }
+    },
+    {
+      "id": "row_2",
+      "scope": {
+        "chemical_id": "review:TTO",
+        "material": "Published TTO specifications/table inputs; actual material binding unresolved",
+        "population": "adult",
+        "region": "EU",
+        "period": "published opinion review",
+        "duration": "daily arithmetic reconstruction",
+        "endpoint": "systemic exposure worksheet",
+        "dose_basis": "absorbed_mg_kg_day",
+        "body_weight_kg": 60
+      },
+      "role": "additive",
+      "overlap_with": [],
+      "independence_review": "Distinct defended product rows in the published table; source/event completeness remains unverified.",
+      "nature": "illustrative_reconstruction",
+      "dose_statistic": "deterministic",
+      "source_ids": [
+        "tea-tree-oil-2025"
+      ],
+      "producer_request": {
+        "chemical_id": "review:TTO",
+        "chemical_name": "shower gel",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "population_profile": {
+          "population_group": "adult",
+          "region": "EU",
+          "body_weight_kg": 60
+        },
+        "product_use_profile": {
+          "product_name": "Arithmetic worksheet: shower gel",
+          "product_category": "personal_care",
+          "physical_form": "liquid",
+          "application_method": "hand_application",
+          "retention_type": "worksheet_post_retention",
+          "concentration_fraction": 0.01,
+          "use_amount_per_event": 0.1674,
+          "use_amount_unit": "g",
+          "use_events_per_day": 1,
+          "retention_factor": 1,
+          "transfer_efficiency": 1
+        }
+      },
+      "absorption": {
+        "value": "12.84",
+        "unit": "percent",
+        "statistic": "mean_plus_one_sd",
+        "applicability": "published_reconstruction",
+        "rationale": "Reconstruct the published product row only; no transfer to another material/formulation.",
+        "source_ids": [
+          "tea-tree-oil-2025"
+        ],
+        "tested_material": "Opinion-specified TTO",
+        "assessed_material": "Published table reconstruction only",
+        "tested_formulation": "As specified in the opinion",
+        "assessed_formulation": "shower gel",
+        "tested_concentration_percent": "1.00",
+        "contact_conditions": "Published row basis; not a new operational protocol",
+        "study_model": "Published dermal absorption record",
+        "quality_appraisal": "Published SCCS selection, restricted to this reconstruction"
+      }
+    },
+    {
+      "id": "row_3",
+      "scope": {
+        "chemical_id": "review:TTO",
+        "material": "Published TTO specifications/table inputs; actual material binding unresolved",
+        "population": "adult",
+        "region": "EU",
+        "period": "published opinion review",
+        "duration": "daily arithmetic reconstruction",
+        "endpoint": "systemic exposure worksheet",
+        "dose_basis": "absorbed_mg_kg_day",
+        "body_weight_kg": 60
+      },
+      "role": "additive",
+      "overlap_with": [],
+      "independence_review": "Distinct defended product rows in the published table; source/event completeness remains unverified.",
+      "nature": "illustrative_reconstruction",
+      "dose_statistic": "deterministic",
+      "source_ids": [
+        "tea-tree-oil-2025"
+      ],
+      "producer_request": {
+        "chemical_id": "review:TTO",
+        "chemical_name": "face cream",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "population_profile": {
+          "population_group": "adult",
+          "region": "EU",
+          "body_weight_kg": 60
+        },
+        "product_use_profile": {
+          "product_name": "Arithmetic worksheet: face cream",
+          "product_category": "personal_care",
+          "physical_form": "liquid",
+          "application_method": "hand_application",
+          "retention_type": "worksheet_post_retention",
+          "concentration_fraction": 0.001,
+          "use_amount_per_event": 1.4484,
+          "use_amount_unit": "g",
+          "use_events_per_day": 1,
+          "retention_factor": 1,
+          "transfer_efficiency": 1
+        }
+      },
+      "absorption": {
+        "value": "12.84",
+        "unit": "percent",
+        "statistic": "mean_plus_one_sd",
+        "applicability": "published_reconstruction",
+        "rationale": "Reconstruct the published product row only; no transfer to another material/formulation.",
+        "source_ids": [
+          "tea-tree-oil-2025"
+        ],
+        "tested_material": "Opinion-specified TTO",
+        "assessed_material": "Published table reconstruction only",
+        "tested_formulation": "As specified in the opinion",
+        "assessed_formulation": "face cream",
+        "tested_concentration_percent": "0.10",
+        "contact_conditions": "Published row basis; not a new operational protocol",
+        "study_model": "Published dermal absorption record",
+        "quality_appraisal": "Published SCCS selection, restricted to this reconstruction"
+      }
+    },
+    {
+      "id": "row_4",
+      "scope": {
+        "chemical_id": "review:TTO",
+        "material": "Published TTO specifications/table inputs; actual material binding unresolved",
+        "population": "adult",
+        "region": "EU",
+        "period": "published opinion review",
+        "duration": "daily arithmetic reconstruction",
+        "endpoint": "systemic exposure worksheet",
+        "dose_basis": "absorbed_mg_kg_day",
+        "body_weight_kg": 60
+      },
+      "role": "additive",
+      "overlap_with": [],
+      "independence_review": "Distinct defended product rows in the published table; source/event completeness remains unverified.",
+      "nature": "illustrative_reconstruction",
+      "dose_statistic": "deterministic",
+      "source_ids": [
+        "tea-tree-oil-2025"
+      ],
+      "producer_request": {
+        "chemical_id": "review:TTO",
+        "chemical_name": "face wash",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "population_profile": {
+          "population_group": "adult",
+          "region": "EU",
+          "body_weight_kg": 60
+        },
+        "product_use_profile": {
+          "product_name": "Arithmetic worksheet: face wash",
+          "product_category": "personal_care",
+          "physical_form": "liquid",
+          "application_method": "hand_application",
+          "retention_type": "worksheet_post_retention",
+          "concentration_fraction": 0.01,
+          "use_amount_per_event": 0.0684,
+          "use_amount_unit": "g",
+          "use_events_per_day": 1,
+          "retention_factor": 1,
+          "transfer_efficiency": 1
+        }
+      },
+      "absorption": {
+        "value": "12.84",
+        "unit": "percent",
+        "statistic": "mean_plus_one_sd",
+        "applicability": "published_reconstruction",
+        "rationale": "Reconstruct the published product row only; no transfer to another material/formulation.",
+        "source_ids": [
+          "tea-tree-oil-2025"
+        ],
+        "tested_material": "Opinion-specified TTO",
+        "assessed_material": "Published table reconstruction only",
+        "tested_formulation": "As specified in the opinion",
+        "assessed_formulation": "face wash",
+        "tested_concentration_percent": "1.00",
+        "contact_conditions": "Published row basis; not a new operational protocol",
+        "study_model": "Published dermal absorption record",
+        "quality_appraisal": "Published SCCS selection, restricted to this reconstruction"
+      }
+    }
+  ],
+  "omitted_sources": [
+    {
+      "id": "outside_defended_inventory",
+      "description": "Sources outside the reviewed contributions remain unresolved.",
+      "upper_bound": null,
+      "unit": null,
+      "reopening_condition": "Appraise a complete inventory and quantify omitted sources where evidence supports bounds."
+    }
+  ],
+  "notes": [
+    "This is a retrospective source review with explicitly labelled producer reconstructions or hypothetical inputs; no actual batch correspondence, complete exposure or approval is established.",
+    "The 60-kg body weight and single-event amounts construct algebraic inputs from the published already-retained product exposure rows. These are not original use-frequency/cohort records. Explicit retention and transfer factors of one avoid applying the published retention twice.",
+    "Native aggregate output is an external accounted sum. The absorbed worksheet subtotal is separate arithmetic, not a fabricated producer artifact.",
+    "Summing published rounded SED rows gives 0.0144 mg/kg/day; the unrounded reconstructed sum is 0.014309516."
+  ]
+}
