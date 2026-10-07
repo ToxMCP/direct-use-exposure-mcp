@@ -3,7 +3,7 @@
   "exposure": {
     "source_checkout": "/path/to/direct-use-exposure-mcp",
     "python": "/path/to/direct-use-exposure-mcp/.venv/bin/python",
-    "expected_version": "0.3.1",
+    "expected_version": "0.3.2",
     "expected_commit": null
   }
 }

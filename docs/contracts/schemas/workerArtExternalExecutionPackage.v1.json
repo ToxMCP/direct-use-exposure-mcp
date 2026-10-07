@@ -313,7 +313,7 @@
           "type": "string"
         },
         "adapterVersion": {
-          "default": "0.3.1",
+          "default": "0.3.2",
           "description": "Version of the ART-side adapter boundary implemented here.",
           "title": "Adapterversion",
           "type": "string"

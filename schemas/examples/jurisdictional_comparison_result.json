@@ -118,12 +118,12 @@
     {
       "code": "china_regional_population_override_active",
       "severity": "info",
-      "message": "Jurisdiction 'china': Population default 'body_weight_kg' uses region='china' override (63.0 kg). Global default would differ."
+      "message": "Jurisdiction 'china': Population default 'body_weight_kg' uses the region='china' override (63.0 kg); the global default is 80.0 kg."
     },
     {
       "code": "china_regional_population_override_active",
       "severity": "info",
-      "message": "Jurisdiction 'china': Population default 'exposed_surface_area_cm2' uses region='china' override (16500.0 cm2). Global default would differ."
+      "message": "Jurisdiction 'china': Population default 'exposed_surface_area_cm2' uses the region='china' override (16500.0 cm2); the global default is 5700.0 cm2."
     },
     {
       "code": "china_dermal_surface_area_defaulted_hands_forearms_anchor",
@@ -171,7 +171,7 @@
     "schema_version": "provenanceBundle.v1",
     "algorithm_id": "scenario.compare_jurisdictional.v1",
     "plugin_id": "jurisdictional_comparison_service",
-    "plugin_version": "0.3.1",
+    "plugin_version": "0.3.2",
     "defaults_version": "2026.04.15.v35",
     "defaults_hash_sha256": "90518fa13e1e07d88697e22fba79703ce44f11f3fd19cfd91705e07e9efa2f48",
     "generated_at": "2026-03-24T00:00:00+00:00",

@@ -1,17 +1,17 @@
 [project]
 name = "exposure-scenario-mcp"
-version = "0.3.1"
+version = "0.3.2"
 description = "Direct-Use Exposure MCP for deterministic direct-use and near-field external exposure construction in the ToxMCP suite."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
   # Security floors also apply to installations from the published wheel.
-  "anyio>=4.14.2",
+  "anyio>=4.15.1",
   "cryptography>=50.0.1",
   "jsonschema>=4.23.0",
   "mcp[cli]==2.2.0",
   "pydantic>=2.8.2",
-  "pydantic-settings>=2.14.2",
+  "pydantic-settings>=2.15.0",
   "PyJWT>=2.15.0,<3.0.0",
 ]
 
