@@ -1,0 +1,147 @@
+{
+  "schema_version": "regulatoryExposureReviewCases.v1",
+  "purpose": "Pinned public interpretation benchmarks; not new default values, external calibration, legal adoption or TTC qualification.",
+  "provenance": {
+    "dataset": "RL-f077012256",
+    "built": "2026-10-01",
+    "approval": null
+  },
+  "cases": [
+    {
+      "id": "tea-tree-oil-2025",
+      "source": {
+        "doc_key": "sccs:SCCS/1681/25",
+        "evidence_ids": [
+          77164
+        ],
+        "url": "https://health.ec.europa.eu/document/download/827f8a57-c6f2-4d6d-9bbd-2ef12384ffbf_en?filename=sccs_o_303.pdf",
+        "sha256": "7f1f7806580f698ff3850dbe9b26fff6059e59df1de728175bda7980ea70a135",
+        "status": "final opinion",
+        "printed_pages": [
+          3,
+          32,
+          33,
+          50
+        ]
+      },
+      "scope": {
+        "material": "Tea tree oil meeting the opinion's compositional restrictions; stability matters.",
+        "population": "adults in the defended dermally applied cosmetic uses",
+        "route": "dermal systemic SED, with other routes considered separately",
+        "dose_basis": "mg/kg bw/day",
+        "transfer_limits": [
+          "restricted defended product types and concentrations",
+          "aerosolised or sprayable delivery is outside the favourable scope",
+          "this reference is not an exposure descriptor or aggregate population P95"
+        ]
+      },
+      "rows": [
+        {
+          "product": "shampoo",
+          "product_exposure_mg_kg_day": "1.51",
+          "concentration_percent": "2.00",
+          "absorption_percent": "20.41",
+          "published_sed_mg_kg_day": "0.0062"
+        },
+        {
+          "product": "shower gel",
+          "product_exposure_mg_kg_day": "2.79",
+          "concentration_percent": "1.00",
+          "absorption_percent": "12.84",
+          "published_sed_mg_kg_day": "0.0036"
+        },
+        {
+          "product": "face cream",
+          "product_exposure_mg_kg_day": "24.14",
+          "concentration_percent": "0.10",
+          "absorption_percent": "12.84",
+          "published_sed_mg_kg_day": "0.0031"
+        },
+        {
+          "product": "face wash",
+          "product_exposure_mg_kg_day": "1.14",
+          "concentration_percent": "1.00",
+          "absorption_percent": "12.84",
+          "published_sed_mg_kg_day": "0.0015"
+        }
+      ],
+      "applicant_printed_sum_mg_kg_day": "0.144",
+      "committee_corrected_sum_mg_kg_day": "0.0144",
+      "sensitisation_qra_disposition": "SCCS could not evaluate the submitted QRA: aggregate procedure absent and face-wash use omitted.",
+      "overall_disposition": "Favourable conclusion for restricted defended uses and corresponding materials; distinct from the QRA shortcoming.",
+      "lesson": "Review completeness and endpoint scope separately. Product-specific absorption inputs differ within the same dermal route."
+    },
+    {
+      "id": "kojic-acid-2012",
+      "source": {
+        "doc_key": "sccs_backlog:SCCS/1481/12",
+        "evidence_ids": [
+          104502
+        ],
+        "url": "https://health.ec.europa.eu/document/download/cc3e2773-03b7-4bc8-8666-d2d03c5b6296_en?filename=sccs_o_098.pdf",
+        "sha256": "4b0d54bcfe08962d5892949cc66f4bf3fc34ad80c6183d231b5aa5e52a610df0",
+        "status": "historical opinion",
+        "printed_pages": [
+          13,
+          14
+        ]
+      },
+      "scope": {
+        "material": "Kojic acid in the tested versus intended product formulations",
+        "route": "dermal absorption",
+        "dose_basis": "ug/cm2; not a generic fraction"
+      },
+      "applicant_absorption_ug_cm2": "0.75",
+      "earlier_committee_absorption_ug_cm2": "7.28",
+      "disposition": "The lower absorption result's formulation was considered insufficiently representative for intended products.",
+      "lesson": "Chemical identity and broad physical form do not establish formulation or contact-condition correspondence. Historical values do not become current defaults."
+    },
+    {
+      "id": "methyl-salicylate-children-2025",
+      "source": {
+        "doc_key": "sccs:SCCS/1676/25",
+        "evidence_ids": [
+          1335
+        ],
+        "url": "https://health.ec.europa.eu/document/download/c0d2bb4f-87c2-4fff-978d-1ed3af73de1a_en?filename=sccs_o_298.pdf",
+        "sha256": "e3e43837a627c62703eaf1a49b8ec9c847797b86aca780842365621cad0465bb",
+        "status": "final scientific advice",
+        "printed_pages": [
+          11,
+          12,
+          13,
+          21
+        ]
+      },
+      "scope": {
+        "population": "Separate children age groups; EU applicability",
+        "route": "dermal and oral considered with separate product contributions",
+        "dose_basis": "systemic exposure by age group"
+      },
+      "disposition": "Children-specific product-use data were used where available, with an explicit skin-surface-area fallback otherwise.",
+      "lesson": "Plausible infant/child defaults do not reproduce an age-specific exposure record; retain use-data, body-weight and fallback provenance."
+    },
+    {
+      "id": "cannabidiol-sensitisation-2026",
+      "source": {
+        "doc_key": "sccs:SCCS/1685/25",
+        "evidence_ids": [
+          77229
+        ],
+        "url": "https://health.ec.europa.eu/document/download/c7b0b685-a9d4-4ccb-8b90-388f59850c0e_en?filename=sccs_o_307.pdf",
+        "sha256": "8f6bd18b9a2e1a8e8ac83cf88d801b85192a31d54f2323e0a64bce2a3b97178b",
+        "status": "final scientific advice",
+        "printed_pages": [
+          29
+        ]
+      },
+      "scope": {
+        "material": "CBD in the sensitisation discussion",
+        "endpoint": "skin sensitisation",
+        "dose_basis": "consumer exposure level for the relevant local skin endpoint"
+      },
+      "disposition": "SCCS identified the need for aggregate exposure when the respondent's CEL was based on one product but multiple uses were expected.",
+      "lesson": "Systemic mg/kg-day, external skin loading and local sensitisation CEL have different meanings. One-product calculations do not establish multi-product coverage."
+    }
+  ]
+}

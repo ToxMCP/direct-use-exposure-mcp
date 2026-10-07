@@ -7,6 +7,7 @@ from statistics import median
 from typing import Literal
 from uuid import uuid4
 
+from exposure_scenario_mcp.aggregate_review import AggregateReviewFinding
 from exposure_scenario_mcp.archetypes import (
     ArchetypeLibraryRegistry,
     build_envelope_input_from_library,
@@ -971,6 +972,7 @@ def build_aggregate_uncertainty(
     component_scenarios: list[ExposureScenario],
     *,
     population_findings: list[tuple[str, PopulationPlausibilityFinding]] | None = None,
+    component_review: list[AggregateReviewFinding] | None = None,
 ):
     if population_findings is None:
         population_findings = [
@@ -998,7 +1000,7 @@ def build_aggregate_uncertainty(
         external_dataset_ids=["aggregate_external_proxy_candidate"],
         evidence_readiness=ValidationEvidenceReadiness.BENCHMARK_PLUS_EXTERNAL_CANDIDATES,
         heuristic_assumption_names=[],
-        validation_gap_ids=[],
+        validation_gap_ids=["aggregate_scope_and_co_use_unverified"],
         highest_supported_uncertainty_tier=UncertaintyTier.TIER_B,
         probabilistic_enablement="blocked",
         notes=[
@@ -1029,11 +1031,37 @@ def build_aggregate_uncertainty(
                 "dependencies or population correlations."
             ),
             recommendation=(
-                "Use Tier B scenario packages or a future population engine before interpreting "
-                "aggregate totals as realistic population behavior."
+                "Review a source/event inventory, material and period correspondence, and "
+                "population compatibility before interpreting the sum. It accounts only for "
+                "supplied components; unknown omissions and separate marginal P95s cannot be "
+                "converted into complete aggregate exposure or an aggregate P95."
             ),
         )
     ]
+    finding_counts: dict[str, int] = {}
+    for finding in component_review or []:
+        if finding.severity == Severity.INFO:
+            continue
+        finding_counts[finding.code] = finding_counts.get(finding.code, 0) + 1
+        entry_id = finding.code.replace("_", "-")
+        if finding_counts[finding.code] > 1:
+            entry_id += f"-{finding_counts[finding.code]}"
+        uncertainty_register.append(
+            UncertaintyRegisterEntry(
+                entry_id=entry_id,
+                title="Aggregate component compatibility requires review",
+                uncertainty_types=[UncertaintyType.SCENARIO_UNCERTAINTY],
+                related_assumptions=["component_scenarios"],
+                quantification_status=UncertaintyQuantificationStatus.QUALITATIVE_ONLY,
+                bias_direction=BiasDirection.UNKNOWN,
+                impact_level="high",
+                summary=finding.message,
+                recommendation=(
+                    "Resolve the identified component correspondence before interpreting "
+                    "this arithmetic as an aggregate exposure result."
+                ),
+            )
+        )
     implausible = [
         (scenario_id, finding)
         for scenario_id, finding in population_findings

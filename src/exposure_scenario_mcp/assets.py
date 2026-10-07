@@ -13,17 +13,11 @@ PACKAGE_NAME = "exposure_scenario_mcp"
 def repo_root() -> Path | None:
     """Return the repository root when running from a source checkout."""
 
-    candidates = [Path(__file__).resolve(), Path.cwd().resolve()]
-    seen: set[Path] = set()
-
-    for candidate in candidates:
-        node = candidate if candidate.is_dir() else candidate.parent
-        for current in (node, *node.parents):
-            if current in seen:
-                continue
-            seen.add(current)
-            if (current / "pyproject.toml").exists() and (current / "src" / PACKAGE_NAME).exists():
-                return current
+    module_path = Path(__file__).resolve()
+    for current in module_path.parents:
+        source_package = current / "src" / PACKAGE_NAME
+        if (current / "pyproject.toml").exists() and module_path.is_relative_to(source_package):
+            return current
     return None
 
 

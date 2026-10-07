@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from uuid import uuid4
 
+from exposure_scenario_mcp.aggregate_review import review_aggregate_components
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.errors import ExposureScenarioError, ensure
 from exposure_scenario_mcp.models import (
@@ -378,6 +379,21 @@ def aggregate_scenarios(
     )
 
     tracker = AssumptionTracker(registry=registry)
+    adjustment_routes = [item.route for item in params.route_bioavailability_adjustments]
+    ensure(
+        len(adjustment_routes) == len(set(adjustment_routes)),
+        "aggregate_duplicate_bioavailability_route",
+        "Supply only one bioavailability adjustment for each route.",
+        suggestion=(
+            "Resolve conflicting route fractions against applicable evidence before retrying. "
+            "Different product-specific fractions cannot be supplied as duplicate route entries."
+        ),
+        routes=[route.value for route in adjustment_routes],
+    )
+    component_review = review_aggregate_components(params.component_scenarios)
+    for finding in component_review:
+        tracker.add_quality_flag(finding.code, finding.message, severity=finding.severity)
+        tracker.add_limitation(finding.code, finding.message, severity=finding.severity)
     tracker.add_derived(
         "component_count",
         len(params.component_scenarios),
@@ -565,6 +581,7 @@ def aggregate_scenarios(
     diagnostics = build_aggregate_uncertainty(
         params.component_scenarios,
         population_findings=population_findings,
+        component_review=component_review,
     )
 
     return AggregateExposureSummary(

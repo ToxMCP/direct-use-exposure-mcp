@@ -65,12 +65,33 @@
   ],
   "limitations": [
     {
+      "code": "aggregate_population_mismatch",
+      "severity": "error",
+      "message": "Components disagree on demographic_tags, resolved_body_weight_kg: `exp-example-dermal-001` (adult, EU, calculation body weight 80.0 kg, tags=['consumer', 'general_population']); `inh-example-room-001` (adult, EU, calculation body weight 68.0 kg, tags=[]). The sum is retained for inspection only and cannot represent one compatible population aggregate. Rebuild on a common population and dose basis or keep population-specific results separate."
+    },
+    {
+      "code": "aggregate_scope_unverified",
+      "severity": "info",
+      "message": "This sum accounts for the supplied components only. Source/event independence, material correspondence, compatible periods and complete exposure coverage are not verified by this contract. Review an explicit inventory of additive, alternative, overlapping and omitted sources. Unknown omissions remain unknown; separate marginal P95s do not establish an aggregate P95."
+    },
+    {
       "code": "cross_route_aggregate",
       "severity": "warning",
       "message": "Aggregate total spans multiple exposure routes and should be interpreted as a screening summary rather than a PBPK-ready collapse."
     }
   ],
-  "quality_flags": [],
+  "quality_flags": [
+    {
+      "code": "aggregate_population_mismatch",
+      "severity": "error",
+      "message": "Components disagree on demographic_tags, resolved_body_weight_kg: `exp-example-dermal-001` (adult, EU, calculation body weight 80.0 kg, tags=['consumer', 'general_population']); `inh-example-room-001` (adult, EU, calculation body weight 68.0 kg, tags=[]). The sum is retained for inspection only and cannot represent one compatible population aggregate. Rebuild on a common population and dose basis or keep population-specific results separate."
+    },
+    {
+      "code": "aggregate_scope_unverified",
+      "severity": "info",
+      "message": "This sum accounts for the supplied components only. Source/event independence, material correspondence, compatible periods and complete exposure coverage are not verified by this contract. Review an explicit inventory of additive, alternative, overlapping and omitted sources. Unknown omissions remain unknown; separate marginal P95s do not establish an aggregate P95."
+    }
+  ],
   "uncertaintyTier": "tier_a",
   "uncertaintyRegister": [
     {
@@ -85,7 +106,22 @@
       "biasDirection": "bidirectional",
       "impactLevel": "high",
       "summary": "The aggregate output preserves route totals but does not model co-use dependencies or population correlations.",
-      "recommendation": "Use Tier B scenario packages or a future population engine before interpreting aggregate totals as realistic population behavior."
+      "recommendation": "Review a source/event inventory, material and period correspondence, and population compatibility before interpreting the sum. It accounts only for supplied components; unknown omissions and separate marginal P95s cannot be converted into complete aggregate exposure or an aggregate P95."
+    },
+    {
+      "entryId": "aggregate-population-mismatch",
+      "title": "Aggregate component compatibility requires review",
+      "uncertaintyTypes": [
+        "scenario_uncertainty"
+      ],
+      "relatedAssumptions": [
+        "component_scenarios"
+      ],
+      "quantificationStatus": "qualitative_only",
+      "biasDirection": "unknown",
+      "impactLevel": "high",
+      "summary": "Components disagree on demographic_tags, resolved_body_weight_kg: `exp-example-dermal-001` (adult, EU, calculation body weight 80.0 kg, tags=['consumer', 'general_population']); `inh-example-room-001` (adult, EU, calculation body weight 68.0 kg, tags=[]). The sum is retained for inspection only and cannot represent one compatible population aggregate. Rebuild on a common population and dose basis or keep population-specific results separate.",
+      "recommendation": "Resolve the identified component correspondence before interpreting this arithmetic as an aggregate exposure result."
     }
   ],
   "dependencyMetadata": [
@@ -112,7 +148,9 @@
     ],
     "evidenceReadiness": "benchmark_plus_external_candidates",
     "heuristicAssumptionNames": [],
-    "validationGapIds": [],
+    "validationGapIds": [
+      "aggregate_scope_and_co_use_unverified"
+    ],
     "executedValidationChecks": [],
     "highestSupportedUncertaintyTier": "tier_b",
     "probabilisticEnablement": "blocked",

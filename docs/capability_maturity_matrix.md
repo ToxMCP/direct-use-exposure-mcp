@@ -1,7 +1,11 @@
 # Capability Maturity Matrix
 
 This matrix is the short-form answer to "how mature is each part of the released
-`0.2.1` surface?"
+`0.3.1` surface?"
+
+For aggregate scope and input review, see the
+[aggregate review guide](aggregate_review_guide.md). Compatible arithmetic does
+not establish source independence, complete coverage or scientific applicability.
 
 Direct-Use Exposure MCP is no longer only a small deterministic scenario builder.
 It is a governed exposure platform surface with a narrow core engine and several

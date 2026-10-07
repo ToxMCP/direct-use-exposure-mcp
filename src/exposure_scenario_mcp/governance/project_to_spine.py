@@ -33,6 +33,10 @@ actually stamps — never a fabricated safe default. In particular:
     overclaim: it is mapped to an ``internal_dose_estimate`` downstream-use token so
     the engine's EXTERNAL_EXPOSURE_NOT_INTERNAL_DOSE invariant bites.
 
+    Declared error-severity quality flags or limitations suppress legitimate
+    downstream-use tokens. Arithmetic remains inspectable, and the incoherent
+    external/internal mode diagnostic remains active even when errors coexist.
+
   * ``uncertaintyRefs`` are the declared ``uncertaintyRegister[].entryId`` values;
     ``confidenceCeilingRefs`` are derived from the declared ``uncertaintyTier`` and
     ``validationSummary`` posture. An emitted summary that drops its uncertainty
@@ -141,7 +145,7 @@ def _allowed_downstream_uses(source: dict[str, Any]) -> list[str]:
     The released object is fundamentally an external aggregate exposure estimate, so
     the baseline authorization is external-exposure prioritization/comparison only.
     The aggregation mode + the presence of an internal-equivalent total decide the
-    rest:
+    rest, unless declared error findings suppress legitimate authorizations:
 
       * external_summary, NO internalEquivalentTotalDose  -> coherent external
         estimate; external tokens only (passes the anti-overclaim invariant).
@@ -155,10 +159,22 @@ def _allowed_downstream_uses(source: dict[str, Any]) -> list[str]:
         dose. Mapped to an ``internal_dose_estimate`` token so the engine's
         EXTERNAL_EXPOSURE_NOT_INTERNAL_DOSE invariant bites.
     """
-    uses = ["aggregate_exposure_prioritization", "cross_route_external_comparison"]
+    has_error = any(
+        isinstance(item, dict) and item.get("severity") == "error"
+        for key in ("quality_flags", "limitations")
+        for item in source.get(key, [])
+    )
+    # Inspectable arithmetic with error findings does not authorize downstream
+    # interpretation. Keep the incoherent-mode diagnostic below so an overclaim
+    # still trips the invariant rather than disappearing behind another error.
+    uses = (
+        []
+        if has_error
+        else ["aggregate_exposure_prioritization", "cross_route_external_comparison"]
+    )
     mode = source.get("aggregationMode")
     has_internal_total = source.get("internalEquivalentTotalDose") is not None
-    if mode == "internal_equivalent":
+    if mode == "internal_equivalent" and not has_error:
         # Legitimate external->internal-equivalent dosimetry handoff.
         uses.append("internal_equivalent_dosimetry")
     elif mode == "external_summary" and has_internal_total:

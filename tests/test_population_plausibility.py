@@ -372,7 +372,9 @@ def test_aggregate_surfaces_implausible_component_population() -> None:
     ]
     assert f"`{reported.scenario_id}`" in flags[0].message
     assert [(item.code, item.severity) for item in aggregate.limitations] == [
-        ("aggregate_component_population_implausible", Severity.ERROR)
+        ("aggregate_population_mismatch", Severity.ERROR),
+        ("aggregate_scope_unverified", Severity.INFO),
+        ("aggregate_component_population_implausible", Severity.ERROR),
     ]
     register = {entry.entry_id: entry for entry in aggregate.uncertainty_register}
     assert register["aggregate-component-population-implausible"].related_assumptions == [
@@ -394,7 +396,7 @@ def test_aggregate_rescreens_components_whose_flags_were_dropped() -> None:
     }
 
 
-def test_aggregate_of_plausible_components_is_unchanged() -> None:
+def test_aggregate_of_individually_plausible_but_different_bases_requires_review() -> None:
     engine = build_engine()
     aggregate = aggregate_of(engine.build(oral_request(70.0)), engine.build(dermal_request()))
 
@@ -403,8 +405,13 @@ def test_aggregate_of_plausible_components_is_unchanged() -> None:
         item.code for item in aggregate.limitations
     }
     assert [entry.entry_id for entry in aggregate.uncertainty_register] == [
-        "aggregate-screening-summary"
+        "aggregate-screening-summary",
+        "aggregate-population-mismatch",
     ]
+    assert any(
+        flag.code == "aggregate_population_mismatch" and flag.severity == Severity.ERROR
+        for flag in aggregate.quality_flags
+    )
 
 
 def test_aggregate_carries_atypical_component_as_warning_only() -> None:
