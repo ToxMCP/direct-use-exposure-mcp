@@ -4,6 +4,8 @@ import importlib.util
 import sys
 from pathlib import Path
 
+import pytest
+
 from exposure_scenario_mcp.defaults import DefaultsRegistry
 from exposure_scenario_mcp.integrations import (
     CompToxChemicalRecord,
@@ -38,6 +40,7 @@ from exposure_scenario_mcp.models import (
     ExportPbpkExternalImportBundleRequest,
     ExportToxClawEvidenceBundleRequest,
     ExportToxClawRefinementBundleRequest,
+    ExposureScenario,
     ExposureScenarioRequest,
     InhalationScenarioRequest,
     InhalationTier1ScenarioRequest,
@@ -52,8 +55,10 @@ from exposure_scenario_mcp.models import (
     ParticleSolubilityClass,
     PopulationProfile,
     ProductUseProfile,
+    QualityFlag,
     Route,
     ScenarioClass,
+    Severity,
 )
 from exposure_scenario_mcp.plugins import InhalationScreeningPlugin, ScreeningScenarioPlugin
 from exposure_scenario_mcp.runtime import PluginRegistry, ScenarioEngine
@@ -69,6 +74,28 @@ def build_engine() -> ScenarioEngine:
     registry.register(ScreeningScenarioPlugin())
     registry.register(InhalationScreeningPlugin())
     return ScenarioEngine(registry=registry, defaults_registry=DefaultsRegistry.load())
+
+
+def build_dermal_cream_scenario() -> ExposureScenario:
+    return build_engine().build(
+        ExposureScenarioRequest(
+            chemical_id="DTXSID7020182",
+            chemical_name="Example Solvent A",
+            route=Route.DERMAL,
+            scenario_class=ScenarioClass.SCREENING,
+            product_use_profile=ProductUseProfile(
+                product_category="personal_care",
+                physical_form="cream",
+                application_method="hand_application",
+                retention_type="leave_on",
+                concentration_fraction=0.02,
+                use_amount_per_event=1.5,
+                use_amount_unit="g",
+                use_events_per_day=3,
+            ),
+            population_profile=PopulationProfile(population_group="adult"),
+        )
+    )
 
 
 def test_comptox_enrichment_and_toxclaw_wrapper() -> None:
@@ -998,26 +1025,7 @@ def test_reconcile_product_use_evidence_rejects_when_no_source_fits() -> None:
 
 
 def test_toxclaw_evidence_bundle_is_deterministic_and_claim_linked() -> None:
-    engine = build_engine()
-    scenario = engine.build(
-        ExposureScenarioRequest(
-            chemical_id="DTXSID7020182",
-            chemical_name="Example Solvent A",
-            route=Route.DERMAL,
-            scenario_class=ScenarioClass.SCREENING,
-            product_use_profile=ProductUseProfile(
-                product_category="personal_care",
-                physical_form="cream",
-                application_method="hand_application",
-                retention_type="leave_on",
-                concentration_fraction=0.02,
-                use_amount_per_event=1.5,
-                use_amount_unit="g",
-                use_events_per_day=3,
-            ),
-            population_profile=PopulationProfile(population_group="adult"),
-        )
-    )
+    scenario = build_dermal_cream_scenario()
 
     request = ExportToxClawEvidenceBundleRequest(
         scenario=scenario,
@@ -1037,6 +1045,95 @@ def test_toxclaw_evidence_bundle_is_deterministic_and_claim_linked() -> None:
     exported = first.model_dump(mode="json", by_alias=True)
     assert exported["evidenceRecord"]["evidenceId"] == first.evidence_record.evidence_id
     assert exported["reportSection"]["sectionKey"] == "exposure-scenario"
+
+
+def test_toxclaw_evidence_record_headlines_engine_warning_over_leading_info_flags() -> None:
+    scenario = build_dermal_cream_scenario()
+    # The engine appends info-level default_applied flags before the surface-area warning.
+    assert scenario.quality_flags[0].severity == Severity.INFO
+
+    bundle = build_toxclaw_evidence_bundle(
+        ExportToxClawEvidenceBundleRequest(
+            scenario=scenario,
+            case_id="case-001",
+            report_id="report-001",
+        )
+    )
+
+    headline = "dermal_surface_area_defaulted_hands_forearms_anchor"
+    assert bundle.evidence_record.quality_flag == headline
+    assert bundle.report_evidence_reference.quality_flag == headline
+
+
+@pytest.mark.parametrize(
+    ("flags", "expected"),
+    [
+        ([], None),
+        (
+            [
+                ("regional_population_override_active", Severity.INFO),
+                ("default_applied", Severity.INFO),
+            ],
+            "regional_population_override_active",
+        ),
+        (
+            [
+                ("default_applied", Severity.INFO),
+                ("first_warning", Severity.WARNING),
+                ("second_warning", Severity.WARNING),
+            ],
+            "first_warning",
+        ),
+        (
+            [
+                ("default_applied", Severity.INFO),
+                ("dermal_surface_area_defaulted_hands_forearms_anchor", Severity.WARNING),
+                ("population_body_weight_implausible", Severity.ERROR),
+                ("population_exposed_surface_area_implausible", Severity.ERROR),
+                ("regional_population_override_active", Severity.INFO),
+            ],
+            "population_body_weight_implausible",
+        ),
+        (
+            [
+                ("population_body_weight_implausible", Severity.ERROR),
+                ("dermal_surface_area_defaulted_hands_forearms_anchor", Severity.WARNING),
+                ("default_applied", Severity.INFO),
+            ],
+            "population_body_weight_implausible",
+        ),
+    ],
+    ids=[
+        "no-flags",
+        "info-only-keeps-first",
+        "warning-beats-info-first-warning-wins",
+        "error-beats-earlier-flags-first-error-wins",
+        "leading-error",
+    ],
+)
+def test_toxclaw_evidence_record_headlines_most_severe_quality_flag(
+    flags: list[tuple[str, Severity]],
+    expected: str | None,
+) -> None:
+    scenario = build_dermal_cream_scenario().model_copy(
+        update={
+            "quality_flags": [
+                QualityFlag(code=code, severity=severity, message=f"Synthetic {code} flag.")
+                for code, severity in flags
+            ]
+        }
+    )
+
+    bundle = build_toxclaw_evidence_bundle(
+        ExportToxClawEvidenceBundleRequest(
+            scenario=scenario,
+            case_id="case-001",
+            report_id="report-001",
+        )
+    )
+
+    assert bundle.evidence_record.quality_flag == expected
+    assert bundle.report_evidence_reference.quality_flag == expected
 
 
 def test_toxclaw_refinement_bundle_signals_refine_exposure_and_preserves_deltas() -> None:

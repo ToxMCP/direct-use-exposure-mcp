@@ -108,6 +108,22 @@ def _scenario_summary(scenario: ExposureScenario) -> str:
     )
 
 
+def _severity_rank(severity: Severity) -> int:
+    return {
+        Severity.ERROR: 2,
+        Severity.WARNING: 1,
+        Severity.INFO: 0,
+    }[severity]
+
+
+def _headline_quality_flag(quality_flags: list[QualityFlag]) -> str | None:
+    """Return the most severe flag code; max() keeps the earliest flag on severity ties."""
+
+    if not quality_flags:
+        return None
+    return max(quality_flags, key=lambda flag: _severity_rank(flag.severity)).code
+
+
 def _scenario_timing_pattern(scenario: ExposureScenario) -> str:
     duration = scenario.product_use_profile.exposure_duration_hours
     if duration is not None:
@@ -2708,7 +2724,7 @@ def build_toxclaw_evidence_bundle(
         content_hash=content_hash,
         data_classification=params.data_classification,
         evidence_id=evidence_id,
-        quality_flag=scenario.quality_flags[0].code if scenario.quality_flags else None,
+        quality_flag=_headline_quality_flag(scenario.quality_flags),
         retrieved_at=scenario.provenance.generated_at,
         run_id=params.run_id,
         source="exposure-scenario-mcp",
