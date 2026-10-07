@@ -67,6 +67,20 @@ A broad cream/liquid category match cannot establish absorption correspondence.
 External skin loading, absorbed systemic dose, skin-sensitisation consumer
 exposure level and local inhalation concentration are distinct quantities.
 
+## PBPK denominator correspondence
+
+Both PBPK export paths preserve the body weight recorded in the calculation
+assumptions. A conflicting population-profile weight produces
+`pbpk_population_context_inconsistent`: the template and original dose stay
+inspectable, but external-import readiness is false. Rebuild the corresponding
+source scenario; changing a profile does not renormalise an existing dose.
+
+Absent, invalid or conflicting recorded denominators receive actionable
+`pbpk_body_weight_*` errors. The required non-null PBPK population field cannot
+represent an unknown denominator, so no successful template is fabricated for
+those records. A profile-only retained record remains a mechanical fallback
+when no calculation assumption exists; this is not scientific authentication.
+
 ## Primary-source benchmarks
 
 These records are public interpretation/arithmetic references. They do not add
