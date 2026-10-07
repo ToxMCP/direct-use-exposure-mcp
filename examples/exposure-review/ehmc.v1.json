@@ -1,0 +1,86 @@
+{
+  "schema_version": "exposureReviewWorksheet.v1",
+  "id": "ehmc",
+  "title": "EHMC: accepted absorption statistic with unresolved transfer",
+  "scope": {
+    "chemical_id": "review:EHMC",
+    "material": "Hypothetical cream; correspondence with tested EHMC material/formulation is unknown",
+    "population": "adult",
+    "region": "EU",
+    "period": "published opinion review",
+    "duration": "daily arithmetic reconstruction",
+    "endpoint": "systemic exposure worksheet",
+    "dose_basis": "absorbed_mg_kg_day",
+    "body_weight_kg": 60
+  },
+  "reference_cases": [
+    "ehmc-absorption-2025-corrigendum-2026"
+  ],
+  "components": [
+    {
+      "id": "hypothetical_cream",
+      "scope": {
+        "chemical_id": "review:EHMC",
+        "material": "Hypothetical cream; correspondence with tested EHMC material/formulation is unknown",
+        "population": "adult",
+        "region": "EU",
+        "period": "published opinion review",
+        "duration": "daily arithmetic reconstruction",
+        "endpoint": "systemic exposure worksheet",
+        "dose_basis": "absorbed_mg_kg_day",
+        "body_weight_kg": 60
+      },
+      "role": "additive",
+      "nature": "hypothetical",
+      "dose_statistic": "deterministic",
+      "source_ids": [],
+      "producer_request": {
+        "chemical_id": "review:EHMC",
+        "chemical_name": "hypothetical EHMC cream",
+        "route": "dermal",
+        "scenario_class": "screening",
+        "population_profile": {
+          "population_group": "adult",
+          "region": "EU",
+          "body_weight_kg": 60
+        },
+        "product_use_profile": {
+          "product_name": "Arithmetic worksheet: hypothetical EHMC cream",
+          "product_category": "personal_care",
+          "physical_form": "liquid",
+          "application_method": "hand_application",
+          "retention_type": "worksheet_post_retention",
+          "concentration_fraction": 0.1,
+          "use_amount_per_event": 1.0,
+          "use_amount_unit": "g",
+          "use_events_per_day": 1,
+          "retention_factor": 1,
+          "transfer_efficiency": 1
+        }
+      },
+      "absorption": {
+        "value": "0.45",
+        "unit": "percent",
+        "statistic": "mean_plus_one_sd",
+        "applicability": "unknown",
+        "rationale": "The published 10% formulation is not authenticated as this hypothetical cream.",
+        "source_ids": [
+          "ehmc-absorption-2025-corrigendum-2026"
+        ]
+      }
+    }
+  ],
+  "omitted_sources": [
+    {
+      "id": "outside_defended_inventory",
+      "description": "Sources outside the reviewed contributions remain unresolved.",
+      "upper_bound": null,
+      "unit": null,
+      "reopening_condition": "Appraise a complete inventory and quantify omitted sources where evidence supports bounds."
+    }
+  ],
+  "notes": [
+    "This is a retrospective source review with explicitly labelled producer reconstructions or hypothetical inputs; no actual batch correspondence, complete exposure or approval is established.",
+    "0.28% mean + 0.17% one SD = 0.45%, or fraction 0.0045. This is not a P95 or a hazard point of departure."
+  ]
+}

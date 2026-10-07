@@ -1,0 +1,33 @@
+{
+  "schema_version": "exposureReviewWorksheet.v1",
+  "id": "cannabidiol",
+  "title": "CBD: local sensitisation source-coverage worksheet",
+  "scope": {
+    "chemical_id": "review:CBD",
+    "material": "CBD in published sensitisation discussion",
+    "population": "adult",
+    "region": "EU",
+    "period": "published opinion review",
+    "duration": "endpoint-specific period unresolved",
+    "endpoint": "skin sensitisation CEL",
+    "dose_basis": "local_skin",
+    "body_weight_kg": null
+  },
+  "reference_cases": [
+    "cannabidiol-sensitisation-2026"
+  ],
+  "components": [],
+  "omitted_sources": [
+    {
+      "id": "outside_defended_inventory",
+      "description": "Sources outside the reviewed contributions remain unresolved.",
+      "upper_bound": null,
+      "unit": null,
+      "reopening_condition": "Appraise a complete inventory and quantify omitted sources where evidence supports bounds."
+    }
+  ],
+  "notes": [
+    "This is a retrospective source review with explicitly labelled producer reconstructions or hypothetical inputs; no actual batch correspondence, complete exposure or approval is established.",
+    "No systemic-dose input is manufactured for the published local CEL question. Multiple-product coverage needs an endpoint-specific appraisal."
+  ]
+}

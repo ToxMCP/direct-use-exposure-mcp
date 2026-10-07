@@ -1,0 +1,13 @@
+{
+  "schema_version": "exposureReviewSources.v1",
+  "files": {
+    "tea-tree-oil-2025": "/path/to/public-records/tea-tree-oil-2025.pdf",
+    "kojic-acid-2012": "/path/to/public-records/kojic-acid-2012.pdf",
+    "methyl-salicylate-children-2025": "/path/to/public-records/methyl-salicylate-children-2025.pdf",
+    "cannabidiol-sensitisation-2026": "/path/to/public-records/cannabidiol-sensitisation-2026.pdf",
+    "ehmc-absorption-2025-corrigendum-2026": "/path/to/public-records/ehmc-absorption-2025-corrigendum-2026.pdf",
+    "basic-blue-99-absorption-rejection-2026": "/path/to/public-records/basic-blue-99-absorption-rejection-2026.pdf",
+    "sccs-1647-22-corrigendum-2": "/path/to/public-records/sccs-1647-22-corrigendum-2.pdf",
+    "oecd-tg-428-2004": "/path/to/public-records/oecd-tg-428-2004.pdf"
+  }
+}
